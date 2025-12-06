@@ -15,6 +15,7 @@ export default async function LandingPage({
 
   const showSections = [
     'hero',
+    'showcases-flow',
     'logos',
     'introduce',
     'benefits',

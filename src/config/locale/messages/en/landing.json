@@ -90,6 +90,93 @@
       "alt": "hero"
     }
   },
+  "showcases-flow": {
+    "id": "showcases-flow",
+    "title": "Nano Banana Pro Showcases",
+    "description": "Representative Nano Banana editing and generation cases powered by Nano Banana Pro",
+    "items": [
+      {
+        "title": "AI SaaS Showcase 1",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/1.jpeg",
+          "alt": "AI SaaS Showcase 1"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 2",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/2.jpeg",
+          "alt": "AI SaaS Showcase 2"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 3",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/3.jpeg",
+          "alt": "AI SaaS Showcase 3"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 4",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/4.jpeg",
+          "alt": "AI SaaS Showcase 4"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 5",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/5.jpeg",
+          "alt": "AI SaaS Showcase 5"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 6",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/6.jpeg",
+          "alt": "AI SaaS Showcase 6"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 7",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/7.jpeg",
+          "alt": "AI SaaS Showcase 7"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 8",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/8.jpeg",
+          "alt": "AI SaaS Showcase 8"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 9",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/9.jpeg",
+          "alt": "AI SaaS Showcase 9"
+        }
+      },
+      {
+        "title": "AI SaaS Showcase 10",
+        "description": "AI SaaS Showcase",
+        "image": {
+          "src": "/imgs/showcases/10.jpeg",
+          "alt": "AI SaaS Showcase 10"
+        }
+      }
+    ]
+  },
   "logos": {
     "hidden": true
   },
@@ -104,38 +191,38 @@
   },
   "features": {
     "id": "features",
-    "title": "Key Features of ShipAny",
-    "description": "Everything you need to launch your AI SaaS startup quickly and efficiently.",
+    "title": "Key Features of Nano Banana Pro",
+    "description": "Everything you need to generate and refine visuals with Nano Banana Pro, the leading AI image editing model powered by Nano Banana.",
     "items": [
       {
-        "title": "Next.js Boilerplate",
-        "description": "Production-ready Next.js templates with SEO-friendly structure and i18n support.",
-        "icon": "RiNextjsFill"
+        "title": "Natural Language Editing",
+        "description": "Edit any photo with conversational prompts. Nano Banana Pro interprets complex directions and applies precise transformations with Nano Banana's advanced AI.",
+        "icon": "RiMagicLine"
       },
       {
-        "title": "Authentication & Payments",
-        "description": "Integrated Google OAuth, one-tap login, and Stripe payment processing.",
-        "icon": "RiKey2Fill"
+        "title": "Character Consistency",
+        "description": "Preserve faces, outfits, and poses across every revision with Nano Banana Pro's identity-aware pipeline. Nano Banana delivers consistent character representation.",
+        "icon": "RiUserStarLine"
       },
       {
-        "title": "Data Infrastructure",
-        "description": "Built-in Supabase integration for reliable and scalable data storage.",
-        "icon": "RiDatabase2Line"
+        "title": "Scene Preservation",
+        "description": "Blend edits seamlessly into original backgrounds for photorealistic results with Nano Banana Pro. Experience professional-grade scene preservation powered by Nano Banana.",
+        "icon": "RiImageLine"
       },
       {
-        "title": "One-Click Deployment",
-        "description": "Seamless deployment to Vercel or Cloudflare with automated setup.",
-        "icon": "RiCloudy2Fill"
+        "title": "Multi-Image Remix",
+        "description": "Blend elements from multiple reference images to create new scenes, match styles, or preserve continuity across frames.",
+        "icon": "Layers"
       },
       {
-        "title": "Business Analytics",
-        "description": "Integrated Google Analytics and Search Console for tracking growth.",
-        "icon": "RiBarChart2Line"
+        "title": "Aspect Ratio Control",
+        "description": "Choose from presets like 1:1, 16:9, or 4:5 to generate perfectly framed images for social feeds, hero banners, or print layouts.",
+        "icon": "RiAspectRatioLine"
       },
       {
-        "title": "AI-Ready Infrastructure",
-        "description": "Pre-configured AI integration with built-in credits system and API sales.",
-        "icon": "RiRobot2Line"
+        "title": "Instant Variations",
+        "description": "Request fresh variations in seconds and iterate through lighting, color, and composition ideas without starting over.",
+        "icon": "RiFlashlightLine"
       }
     ]
   },
@@ -147,33 +234,31 @@
   },
   "faq": {
     "id": "faq",
-    "title": "Frequently Asked Questions About ShipAny",
-    "description": "Have another question? Contact us on Discord or by email.",
-    "tip": "Can't find what you're looking for? Contact our <a href='https://discord.gg/HQNnrzjZQS' target='_blank' class='text-primary font-medium hover:underline'>customer support team</a>",
+    "title": "Frequently asked questions about Nano Banana Pro",
     "items": [
       {
-        "question": "What exactly is ShipAny and how does it work?",
-        "answer": "ShipAny is a comprehensive NextJS boilerplate designed specifically for building AI SaaS startups. It provides ready-to-use templates, infrastructure setup, and deployment tools that help you launch your AI business in hours instead of days."
+        "question": "What exactly is Nano Banana Pro and how does it work?",
+        "answer": "Nano Banana Pro is the professional AI image editing model powered by Nano Banana. It supports natural language text-to-image generation, text + image editing, multi-image composition, iterative refinements, and high-fidelity text rendering, giving you precise control over every revision."
       },
       {
-        "question": "Do I need advanced technical skills to use ShipAny?",
-        "answer": "While basic programming knowledge is helpful, ShipAny is designed to be developer-friendly. Our templates and documentation make it easy to get started, even if you're not an expert in AI or cloud infrastructure."
+        "question": "How do I edit existing visuals with Nano Banana Pro?",
+        "answer": "Upload a base image, describe the changes you need, and Nano Banana Pro applies additions, removals, and style shifts without masks. You can keep iterating conversationally until the scene matches your vision, and every output ships with a SynthID watermark for provenance."
       },
       {
-        "question": "What types of AI SaaS can I build with ShipAny?",
-        "answer": "ShipAny supports a wide range of AI applications, from content generation to data analysis tools. Our templates cover popular use cases like AI chatbots, content generators, image processing apps, and more."
+        "question": "Which projects benefit most from Nano Banana Pro?",
+        "answer": "Use Nano Banana Pro for portrait retouching, product photography, cinematic storytelling, UGC campaigns, and brand-safe typography. Nano Banana's multimodal understanding blends elements from multiple inputs and keeps backgrounds intact even under heavy edits."
       },
       {
-        "question": "How long does it typically take to launch with ShipAny?",
-        "answer": "With ShipAny, you can have a working prototype in hours and a production-ready application in hours. Our one-click deployment and pre-configured infrastructure significantly reduce the traditional months-long development cycle."
+        "question": "Can I control output size and aspect ratio?",
+        "answer": "Yes. Specify aspect ratios such as 1:1, 16:9, or 9:16 to match your channel requirements, and the engine renders the corresponding resolution automatically so you can ship pixel-perfect assets without manual cropping."
       },
       {
-        "question": "What's included in the ShipAny infrastructure?",
-        "answer": "ShipAny provides a complete infrastructure stack including authentication, database setup, API integration, payment processing, and scalable cloud deployment. Everything is pre-configured following industry best practices."
+        "question": "How do I craft effective prompts for Nano Banana Pro?",
+        "answer": "Start with the subject and setting, add mood or lighting cues, then specify the level of detail or camera style you want. You can reference colors, outfits, materials, or even upload guide images to steer composition and keep characters consistent with Nano Banana Pro."
       },
       {
-        "question": "Can I customize the templates to match my brand?",
-        "answer": "Absolutely! All ShipAny templates are fully customizable. You can modify the design, features, and functionality to match your brand identity and specific business requirements while maintaining the robust underlying infrastructure."
+        "question": "Can l use Nano Banana Pro outputs for commercial projects?",
+        "answer": "Yes. Ensure you have rights to any reference assets, double-check brand guidelines, and remember that every Nano Banana Pro output carries a SynthID watermark to help document provenance when you launch campaigns."
       }
     ]
   },
