@@ -70,14 +70,14 @@
       {
         "title": "Try it now",
         "icon": "Zap",
-        "url": "/pricing",
+        "url": "/create",
         "target": "_self",
         "variant": "default"
       },
       {
         "title": "View examples",
         "icon": "BookOpenText",
-        "url": "/docs",
+        "url": "/#showcases",
         "target": "_blank",
         "variant": "outline"
       }

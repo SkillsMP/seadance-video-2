@@ -76,6 +76,12 @@ const MAX_PROMPT_LENGTH = 2000;
 
 const MODEL_OPTIONS = [
   {
+    value: 'nano-banana-pro',
+    label: 'Nano Banana Pro',
+    provider: 'kie',
+    scenes: ['text-to-image', 'image-to-image'],
+  },
+  {
     value: 'google/nano-banana-pro',
     label: 'Nano Banana Pro',
     provider: 'replicate',
@@ -123,15 +129,13 @@ const MODEL_OPTIONS = [
     provider: 'gemini',
     scenes: ['text-to-image', 'image-to-image'],
   },
-  {
-    value: 'nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'kie',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
 ];
 
 const PROVIDER_OPTIONS = [
+  {
+    value: 'kie',
+    label: 'Kie',
+  },
   {
     value: 'replicate',
     label: 'Replicate',
@@ -143,10 +147,6 @@ const PROVIDER_OPTIONS = [
   {
     value: 'gemini',
     label: 'Gemini',
-  },
-  {
-    value: 'kie',
-    label: 'Kie',
   },
 ];
 
