@@ -47,7 +47,8 @@ export default async function PricingPage({
         },
       },
       faq: tl.raw('faq'),
-      testimonials: tl.raw('testimonials'),
+      cta: tl.raw('cta'),
+      // testimonials: tl.raw('testimonials'),
     },
   };
 
