@@ -34,6 +34,7 @@ export const localeMessagesPaths = [
   'admin/permissions',
   'admin/categories',
   'admin/posts',
+  'admin/prompts',
   'admin/payments',
   'admin/subscriptions',
   'admin/credits',

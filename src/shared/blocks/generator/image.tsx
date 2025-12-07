@@ -248,15 +248,15 @@ export function ImageGenerator({
 
   useEffect(() => {
     if (promptKey) {
-      fetch(`/api/prompts?key=${encodeURIComponent(promptKey)}`)
+      fetch(`/api/prompts/by-title?title=${encodeURIComponent(promptKey)}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.success && data.data) {
-            if (data.data.prompt) {
-              setPrompt(data.data.prompt);
+            if (data.data.promptDescription) {
+              setPrompt(data.data.promptDescription);
             }
-            if (data.data.previewImage) {
-              setPreviewImage(data.data.previewImage);
+            if (data.data.image) {
+              setPreviewImage(data.data.image);
             }
           }
         })

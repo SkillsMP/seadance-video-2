@@ -42,11 +42,83 @@ const formatBytes = (bytes?: number) => {
   return `${mb.toFixed(2)} MB`;
 };
 
-const uploadImageFile = async (file: File) => {
-  const formData = new FormData();
-  formData.append('files', file);
+const compressImage = async (file: File, quality = 0.7): Promise<File> => {
+  if (!file.type.startsWith('image/')) return file;
 
-  const response = await fetch('/api/storage/upload-image', {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        let width = img.width;
+        let height = img.height;
+        const maxDimension = 1920;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = (height / width) * maxDimension;
+            width = maxDimension;
+          } else {
+            width = (width / height) * maxDimension;
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const mimeType = 'image/jpeg';
+        
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              resolve(file);
+              return;
+            }
+
+            if (blob.size >= file.size) {
+              resolve(file);
+              return;
+            }
+
+            const newName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+            const compressedFile = new File([blob], newName, {
+              type: mimeType,
+              lastModified: Date.now(),
+            });
+            
+            resolve(compressedFile);
+          },
+          mimeType,
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+    };
+    reader.onerror = () => resolve(file);
+  });
+};
+
+const uploadImageFile = async (file: File) => {
+  const compressedFile = await compressImage(file);
+  
+  const formData = new FormData();
+  formData.append('file', compressedFile);
+
+  const response = await fetch('/api/upload', {
     method: 'POST',
     body: formData,
   });
@@ -56,11 +128,11 @@ const uploadImageFile = async (file: File) => {
   }
 
   const result = await response.json();
-  if (result.code !== 0 || !result.data?.urls?.length) {
-    throw new Error(result.message || 'Upload failed');
+  if (!result.success || !result.url) {
+    throw new Error(result.error || 'Upload failed');
   }
 
-  return result.data.urls[0] as string;
+  return result.url as string;
 };
 
 export function ImageUploader({

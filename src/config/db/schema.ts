@@ -539,3 +539,28 @@ export const chatMessage = pgTable(
     index('idx_chat_message_user_id').on(table.userId, table.status),
   ]
 );
+
+export const prompt = pgTable(
+  'prompt',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description'),
+    image: text('image'),
+    promptTitle: text('prompt_title').notNull(),
+    promptDescription: text('prompt_description'),
+    status: text('status').notNull().default('published'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .$onUpdate(() => new Date())
+      .notNull(),
+    sort: integer('sort').default(0).notNull(),
+  },
+  (table) => [
+    index('idx_prompt_status').on(table.status),
+    index('idx_prompt_created_at').on(table.createdAt),
+  ]
+);

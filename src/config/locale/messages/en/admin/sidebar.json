@@ -49,6 +49,11 @@
               "title": "Posts",
               "icon": "FileText",
               "url": "/admin/posts"
+            },
+            {
+              "title": "Prompts",
+              "icon": "Wand",
+              "url": "/admin/prompts"
             }
           ]
         },

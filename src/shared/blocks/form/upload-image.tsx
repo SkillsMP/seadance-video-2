@@ -21,7 +21,7 @@ export function UploadImage({
   formField,
   data,
   metadata,
-  uploadUrl = '/api/storage/upload-image',
+  uploadUrl = '/api/upload',
   onUpload,
 }: UploadImageProps) {
   const maxImages = metadata?.max || 1;

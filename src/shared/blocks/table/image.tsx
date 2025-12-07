@@ -29,7 +29,8 @@ export function Image({
       alt={value}
       width={width}
       height={height}
-      className={cn('shrink-0 rounded-md object-cover', className)}
+      style={{ width: `${width}px`, height: `${height}px` }}
+      className={cn('shrink-0 rounded-md object-cover overflow-hidden', className)}
     />
   );
 }
