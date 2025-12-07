@@ -5,6 +5,7 @@ import {
   CreditCard,
   Download,
   ImageIcon,
+  Wand,
   Loader2,
   Sparkles,
   User,
@@ -214,10 +215,10 @@ export function ImageGenerator({
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
-  const [costCredits, setCostCredits] = useState<number>(2);
+  const [costCredits, setCostCredits] = useState<number>(4);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState('Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
@@ -616,6 +617,7 @@ export function ImageGenerator({
               <CardHeader>
                 {srOnlyTitle && <h2 className="sr-only">{srOnlyTitle}</h2>}
                 <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+                  <Wand className="h-5 w-5" />
                   {t('title')}
                 </CardTitle>
               </CardHeader>
@@ -631,7 +633,7 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>{t('form.provider')}</Label>
                     <Select
@@ -670,7 +672,7 @@ export function ImageGenerator({
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
+                </div> */}
 
                 {!isTextToImageMode && (
                   <div className="space-y-4">
@@ -869,10 +871,15 @@ export function ImageGenerator({
                     ))}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                  <div className="flex flex-col items-center justify-center py-4 text-center">
+                    {/* <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
                       <ImageIcon className="text-muted-foreground h-10 w-10" />
-                    </div>
+                    </div> */}
+                    <LazyImage 
+                      src="https://pbs.twimg.com/media/G6QMSpJacAMbGcx?format=jpg&amp;name=medium" 
+                      alt="Generated image"
+                      className="mb-6"
+                    />
                     <p className="text-muted-foreground">
                       {isGenerating
                         ? t('ready_to_generate')
