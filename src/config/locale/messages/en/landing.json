@@ -32,8 +32,8 @@
           "children": [
             {
               "title": "Hairstyles",
-              "url": "/create",
-              "icon": "Zap",
+              "url": "/hairstyles",
+              "icon": "Wind",
               "description": "AI Hairstyle Generator"
             }
           ]
