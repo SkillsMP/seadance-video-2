@@ -29,13 +29,13 @@ import {
 } from '@/shared/components/ui/card';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from '@/shared/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
@@ -47,6 +47,7 @@ interface ImageGeneratorProps {
   maxSizeMB?: number;
   srOnlyTitle?: string;
   className?: string;
+  promptKey?: string;
 }
 
 interface GeneratedImage {
@@ -209,16 +210,18 @@ export function ImageGenerator({
   maxSizeMB = 5,
   srOnlyTitle,
   className,
+  promptKey,
 }: ImageGeneratorProps) {
   const t = useTranslations('ai.image.generator');
 
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
-  const [costCredits, setCostCredits] = useState<number>(4);
+  const [costCredits, setCostCredits] = useState<number>(6);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
   const [prompt, setPrompt] = useState('Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset');
+  const [previewImage, setPreviewImage] = useState<string>('https://pbs.twimg.com/media/G6QMSpJacAMbGcx?format=jpg&amp;name=medium');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
@@ -243,6 +246,26 @@ export function ImageGenerator({
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (promptKey) {
+      fetch(`/api/prompts?key=${encodeURIComponent(promptKey)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            if (data.data.prompt) {
+              setPrompt(data.data.prompt);
+            }
+            if (data.data.previewImage) {
+              setPreviewImage(data.data.previewImage);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to fetch prompt:', error);
+        });
+    }
+  }, [promptKey]);
+
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
@@ -263,9 +286,9 @@ export function ImageGenerator({
     }
 
     if (tab === 'text-to-image') {
-      setCostCredits(2);
+      setCostCredits(6);
     } else {
-      setCostCredits(4);
+      setCostCredits(6);
     }
   };
 
@@ -872,12 +895,9 @@ export function ImageGenerator({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-4 text-center">
-                    {/* <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-                      <ImageIcon className="text-muted-foreground h-10 w-10" />
-                    </div> */}
                     <LazyImage 
-                      src="https://pbs.twimg.com/media/G6QMSpJacAMbGcx?format=jpg&amp;name=medium" 
-                      alt="Generated image"
+                      src={previewImage} 
+                      alt="Preview image"
                       className="mb-6"
                     />
                     <p className="text-muted-foreground">

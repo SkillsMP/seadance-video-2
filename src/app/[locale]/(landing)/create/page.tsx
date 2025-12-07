@@ -12,10 +12,13 @@ export const generateMetadata = getMetadata({
 
 export default async function CreatePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ prompt?: string }>;
 }) {
   const { locale } = await params;
+  const { prompt: promptKey } = await searchParams;
   setRequestLocale(locale);
 
   // get ai image data
@@ -33,7 +36,7 @@ export default async function CreatePage({
         description: t.raw('page.description'),
       },
       generator: {
-        component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} />,
+        component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} promptKey={promptKey} />,
       },
     },
   };
