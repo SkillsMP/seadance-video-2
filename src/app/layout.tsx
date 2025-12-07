@@ -1,6 +1,6 @@
 import '@/config/style/global.css';
 
-import { Roboto } from 'next/font/google';
+import { Merriweather } from 'next/font/google';
 import { getLocale, setRequestLocale } from 'next-intl/server';
 import NextTopLoader from 'nextjs-toploader';
 
@@ -11,10 +11,10 @@ import { getAffiliateService } from '@/shared/services/affiliate';
 import { getAnalyticsService } from '@/shared/services/analytics';
 import { getCustomerService } from '@/shared/services/customer_service';
 
-const roboto = Roboto({
+const merriweather = Merriweather({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '700', '900'],
-  variable: '--font-sans',
+  weight: ['300', '400', '700', '900'],
+  variable: '--font-serif',
 });
 
 export default async function RootLayout({
@@ -80,7 +80,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${roboto.variable}`}
+      className={`${merriweather.variable}`}
       suppressHydrationWarning
     >
       <head>
