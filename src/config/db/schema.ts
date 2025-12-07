@@ -564,3 +564,21 @@ export const prompt = pgTable(
     index('idx_prompt_created_at').on(table.createdAt),
   ]
 );
+
+export const showcase = pgTable(
+  'showcase',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    prompt: text('prompt').notNull(),
+    image: text('image').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    index('idx_showcase_created_at').on(table.createdAt),
+    index('idx_showcase_user_id').on(table.userId),
+  ]
+);

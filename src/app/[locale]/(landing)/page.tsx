@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
 import { DynamicPage, Section } from '@/shared/types/blocks/landing';
+import { ShowcasesFlowDynamic } from '@/themes/default/blocks/showcases-flow-dynamic';
 
 export default async function LandingPage({
   params,
@@ -31,14 +32,26 @@ export default async function LandingPage({
   // build page sections
   const page: DynamicPage = {
     sections: showSections.reduce<Record<string, Section>>((acc, section) => {
-      const sectionData = t.raw(section) as Section;
-      // Skip sections that are explicitly hidden, null, or undefined
-      if (
-        sectionData &&
-        typeof sectionData === 'object' &&
-        sectionData.hidden !== true
-      ) {
-        acc[section] = sectionData;
+      if (section === 'showcases-flow') {
+        const sectionData = t.raw(section) as Section;
+        acc[section] = {
+          component: (
+            <ShowcasesFlowDynamic
+              title={sectionData.title}
+              description={sectionData.description}
+            />
+          ),
+        };
+      } else {
+        const sectionData = t.raw(section) as Section;
+        // Skip sections that are explicitly hidden, null, or undefined
+        if (
+          sectionData &&
+          typeof sectionData === 'object' &&
+          sectionData.hidden !== true
+        ) {
+          acc[section] = sectionData;
+        }
       }
       return acc;
     }, {}),

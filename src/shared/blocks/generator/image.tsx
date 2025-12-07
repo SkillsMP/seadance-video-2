@@ -217,11 +217,11 @@ export function ImageGenerator({
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
-  const [costCredits, setCostCredits] = useState<number>(6);
+  const [costCredits, setCostCredits] = useState<number>(4);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
   const [prompt, setPrompt] = useState('Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset');
-  const [previewImage, setPreviewImage] = useState<string>('https://pbs.twimg.com/media/G6QMSpJacAMbGcx?format=jpg&amp;name=medium');
+  const [previewImage, setPreviewImage] = useState<string>('https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
@@ -286,7 +286,7 @@ export function ImageGenerator({
     }
 
     if (tab === 'text-to-image') {
-      setCostCredits(6);
+      setCostCredits(4);
     } else {
       setCostCredits(6);
     }
@@ -417,16 +417,19 @@ export function ImageGenerator({
           if (imageUrls.length === 0) {
             toast.error('The provider returned no images. Please retry.');
           } else {
-            setGeneratedImages(
-              imageUrls.map((url, index) => ({
-                id: `${task.id}-${index}`,
-                url,
-                provider: task.provider,
-                model: task.model,
-                prompt: task.prompt ?? undefined,
-              }))
-            );
+            const images = imageUrls.map((url, index) => ({
+              id: `${task.id}-${index}`,
+              url,
+              provider: task.provider,
+              model: task.model,
+              prompt: task.prompt ?? undefined,
+            }));
+            setGeneratedImages(images);
             toast.success('Image generated successfully');
+            
+            if (images.length > 0) {
+              saveShowcase(images[0].url);
+            }
           }
 
           setProgress(100);
@@ -495,6 +498,108 @@ export function ImageGenerator({
       clearInterval(interval);
     };
   }, [taskId, isGenerating, pollTaskStatus]);
+
+  const saveShowcase = async (imageUrl: string) => {
+    try {
+      const compressImage = async (imageUrl: string): Promise<string> => {
+        const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
+        if (!response.ok) throw new Error('Failed to fetch image');
+        
+        const blob = await response.blob();
+        const file = new File([blob], 'showcase.jpg', { type: blob.type });
+        
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target?.result as string;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              if (!ctx) {
+                reject(new Error('Canvas context not available'));
+                return;
+              }
+
+              let width = img.width;
+              let height = img.height;
+              const maxDimension = 1920;
+
+              if (width > maxDimension || height > maxDimension) {
+                if (width > height) {
+                  height = (height / width) * maxDimension;
+                  width = maxDimension;
+                } else {
+                  width = (width / height) * maxDimension;
+                  height = maxDimension;
+                }
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+              canvas.toBlob(
+                async (blob) => {
+                  if (!blob) {
+                    reject(new Error('Failed to compress image'));
+                    return;
+                  }
+
+                  const compressedFile = new File([blob], 'showcase.jpg', {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                  });
+
+                  const formData = new FormData();
+                  formData.append('file', compressedFile);
+
+                  const uploadResponse = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                  });
+
+                  if (!uploadResponse.ok) {
+                    throw new Error('Upload failed');
+                  }
+
+                  const result = await uploadResponse.json();
+                  if (!result.success || !result.url) {
+                    throw new Error(result.error || 'Upload failed');
+                  }
+
+                  resolve(result.url);
+                },
+                'image/jpeg',
+                0.7
+              );
+            };
+            img.onerror = () => reject(new Error('Failed to load image'));
+          };
+          reader.onerror = () => reject(new Error('Failed to read file'));
+        });
+      };
+
+      const compressedImageUrl = await compressImage(imageUrl);
+
+      await fetch('/api/showcases/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: prompt.trim().substring(0, 100),
+          prompt: prompt.trim(),
+          image: compressedImageUrl,
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to save showcase:', error);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!user) {
@@ -570,19 +675,22 @@ export function ImageGenerator({
         const imageUrls = extractImageUrls(parsedResult);
 
         if (imageUrls.length > 0) {
-          setGeneratedImages(
-            imageUrls.map((url, index) => ({
-              id: `${newTaskId}-${index}`,
-              url,
-              provider,
-              model,
-              prompt: trimmedPrompt,
-            }))
-          );
+          const images = imageUrls.map((url, index) => ({
+            id: `${newTaskId}-${index}`,
+            url,
+            provider,
+            model,
+            prompt: trimmedPrompt,
+          }));
+          setGeneratedImages(images);
           toast.success('Image generated successfully');
           setProgress(100);
           resetTaskState();
           await fetchUserCredits();
+          
+          if (images.length > 0) {
+            await saveShowcase(images[0].url);
+          }
           return;
         }
       }

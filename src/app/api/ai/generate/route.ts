@@ -40,14 +40,14 @@ export async function POST(request: Request) {
     }
 
     // todo: get cost credits from settings
-    let costCredits = 2;
+    let costCredits = 4;
 
     if (mediaType === AIMediaType.IMAGE) {
       // generate image
       if (scene === 'image-to-image') {
-        costCredits = 4;
+        costCredits = 6;
       } else if (scene === 'text-to-image') {
-        costCredits = 2;
+        costCredits = 4;
       } else {
         throw new Error('invalid scene');
       }
