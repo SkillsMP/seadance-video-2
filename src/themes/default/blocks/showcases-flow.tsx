@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Wand, X } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { LazyImage } from '@/shared/blocks/common';
@@ -183,15 +183,31 @@ export function ShowcasesFlow({
                 className="h-auto w-full transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               />
-              <div className="absolute inset-0 flex flex-col justify-end bg-black/60 p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <h3 className="mb-2 translate-y-4 text-sm font-medium text-white transition-transform duration-300 group-hover:translate-y-0">
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <h3 className="mb-3 translate-y-4 text-base font-semibold text-white transition-transform duration-300 group-hover:translate-y-0">
                   {item.title}
                 </h3>
-                {/* {item.description && (
-                  <p className="line-clamp-2 translate-y-4 text-sm text-white/80 transition-transform delay-75 duration-300 group-hover:translate-y-0">
-                    {item.description}
-                  </p>
-                )} */}
+                {(item as any).prompt && (
+                  <div
+                    className="translate-y-4 transition-transform delay-75 duration-300 group-hover:translate-y-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Button
+                      asChild
+                      variant="default"
+                      size="sm"
+                      className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-md gap-1.5 has-[>svg]:px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground h-8 w-full border-0 px-1 py-1.5 text-sm font-medium"
+                    >
+                      <Link
+                        href={`/create?prompt=${(item as any).prompt}`}
+                        target="_self"
+                      >
+                        <Wand className="mr-2 size-4" />
+                        Create Similar
+                      </Link>
+                    </Button>
+                  </div>
+                )}
                 {(item as any).button && (
                   <div
                     className="mt-3 translate-y-4 transition-transform delay-100 duration-300 group-hover:translate-y-0"

@@ -25,7 +25,7 @@ export default async function ShowcasesPage({
 
   const page: DynamicPage = {
     sections: {
-      showcases: t.raw('showcases'),
+      'showcases-flow': t.raw('showcases-flow'),
       cta: tl.raw('cta'),
     },
   };
