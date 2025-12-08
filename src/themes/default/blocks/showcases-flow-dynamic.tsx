@@ -27,6 +27,8 @@ export function ShowcasesFlowDynamic({
   searchTerm,
   hideCreateButton = false,
   showDescription = false,
+  enableLimit = false,
+  sortOrder = 'desc',
 }: {
   title?: string;
   description?: string;
@@ -36,6 +38,8 @@ export function ShowcasesFlowDynamic({
   searchTerm?: string;
   hideCreateButton?: boolean;
   showDescription?: boolean;
+  enableLimit?: boolean;
+  sortOrder?: 'asc' | 'desc';
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +54,10 @@ export function ShowcasesFlowDynamic({
     setError(null);
     
     const params = new URLSearchParams();
-    params.append('limit', '20');
+    if (enableLimit) {
+      params.append('limit', '20');
+    }
+    params.append('sortOrder', sortOrder);
     params.append('_t', Date.now().toString()); // Cache busting
     if (tags) params.append('tags', tags);
     if (excludeTags) params.append('excludeTags', excludeTags);
@@ -76,7 +83,7 @@ export function ShowcasesFlowDynamic({
       .finally(() => {
         setLoading(false);
       });
-  }, [tags, excludeTags, searchTerm]);
+  }, [tags, excludeTags, searchTerm, enableLimit, sortOrder]);
 
   const handlePrevious = useCallback(() => {
     setSelectedIndex((prev) =>

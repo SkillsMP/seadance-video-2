@@ -124,6 +124,7 @@ export function HairstylesContent({
         tags={activeTags}
         hideCreateButton={true}
         showDescription={true}
+        enableLimit={true}
       />
     </section>
   );

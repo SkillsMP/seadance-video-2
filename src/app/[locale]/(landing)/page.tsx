@@ -40,6 +40,7 @@ export default async function LandingPage({
               title={sectionData.title}
               description={sectionData.description}
               excludeTags="hairstyles"
+              sortOrder="asc"
             />
           ),
         };

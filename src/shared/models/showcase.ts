@@ -1,4 +1,4 @@
-import { eq, desc, ne, isNull, or, and, like, notLike, ilike, notIlike } from 'drizzle-orm';
+import { eq, desc, asc, ne, isNull, or, and, like, notLike, ilike, notIlike } from 'drizzle-orm';
 
 import { db } from '@/core/db';
 import { showcase } from '@/config/db/schema';
@@ -85,11 +85,17 @@ export async function getLatestShowcases({
       );
     }
 
-    const result = await db()
+    let query = db()
       .select()
-      .from(showcase)
-      .where(and(...conditions))
-      .orderBy(desc(showcase.createdAt))
+      .from(showcase);
+
+    // Only apply where clause if there are conditions
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    const result = await query
+      .orderBy(asc(showcase.createdAt)) // 升序排序
       .limit(limit);
     return result;
   } catch (error) {
