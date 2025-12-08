@@ -362,11 +362,17 @@ export function ImageGenerator({
     setTaskId(null);
     setGenerationStartTime(null);
     setTaskStatus(null);
+    // Don't clear savedTaskIds here - keep it to prevent duplicates across generations
   }, []);
 
   const pollTaskStatus = useCallback(
     async (id: string) => {
       try {
+        // Check if already saved to prevent duplicate processing
+        if (savedTaskIds.has(id)) {
+          return true;
+        }
+
         if (
           generationStartTime &&
           Date.now() - generationStartTime > GENERATION_TIMEOUT
@@ -435,11 +441,15 @@ export function ImageGenerator({
               prompt: task.prompt ?? undefined,
             }));
             setGeneratedImages(images);
-            toast.success('Image generated successfully');
             
-            // Save showcase only once
-            if (images.length > 0) {
+            // Save showcase only once - check before saving
+            if (images.length > 0 && !savedTaskIds.has(task.id)) {
               await saveShowcase(images[0].url, task.id);
+            }
+            
+            // Show success toast only once
+            if (!savedTaskIds.has(task.id)) {
+              toast.success('Image generated successfully');
             }
           }
 
@@ -513,13 +523,13 @@ export function ImageGenerator({
   const saveShowcase = async (imageUrl: string, taskIdForTracking: string) => {
     // Prevent duplicate saves for the same task
     if (savedTaskIds.has(taskIdForTracking)) {
-      console.log('Showcase already saved for task:', taskIdForTracking);
       return;
     }
 
+    // Mark as saved immediately to prevent race conditions
+    setSavedTaskIds(prev => new Set(prev).add(taskIdForTracking));
+
     try {
-      // Mark as saved immediately to prevent race conditions
-      setSavedTaskIds(prev => new Set(prev).add(taskIdForTracking));
 
       const compressImageFile = async (imageUrl: string): Promise<string> => {
         const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
@@ -663,14 +673,14 @@ export function ImageGenerator({
             prompt: trimmedPrompt,
           }));
           setGeneratedImages(images);
-          toast.success('Image generated successfully');
           setProgress(100);
           resetTaskState();
           await fetchUserCredits();
           
           // Save showcase - this handles immediate success case
-          if (images.length > 0) {
+          if (images.length > 0 && !savedTaskIds.has(newTaskId)) {
             await saveShowcase(images[0].url, newTaskId);
+            toast.success('Image generated successfully');
           }
           return;
         }
