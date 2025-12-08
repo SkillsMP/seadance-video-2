@@ -6,6 +6,17 @@ import { envConfigs } from '@/config';
 // create default auth client, without plugins
 export const authClient = createAuthClient({
   baseURL: envConfigs.auth_url,
+  fetchOptions: {
+    // Disable automatic refetching on window focus to prevent request storms
+    refetchOnWindowFocus: false,
+    // Use exponential backoff retry strategy to prevent rapid retries when requests are pending
+    retry: {
+      type: 'exponential', // 指定使用指数退避策略
+      attempts: 2, //最多重试 2 次
+      baseDelay: 5000, // 基础延迟 5 秒
+      maxDelay: 10000, // 最大延迟 10 秒
+    },
+  },
 });
 
 // export default auth client methods
@@ -16,6 +27,17 @@ export function getAuthClient(configs: Record<string, string>) {
   const authClient = createAuthClient({
     baseURL: envConfigs.auth_url,
     plugins: getAuthPlugins(configs),
+    fetchOptions: {
+      // Disable automatic refetching on window focus to prevent request storms
+      refetchOnWindowFocus: false,
+      // Use exponential backoff retry strategy to prevent rapid retries when requests are pending
+      retry: {
+        type: 'exponential',
+        attempts: 2,
+        baseDelay: 2000, // 2 seconds base delay
+        maxDelay: 10000, // 10 seconds max delay
+      },
+    },
   });
 
   return authClient;
