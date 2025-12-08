@@ -176,6 +176,8 @@ export async function POST(req: Request) {
       paymentProviderName,
       checkoutCurrency
     );
+    console.log('DEBUG - product_id:', product_id);
+    console.log('DEBUG - promotionCode:', promotionCode);
 
     // build checkout price with correct amount for selected currency
     const checkoutPrice: PaymentPrice = {
@@ -345,12 +347,28 @@ async function getPromotionCode(
   try {
     const configs = await getAllConfigs();
     const stripePromotionCodes = configs.stripe_promotion_codes;
+    console.log('DEBUG - stripePromotionCodes from DB:', stripePromotionCodes);
+    
+    // Check if the config is empty or just whitespace
+    if (!stripePromotionCodes || stripePromotionCodes.trim() === '') {
+      console.log('DEBUG - No promotion codes configured');
+      return;
+    }
+    
     if (stripePromotionCodes) {
       const promotionCodes = JSON.parse(stripePromotionCodes);
-      return (
-        promotionCodes[`${productId}_${checkoutCurrency}`] ||
-        promotionCodes[productId]
-      );
+      console.log('DEBUG - parsed promotionCodes:', promotionCodes);
+      
+      // Check if promotionCodes is an empty object
+      if (Object.keys(promotionCodes).length === 0) {
+        console.log('DEBUG - Promotion codes object is empty');
+        return;
+      }
+      
+      const result = promotionCodes[`${productId}_${checkoutCurrency}`] ||
+        promotionCodes[productId];
+      console.log('DEBUG - selected promotion code:', result);
+      return result;
     }
   } catch (e: any) {
     console.log('get promotion code failed:', e);
