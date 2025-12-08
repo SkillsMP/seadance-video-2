@@ -19,12 +19,11 @@ export function CustomFeatures({
     >
       <motion.div
         className="container mb-12 text-center"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 1, y: 0 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{
-          duration: 0.6,
-          ease: [0.22, 1, 0.36, 1] as const,
+          duration: 0,
         }}
       >
         {section.sr_only_title && (
