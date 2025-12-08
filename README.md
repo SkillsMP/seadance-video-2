@@ -2,7 +2,7 @@
 
 ## Preview
 
-[https://cf-two.shipany.site/](https://cf-two.shipany.site/)
+[https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
 
 ## 由于多次发生仓库被提交脏代码，给其他同学带来不便，现将仓库写权限关闭，仓库成员仅可读！
 
@@ -10,13 +10,11 @@
 
 [✨ShipanyTwo官方文档（作者已更新完）](https://www.shipany.ai/zh/docs)
 
-[✨ShipanyTwo按照官方文档一步步走过程记录](https://github.com/boomer1678/shipany-template/issues/2)
+[✨项目中AI图片生成相关的配置解释](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
 
-[✨ShipanyTwo更新日志](https://github.com/boomer1678/shipany-template/issues/3)
+[✨项目中关于Stripe支付相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/2)
 
-[✨ShipAnyTwo架构要点总结](https://github.com/boomer1678/shipany-template/issues/1)
-
-[✨ShipAnyTwo常见问题](https://github.com/boomer1678/shipany-template/issues/7)
+[✨项目中关于R2存储相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/3)
 
 ## Video
 
@@ -26,55 +24,5 @@
 
 ## Branch
 
-- `main`: two main branch
-- `cloudfare`: two cloudfare branch
-- `one/main`: one main branch (2025-08-06(v2.6.0))
-- `one/cloudfare`: one cloudfare branch 
-
-
-## Getting Started
-
-1. Clone code and install
-
-```shell
-git clone git@github.com:boomer1678/shipany-template.git -b dev my-shipany-project
-cd my-shipany-project
-pnpm install
-```
-
-2. Set local development env
-
-create `.env` file under root dir
-
-```shell
-cp .env.example .env
-```
-
-update env with DATABASE_URL and AUTH_SECRET
-
-`DATABASE_URL` may like:
-
-```shell
-postgresql://user:password@host:port/db
-```
-
-`AUTH_SECRET` can be generated:
-
-- [Generate Auth Secret](https://www.better-auth.com/docs/installation)
-
-3. Create database tables with orm migrate
-
-```shell
-pnpm db:generate
-pnpm db:migrate
-```
-
-4. Start dev server
-
-```shell
-pnpm dev
-```
-
-5. Deploy to vercel
-
-push code to github and deploy to Vercel.
+- `main`: main branch
+- `hotfix/xxxx`: hotifx branch
