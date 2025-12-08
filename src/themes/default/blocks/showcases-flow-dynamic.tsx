@@ -9,14 +9,14 @@ import { LazyImage } from '@/shared/blocks/common';
 import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
 
-interface ShowcaseItem {
-  description: boolean;
+export type ShowcaseItem = {
+  description?: string | null;
   id: string;
   title: string;
-  prompt: string;
+  prompt?: string | null;
   image: string;
-  createdAt: string;
-}
+  createdAt: string | Date;
+};
 
 export function ShowcasesFlowDynamic({
   title,
@@ -29,6 +29,7 @@ export function ShowcasesFlowDynamic({
   showDescription = false,
   enableLimit = false,
   sortOrder = 'desc',
+  initialItems,
 }: {
   title?: string;
   description?: string;
@@ -40,15 +41,25 @@ export function ShowcasesFlowDynamic({
   showDescription?: boolean;
   enableLimit?: boolean;
   sortOrder?: 'asc' | 'desc';
+  initialItems?: ShowcaseItem[];
 }) {
-  const [items, setItems] = useState<ShowcaseItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<ShowcaseItem[]>(initialItems || []);
+  const [loading, setLoading] = useState(!initialItems);
   const [showLoading, setShowLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  // Track if this is the initial mount to possibly skip fetching
+  const isInitialMount = useState(true);
+
   useEffect(() => {
-    console.log('ShowcasesFlowDynamic mounted with props:', { tags, excludeTags, searchTerm });
+    // If initialItems are provided, skip the first fetch
+    if (initialItems && isInitialMount[0]) {
+      isInitialMount[1](false);
+      return;
+    }
+    
+    console.log('ShowcasesFlowDynamic mounted (or updated) with props:', { tags, excludeTags, searchTerm });
     
     // Set loading state when tags/searchTerm changes
     setLoading(true);
@@ -57,9 +68,12 @@ export function ShowcasesFlowDynamic({
     
     // Only show loading indicator after 300ms delay
     const loadingTimer = setTimeout(() => {
-      if (loading) {
-        setShowLoading(true);
-      }
+      // If we are still loading, show the indicator
+      // We check the loading state inside the effect's closure, 
+      // but since we just set it true above, we need to be careful.
+      // Actually, relying on state update cycle, better to just set it true here
+      // but guard against fast completion.
+      setShowLoading(true);
     }, 300);
     
     const params = new URLSearchParams();
@@ -96,7 +110,7 @@ export function ShowcasesFlowDynamic({
       });
     
     return () => clearTimeout(loadingTimer);
-  }, [tags, excludeTags, searchTerm, enableLimit, sortOrder]);
+  }, [tags, excludeTags, searchTerm, enableLimit, sortOrder, initialItems]);
 
   const handlePrevious = useCallback(() => {
     setSelectedIndex((prev) =>

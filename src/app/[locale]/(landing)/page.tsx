@@ -4,6 +4,8 @@ import { getThemePage } from '@/core/theme';
 import { DynamicPage, Section } from '@/shared/types/blocks/landing';
 import { ShowcasesFlowDynamic } from '@/themes/default/blocks/showcases-flow-dynamic';
 
+import { getLatestShowcases } from '@/shared/models/showcase';
+
 export default async function LandingPage({
   params,
 }: {
@@ -13,6 +15,18 @@ export default async function LandingPage({
   setRequestLocale(locale);
 
   const t = await getTranslations('landing');
+
+  // Fetch showcases data server-side for faster initial render
+  const rawShowcases = await getLatestShowcases({
+    excludeTags: 'hairstyles',
+    sortOrder: 'desc',
+    limit: 20,
+  });
+
+  const initialShowcases = rawShowcases.map((item) => ({
+    ...item,
+    createdAt: item.createdAt.toISOString(),
+  }));
 
   const showSections = [
     'hero',
@@ -44,6 +58,7 @@ export default async function LandingPage({
               excludeTags="hairstyles"
               sortOrder="desc"
               hideCreateButton={true}
+              initialItems={initialShowcases}
             />
           ),
         };
