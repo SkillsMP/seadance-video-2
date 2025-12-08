@@ -17,11 +17,15 @@ async function checkPromotionCodes() {
       console.log('✅ Found stripe_promotion_codes config:');
       console.log('Raw value:', result[0].value);
       console.log('\nParsed value:');
-      try {
-        const parsed = JSON.parse(result[0].value);
-        console.log(JSON.stringify(parsed, null, 2));
-      } catch (e) {
-        console.log('Failed to parse JSON:', e);
+      if (result[0].value) {
+        try {
+          const parsed = JSON.parse(result[0].value);
+          console.log(JSON.stringify(parsed, null, 2));
+        } catch (e) {
+          console.log('Failed to parse JSON:', e);
+        }
+      } else {
+        console.log('Value is null or empty');
       }
     } else {
       console.log('ℹ️  No stripe_promotion_codes config found in database');
