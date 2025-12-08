@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CreditCard,
   Download,
@@ -247,7 +247,8 @@ export function ImageGenerator({
     null
   );
   const [isMounted, setIsMounted] = useState(false);
-  const [savedTaskIds, setSavedTaskIds] = useState<Set<string>>(new Set());
+  const savedTaskIdsRef = useRef<Set<string>>(new Set());
+  const [isLoadingCredits, setIsLoadingCredits] = useState(false);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
@@ -255,6 +256,15 @@ export function ImageGenerator({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (user && !user.credits) {
+      setIsLoadingCredits(true);
+      fetchUserCredits().finally(() => {
+        setIsLoadingCredits(false);
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     if (promptKey) {
@@ -365,11 +375,83 @@ export function ImageGenerator({
     // Don't clear savedTaskIds here - keep it to prevent duplicates across generations
   }, []);
 
+  const saveShowcase = useCallback(async (imageUrl: string, taskIdForTracking: string) => {
+    // Prevent duplicate saves for the same task
+    if (savedTaskIdsRef.current.has(taskIdForTracking)) {
+      console.log('Already saved, skipping:', taskIdForTracking);
+      return;
+    }
+
+    // Mark as saved immediately to prevent race conditions
+    savedTaskIdsRef.current.add(taskIdForTracking);
+    console.log('Saving showcase for task:', taskIdForTracking);
+
+    try {
+      const compressImageFile = async (imageUrl: string): Promise<string> => {
+        console.log('Fetching image from proxy...');
+        const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
+        if (!response.ok) throw new Error('Failed to fetch image');
+        
+        const blob = await response.blob();
+        const file = new File([blob], 'showcase.jpg', { type: blob.type });
+
+        // Use shared compressImage function
+        const { compressImage } = await import('@/shared/blocks/common');
+        const compressedFile = await compressImage(file);
+
+        return new Promise((resolve, reject) => {
+           const formData = new FormData();
+           formData.append('file', compressedFile);
+
+           console.log('Uploading compressed image...');
+           fetch('/api/upload', {
+             method: 'POST',
+             body: formData,
+           })
+           .then(res => {
+             if (!res.ok) throw new Error('Upload failed');
+             return res.json();
+           })
+           .then(result => {
+             if (!result.success || !result.url) {
+               throw new Error(result.error || 'Upload failed');
+             }
+             console.log('Upload successful:', result.url);
+             resolve(result.url);
+           })
+           .catch(reject);
+        });
+      };
+
+      const compressedImageUrl = await compressImageFile(imageUrl);
+
+      console.log('Adding showcase to database...');
+      await fetch('/api/showcases/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: prompt.trim().substring(0, 100),
+          prompt: prompt.trim(),
+          image: compressedImageUrl,
+          tags: promptKey || null,
+        }),
+      });
+      console.log('Showcase saved successfully');
+    } catch (error) {
+      console.error('Failed to save showcase:', error);
+      // Remove from saved set if failed
+      savedTaskIdsRef.current.delete(taskIdForTracking);
+    }
+  }, [prompt, promptKey]);
+
   const pollTaskStatus = useCallback(
     async (id: string) => {
       try {
         // Check if already saved to prevent duplicate processing
-        if (savedTaskIds.has(id)) {
+        if (savedTaskIdsRef.current.has(id)) {
+          console.log('Task already processed, stopping poll:', id);
           return true;
         }
 
@@ -443,12 +525,8 @@ export function ImageGenerator({
             setGeneratedImages(images);
             
             // Save showcase only once - check before saving
-            if (images.length > 0 && !savedTaskIds.has(task.id)) {
+            if (images.length > 0 && !savedTaskIdsRef.current.has(task.id)) {
               await saveShowcase(images[0].url, task.id);
-            }
-            
-            // Show success toast only once
-            if (!savedTaskIds.has(task.id)) {
               toast.success('Image generated successfully');
             }
           }
@@ -481,7 +559,7 @@ export function ImageGenerator({
         return true;
       }
     },
-    [generationStartTime, resetTaskState]
+    [generationStartTime, resetTaskState, fetchUserCredits, saveShowcase]
   );
 
   useEffect(() => {
@@ -519,77 +597,6 @@ export function ImageGenerator({
       clearInterval(interval);
     };
   }, [taskId, isGenerating, pollTaskStatus]);
-
-  const saveShowcase = async (imageUrl: string, taskIdForTracking: string) => {
-    // Prevent duplicate saves for the same task
-    if (savedTaskIds.has(taskIdForTracking)) {
-      return;
-    }
-
-    // Mark as saved immediately to prevent race conditions
-    setSavedTaskIds(prev => new Set(prev).add(taskIdForTracking));
-
-    try {
-
-      const compressImageFile = async (imageUrl: string): Promise<string> => {
-        const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
-        if (!response.ok) throw new Error('Failed to fetch image');
-        
-        const blob = await response.blob();
-        const file = new File([blob], 'showcase.jpg', { type: blob.type });
-
-        // Use shared compressImage function
-        const { compressImage } = await import('@/shared/blocks/common');
-        const compressedFile = await compressImage(file);
-
-        return new Promise((resolve, reject) => {
-           const formData = new FormData();
-           formData.append('file', compressedFile);
-
-           fetch('/api/upload', {
-             method: 'POST',
-             body: formData,
-           })
-           .then(res => {
-             if (!res.ok) throw new Error('Upload failed');
-             return res.json();
-           })
-           .then(result => {
-             if (!result.success || !result.url) {
-               throw new Error(result.error || 'Upload failed');
-             }
-             console.log('upload', result.url);
-             resolve(result.url);
-           })
-           .catch(reject);
-        });
-      };
-
-      const compressedImageUrl = await compressImageFile(imageUrl);
-
-      console.log('add', compressedImageUrl);
-      await fetch('/api/showcases/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: prompt.trim().substring(0, 100),
-          prompt: prompt.trim(),
-          image: compressedImageUrl,
-          tags: promptKey || null,
-        }),
-      });
-    } catch (error) {
-      console.error('Failed to save showcase:', error);
-      // Remove from saved set if failed
-      setSavedTaskIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(taskIdForTracking);
-        return newSet;
-      });
-    }
-  };
 
   const handleGenerate = async () => {
     if (!user) {
@@ -678,7 +685,7 @@ export function ImageGenerator({
           await fetchUserCredits();
           
           // Save showcase - this handles immediate success case
-          if (images.length > 0 && !savedTaskIds.has(newTaskId)) {
+          if (images.length > 0 && !savedTaskIdsRef.current.has(newTaskId)) {
             await saveShowcase(images[0].url, newTaskId);
             toast.success('Image generated successfully');
           }
@@ -853,11 +860,12 @@ export function ImageGenerator({
                     onClick={handleGenerate}
                     disabled={
                       isGenerating ||
+                      isLoadingCredits ||
                       !prompt.trim() ||
                       isPromptTooLong ||
                       isReferenceUploading ||
                       hasReferenceUploadError ||
-                      remainingCredits < costCredits
+                      (!isLoadingCredits && remainingCredits < costCredits)
                     }
                   >
                     {isGenerating ? (
@@ -883,12 +891,15 @@ export function ImageGenerator({
                   </Button>
                 )}
 
-                {!isMounted ? (
+                {!isMounted || isLoadingCredits ? (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-primary">
                       {t('credits_cost', { credits: costCredits })}
                     </span>
-                    <span>{t('credits_remaining', { credits: 0 })}</span>
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      {t('credits_remaining', { credits: 0 })}
+                    </span>
                   </div>
                 ) : user && remainingCredits > 0 ? (
                   <div className="flex items-center justify-between text-sm">
