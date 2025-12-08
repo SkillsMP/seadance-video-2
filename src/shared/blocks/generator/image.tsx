@@ -501,89 +501,40 @@ export function ImageGenerator({
 
   const saveShowcase = async (imageUrl: string) => {
     try {
-      const compressImage = async (imageUrl: string): Promise<string> => {
+      const compressImageFile = async (imageUrl: string): Promise<string> => {
         const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
         if (!response.ok) throw new Error('Failed to fetch image');
         
         const blob = await response.blob();
         const file = new File([blob], 'showcase.jpg', { type: blob.type });
-        
+
+        // Use shared compressImage function
+        const { compressImage } = await import('@/shared/blocks/common');
+        const compressedFile = await compressImage(file);
+
         return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target?.result as string;
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              const ctx = canvas.getContext('2d');
-              if (!ctx) {
-                reject(new Error('Canvas context not available'));
-                return;
-              }
+           const formData = new FormData();
+           formData.append('file', compressedFile);
 
-              let width = img.width;
-              let height = img.height;
-              const maxDimension = 1920;
-
-              if (width > maxDimension || height > maxDimension) {
-                if (width > height) {
-                  height = (height / width) * maxDimension;
-                  width = maxDimension;
-                } else {
-                  width = (width / height) * maxDimension;
-                  height = maxDimension;
-                }
-              }
-
-              canvas.width = width;
-              canvas.height = height;
-              ctx.fillStyle = '#FFFFFF';
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-              canvas.toBlob(
-                async (blob) => {
-                  if (!blob) {
-                    reject(new Error('Failed to compress image'));
-                    return;
-                  }
-
-                  const compressedFile = new File([blob], 'showcase.jpg', {
-                    type: 'image/jpeg',
-                    lastModified: Date.now(),
-                  });
-
-                  const formData = new FormData();
-                  formData.append('file', compressedFile);
-
-                  const uploadResponse = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData,
-                  });
-
-                  if (!uploadResponse.ok) {
-                    throw new Error('Upload failed');
-                  }
-
-                  const result = await uploadResponse.json();
-                  if (!result.success || !result.url) {
-                    throw new Error(result.error || 'Upload failed');
-                  }
-
-                  resolve(result.url);
-                },
-                'image/jpeg',
-                0.7
-              );
-            };
-            img.onerror = () => reject(new Error('Failed to load image'));
-          };
-          reader.onerror = () => reject(new Error('Failed to read file'));
+           fetch('/api/upload', {
+             method: 'POST',
+             body: formData,
+           })
+           .then(res => {
+             if (!res.ok) throw new Error('Upload failed');
+             return res.json();
+           })
+           .then(result => {
+             if (!result.success || !result.url) {
+               throw new Error(result.error || 'Upload failed');
+             }
+             resolve(result.url);
+           })
+           .catch(reject);
         });
       };
 
-      const compressedImageUrl = await compressImage(imageUrl);
+      const compressedImageUrl = await compressImageFile(imageUrl);
 
       await fetch('/api/showcases/add', {
         method: 'POST',
@@ -594,6 +545,7 @@ export function ImageGenerator({
           title: prompt.trim().substring(0, 100),
           prompt: prompt.trim(),
           image: compressedImageUrl,
+          tags: promptKey || null,
         }),
       });
     } catch (error) {

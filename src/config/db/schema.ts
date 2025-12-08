@@ -573,12 +573,15 @@ export const showcase = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
-    prompt: text('prompt').notNull(),
+    prompt: text('prompt'),
     image: text('image').notNull(),
+    tags: text('tags'),
+    description: text('description'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [
     index('idx_showcase_created_at').on(table.createdAt),
     index('idx_showcase_user_id').on(table.userId),
+    index('idx_showcase_tags').on(table.tags),
   ]
 );

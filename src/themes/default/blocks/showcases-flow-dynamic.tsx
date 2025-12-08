@@ -21,30 +21,57 @@ export function ShowcasesFlowDynamic({
   title,
   description,
   className,
+  tags,
+  excludeTags,
+  searchTerm,
 }: {
   title?: string;
   description?: string;
   className?: string;
+  tags?: string;
+  excludeTags?: string;
+  searchTerm?: string;
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/api/showcases/latest?limit=20')
+    console.log('ShowcasesFlowDynamic mounted with props:', { tags, excludeTags, searchTerm });
+    
+    // Set loading state when tags/searchTerm changes
+    setLoading(true);
+    setError(null);
+    
+    const params = new URLSearchParams();
+    params.append('limit', '20');
+    params.append('_t', Date.now().toString()); // Cache busting
+    if (tags) params.append('tags', tags);
+    if (excludeTags) params.append('excludeTags', excludeTags);
+    if (searchTerm) params.append('searchTerm', searchTerm);
+
+    const url = `/api/showcases/latest?${params.toString()}`;
+    console.log('Fetching URL:', url);
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
+        console.log('Showcases API response:', data);
         if (data.code === 0 && data.data) {
           setItems(data.data);
+        } else {
+          console.error('Showcases API did not return success:', data);
+          setError(data.message || 'API Error');
         }
       })
       .catch((error) => {
         console.error('Failed to fetch showcases:', error);
+        setError(error.message);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [tags, excludeTags, searchTerm]);
 
   const handlePrevious = useCallback(() => {
     setSelectedIndex((prev) =>
@@ -69,41 +96,17 @@ export function ShowcasesFlowDynamic({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, handlePrevious, handleNext]);
 
-  if (loading) {
-    return (
-      <section className={cn('py-24 md:py-36', className)}>
-        <div className="container text-center">
-          <p className="text-muted-foreground">Loading showcases...</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section className={cn('py-24 md:py-36', className)}>
-      <motion.div
-        className="container mb-12 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 0.6,
-          ease: [0.22, 1, 0.36, 1] as const,
-        }}
-      >
-        {title && (
-          <h2 className="mx-auto mb-6 max-w-full text-3xl font-bold text-pretty md:max-w-5xl lg:text-4xl">
-            {title}
-          </h2>
-        )}
-        {description && (
-          <p className="text-muted-foreground text-md mx-auto mb-4 line-clamp-3 max-w-full md:max-w-5xl">
-            {description}
-          </p>
-        )}
-      </motion.div>
-
-      {items.length > 0 ? (
+    <>
+      {loading ? (
+        <div className="container text-center mt-20">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      ) : error ? (
+        <div className="container text-center text-red-500">
+           <p>Error loading: {error}</p>
+        </div>
+      ) : items.length > 0 ? (
         <div className="container mx-auto columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3 xl:columns-4">
           {items.map((item, index) => (
             <motion.div
@@ -152,13 +155,13 @@ export function ShowcasesFlowDynamic({
         </div>
       ) : (
         <motion.div
-          className="text-muted-foreground container text-center"
+          className="text-muted-foreground container text-center mt-20"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
         >
-          No showcases yet.
+          No items found in this category.
         </motion.div>
       )}
 
@@ -226,6 +229,6 @@ export function ShowcasesFlowDynamic({
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </>
   );
 }

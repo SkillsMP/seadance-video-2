@@ -42,7 +42,7 @@ const formatBytes = (bytes?: number) => {
   return `${mb.toFixed(2)} MB`;
 };
 
-const compressImage = async (file: File, quality = 0.7): Promise<File> => {
+export const compressImage = async (file: File, quality = 0.7): Promise<File> => {
   if (!file.type.startsWith('image/')) return file;
 
   return new Promise((resolve) => {

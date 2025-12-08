@@ -39,6 +39,7 @@ export default async function LandingPage({
             <ShowcasesFlowDynamic
               title={sectionData.title}
               description={sectionData.description}
+              excludeTags="hairstyles"
             />
           ),
         };

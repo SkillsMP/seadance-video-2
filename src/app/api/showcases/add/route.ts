@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, prompt, image } = body;
+    const { title, prompt, image, tags } = body;
 
-    if (!title?.trim() || !prompt?.trim() || !image?.trim()) {
+    if (!title?.trim() || !image?.trim()) {
       return NextResponse.json(
-        { code: 400, message: 'Title, prompt and image are required' },
+        { code: 400, message: 'Title and image are required' },
         { status: 400 }
       );
     }
@@ -28,8 +28,9 @@ export async function POST(request: NextRequest) {
       id: getUuid(),
       userId: user.id,
       title: title.trim(),
-      prompt: prompt.trim(),
+      prompt: prompt?.trim() || null,
       image: image.trim(),
+      tags: tags || null,
     };
 
     const result = await addShowcase(newShowcase);

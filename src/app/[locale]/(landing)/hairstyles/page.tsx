@@ -2,7 +2,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
 import { getMetadata } from '@/shared/lib/seo';
-import { DynamicPage } from '@/shared/types/blocks/landing';
+import { DynamicPage, Section } from '@/shared/types/blocks/landing';
+import { HairstylesContent } from './hairstyles-content';
 
 export const generateMetadata = getMetadata({
   metadataKey: 'hairstyles.metadata',
@@ -20,11 +21,14 @@ export default async function HairstylesPage({
   // load hairstyles data
   const t = await getTranslations('hairstyles');
 
+  const sectionData = t.raw('showcases-flow') as Section;
+
   // build page sections
   const page: DynamicPage = {
-    
     sections: {
-      'showcases-flow': t.raw('showcases-flow'),
+      'hairstyles-content': {
+        component: <HairstylesContent sectionData={sectionData} />,
+      },
     },
   };
 

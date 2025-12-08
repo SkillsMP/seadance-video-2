@@ -54,6 +54,11 @@
               "title": "Prompts",
               "icon": "Wand",
               "url": "/admin/prompts"
+            },
+            {
+              "title": "Showcases",
+              "icon": "Image",
+              "url": "/admin/showcases"
             }
           ]
         },
