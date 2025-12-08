@@ -249,22 +249,76 @@ export function ImageGenerator({
   const [isMounted, setIsMounted] = useState(false);
   const savedTaskIdsRef = useRef<Set<string>>(new Set());
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
+  const [availableProviders, setAvailableProviders] = useState<string[]>([]);
+  const [isLoadingProviders, setIsLoadingProviders] = useState(true);
+  const hasLoadedCreditsRef = useRef(false);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
 
   useEffect(() => {
     setIsMounted(true);
+    
+    // Fetch available AI providers
+    fetch('/api/ai/providers')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code === 0 && data.data?.providers !== undefined) {
+          const providers = data.data.providers || [];
+          console.log('Available AI providers:', providers);
+          setAvailableProviders(providers);
+          
+          // Set initial provider and model based on available providers
+          if (providers.length > 0) {
+            const firstProvider = providers[0];
+            setProvider(firstProvider);
+            
+            // Find first available model for this provider
+            const availableModel = MODEL_OPTIONS.find(
+              (option) => 
+                option.scenes.includes(activeTab) && 
+                option.provider === firstProvider
+            );
+            
+            if (availableModel) {
+              setModel(availableModel.value);
+            }
+          } else {
+            // No providers configured, clear provider and model
+            console.log('No AI providers configured, clearing provider and model');
+            setProvider('');
+            setModel('');
+          }
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch AI providers:', error);
+        setAvailableProviders([]);
+      })
+      .finally(() => {
+        setIsLoadingProviders(false);
+      });
   }, []);
 
+  // Track user ID to reset credits loading flag when user changes
+  const userIdRef = useRef<string | null>(null);
+  
   useEffect(() => {
-    if (user && !user.credits) {
+    // Reset flag when user changes
+    if (user?.id !== userIdRef.current) {
+      userIdRef.current = user?.id || null;
+      hasLoadedCreditsRef.current = false;
+    }
+    
+    // Only fetch credits once per user session
+    if (user && !user.credits && !hasLoadedCreditsRef.current) {
+      hasLoadedCreditsRef.current = true;
       setIsLoadingCredits(true);
       fetchUserCredits().finally(() => {
         setIsLoadingCredits(false);
       });
     }
-  }, [user]);
+  }, [user?.id, user?.credits, fetchUserCredits]);
 
   useEffect(() => {
     if (promptKey) {
@@ -281,13 +335,27 @@ export function ImageGenerator({
             // When promptKey is provided, switch to image-to-image tab
             setActiveTab('image-to-image');
             setCostCredits(6);
+            
+            // Update model based on available providers for image-to-image
+            if (availableProviders.length > 0) {
+              const availableModel = MODEL_OPTIONS.find(
+                (option) => 
+                  option.scenes.includes('image-to-image') && 
+                  availableProviders.includes(option.provider)
+              );
+              
+              if (availableModel) {
+                setProvider(availableModel.provider);
+                setModel(availableModel.value);
+              }
+            }
           }
         })
         .catch((error) => {
           console.error('Failed to fetch prompt:', error);
         });
     }
-  }, [promptKey]);
+  }, [promptKey, availableProviders]);
 
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
@@ -299,7 +367,10 @@ export function ImageGenerator({
     setActiveTab(tab);
 
     const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(tab) && option.provider === provider
+      (option) => 
+        option.scenes.includes(tab) && 
+        option.provider === provider &&
+        availableProviders.includes(option.provider)
     );
 
     if (availableModels.length > 0) {
@@ -319,7 +390,10 @@ export function ImageGenerator({
     setProvider(value);
 
     const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(activeTab) && option.provider === value
+      (option) => 
+        option.scenes.includes(activeTab) && 
+        option.provider === value &&
+        availableProviders.includes(option.provider)
     );
 
     if (availableModels.length > 0) {
@@ -602,6 +676,27 @@ export function ImageGenerator({
   }, [taskId, isGenerating, pollTaskStatus]);
 
   const handleGenerate = async () => {
+    console.log('=== Generate Debug Info ===');
+    console.log('availableProviders:', availableProviders);
+    console.log('current provider:', provider);
+    console.log('current model:', model);
+    console.log('remainingCredits:', remainingCredits);
+    console.log('costCredits:', costCredits);
+    
+    // Check AI providers FIRST - highest priority
+    if (availableProviders.length === 0) {
+      console.log('No AI providers configured - showing error');
+      toast.error('Please contact the administrator to configure AI models.');
+      return;
+    }
+
+    // Check if current provider is in available providers
+    if (!availableProviders.includes(provider)) {
+      console.log('Current provider not in available providers - showing error');
+      toast.error('Please contact the administrator to configure AI models.');
+      return;
+    }
+
     if (!user) {
       setIsShowSignModal(true);
       return;
@@ -864,6 +959,7 @@ export function ImageGenerator({
                     disabled={
                       isGenerating ||
                       isLoadingCredits ||
+                      isLoadingProviders ||
                       !prompt.trim() ||
                       isPromptTooLong ||
                       isReferenceUploading ||
@@ -875,6 +971,11 @@ export function ImageGenerator({
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {t('generating')}
+                      </>
+                    ) : isLoadingProviders ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('loading')}
                       </>
                     ) : (
                       <>
@@ -894,7 +995,7 @@ export function ImageGenerator({
                   </Button>
                 )}
 
-                {!isMounted || isLoadingCredits ? (
+                {!isMounted || isLoadingCredits || isLoadingProviders ? (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-primary">
                       {t('credits_cost', { credits: costCredits })}
