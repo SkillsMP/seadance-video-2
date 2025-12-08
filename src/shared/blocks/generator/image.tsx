@@ -220,7 +220,7 @@ export function ImageGenerator({
   const [costCredits, setCostCredits] = useState<number>(4);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
-  // Only set default values if no promptKey is provided
+  // Set default values only when no promptKey is provided
   const [prompt, setPrompt] = useState(
     promptKey 
       ? '' 
@@ -278,6 +278,9 @@ export function ImageGenerator({
             if (data.data.image) {
               setPreviewImage(data.data.image);
             }
+            // When promptKey is provided, switch to image-to-image tab
+            setActiveTab('image-to-image');
+            setCostCredits(6);
           }
         })
         .catch((error) => {

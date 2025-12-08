@@ -458,11 +458,14 @@ export function Pricing({
 
                   {isCurrentPlan ? (
                     <Button
-                      variant="outline"
-                      className="mt-4 h-9 w-full px-4 py-2"
                       disabled
+                      className={cn(
+                        'focus-visible:ring-ring inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none',
+                        'mt-4 h-9 w-full px-4 py-2',
+                        'bg-primary text-primary-foreground border-[0.5px] border-white/25 shadow-md shadow-black/20 opacity-50'
+                      )}
                     >
-                      <span className="hidden text-sm md:block">
+                      <span className="text-sm">
                         {t('current_plan')}
                       </span>
                     </Button>
