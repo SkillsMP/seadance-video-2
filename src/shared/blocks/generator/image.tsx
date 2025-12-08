@@ -220,8 +220,17 @@ export function ImageGenerator({
   const [costCredits, setCostCredits] = useState<number>(4);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
-  const [prompt, setPrompt] = useState('Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset');
-  const [previewImage, setPreviewImage] = useState<string>('https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg');
+  // Only set default values if no promptKey is provided
+  const [prompt, setPrompt] = useState(
+    promptKey 
+      ? '' 
+      : 'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset'
+  );
+  const [previewImage, setPreviewImage] = useState<string>(
+    promptKey 
+      ? '' 
+      : 'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg'
+  );
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
@@ -238,6 +247,7 @@ export function ImageGenerator({
     null
   );
   const [isMounted, setIsMounted] = useState(false);
+  const [savedTaskIds, setSavedTaskIds] = useState<Set<string>>(new Set());
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
@@ -427,8 +437,9 @@ export function ImageGenerator({
             setGeneratedImages(images);
             toast.success('Image generated successfully');
             
+            // Save showcase only once
             if (images.length > 0) {
-              saveShowcase(images[0].url);
+              await saveShowcase(images[0].url, task.id);
             }
           }
 
@@ -499,8 +510,17 @@ export function ImageGenerator({
     };
   }, [taskId, isGenerating, pollTaskStatus]);
 
-  const saveShowcase = async (imageUrl: string) => {
+  const saveShowcase = async (imageUrl: string, taskIdForTracking: string) => {
+    // Prevent duplicate saves for the same task
+    if (savedTaskIds.has(taskIdForTracking)) {
+      console.log('Showcase already saved for task:', taskIdForTracking);
+      return;
+    }
+
     try {
+      // Mark as saved immediately to prevent race conditions
+      setSavedTaskIds(prev => new Set(prev).add(taskIdForTracking));
+
       const compressImageFile = async (imageUrl: string): Promise<string> => {
         const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
         if (!response.ok) throw new Error('Failed to fetch image');
@@ -528,6 +548,7 @@ export function ImageGenerator({
              if (!result.success || !result.url) {
                throw new Error(result.error || 'Upload failed');
              }
+             console.log('upload', result.url);
              resolve(result.url);
            })
            .catch(reject);
@@ -536,6 +557,7 @@ export function ImageGenerator({
 
       const compressedImageUrl = await compressImageFile(imageUrl);
 
+      console.log('add', compressedImageUrl);
       await fetch('/api/showcases/add', {
         method: 'POST',
         headers: {
@@ -550,6 +572,12 @@ export function ImageGenerator({
       });
     } catch (error) {
       console.error('Failed to save showcase:', error);
+      // Remove from saved set if failed
+      setSavedTaskIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(taskIdForTracking);
+        return newSet;
+      });
     }
   };
 
@@ -640,8 +668,9 @@ export function ImageGenerator({
           resetTaskState();
           await fetchUserCredits();
           
+          // Save showcase - this handles immediate success case
           if (images.length > 0) {
-            await saveShowcase(images[0].url);
+            await saveShowcase(images[0].url, newTaskId);
           }
           return;
         }
@@ -955,11 +984,13 @@ export function ImageGenerator({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-4 text-center">
-                    <LazyImage 
-                      src={previewImage} 
-                      alt="Preview image"
-                      className="mb-6"
-                    />
+                    {previewImage && (
+                      <LazyImage 
+                        src={previewImage} 
+                        alt="Preview image"
+                        className="mb-6"
+                      />
+                    )}
                     <p className="text-muted-foreground">
                       {isGenerating
                         ? t('ready_to_generate')
