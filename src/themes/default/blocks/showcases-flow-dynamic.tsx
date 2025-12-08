@@ -22,6 +22,7 @@ export function ShowcasesFlowDynamic({
   title,
   description,
   className,
+  containerClassName,
   tags,
   excludeTags,
   searchTerm,
@@ -30,10 +31,12 @@ export function ShowcasesFlowDynamic({
   enableLimit = false,
   sortOrder = 'desc',
   initialItems,
+  usePrompts = false,
 }: {
   title?: string;
   description?: string;
   className?: string;
+  containerClassName?: string;
   tags?: string;
   excludeTags?: string;
   searchTerm?: string;
@@ -42,6 +45,7 @@ export function ShowcasesFlowDynamic({
   enableLimit?: boolean;
   sortOrder?: 'asc' | 'desc';
   initialItems?: ShowcaseItem[];
+  usePrompts?: boolean;
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>(initialItems || []);
   const [loading, setLoading] = useState(!initialItems);
@@ -85,6 +89,7 @@ export function ShowcasesFlowDynamic({
     if (tags) params.append('tags', tags);
     if (excludeTags) params.append('excludeTags', excludeTags);
     if (searchTerm) params.append('searchTerm', searchTerm);
+    if (usePrompts) params.append('usePrompts', 'true');
 
     const url = `/api/showcases/latest?${params.toString()}`;
     // console.log('Fetching URL:', url);
@@ -110,7 +115,7 @@ export function ShowcasesFlowDynamic({
       });
     
     return () => clearTimeout(loadingTimer);
-  }, [tags, excludeTags, searchTerm, enableLimit, sortOrder, initialItems]);
+  }, [tags, excludeTags, searchTerm, enableLimit, sortOrder, initialItems, usePrompts]);
 
   const handlePrevious = useCallback(() => {
     setSelectedIndex((prev) =>
@@ -137,18 +142,41 @@ export function ShowcasesFlowDynamic({
 
   return (
     <>
+      {(title || description) && (
+        <motion.div
+          className="container mb-12 text-center pt-24 md:pt-36"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1] as const,
+          }}
+        >
+          {title && (
+            <h2 className="mx-auto mb-6 max-w-full text-3xl font-bold text-pretty md:max-w-5xl lg:text-4xl">
+              {title}
+            </h2>
+          )}
+          {description && (
+            <p className="text-muted-foreground text-md mx-auto mb-4 line-clamp-3 max-w-full md:max-w-5xl">
+              {description}
+            </p>
+          )}
+        </motion.div>
+      )}
       {loading || showLoading ? (
         showLoading && (
-          <div className="container text-center mt-20">
+          <div className={cn("container text-center my-30", containerClassName)}>
             <p className="text-muted-foreground">Loading...</p>
           </div>
         )
       ) : error ? (
-        <div className="container text-center text-red-500">
+        <div className={cn("container text-center text-red-500", containerClassName)}>
            <p>Error loading: {error}</p>
         </div>
       ) : items.length > 0 ? (
-        <div className="container mx-auto columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3 xl:columns-4">
+        <div className={cn("container mx-auto columns-1 gap-4 space-y-4 sm:columns-2 lg:columns-3 xl:columns-4", containerClassName)}>
           {items.map((item, index) => (
             <motion.div
               key={item.id}
@@ -198,7 +226,7 @@ export function ShowcasesFlowDynamic({
         </div>
       ) : (
         <motion.div
-          className="text-muted-foreground container text-center mt-20"
+          className={cn("text-muted-foreground container text-center mt-20", containerClassName)}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

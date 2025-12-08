@@ -23,6 +23,8 @@ export default async function ShowcasesPage({
     <ShowcasesFlowDynamic 
       title={showcasesData.title}
       description={showcasesData.description}
+      containerClassName="py-14"
+      usePrompts={true}
     />
   );
 }
