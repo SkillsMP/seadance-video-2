@@ -35,12 +35,15 @@ export default async function LandingPage({
       if (section === 'showcases-flow') {
         const sectionData = t.raw(section) as Section;
         acc[section] = {
+          ...sectionData,
           component: (
             <ShowcasesFlowDynamic
+              key="showcases-flow"
               title={sectionData.title}
               description={sectionData.description}
               excludeTags="hairstyles"
-              sortOrder="asc"
+              sortOrder="desc"
+              hideCreateButton={true}
             />
           ),
         };

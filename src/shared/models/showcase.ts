@@ -39,6 +39,7 @@ export interface GetLatestShowcasesOptions {
   tags?: string;
   excludeTags?: string;
   searchTerm?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export async function getLatestShowcases({
@@ -46,6 +47,7 @@ export async function getLatestShowcases({
   tags,
   excludeTags,
   searchTerm,
+  sortOrder = 'desc',
 }: GetLatestShowcasesOptions = {}): Promise<Showcase[]> {
   try {
     const conditions = [];
@@ -95,7 +97,7 @@ export async function getLatestShowcases({
     }
 
     const result = await query
-      .orderBy(asc(showcase.createdAt)) // 升序排序
+      .orderBy(sortOrder === 'asc' ? asc(showcase.createdAt) : desc(showcase.createdAt))
       .limit(limit);
     return result;
   } catch (error) {

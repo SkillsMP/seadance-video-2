@@ -43,6 +43,7 @@ export function ShowcasesFlowDynamic({
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -51,7 +52,15 @@ export function ShowcasesFlowDynamic({
     
     // Set loading state when tags/searchTerm changes
     setLoading(true);
+    setShowLoading(false);
     setError(null);
+    
+    // Only show loading indicator after 300ms delay
+    const loadingTimer = setTimeout(() => {
+      if (loading) {
+        setShowLoading(true);
+      }
+    }, 300);
     
     const params = new URLSearchParams();
     if (enableLimit) {
@@ -64,7 +73,7 @@ export function ShowcasesFlowDynamic({
     if (searchTerm) params.append('searchTerm', searchTerm);
 
     const url = `/api/showcases/latest?${params.toString()}`;
-    console.log('Fetching URL:', url);
+    // console.log('Fetching URL:', url);
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -81,8 +90,12 @@ export function ShowcasesFlowDynamic({
         setError(error.message);
       })
       .finally(() => {
+        clearTimeout(loadingTimer);
         setLoading(false);
+        setShowLoading(false);
       });
+    
+    return () => clearTimeout(loadingTimer);
   }, [tags, excludeTags, searchTerm, enableLimit, sortOrder]);
 
   const handlePrevious = useCallback(() => {
@@ -110,10 +123,12 @@ export function ShowcasesFlowDynamic({
 
   return (
     <>
-      {loading ? (
-        <div className="container text-center mt-20">
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+      {loading || showLoading ? (
+        showLoading && (
+          <div className="container text-center mt-20">
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        )
       ) : error ? (
         <div className="container text-center text-red-500">
            <p>Error loading: {error}</p>

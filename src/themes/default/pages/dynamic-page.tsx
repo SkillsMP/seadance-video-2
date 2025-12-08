@@ -62,6 +62,10 @@ export default async function DynamicPage({
             case 'showcases':
               return <Showcases key={sectionKey} section={section} />;
             case 'showcases-flow':
+              // If section has a custom component, use it instead
+              if (section.component) {
+                return section.component;
+              }
               return <ShowcasesFlow key={sectionKey} section={section} />;
             case 'stats':
               return <Stats key={sectionKey} section={section} />;

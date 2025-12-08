@@ -11,14 +11,16 @@ export async function GET(request: NextRequest) {
     const tags = searchParams.get('tags') || undefined;
     const excludeTags = searchParams.get('excludeTags') || undefined;
     const searchTerm = searchParams.get('searchTerm') || undefined;
+    const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc';
 
-    console.log('Fetching latest showcases with params:', { limit, tags, excludeTags, searchTerm });
+    console.log('Fetching latest showcases with params:', { limit, tags, excludeTags, searchTerm, sortOrder });
     try {
       const showcases = await getLatestShowcases({
         limit,
         tags,
         excludeTags,
         searchTerm,
+        sortOrder,
       });
       console.log(`Found ${showcases.length} showcases`);
       
