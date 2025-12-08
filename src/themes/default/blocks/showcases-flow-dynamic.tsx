@@ -10,6 +10,7 @@ import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
 
 interface ShowcaseItem {
+  description: boolean;
   id: string;
   title: string;
   prompt: string;
@@ -24,6 +25,8 @@ export function ShowcasesFlowDynamic({
   tags,
   excludeTags,
   searchTerm,
+  hideCreateButton = false,
+  showDescription = false,
 }: {
   title?: string;
   description?: string;
@@ -31,6 +34,8 @@ export function ShowcasesFlowDynamic({
   tags?: string;
   excludeTags?: string;
   searchTerm?: string;
+  hideCreateButton?: boolean;
+  showDescription?: boolean;
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -133,22 +138,24 @@ export function ShowcasesFlowDynamic({
                 <h3 className="mb-3 translate-y-4 text-base font-semibold text-white transition-transform duration-300 group-hover:translate-y-0">
                   {item.title}
                 </h3>
-                <div
-                  className="translate-y-4 transition-transform delay-75 duration-300 group-hover:translate-y-0"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Button
-                    asChild
-                    variant="default"
-                    size="sm"
-                    className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-md gap-1.5 has-[>svg]:px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground h-8 w-full border-0 px-1 py-1.5 text-sm font-medium"
+                {!hideCreateButton && (
+                  <div
+                    className="translate-y-4 transition-transform delay-75 duration-300 group-hover:translate-y-0"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <Link href={`/create?prompt=${item.title}`} target="_self">
-                      <Wand className="mr-2 size-4" />
-                      Create Similar
-                    </Link>
-                  </Button>
-                </div>
+                    <Button
+                      asChild
+                      variant="default"
+                      size="sm"
+                      className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-md gap-1.5 has-[>svg]:px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground h-8 w-full border-0 px-1 py-1.5 text-sm font-medium"
+                    >
+                      <Link href={`/create?prompt=${item.title}`} target="_self">
+                        <Wand className="mr-2 size-4" />
+                        Create Similar
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
@@ -220,9 +227,16 @@ export function ShowcasesFlowDynamic({
                   <h3 className="mb-2 text-2xl font-bold">
                     {items[selectedIndex].title}
                   </h3>
-                  <p className="line-clamp-3 text-base text-white/90">
-                    {items[selectedIndex].prompt}
-                  </p>
+                  {showDescription && items[selectedIndex].description && (
+                    <p className="mb-2 line-clamp-3 text-base text-white/90">
+                      {items[selectedIndex].description}
+                    </p>
+                  )}
+                  {items[selectedIndex].prompt && (
+                    <p className="line-clamp-3 text-base text-white/90">
+                      {items[selectedIndex].prompt}
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.div>

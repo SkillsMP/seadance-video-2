@@ -122,6 +122,8 @@ export function HairstylesContent({
       {/* Dynamic Showcases */}
       <ShowcasesFlowDynamic
         tags={activeTags}
+        hideCreateButton={true}
+        showDescription={true}
       />
     </section>
   );

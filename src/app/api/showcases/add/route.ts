@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getUuid } from '@/shared/lib/hash';
+import { extractHairstyleTags } from '@/shared/lib/tags';
 import { addShowcase, NewShowcase } from '@/shared/models/showcase';
 import { getUserInfo } from '@/shared/models/user';
 
@@ -24,13 +25,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Smart tag extraction: only when tags is "hairstyles" (from /create?prompt=hairstyles)
+    let finalTags = tags;
+    if (tags === 'hairstyles' && prompt) {
+      // Extract more specific tags from the user's prompt
+      finalTags = extractHairstyleTags(prompt, title);
+      console.log(`Auto-extracted tags from prompt: "${prompt}" -> "${finalTags}"`);
+    }
+
     const newShowcase: NewShowcase = {
       id: getUuid(),
       userId: user.id,
       title: title.trim(),
       prompt: prompt?.trim() || null,
       image: image.trim(),
-      tags: tags || null,
+      tags: finalTags || null,
     };
 
     const result = await addShowcase(newShowcase);
