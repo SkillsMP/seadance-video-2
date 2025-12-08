@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "title": "Pricing",
-    "description": "Start with a plan"
+    "title": "Nano Banana Pro Price",
+    "description": "Start with a plan to generate images with Nano Banana Pro model."
   },
   "pricing": {
     "id": "pricing",
-    "sr_only_title": "ShipAny Pricing",
+    "sr_only_title": "Nano Banana Pro Pricing",
     "title": "Nano Banana Pro Plan",
     "description": "Get started to generate images with Nano Banana Pro model.",
     "groups": [

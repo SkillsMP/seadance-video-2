@@ -274,7 +274,7 @@ export async function getSettings() {
     {
       name: 'app_name',
       title: 'App Name',
-      placeholder: 'ShipAny',
+      placeholder: 'Nano Banana Pro',
       type: 'text',
       group: 'appinfo',
       tab: 'general',
@@ -283,7 +283,7 @@ export async function getSettings() {
       name: 'app_description',
       title: 'App Description',
       placeholder:
-        'ShipAny is a NextJS boilerplate for building AI SaaS startups. ',
+        'Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups. ',
       type: 'textarea',
       group: 'appinfo',
       tab: 'general',
