@@ -856,7 +856,8 @@ export function ImageGenerator({
                       !prompt.trim() ||
                       isPromptTooLong ||
                       isReferenceUploading ||
-                      hasReferenceUploadError
+                      hasReferenceUploadError ||
+                      remainingCredits < costCredits
                     }
                   >
                     {isGenerating ? (
