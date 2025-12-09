@@ -1,10 +1,16 @@
-# ShipAny Template Two
+# Shipany Template Nano Banana
 
 ## Preview
 
 [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
 
 ## 由于多次发生仓库被提交脏代码，给其他同学带来不便，现将仓库写权限关闭，仓库成员仅可读！
+
+## 项目概要
+
+- 首页Showcases展示的是：用户生图的20条倒序数据（前期数据量少，可在Admin后台录入Showcases数据）；
+- showcases页面展示的是：Admin后台录入Prompt数据；
+- hairstyles页面展示的是：Admin后台录入Showcases数据（Tags：hairstyles）；
 
 ## Doc
 
