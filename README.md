@@ -32,6 +32,8 @@
 
 [✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
 
+[✨项目可导入的表预制数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/6)
+
 
 ## 视频教程
 
