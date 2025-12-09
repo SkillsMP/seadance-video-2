@@ -1,6 +1,6 @@
 # Shipany Template Nano Banana Pro
 
-## Preview
+## 预览地址
 
 [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
 
@@ -18,7 +18,7 @@
 [✨项目如何管理首页Showcases块、Showcases页、Hairstyles页数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/5)
 
 
-## Doc
+## 快速上手
 
 [✨ShipanyTwo官方文档（作者已更新完）](https://www.shipany.ai/zh/docs)
 
@@ -31,14 +31,14 @@
 [✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
 
 
-## Video
+## 视频教程
 
 [✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/boomer1678/shipany-template/issues/6)
 
 [✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/boomer1678/shipany-template/issues/9)
 
 
-## Branch
+## 分支
 
 - `main`: main branch
 - `hotfix/xxxx`: hotifx branch
