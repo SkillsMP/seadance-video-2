@@ -54,40 +54,6 @@ export class StripeProvider implements PaymentProvider {
     order: PaymentOrder;
   }): Promise<CheckoutSession> {
     try {
-      // check payment price
-      if (!order.price) {
-        throw new Error('price is required');
-      }
-
-      // create payment with dynamic product
-
-      // build price data
-      const priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData =
-        {
-          currency: order.price.currency,
-          unit_amount: order.price.amount, // unit: cents
-          product_data: {
-            name: order.description || '',
-          },
-        };
-
-      if (order.type === PaymentType.SUBSCRIPTION) {
-        // create subscription payment
-
-        // check payment plan
-        if (!order.plan) {
-          throw new Error('plan is required');
-        }
-
-        // build recurring data
-        priceData.recurring = {
-          interval: order.plan
-            .interval as Stripe.Checkout.SessionCreateParams.LineItem.PriceData.Recurring.Interval,
-        };
-      } else {
-        // create one-time payment
-      }
-
       // set or create customer
       let customerId = '';
       if (order.customer?.email) {
@@ -112,13 +78,59 @@ export class StripeProvider implements PaymentProvider {
       const sessionParams: Stripe.Checkout.SessionCreateParams = {
         mode:
           order.type === PaymentType.SUBSCRIPTION ? 'subscription' : 'payment',
-        line_items: [
+        line_items: [],
+      };
+
+      // Use predefined price if productId is provided, otherwise use dynamic pricing
+      if (order.productId) {
+        // Use predefined Stripe Price ID
+        sessionParams.line_items = [
+          {
+            price: order.productId, // This should be a Stripe Price ID (price_xxx)
+            quantity: 1,
+          },
+        ];
+      } else {
+        // Use dynamic pricing with price_data
+        // check payment price
+        if (!order.price) {
+          throw new Error('price is required');
+        }
+
+        // build price data
+        const priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData =
+          {
+            currency: order.price.currency,
+            unit_amount: order.price.amount, // unit: cents
+            product_data: {
+              name: order.description || '',
+            },
+          };
+
+        if (order.type === PaymentType.SUBSCRIPTION) {
+          // create subscription payment
+
+          // check payment plan
+          if (!order.plan) {
+            throw new Error('plan is required');
+          }
+
+          // build recurring data
+          priceData.recurring = {
+            interval: order.plan
+              .interval as Stripe.Checkout.SessionCreateParams.LineItem.PriceData.Recurring.Interval,
+          };
+        } else {
+          // create one-time payment
+        }
+
+        sessionParams.line_items = [
           {
             price_data: priceData,
             quantity: 1,
           },
-        ],
-      };
+        ];
+      }
 
       // pre-set promotion code
       if (order.discount && order.discount.code) {
