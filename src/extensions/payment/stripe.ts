@@ -148,7 +148,7 @@ export class StripeProvider implements PaymentProvider {
 
       // If currency is CNY, enable WeChat Pay and Alipay (only for one-time payments)
       // Note: WeChat Pay and Alipay through Stripe only supports one-time payments, not subscriptions
-      const currency = order.price.currency.toLowerCase();
+      const currency = order.price?.currency?.toLowerCase();
       if (currency === 'cny' && order.type === PaymentType.ONE_TIME) {
         // Enable WeChat Pay and Alipay for CNY one-time payments
         sessionParams.payment_method_types = [];
