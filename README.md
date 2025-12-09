@@ -1,5 +1,7 @@
 # Shipany Template Nano Banana Pro
 
+## 基于 Vercel + Supabase + Stripe + Kie.ai + Cloudflare R2 技术栈落地AI生图项目
+
 ## 预览地址
 
 [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
