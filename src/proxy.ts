@@ -54,6 +54,9 @@ export async function proxy(request: NextRequest) {
   return intlResponse;
 }
 
+// Export proxy as middleware for Next.js
+export const middleware = proxy;
+
 export const config = {
   matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)',
 };

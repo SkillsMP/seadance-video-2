@@ -4,7 +4,9 @@
 
 ## 预览地址
 
-[https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
+Vercel: [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
+
+Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.16781678.xyz/)
 
 ## 由于多次发生仓库被提交脏代码，给其他同学带来不便，现将仓库写权限关闭，仓库成员仅可读！
 

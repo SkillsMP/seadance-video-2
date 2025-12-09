@@ -11,7 +11,7 @@ export const defaultLocale = envConfigs.locale;
 
 export const localePrefix = 'as-needed';
 
-export const localeDetection = false;
+export const localeDetection = true;
 
 export const localeMessagesRootPath = '@/config/locale/messages';
 
