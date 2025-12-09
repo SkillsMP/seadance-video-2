@@ -10,7 +10,7 @@
 
 [✨ShipanyTwo官方文档（作者已更新完）](https://www.shipany.ai/zh/docs)
 
-[✨项目中AI图片生成相关的配置解释](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
+[✨项目中AI图片生成相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
 
 [✨项目中关于Stripe支付相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/2)
 
