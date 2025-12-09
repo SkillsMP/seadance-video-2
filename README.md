@@ -16,6 +16,8 @@
 
 [✨项目中关于R2存储相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/3)
 
+[✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
+
 ## Video
 
 [✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/boomer1678/shipany-template/issues/6)
