@@ -1,4 +1,4 @@
-# Shipany Template Nano Banana
+# Shipany Template Nano Banana Pro
 
 ## Preview
 
@@ -8,9 +8,15 @@
 
 ## 项目概要
 
+### 项目基于ShipanyTwo(2025-12-5 (v1.5.1))立项开发
+
+- 和官网Nano Banana Pro模板不一致的地方：本项目展示数据均为数据库数据，非动态JSON配置数据，好处是：更贴近真实项目，方便上线维护，减少写代码；
 - 首页Showcases展示的是：用户生图的20条倒序数据（前期数据量少，可在Admin后台录入Showcases数据）；
 - showcases页面展示的是：Admin后台录入Prompt数据；
 - hairstyles页面展示的是：Admin后台录入Showcases数据（Tags：hairstyles）；
+
+[✨项目如何管理首页Showcases块、Showcases页、Hairstyles页数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/5)
+
 
 ## Doc
 
@@ -24,11 +30,13 @@
 
 [✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
 
+
 ## Video
 
 [✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/boomer1678/shipany-template/issues/6)
 
 [✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/boomer1678/shipany-template/issues/9)
+
 
 ## Branch
 
