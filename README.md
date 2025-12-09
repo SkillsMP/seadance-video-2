@@ -12,7 +12,7 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 ## 项目概要
 
-### 项目基于ShipanyTwo(2025-12-5 (v1.5.1))立项开发
+### 项目基于ShipanyTwo立项开发
 
 - 和官网Nano Banana Pro模板不一致的地方：本项目展示数据均为数据库数据，非动态JSON配置数据，好处是：更贴近真实项目，方便上线维护，减少写代码（在访问预览时会有loading...交互）；
 - 首页Showcases展示的是：用户生图的20条倒序数据（前期数据量少，可在Admin后台录入Showcases数据）；
@@ -35,6 +35,8 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 [✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
 
 [✨项目可导入的表预制数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/6)
+
+[✨项目部署到 Cloudflare Workers](https://github.com/boomer1678/shipany-template-nano-banana/issues/7)
 
 
 ## 视频教程
