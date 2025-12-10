@@ -6,7 +6,9 @@
 
 > 建议开启魔法梯子后访问
 
-Vercel: [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
+> Vercel使用默认vercel.app域名 遇到证书问题，改为自定义域名了
+
+Vercel: [https://nanobanana.16781678.xyz/](https://nanobanana.16781678.xyz/)
 
 > Cloudfare由于google登录等没配置域名，所以只能看个大概（我主要是用来显示部署成功可以访问到）
 
