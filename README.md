@@ -16,7 +16,9 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 ## 快速上手
 
-[✨项目快速上手图文教程](https://github.com/template-code-team/shipany-template-nano-banana/issues/8)
+[✨项目快速上手全流程图文教程](https://github.com/template-code-team/shipany-template-nano-banana/issues/8)
+
+## 具体功能快捷导航
 
 [✨项目中AI图片生成相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
 
