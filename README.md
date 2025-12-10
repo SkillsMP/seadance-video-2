@@ -4,7 +4,11 @@
 
 ## 预览地址
 
+> 建议开启魔法梯子后访问
+
 Vercel: [https://shipany-template-nano-banana.vercel.app/](https://shipany-template-nano-banana.vercel.app/)
+
+> Cloudfare由于google登录等没配置域名，所以只能看个大概（我主要是用来显示部署成功可以访问到）
 
 Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.16781678.xyz/)
 
@@ -12,7 +16,7 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 ## 快速上手
 
-[✨ShipanyTwo官方文档（作者已更新完）](https://www.shipany.ai/zh/docs)
+[✨项目快速上手图文教程](https://github.com/template-code-team/shipany-template-nano-banana/issues/8)
 
 [✨项目中AI图片生成相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
 
