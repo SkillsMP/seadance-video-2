@@ -1,6 +1,4 @@
-# Shipany Template Nano Banana Pro
-
-## 基于 Vercel + Supabase + Stripe + Kie.ai + Cloudflare R2 技术栈落地AI生图项目
+# Shipany Template Nano Banana Pro 基于 Vercel + Supabase + Stripe + Kie.ai + Cloudflare R2 技术栈落地AI生图项目
 
 ## 预览地址
 
@@ -13,8 +11,6 @@ Vercel: [https://nanobanana.16781678.xyz/](https://nanobanana.16781678.xyz/)
 > Cloudfare由于google登录等没配置域名，所以只能看个大概（我主要是用来显示部署成功可以访问到）
 
 Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.16781678.xyz/)
-
-## 由于多次发生仓库被提交脏代码，给其他同学带来不便，现将仓库写权限关闭，仓库成员仅可读！
 
 ## 快速上手
 
@@ -32,7 +28,9 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 [✨项目可导入的表预制数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/6)
 
-[✨项目部署到 Cloudflare Workers](https://github.com/template-code-team/shipany-template-nano-banana/issues/7)
+[✨项目部署到 Cloudflare Workers（Mac电脑）](https://github.com/template-code-team/shipany-template-nano-banana/issues/7)
+
+[✨项目部署到 Cloudflare Workers（Windows电脑）](https://github.com/template-code-team/shipany-template-nano-banana/issues/10)
 
 ## 项目概要
 
