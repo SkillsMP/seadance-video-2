@@ -45,14 +45,15 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 [✨项目如何管理首页Showcases块、Showcases页、Hairstyles页数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/5)
 
+
 ## 视频教程
 
-[✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/template-code-team/shipany-template/issues/6)
+[✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/template-code-team/shipany-template-nano-banana/issues/12)
 
-[✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/template-code-team/shipany-template/issues/9)
+[✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/template-code-team/shipany-template-nano-banana/issues/13)
 
 
 ## 分支
 
-- `main`: main branch
-- `hotfix/xxxx`: hotifx branch
+- `main`: main branch (for vercel)
+- `cloidfare`: cloidfare branch (for cloidfare)
