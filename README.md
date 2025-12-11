@@ -56,4 +56,4 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 ## 分支
 
 - `main`: main branch (for vercel)
-- `cloidfare`: cloidfare branch (for cloidfare)
+- `cloudfare`: cloudfare branch (for cloudfare)
