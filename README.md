@@ -6,7 +6,7 @@
 
 > 建议开启魔法梯子后访问
 
-> Vercel使用默认vercel.app域名 遇到证书问题，改为自定义域名了
+> Vercel全流程闭环，不过在预览时如果要体验生图，得订阅，建议自己下载代码，使用本地走Stripe测试模式体验
 
 Vercel: [https://nanobanana.16781678.xyz/](https://nanobanana.16781678.xyz/)
 
