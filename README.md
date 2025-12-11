@@ -22,17 +22,17 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 
 ## 具体功能快捷导航
 
-[✨项目中AI图片生成相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/1)
+[✨项目中AI图片生成相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/1)
 
-[✨项目中关于Stripe支付相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/2)
+[✨项目中关于Stripe支付相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/2)
 
-[✨项目中关于R2存储相关配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/3)
+[✨项目中关于R2存储相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/3)
 
-[✨项目中关于动态页面配置](https://github.com/boomer1678/shipany-template-nano-banana/issues/4)
+[✨项目中关于动态页面配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/4)
 
-[✨项目可导入的表预制数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/6)
+[✨项目可导入的表预制数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/6)
 
-[✨项目部署到 Cloudflare Workers](https://github.com/boomer1678/shipany-template-nano-banana/issues/7)
+[✨项目部署到 Cloudflare Workers](https://github.com/template-code-team/shipany-template-nano-banana/issues/7)
 
 ## 项目概要
 
@@ -41,15 +41,15 @@ Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.1678167
 - showcases页面展示的是：Admin后台录入Prompt数据；
 - hairstyles页面展示的是：Admin后台录入Showcases数据（Tags：hairstyles）；
 
-[✨项目可导入的表预制数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/6)
+[✨项目可导入的表预制数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/6)
 
-[✨项目如何管理首页Showcases块、Showcases页、Hairstyles页数据](https://github.com/boomer1678/shipany-template-nano-banana/issues/5)
+[✨项目如何管理首页Showcases块、Showcases页、Hairstyles页数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/5)
 
 ## 视频教程
 
-[✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/boomer1678/shipany-template/issues/6)
+[✨ShipanyTwo实战课程：AI壁纸生成器开发视频教学(2025-12-03)](https://github.com/template-code-team/shipany-template/issues/6)
 
-[✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/boomer1678/shipany-template/issues/9)
+[✨ShipanyTwo实战课程：从零搭建了一个一站式 AI 生成平台(2025-11-26)](https://github.com/template-code-team/shipany-template/issues/9)
 
 
 ## 分支
