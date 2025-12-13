@@ -10,7 +10,7 @@ Vercel: [https://nanobanana.16781678.xyz/](https://nanobanana.16781678.xyz/)
 
 > Cloudfare由于google登录等没配置域名，所以只能看个大概（我主要是用来显示部署成功可以访问到）
 
-Cloudfare: [https://nanobanana-pro.16781678.xyz/](https://nanobanana-pro.16781678.xyz/)
+Cloudfare: [https://nanobananapro.16781678.xyz/](https://nanobananapro.16781678.xyz/)
 
 ## 快速上手
 
