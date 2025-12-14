@@ -5,6 +5,9 @@ import { getMetadata } from '@/shared/lib/seo';
 import { DynamicPage, Section } from '@/shared/types/blocks/landing';
 import { HairstylesContent } from './hairstyles-content';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const generateMetadata = getMetadata({
   metadataKey: 'hairstyles.metadata',
   canonicalUrl: '/hairstyles',

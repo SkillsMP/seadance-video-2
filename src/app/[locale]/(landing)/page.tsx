@@ -6,6 +6,9 @@ import { ShowcasesFlowDynamic } from '@/themes/default/blocks/showcases-flow-dyn
 
 import { getLatestShowcases } from '@/shared/models/showcase';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function LandingPage({
   params,
 }: {
