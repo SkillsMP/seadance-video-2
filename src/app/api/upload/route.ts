@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createR2Provider } from '@/extensions/storage/r2';
+import { getStorageService } from '@/shared/services/storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,29 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const accountId = process.env.R2_ACCOUNT_ID;
-    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-    const bucket = process.env.R2_BUCKET;
-    const publicDomain = process.env.R2_PUBLIC_DOMAIN;
-
-    if (!accountId || !accessKeyId || !secretAccessKey || !bucket) {
-      return NextResponse.json(
-        { error: 'R2 storage not configured' },
-        { status: 500 }
-      );
-    }
-
-    const effectivePublicDomain = publicDomain || `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/r2-proxy`;
-    
-    const r2Provider = createR2Provider({
-      accountId,
-      accessKeyId,
-      secretAccessKey,
-      bucket,
-      publicDomain: effectivePublicDomain,
-      uploadPath: 'uploads',
-    });
+    const storageService = await getStorageService();
 
     const now = new Date();
     const dateFolder = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -47,7 +25,7 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const result = await r2Provider.uploadFile({
+    const result = await storageService.uploadFile({
       body: buffer,
       key,
       contentType: file.type,
