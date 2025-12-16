@@ -14,23 +14,10 @@ Cloudfare: [https://nanobanana2.16781678.xyz/](https://nanobanana2.16781678.xyz/
 
 ## 快速上手
 
-[✨项目快速上手全流程图文教程](https://github.com/template-code-team/shipany-template-nano-banana/issues/8)
+> 不少同学反馈github的图床在开启魔法后还是展示不出来，现将文档部署到服务器，阅读体交互验有很大提升（后续就以这个网站内容为准，github issue后续会删除，减少维护成本）
 
-## 具体功能快捷导航
+[✨项目快速上手全流程图文手册](https://nanobanana2.16781678.xyz/docs/getting-started/quick-start-guide)
 
-[✨项目中AI图片生成相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/1)
-
-[✨项目中关于Stripe支付相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/2)
-
-[✨项目中关于R2存储相关配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/3)
-
-[✨项目中关于动态页面配置](https://github.com/template-code-team/shipany-template-nano-banana/issues/4)
-
-[✨项目可导入的表预制数据](https://github.com/template-code-team/shipany-template-nano-banana/issues/6)
-
-[✨项目部署到 Cloudflare Workers（Mac电脑）](https://github.com/template-code-team/shipany-template-nano-banana/issues/7)
-
-[✨项目部署到 Cloudflare Workers（Windows电脑）](https://github.com/template-code-team/shipany-template-nano-banana/issues/10)
 
 ## 项目概要
 
