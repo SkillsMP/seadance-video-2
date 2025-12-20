@@ -15,6 +15,10 @@ export const user = pgTable(
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').default(false).notNull(),
     image: text('image'),
+    // Track first-touch acquisition channel (e.g. google, twitter, newsletter)
+    utmSource: text('utm_source').notNull().default(''),
+    ip: text('ip').notNull().default(''),
+    locale: text('locale').notNull().default(''),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
