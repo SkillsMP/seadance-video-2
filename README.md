@@ -16,7 +16,7 @@ Cloudfare: [https://nanobanana2.16781678.xyz/](https://nanobanana2.16781678.xyz/
 
 > 不少同学反馈github issues的图在开启魔法后还是展示不出来，现将文档部署到服务器（图片使用R2），阅读体交互验有很大提升（后续就维护这个网站内容了，github issues后续会删除，减少维护成本）
 
-[✨项目快速上手全流程图文手册](https://nanobanana2.16781678.xyz/docs/getting-started/quick-start-guide)
+[✨项目快速上手全流程图文手册](https://doc.16781678.xyz/nanobanana)
 
 
 ## 项目概要
