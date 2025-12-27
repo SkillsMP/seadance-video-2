@@ -15,8 +15,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const database = await db();
-    const result = await database
+    const result = await db()
       .select()
       .from(prompt)
       .where(eq(prompt.promptTitle, title))

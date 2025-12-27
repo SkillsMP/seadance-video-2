@@ -56,20 +56,25 @@ export async function generateMetadata({
     typeof slug === 'string' ? slug : (slug as string[]).join('.') || '';
 
   const messageKey = `pages.${dynamicPageSlug}`;
-  const t = await getTranslations({ locale, namespace: messageKey });
 
-  // return dynamic page metadata
-  if (t.has('metadata')) {
-    title = t.raw('metadata.title');
-    description = t.raw('metadata.description');
+  try {
+    const t = await getTranslations({ locale, namespace: messageKey });
 
-    return {
-      title,
-      description,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-    };
+    // return dynamic page metadata
+    if (t.has('metadata')) {
+      title = t.raw('metadata.title');
+      description = t.raw('metadata.description');
+
+      return {
+        title,
+        description,
+        alternates: {
+          canonical: canonicalUrl,
+        },
+      };
+    }
+  } catch (error) {
+    // Translation not found, continue to common metadata
   }
 
   // 3. return common metadata
@@ -122,12 +127,16 @@ export default async function DynamicPage({
 
   const messageKey = `pages.${dynamicPageSlug}`;
 
-  const t = await getTranslations({ locale, namespace: messageKey });
+  try {
+    const t = await getTranslations({ locale, namespace: messageKey });
 
-  // return dynamic page
-  if (t.has('page')) {
-    const Page = await getThemePage('dynamic-page');
-    return <Page locale={locale} page={t.raw('page')} />;
+    // return dynamic page
+    if (t.has('page')) {
+      const Page = await getThemePage('dynamic-page');
+      return <Page locale={locale} page={t.raw('page')} />;
+    }
+  } catch (error) {
+    // Translation not found, continue to 404
   }
 
   // 3. page not found

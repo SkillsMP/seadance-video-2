@@ -110,3 +110,16 @@ export async function appendUserToResult(result: any) {
 
   return result;
 }
+
+export async function isEmailVerified(email: string): Promise<boolean> {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized) return false;
+
+  const [row] = await db()
+    .select({ emailVerified: user.emailVerified })
+    .from(user)
+    .where(eq(user.email, normalized))
+    .limit(1);
+
+  return !!row?.emailVerified;
+}

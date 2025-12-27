@@ -28,7 +28,7 @@ async function clearPromotionCodes() {
 
     if (allConfigs.length > 0) {
       console.log('\nOther promotion code configs:');
-      allConfigs.forEach((c) => {
+      allConfigs.forEach((c: any) => {
         console.log(`  ${c.name}: ${c.value}`);
       });
     }
