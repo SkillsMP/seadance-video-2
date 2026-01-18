@@ -1,8 +1,8 @@
 {
   "metadata": {
     "title": "Nano Banana Pro",
-    "description": "Nano Banana Pro is the second generation of Nano Banana, it&#x27;s also the flagship AI image editing model. Provide the best-in-class image editing experience.",
-    "keywords": "nano banana, nano banana pro, nano banana image editor, nano banana model, ai image editor, nano banana pro editor"
+    "description": "Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups. Ship Fast with a variety of templates and components.",
+    "keywords": "nano-banana-pro, nano-banana-pro, nano-banana-pro-demo"
   },
   "sign": {
     "sign_in_title": "Sign In",

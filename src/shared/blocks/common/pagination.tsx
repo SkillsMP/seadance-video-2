@@ -163,9 +163,9 @@ export function Pagination({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  if (totalPages <= 1) {
-    return null;
-  }
+  // if (totalPages <= 1) {
+  //   return null;
+  // }
 
   return (
     <Paginator

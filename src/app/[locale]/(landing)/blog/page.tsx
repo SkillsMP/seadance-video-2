@@ -11,7 +11,7 @@ import {
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
 export const generateMetadata = getMetadata({
-  metadataKey: 'blog.metadata',
+  metadataKey: 'pages.blog.metadata',
   canonicalUrl: '/blog',
 });
 
@@ -26,7 +26,7 @@ export default async function BlogPage({
   setRequestLocale(locale);
 
   // load blog data
-  const t = await getTranslations('blog');
+  const t = await getTranslations('pages.blog');
 
   let posts: PostType[] = [];
   let categories: CategoryType[] = [];
@@ -35,7 +35,7 @@ export default async function BlogPage({
   const currentCategory: CategoryType = {
     id: 'all',
     slug: 'all',
-    title: t('page.all'),
+    title: t('messages.all'),
     url: `/blog`,
   };
 

@@ -1,21 +1,36 @@
 import '@/config/style/global.css';
 
-import { Merriweather } from 'next/font/google';
+import { JetBrains_Mono, Merriweather, Noto_Sans_Mono } from 'next/font/google';
 import { getLocale, setRequestLocale } from 'next-intl/server';
 import NextTopLoader from 'nextjs-toploader';
 
 import { envConfigs } from '@/config';
 import { locales } from '@/config/locale';
+import { UtmCapture } from '@/shared/blocks/common/utm-capture';
 import { getAllConfigs } from '@/shared/models/config';
 import { getAdsService } from '@/shared/services/ads';
 import { getAffiliateService } from '@/shared/services/affiliate';
 import { getAnalyticsService } from '@/shared/services/analytics';
 import { getCustomerService } from '@/shared/services/customer_service';
 
+const notoSansMono = Noto_Sans_Mono({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+  preload: true,
+});
+
 const merriweather = Merriweather({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-serif',
+  display: 'swap',
+  preload: true,
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
   display: 'swap',
   preload: true,
 });
@@ -89,11 +104,12 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${merriweather.variable}`}
+      className={`${notoSansMono.variable} ${merriweather.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={envConfigs.app_favicon || "/favicon.ico"} />
+        <link rel="alternate icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         {/* inject locales */}
@@ -120,9 +136,9 @@ export default async function RootLayout({
         {/* inject analytics head scripts */}
         {analyticsHeadScripts}
 
-        {/* inject affiliate meta tags */}
+        {/* inject analytics meta tags */}
         {affiliateMetaTags}
-        {/* inject affiliate head scripts */}
+        {/* inject analytics head scripts */}
         {affiliateHeadScripts}
 
         {/* inject customer service meta tags */}
@@ -143,6 +159,7 @@ export default async function RootLayout({
         />
 
         {children}
+        <UtmCapture />
 
         {/* inject ads body scripts */}
         {adsBodyScripts}

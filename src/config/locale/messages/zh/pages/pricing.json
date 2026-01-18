@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "title": "Nano Banana Pro 价格",
+    "description": "选择方案，开始使用 Nano Banana Pro 模型生成图像。"
+  },
+  "pricing": {
+    "id": "pricing",
+    "sr_only_title": "Nano Banana Pro 价格方案",
+    "title": "Nano Banana Pro 方案",
+    "description": "立即开始使用 Nano Banana Pro 模型生成图像。",
+    "groups": [
+      {
+        "name": "one-time",
+        "title": "按需付费"
+      },
+      {
+        "name": "monthly",
+        "title": "月付",
+        "is_featured": true
+      },
+      {
+        "name": "yearly",
+        "title": "年付",
+        "label": "立省 23%"
+      }
+    ],
+    "items": [
+      {
+        "title": "积分包",
+        "description": "根据需要随时开始。",
+        "features_title": "包含内容",
+        "features": [
+          "400 积分，有效期 1 年",
+          "文生图和图生图生成",
+          "使用 Nano Banana 2 AI 模型的高质量图像",
+          "免费下载生成的图像"
+        ],
+        "interval": "one-time",
+        "amount": 2990,
+        "currency": "USD",
+        "price": "$29.9",
+        "original_price": "$39.9",
+        "unit": "/ 400 积分",
+        "is_featured": true,
+        "tip": "一次性支付",
+        "button": {
+          "title": "购买积分",
+          "url": "/#pricing",
+          "icon": "RiBankCardLine"
+        },
+        "product_id": "credits-package",
+        "product_name": "积分包",
+        "credits": 400,
+        "valid_days": 365,
+        "group": "one-time"
+      },
+      {
+        "title": "入门版方案",
+        "description": "每月自动续订获取积分。",
+        "features_title": "包含内容",
+        "features": [
+          "400 积分，有效期 1 个月",
+          "文生图和图生图生成",
+          "使用 Nano Banana 2 AI 模型的高质量图像",
+          "免费下载生成的图像"
+        ],
+        "interval": "month",
+        "amount": 2490,
+        "currency": "USD",
+        "price": "$24.9",
+        "original_price": "$36.9",
+        "unit": "/ 月",
+        "is_featured": true,
+        "tip": "订阅可以随时取消！",
+        "button": {
+          "title": "订阅方案",
+          "url": "/#pricing",
+          "icon": "RiBankCardLine"
+        },
+        "product_id": "starter-monthly",
+        "product_name": "入门版方案（月付）",
+        "credits": 400,
+        "valid_days": 30,
+        "group": "monthly",
+        "plan_name": "入门版"
+      },
+      {
+        "title": "高级版方案",
+        "description": "约 $19.2 / 月，比月付方案节省 23%。",
+        "features_title": "包含内容",
+        "features": [
+          "4800 积分，有效期 1 年",
+          "文生图和图生图生成",
+          "使用 Nano Banana 2 AI 模型的高质量图像",
+          "免费下载生成的图像"
+        ],
+        "interval": "year",
+        "amount": 22990,
+        "currency": "USD",
+        "price": "$229.9",
+        "original_price": "$299.9",
+        "unit": "/ 年",
+        "is_featured": true,
+        "tip": "订阅可以随时取消！",
+        "button": {
+          "title": "订阅方案",
+          "url": "/#pricing",
+          "icon": "RiBankCardLine"
+        },
+        "product_id": "premium-yearly",
+        "product_name": "高级版方案（年付）",
+        "credits": 4800,
+        "valid_days": 365,
+        "group": "yearly",
+        "plan_name": "高级版"
+      }
+    ]
+  },
+  "page": {
+    "title": "Nano Banana Pro 价格方案",
+    "sections": {
+      "pricing": {
+        "id": "pricing",
+        "title": "Nano Banana Pro 方案",
+        "description": "立即开始使用 Nano Banana Pro 模型生成图像。"
+      }
+    }
+  },
+  "messages": {
+    "current_plan": "当前方案",
+    "processing": "处理中"
+  }
+}

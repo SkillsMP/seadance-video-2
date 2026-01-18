@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const generateMetadata = getMetadata({
-  metadataKey: 'showcases.metadata',
+  metadataKey: 'pages.showcases.metadata',
   canonicalUrl: '/showcases',
 });
 
@@ -19,7 +19,7 @@ export default async function ShowcasesPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations('showcases');
+  const t = await getTranslations('pages.showcases');
   const showcasesData = t.raw('showcases-flow');
 
   return (

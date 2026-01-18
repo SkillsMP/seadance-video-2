@@ -27,7 +27,7 @@ export default async function PromptsPage({
 
   const { page: pageNum, pageSize } = await searchParams;
   const page = pageNum || 1;
-  const limit = pageSize || 30;
+  const limit = pageSize || 15;
 
   const crumbs: Crumb[] = [
     { title: 'Admin', url: '/admin' },

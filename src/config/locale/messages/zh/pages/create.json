@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "title": "Nano Banana 图像编辑",
+    "description": "使用 Nano Banana Pro 模型编辑和生成图像。"
+  },
+  "page": {
+    "title": "Nano Banana Pro 图像编辑",
+    "description": "使用 Nano Banana Pro 模型编辑和生成图像。"
+  },
+  "generator": {
+    "title": "Nano Banana Pro 图像编辑",
+    "description": "使用 Nano Banana Pro 模型编辑和生成图像。",
+    "tabs": {
+      "text-to-image": "文生图",
+      "image-to-image": "图生图"
+    },
+    "form": {
+      "provider": "服务商",
+      "model": "模型",
+      "select_provider": "选择服务商",
+      "select_model": "选择模型",
+      "prompt": "提示词",
+      "prompt_placeholder": "描述图像的细节，如颜色、形状、纹理等。",
+      "reference_image": "参考图片",
+      "reference_image_placeholder": "上传参考图片，支持多张图片",
+      "some_images_failed_to_upload": "部分图片上传失败，请删除后重新上传",
+      "prompt_too_long": "提示词过长，请删除部分内容"
+    },
+    "generate": "生成图片",
+    "checking_account": "正在检查账户...",
+    "loading": "加载中...",
+    "generating": "生成中...",
+    "sign_in_to_generate": "登录后开始生成",
+    "credits_cost": "消耗 {credits} 积分",
+    "credits_remaining": "剩余 {credits} 积分",
+    "buy_credits": "购买积分",
+    "progress": "进度",
+    "generated_images": "图片预览",
+    "ready_to_generate": "准备生成",
+    "ready_for_generating": "准备生成中",
+    "no_images_generated": "暂无生成的图片"
+  }
+}

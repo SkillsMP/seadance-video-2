@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Check, Globe, Languages } from 'lucide-react';
 import { useLocale } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 
 import { usePathname, useRouter } from '@/core/i18n/navigation';
-import { localeNames } from '@/config/locale';
+import { localeNames, locales } from '@/config/locale';
 import { Button } from '@/shared/components/ui/button';
 import {
   DropdownMenu,
@@ -23,17 +24,21 @@ export function LocaleSelector({
   const currentLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    console.log('localeNames (v2):', localeNames, 'locales:', locales);
   }, []);
 
   const handleSwitchLanguage = (value: string) => {
     if (value !== currentLocale) {
       // Update localStorage to sync with locale detector
       cacheSet('locale', value);
-      router.push(pathname, {
+      const query = searchParams?.toString?.() ?? '';
+      const href = query ? `${pathname}?${query}` : pathname;
+      router.push(href, {
         locale: value,
       });
     }
@@ -77,7 +82,7 @@ export function LocaleSelector({
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {Object.keys(localeNames).map((locale) => (
+        {locales.map((locale) => (
           <DropdownMenuItem
             key={locale}
             onClick={() => handleSwitchLanguage(locale)}

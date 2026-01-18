@@ -117,6 +117,16 @@
     ]
   },
   "page": {
+    "title": "Nano Banana Pro Pricing",
+    "sections": {
+      "pricing": {
+        "id": "pricing",
+        "title": "Nano Banana Pro Plan",
+        "description": "Get started to generate images with Nano Banana Pro model."
+      }
+    }
+  },
+  "messages": {
     "current_plan": "Current Plan",
     "processing": "Processing"
   }

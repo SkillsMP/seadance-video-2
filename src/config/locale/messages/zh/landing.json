@@ -12,14 +12,9 @@
     "nav": {
       "items": [
         {
-          "title": "功能亮点",
-          "url": "/#features",
-          "icon": "Sparkles"
-        },
-        {
-          "title": "案例展示",
-          "url": "/showcases",
-          "icon": "Box"
+          "title": "创建",
+          "url": "/create",
+          "icon": "Zap"
         },
         {
           "title": "价格",
@@ -27,44 +22,21 @@
           "icon": "DollarSign"
         },
         {
-          "title": "AI",
-          "icon": "RiRobot2Line",
+          "title": "案例展示",
+          "url": "/showcases",
+          "icon": "Box"
+        },
+        {
+          "title": "生成器",
+          "icon": "Sparkles",
           "children": [
             {
-              "title": "AI 图片生成器",
-              "description": "使用 AI 生成图片",
-              "url": "/ai-image-generator",
-              "icon": "RiImage2Line"
-            },
-            {
-              "title": "AI 音乐生成器",
-              "description": "使用 AI 生成美妙的音乐",
-              "url": "/ai-music-generator",
-              "icon": "RiMusic2Line"
-            },
-            {
-              "title": "AI 视频生成器",
-              "description": "使用 AI 生成视频",
-              "url": "/ai-video-generator",
-              "icon": "RiVideoLine"
-            },
-            {
-              "title": "AI 聊天机器人",
-              "description": "与 AI 聊天机器人对话",
-              "url": "/chat",
-              "icon": "RiMessage2Line"
+              "title": "发型设计",
+              "url": "/hairstyles",
+              "icon": "Wind",
+              "description": "AI 发型生成器"
             }
           ]
-        },
-        {
-          "title": "博客",
-          "url": "/blog",
-          "icon": "Newspaper"
-        },
-        {
-          "title": "文档",
-          "url": "/docs",
-          "icon": "BookOpenText"
         }
       ]
     },
@@ -92,411 +64,226 @@
   },
   "hero": {
     "id": "hero",
-    "title": "一小时快速上线你的 AI 创业项目",
-    "highlight_text": "一小时",
-    "description": "Nano Banana Pro 是用于构建 AI SaaS 创业项目的 NextJS 项目模板。<br/>集成常用功能，快速上线你的产品。",
-    "announcement": {
-      "badge": "全新",
-      "title": "🎉 Nano Banana Pro 模板二已发布",
-      "url": "/pricing"
-    },
-    "tip": "🎁 前 1000 名用户特价优惠",
+    "title": "Nano Banana Pro",
+    "description": "第二代 Nano Banana，旗舰级 AI 图像编辑模型。提供一流的图像编辑体验。",
     "buttons": [
       {
-        "title": "立即开始",
+        "title": "立即体验",
         "icon": "Zap",
-        "url": "/pricing",
+        "url": "/create",
         "target": "_self",
         "variant": "default"
       },
       {
-        "title": "阅读文档",
+        "title": "查看案例",
         "icon": "BookOpenText",
-        "url": "/docs",
-        "target": "_blank",
+        "url": "/#showcases",
+        "target": "_self",
         "variant": "outline"
       }
     ],
-    "show_avatars": true,
-    "avatars_tip": "999+ 用户在使用 Nano Banana Pro 上站",
+    "show_avatars": false,
+    "avatars_tip": "999+ 用户正在使用 Nano Banana Pro",
     "show_award": false,
-    "image": {
-      "src": "/imgs/features/admin.png",
-      "alt": "hero"
-    },
-    "image_invert": {
-      "src": "/imgs/features/admin-dark.png",
-      "alt": "hero"
-    },
     "background_image": {
-      "src": "/imgs/bg/tree.jpg",
+      "src": "/imgs/bg/girl.jpeg",
       "alt": "hero"
     }
   },
-  "logos": {
-    "title": "Nano Banana Pro 使用以下技术栈构建",
+  "showcases-flow": {
+    "id": "showcases",
+    "title": "Nano Banana Pro 案例展示",
+    "description": "由 Nano Banana Pro 驱动的 Nano Banana 编辑和生成代表作",
     "items": [
       {
-        "title": "Next.js",
+        "title": "AI SaaS 案例 1",
+        "description": "AI SaaS 案例",
         "image": {
-          "src": "/imgs/logos/nextjs.svg",
-          "alt": "Next.js"
+          "src": "/imgs/showcases/1.jpeg",
+          "alt": "AI SaaS 案例 1"
         }
       },
       {
-        "title": "React",
+        "title": "AI SaaS 案例 2",
+        "description": "AI SaaS 案例",
         "image": {
-          "src": "/imgs/logos/react.svg",
-          "alt": "React"
+          "src": "/imgs/showcases/2.jpeg",
+          "alt": "AI SaaS 案例 2"
         }
       },
       {
-        "title": "TailwindCSS",
+        "title": "AI SaaS 案例 3",
+        "description": "AI SaaS 案例",
         "image": {
-          "src": "/imgs/logos/tailwindcss.svg",
-          "alt": "TailwindCSS"
+          "src": "/imgs/showcases/3.jpeg",
+          "alt": "AI SaaS 案例 3"
         }
       },
       {
-        "title": "Shadcn/UI",
+        "title": "AI SaaS 案例 4",
+        "description": "AI SaaS 案例",
         "image": {
-          "src": "/imgs/logos/shadcn.svg",
-          "alt": "Shadcn/UI"
+          "src": "/imgs/showcases/4.jpeg",
+          "alt": "AI SaaS 案例 4"
         }
       },
       {
-        "title": "Vercel",
+        "title": "AI SaaS 案例 5",
+        "description": "AI SaaS 案例",
         "image": {
-          "src": "/imgs/logos/vercel.svg",
-          "alt": "Vercel"
+          "src": "/imgs/showcases/5.jpeg",
+          "alt": "AI SaaS 案例 5"
+        }
+      },
+      {
+        "title": "AI SaaS 案例 6",
+        "description": "AI SaaS 案例",
+        "image": {
+          "src": "/imgs/showcases/6.jpeg",
+          "alt": "AI SaaS 案例 6"
+        }
+      },
+      {
+        "title": "AI SaaS 案例 7",
+        "description": "AI SaaS 案例",
+        "image": {
+          "src": "/imgs/showcases/7.jpeg",
+          "alt": "AI SaaS 案例 7"
+        }
+      },
+      {
+        "title": "AI SaaS 案例 8",
+        "description": "AI SaaS 案例",
+        "image": {
+          "src": "/imgs/showcases/8.jpeg",
+          "alt": "AI SaaS 案例 8"
+        }
+      },
+      {
+        "title": "AI SaaS 案例 9",
+        "description": "AI SaaS 案例",
+        "image": {
+          "src": "/imgs/showcases/9.jpeg",
+          "alt": "AI SaaS 案例 9"
+        }
+      },
+      {
+        "title": "AI SaaS 案例 10",
+        "description": "AI SaaS 案例",
+        "image": {
+          "src": "/imgs/showcases/10.jpeg",
+          "alt": "AI SaaS 案例 10"
         }
       }
     ]
+  },
+  "logos": {
+    "hidden": true
   },
   "introduce": {
-    "block": "features-list",
-    "id": "introduce",
-    "title": "Nano Banana Pro 是什么？",
-    "label": "产品简介",
-    "description": "Nano Banana Pro 是专为 AI SaaS 创业项目打造的 NextJS 脚手架，包括丰富模板、组件及文档。",
-    "image": {
-      "src": "/imgs/features/landing-page.png",
-      "alt": "introduce"
-    },
-    "items": [
-      {
-        "title": "开箱即用的模板",
-        "description": "从数十款生产级 AI SaaS 模板中选择，快速开启你的项目。",
-        "icon": "RiNextjsFill",
-        "image": {
-          "src": "/imgs/features/1.png",
-          "alt": "introduce"
-        }
-      },
-      {
-        "title": "基础设施搭建",
-        "description": "内置最佳实践，即刻拥有可扩展的基础设施。",
-        "icon": "RiDatabase2Line",
-        "image": {
-          "src": "/imgs/features/2.png",
-          "alt": "introduce"
-        }
-      },
-      {
-        "title": "极速部署",
-        "description": "AI SaaS 产品快速上线，助力小时级交付。",
-        "icon": "RiCloudyFill",
-        "image": {
-          "src": "/imgs/features/3.png",
-          "alt": "introduce"
-        }
-      },
-      {
-        "title": "AI 集成",
-        "description": "通过内置的 AI SDK，轻松为你的项目集成 AI 能力。",
-        "icon": "RiRobot2Line",
-        "image": {
-          "src": "/imgs/features/4.png",
-          "alt": "introduce"
-        }
-      }
-    ],
-    "className": "bg-muted"
+    "hidden": true
   },
   "benefits": {
-    "block": "features-accordion",
-    "id": "benefits",
-    "title": "为何选择 Nano Banana Pro",
-    "label": "产品优势",
-    "description": "你获得一切 AI 创业所需——从开箱即用的模板到专业技术支持。",
-    "items": [
-      {
-        "title": "全栈解决方案",
-        "description": "基于 Next.js，集成认证、支付、AI，一站式开箱即用。",
-        "icon": "RiNextjsFill",
-        "image": {
-          "src": "/imgs/features/user-billing.png",
-          "alt": "benefits"
-        }
-      },
-      {
-        "title": "丰富模板库",
-        "description": "多样的 AI SaaS 模板，点击即用，涵盖聊天、图像生成等多场景。",
-        "icon": "RiClapperboardAiLine",
-        "image": {
-          "src": "/imgs/features/admin-settings.png",
-          "alt": "benefits"
-        }
-      },
-      {
-        "title": "专属技术指导",
-        "description": "享受专属技术支持与开发者社区，为你的成功保驾护航。",
-        "icon": "RiCodeFill",
-        "image": {
-          "src": "/imgs/features/landing-page.png",
-          "alt": "benefits"
-        }
-      }
-    ]
+    "hidden": true
   },
   "usage": {
-    "block": "features-step",
-    "id": "usage",
-    "title": "三步使用 Nano Banana Pro 极速上线",
-    "description": "只需三步，快速开启你的 AI SaaS 创业之路：",
-    "image": {
-      "src": "/imgs/features/1.png",
-      "alt": "usage"
-    },
-    "image_position": "left",
-    "text_align": "center",
-    "items": [
-      {
-        "title": "获取 Nano Banana Pro",
-        "description": "一次性购买 Nano Banana Pro，查收邮件获取代码与文档。",
-        "image": {
-          "src": "/imgs/features/5.png",
-          "alt": "usage"
-        }
-      },
-      {
-        "title": "启动你的项目",
-        "description": "阅读说明文档，克隆 Nano Banana Pro 代码，开始开发你的 AI SaaS 项目。",
-        "image": {
-          "src": "/imgs/features/6.png",
-          "alt": "usage"
-        }
-      },
-      {
-        "title": "个性化定制",
-        "description": "根据需求修改模板内容和数据，配置专属 AI 能力。",
-        "image": {
-          "src": "/imgs/features/7.png",
-          "alt": "usage"
-        }
-      },
-      {
-        "title": "部署上线",
-        "description": "简单几步将你的项目推向生产环境，立刻为客户提供服务。",
-        "image": {
-          "src": "/imgs/features/8.png",
-          "alt": "usage"
-        }
-      }
-    ],
-    "className": "bg-muted"
+    "hidden": true
   },
   "features": {
     "id": "features",
     "title": "Nano Banana Pro 核心功能",
-    "description": "一切你需要的工具，助力 AI SaaS 项目高效上线。",
+    "description": "使用 Nano Banana Pro 生成和优化视觉效果所需的一切，这是由 Nano Banana 驱动的领先 AI 图像编辑模型。",
     "items": [
       {
-        "title": "Next.js 项目模板",
-        "description": "生产就绪、支持 SEO 与多语言的 Next.js 脚手架。",
-        "icon": "RiNextjsFill"
+        "title": "自然语言编辑",
+        "description": "用对话式提示词编辑任何照片。Nano Banana Pro 解读复杂指令，并通过 Nano Banana 的先进 AI 进行精确转换。",
+        "icon": "RiMagicLine"
       },
       {
-        "title": "身份认证与支付",
-        "description": "集成谷歌 OAuth、一键登录，以及 Stripe 支付。",
-        "icon": "RiKey2Fill"
+        "title": "角色一致性",
+        "description": "通过 Nano Banana Pro 的身份感知管道，在每次修改中保持面部、服装和姿势的一致性。Nano Banana 提供一致的角色表现。",
+        "icon": "RiUserStarLine"
       },
       {
-        "title": "数据基础设施",
-        "description": "内置 Supabase，稳定可靠的数据存储。",
-        "icon": "RiDatabase2Line"
+        "title": "场景保留",
+        "description": "使用 Nano Banana Pro 将编辑无缝融入原始背景，实现逼真效果。体验由 Nano Banana 驱动的专业级场景保留。",
+        "icon": "RiLandscapeLine"
       },
       {
-        "title": "一键部署",
-        "description": "自动化部署到 Vercel 或 Cloudflare，极速上线。",
-        "icon": "RiCloudy2Fill"
+        "title": "多图混合",
+        "description": "混合多张参考图片的元素，创建新场景、匹配风格或保持帧间连续性。",
+        "icon": "Layers"
       },
       {
-        "title": "商业分析",
-        "description": "集成 Google Analytics、Search Console，助力业务增长。",
-        "icon": "RiBarChart2Line"
+        "title": "宽高比控制",
+        "description": "从 1:1、16:9 或 4:5 等预设中选择，为社交媒体、横幅或印刷版式生成完美构图的图像。",
+        "icon": "RiAspectRatioLine"
       },
       {
-        "title": "AI 原生基础设施",
-        "description": "预置 AI 集成、积分系统和 API 售卖能力。",
-        "icon": "RiRobot2Line"
+        "title": "即时变体",
+        "description": "几秒钟内请求新变体，快速迭代光照、色彩和构图创意，无需从头开始。",
+        "icon": "RiFlashlightLine"
       }
     ]
   },
   "stats": {
-    "id": "stats",
-    "title": "用户喜爱 Nano Banana Pro",
-    "description": "因其易用且上线飞快。",
-    "items": [
-      {
-        "title": "999+",
-        "description": "位用户"
-      },
-      {
-        "title": "200+",
-        "description": "组件块"
-      },
-      {
-        "title": "50+",
-        "description": "专业模板"
-      }
-    ],
-    "className": "bg-muted"
+    "hidden": true
   },
   "testimonials": {
-    "id": "testimonials",
-    "title": "用户对 Nano Banana Pro 的评价",
-    "description": "听听开发者与创始人用 Nano Banana Pro 快速上线 AI 创业项目的故事。",
-    "items": [
-      {
-        "name": "David Chen",
-        "role": "AIWallpaper.shop 创始人",
-        "quote": "Nano Banana Pro 为我们节省了数月开发时间。2 天上线 AI 壁纸业务，一周内就收到了第一笔付费订单！",
-        "image": {
-          "src": "/imgs/avatars/1.png",
-          "alt": "david"
-        }
-      },
-      {
-        "name": "Rachel Kim",
-        "role": "HeyBeauty.ai CTO",
-        "quote": "内置 AI 基础设施颠覆了开发体验，无需担心架构，只需专注核心功能，极快落地。",
-        "image": {
-          "src": "/imgs/avatars/2.png",
-          "alt": "rachel"
-        }
-      },
-      {
-        "name": "Marcus Thompson",
-        "role": "独立开发者",
-        "quote": "作为独立开发者，Nano Banana Pro 满足了全部需求——认证、支付、AI 集成、美观界面，一个周末上线 SaaS！",
-        "image": {
-          "src": "/imgs/avatars/3.png",
-          "alt": "marcus"
-        }
-      },
-      {
-        "name": "Sofia Garcia",
-        "role": "Melodisco CEO",
-        "quote": "模板高度可定制且生产级。我们几小时内搭建出了 AI 音乐平台，上市周期大大缩短！",
-        "image": {
-          "src": "/imgs/avatars/4.png",
-          "alt": "sofia"
-        }
-      },
-      {
-        "name": "James Wilson",
-        "role": "GPTs.works 技术负责人",
-        "quote": "Nano Banana Pro 基础设施极其稳定。我们从 0 到 1 万用户，无需关心后端维护，是最棒的 AI 创业投资。",
-        "image": {
-          "src": "/imgs/avatars/5.png",
-          "alt": "james"
-        }
-      },
-      {
-        "name": "Anna Zhang",
-        "role": "创业者",
-        "quote": "从想法到上线，仅用 3 天！Nano Banana Pro 模板和部署工具让我们极快验证 AI 商业创意。",
-        "image": {
-          "src": "/imgs/avatars/6.png",
-          "alt": "anna"
-        }
-      }
-    ]
+    "hidden": true
   },
   "faq": {
     "id": "faq",
     "title": "关于 Nano Banana Pro 的常见问题",
-    "description": "还有其他问题？欢迎加入 Discord 或发邮件联系我们。",
-    "tip": "没有找到想要的答案？请联系 <a href='https://discord.gg/HQNnrzjZQS' target='_blank' class='text-primary font-medium hover:underline'>我们的客服团队</a>",
     "items": [
       {
-        "question": "Nano Banana Pro 是什么？怎么帮到我？",
-        "answer": "Nano Banana Pro 是专为 AI SaaS 创业设计的 NextJS 全套脚手架，内含开箱即用的模板、基础设施搭建和部署工具，让你数小时内上线 AI 产品。"
+        "question": "Nano Banana Pro 是什么，它是如何工作的？",
+        "answer": "Nano Banana Pro 是由 Nano Banana 驱动的专业 AI 图像编辑模型。它支持自然语言文生图、文本+图像编辑、多图合成、迭代优化和高保真文字渲染，让您精确控制每次修改。"
       },
       {
-        "question": "使用 Nano Banana Pro 需要很高的技术水平吗？",
-        "answer": "有基础编程知识即可上手。Nano Banana Pro 面向开发者友好，详细文档和模板让初学者也能轻松起步，不需深厚 AI 或云计算背景。"
+        "question": "如何使用 Nano Banana Pro 编辑现有图像？",
+        "answer": "上传基础图像，描述您需要的更改，Nano Banana Pro 会在无需蒙版的情况下应用添加、移除和风格转换。您可以持续对话式迭代，直到场景符合您的愿景，每个输出都带有 SynthID 水印以证明来源。"
       },
       {
-        "question": "Nano Banana Pro 支持哪些类型的 AI SaaS 项目？",
-        "answer": "Nano Banana Pro 支持内容生成、数据分析、AI 聊天机器人、图片/内容生成器等多种主流 AI 应用场景。"
+        "question": "哪些项目最适合使用 Nano Banana Pro？",
+        "answer": "使用 Nano Banana Pro 进行人像修饰、产品摄影、电影叙事、UGC 活动和品牌安全排版。Nano Banana 的多模态理解可以混合多个输入的元素，即使在大量编辑下也能保持背景完整。"
       },
       {
-        "question": "用 Nano Banana Pro 一般多久能上线？",
-        "answer": "借助 Nano Banana Pro，可在数小时内拿到产品原型并上线生产环境，预配置的一键部署大幅缩短开发周期。"
+        "question": "我可以控制输出尺寸和宽高比吗？",
+        "answer": "可以。指定 1:1、16:9 或 9:16 等宽高比以匹配您的渠道需求，引擎会自动渲染相应分辨率，让您无需手动裁剪即可输出像素完美的素材。"
       },
       {
-        "question": "Nano Banana Pro 的基础设施包括哪些内容？",
-        "answer": "包含认证、数据库、API 集成、支付、云端部署等全栈解决方案，全部遵循业界最佳实践预配置。"
+        "question": "如何为 Nano Banana Pro 制作有效的提示词？",
+        "answer": "从主体和场景开始，添加情绪或光照提示，然后指定您想要的细节程度或相机风格。您可以参考颜色、服装、材质，甚至上传引导图像来控制构图，并使用 Nano Banana Pro 保持角色一致性。"
       },
       {
-        "question": "模板是否支持定制自己的品牌？",
-        "answer": "当然支持！所有模板均可自定义设计、功能和品牌，既保持基础架构稳定，又能满足个性扩展需求。"
+        "question": "我可以将 Nano Banana Pro 的输出用于商业项目吗？",
+        "answer": "可以。确保您拥有任何参考素材的权利，仔细检查品牌指南，并记住每个 Nano Banana Pro 输出都带有 SynthID 水印，以便在发布活动时帮助记录来源。"
       }
     ]
   },
   "cta": {
     "id": "cta",
-    "title": "发布你的第一个 AI SaaS 项目",
-    "description": "从这里出发，用 Nano Banana Pro 极速交付。",
+    "title": "立即体验 Nano Banana Pro",
+    "description": "体验 Nano Banana Pro 强大的图像编辑能力。",
     "buttons": [
       {
-        "title": "获取 Nano Banana Pro",
-        "url": "https://shipany.ai",
-        "target": "_blank",
-        "icon": "Zap"
-      },
-      {
-        "title": "阅读文档",
-        "url": "/docs",
-        "target": "_blank",
-        "variant": "outline",
-        "icon": "BookOpenText"
+        "title": "体验 Nano Banana Pro",
+        "url": "/create",
+        "target": "_self",
+        "icon": "Wand"
       }
     ],
     "className": "bg-muted"
   },
   "subscribe": {
-    "id": "subscribe",
-    "title": "订阅我们的邮件通知",
-    "description": "获取 Nano Banana Pro 最新资讯与产品动态。",
-    "submit": {
-      "input": {
-        "placeholder": "输入邮箱"
-      },
-      "button": {
-        "title": "订阅"
-      },
-      "action": "/api/subscribe"
-    },
-    "className": "bg-muted"
+    "hidden": true
   },
   "footer": {
     "id": "footer",
     "brand": {
       "title": "Nano Banana Pro",
-      "description": "Nano Banana Pro 是专为 AI SaaS 创业项目打造的 NextJS 模板。丰富模板与组件，极速交付你的产品。",
+      "description": "Nano Banana Pro 是第二代 Nano Banana，也是旗舰级 AI 图像编辑模型。提供一流的图像编辑体验。",
       "logo": {
         "src": "/logo.png",
         "alt": "Nano Banana Pro"
@@ -506,62 +293,77 @@
     "nav": {
       "items": [
         {
-          "title": "关于我们",
+          "title": "关于",
           "children": [
             {
-              "title": "功能亮点",
+              "title": "创建",
+              "url": "/create",
+              "target": "_self"
+            },
+            {
+              "title": "功能",
               "url": "/#features",
               "target": "_self"
             },
             {
-              "title": "案例展示",
-              "url": "/showcases",
+              "title": "案例",
+              "url": "/#showcases",
               "target": "_self"
             },
             {
-              "title": "价格",
-              "url": "/pricing",
-              "target": "_self"
-            }
-          ]
-        },
-        {
-          "title": "资源",
-          "children": [
-            {
-              "title": "文档",
-              "url": "/docs",
+              "title": "常见问题",
+              "url": "/#faq",
               "target": "_self"
             },
             {
               "title": "博客",
               "url": "/blog",
               "target": "_self"
-            },
-            {
-              "title": "对话",
-              "url": "/chat",
-              "target": "_blank"
             }
           ]
         },
         {
-          "title": "合作伙伴",
+          "title": "提示词",
           "children": [
             {
-              "title": "Nano Banana Pro",
-              "url": "https://shipany.ai",
-              "target": "_blank"
+              "title": "3D 数字人漫画",
+              "url": "/create?prompt=3d-digital-human-comics",
+              "target": "_self"
             },
             {
-              "title": "ThinkAny",
-              "url": "https://thinkany.ai",
-              "target": "_blank"
+              "title": "竖版鱼眼自拍",
+              "url": "/create?prompt=vertical-fisheye-selfie",
+              "target": "_self"
             },
             {
-              "title": "MCP.so",
-              "url": "https://mcp.so",
-              "target": "_blank"
+              "title": "GTA 罪恶都市",
+              "url": "/create?prompt=gta-vice-city",
+              "target": "_self"
+            },
+            {
+              "title": "照片修复",
+              "url": "/create?prompt=photo-restoration",
+              "target": "_self"
+            },
+            {
+              "title": "名人 3D 漫画像",
+              "url": "/create?prompt=3d-caricature-of-celebrity",
+              "target": "_self"
+            },
+            {
+              "title": "3D 城市天气",
+              "url": "/create?prompt=3d-city-weather",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "生成器",
+          "children": [
+            {
+              "title": "AI 发型生成器",
+              "url": "/hairstyles",
+              "target": "_self"
             }
           ]
         }
@@ -570,27 +372,9 @@
     "social": {
       "items": [
         {
-          "title": "X",
-          "icon": "RiTwitterXFill",
-          "url": "https://x.com/your-app-name",
-          "target": "_blank"
-        },
-        {
-          "title": "Github",
-          "icon": "Github",
-          "url": "https://github.com/your-app-name",
-          "target": "_blank"
-        },
-        {
-          "title": "Discord",
-          "icon": "RiDiscordFill",
-          "url": "https://discord.gg/your-app-name",
-          "target": "_blank"
-        },
-        {
           "title": "邮箱",
           "icon": "Mail",
-          "url": "mailto:support@your-domain.com",
+          "url": "mailto:support@shipany-template-nano-banana.ai",
           "target": "_self"
         }
       ]

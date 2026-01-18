@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Calendar } from 'lucide-react';
+'use client';
+
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@/core/i18n/navigation';
@@ -18,7 +18,7 @@ export function Blog({
   blog: BlogType;
   className?: string;
 }) {
-  const t = useTranslations('blog.page');
+  const t = useTranslations('pages.blog.messages');
   const tabs: Tab[] = [];
   blog.categories?.map((category: CategoryType) => {
     tabs.push({
@@ -62,68 +62,40 @@ export function Blog({
               <Link
                 key={idx}
                 href={item.url || ''}
-                target={item.target || '_self'}
-                className="w-full p-4 md:w-1/3"
+                className="group w-full p-4 md:w-1/2 lg:w-1/3"
               >
-                <div className="border-border flex flex-col overflow-clip rounded-xl border">
-                  {item.image && (
-                    <div>
-                      <img
-                        src={item.image}
-                        alt={item.title || ''}
-                        className="aspect-16/9 h-full w-full object-cover object-center"
-                      />
+                <div className="bg-muted h-full overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-lg">
+                  <div className="aspect-video overflow-hidden">
+                    <img
+                      src={item.image || '/imgs/blog/1.jpeg'}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="text-primary text-xs font-semibold uppercase tracking-wider">
+                        {item.categories?.[0]?.title}
+                      </span>
+                      <span className="text-muted-foreground text-xs">•</span>
+                      <span className="text-muted-foreground text-xs">
+                        {item.date}
+                      </span>
                     </div>
-                  )}
-                  <div className="px-4 py-4 md:px-4 md:py-4 lg:px-4 lg:py-4">
-                    <h3 className="mb-3 text-lg font-semibold md:mb-4 md:text-xl lg:mb-6">
+                    <h3 className="mb-3 text-xl font-bold transition-colors group-hover:text-primary">
                       {item.title}
                     </h3>
-                    <p className="text-muted-foreground mb-3 md:mb-4 lg:mb-6">
+                    <p className="text-muted-foreground line-clamp-2 text-sm">
                       {item.description}
                     </p>
-
-                    <div className="text-muted-foreground flex items-center text-xs">
-                      {item.created_at && (
-                        <div className="flex items-center gap-2">
-                          <Calendar className="size-4" />
-                          {item.created_at}
-                        </div>
-                      )}
-                      <div className="flex-1"></div>
-                      {(item.author_name || item.author_image) && (
-                        <div className="flex items-center gap-2">
-                          {item.author_image && (
-                            <Avatar>
-                              <AvatarImage
-                                src={item.author_image || ''}
-                                alt={item.author_name || ''}
-                                className="size-6 rounded-full"
-                              />
-                              <AvatarFallback>
-                                {item.author_name?.charAt(0) || 'U'}
-                              </AvatarFallback>
-                            </Avatar>
-                          )}
-                          {item.author_name}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* {blog.readMoreText && (
-                      <p className="flex items-center hover:underline">
-                        {blog.readMoreText}
-                        <ArrowRight className="ml-2 size-4" />
-                      </p>
-                    )} */}
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-muted-foreground text-md py-8">
-            {t('no_content')}
+          <div className="py-20 text-center">
+            <p className="text-muted-foreground">{t('no_content')}</p>
           </div>
         )}
       </div>

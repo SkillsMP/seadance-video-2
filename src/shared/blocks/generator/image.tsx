@@ -335,15 +335,15 @@ export function ImageGenerator({
             // When promptKey is provided, switch to image-to-image tab
             setActiveTab('image-to-image');
             setCostCredits(6);
-            
+
             // Update model based on available providers for image-to-image
             if (availableProviders.length > 0) {
               const availableModel = MODEL_OPTIONS.find(
-                (option) => 
-                  option.scenes.includes('image-to-image') && 
+                (option) =>
+                  option.scenes.includes('image-to-image') &&
                   availableProviders.includes(option.provider)
               );
-              
+
               if (availableModel) {
                 setProvider(availableModel.provider);
                 setModel(availableModel.value);
@@ -354,6 +354,32 @@ export function ImageGenerator({
         .catch((error) => {
           console.error('Failed to fetch prompt:', error);
         });
+    } else {
+      // Reset to default values when no promptKey is provided
+      setPrompt(
+        'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset'
+      );
+      setPreviewImage(
+        'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg'
+      );
+      setActiveTab('text-to-image');
+      setCostCredits(4);
+
+      // Reset to default provider and model for text-to-image
+      if (availableProviders.length > 0) {
+        const firstProvider = availableProviders[0];
+        setProvider(firstProvider);
+
+        const availableModel = MODEL_OPTIONS.find(
+          (option) =>
+            option.scenes.includes('text-to-image') &&
+            option.provider === firstProvider
+        );
+
+        if (availableModel) {
+          setModel(availableModel.value);
+        }
+      }
     }
   }, [promptKey, availableProviders]);
 

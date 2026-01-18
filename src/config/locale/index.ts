@@ -1,26 +1,23 @@
 import { envConfigs } from '..';
 
-export const localeNames: any = {
+export const localeNames: Record<string, string> = {
   en: 'English',
-  // zh: '中文',
+  zh: '中文',
 };
 
-export const locales = ['en'];
+export const locales = ['en', 'zh'];
 
 export const defaultLocale = envConfigs.locale;
 
 export const localePrefix = 'as-needed';
 
-export const localeDetection = true;
+export const localeDetection = false;
 
 export const localeMessagesRootPath = '@/config/locale/messages';
 
 export const localeMessagesPaths = [
   'common',
   'landing',
-  'showcases',
-  'blog',
-  'pricing',
   'settings/sidebar',
   'settings/profile',
   'settings/security',
@@ -34,7 +31,6 @@ export const localeMessagesPaths = [
   'admin/permissions',
   'admin/categories',
   'admin/posts',
-  'admin/prompts',
   'admin/payments',
   'admin/subscriptions',
   'admin/credits',
@@ -42,7 +38,6 @@ export const localeMessagesPaths = [
   'admin/apikeys',
   'admin/ai-tasks',
   'admin/chats',
-  'admin/showcases',
   'ai/music',
   'ai/chat',
   'ai/image',
@@ -50,6 +45,13 @@ export const localeMessagesPaths = [
   'activity/sidebar',
   'activity/ai-tasks',
   'activity/chats',
+  'pages/index',
+  'pages/pricing',
+  'pages/showcases',
+  'pages/blog',
+  'pages/updates',
   'pages/create',
-  'hairstyles',
+  'pages/hairstyles',
+  'admin/prompts',
+  'admin/showcases',
 ];

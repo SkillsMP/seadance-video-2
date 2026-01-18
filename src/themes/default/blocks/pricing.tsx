@@ -86,7 +86,7 @@ export function Pricing({
   currentSubscription?: Subscription;
 }) {
   const locale = useLocale();
-  const t = useTranslations('pricing.page');
+  const t = useTranslations('pages.pricing.messages');
   const {
     user,
     isShowPaymentModal,

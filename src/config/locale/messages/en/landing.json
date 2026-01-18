@@ -60,7 +60,7 @@
     },
     "show_sign": true,
     "show_theme": true,
-    "show_locale": false
+    "show_locale": true
   },
   "hero": {
     "id": "hero",
@@ -78,7 +78,7 @@
         "title": "View examples",
         "icon": "BookOpenText",
         "url": "/#showcases",
-        "target": "_blank",
+        "target": "_self",
         "variant": "outline"
       }
     ],
@@ -91,7 +91,7 @@
     }
   },
   "showcases-flow": {
-    "id": "showcases-flow",
+    "id": "showcases",
     "title": "Nano Banana Pro Showcases",
     "description": "Representative Nano Banana editing and generation cases powered by Nano Banana Pro",
     "items": [
@@ -314,11 +314,6 @@
               "title": "FAQ",
               "url": "/#faq",
               "target": "_self"
-            },
-            {
-              "title": "Blog",
-              "url": "/blog",
-              "target": "_self"
             }
           ]
         },
@@ -374,7 +369,7 @@
         {
           "title": "Email",
           "icon": "Mail",
-          "url": "mailto:support@zknown.ai",
+          "url": "mailto:support@shipany-template-nano-banana.ai",
           "target": "_self"
         }
       ]
@@ -392,6 +387,6 @@
       ]
     },
     "show_theme": true,
-    "show_locale": false
+    "show_locale": true
   }
 }

@@ -56,6 +56,7 @@ export default async function LandingPage({
           component: (
             <ShowcasesFlowDynamic
               key="showcases-flow"
+              id={sectionData.id}
               title={sectionData.title}
               description={sectionData.description}
               excludeTags="hairstyles"

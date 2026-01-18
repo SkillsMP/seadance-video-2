@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Wand, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { Link } from '@/core/i18n/navigation';
 import { LazyImage } from '@/shared/blocks/common';
@@ -19,6 +20,7 @@ export type ShowcaseItem = {
 };
 
 export function ShowcasesFlowDynamic({
+  id,
   title,
   description,
   className,
@@ -33,6 +35,7 @@ export function ShowcasesFlowDynamic({
   initialItems,
   usePrompts = false,
 }: {
+  id?: string;
   title?: string;
   description?: string;
   className?: string;
@@ -48,6 +51,7 @@ export function ShowcasesFlowDynamic({
   usePrompts?: boolean;
 }) {
   const [items, setItems] = useState<ShowcaseItem[]>(initialItems || []);
+  const t = useTranslations('pages.showcases.ui');
   const [loading, setLoading] = useState(!initialItems);
   const [showLoading, setShowLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +145,7 @@ export function ShowcasesFlowDynamic({
   }, [selectedIndex, handlePrevious, handleNext]);
 
   return (
-    <>
+    <section id={id} className={cn('pb-24 md:pb-36', className)}>
       {(title || description) && (
         <motion.div
           className="container mb-12 text-center pt-24 md:pt-36"
@@ -168,7 +172,7 @@ export function ShowcasesFlowDynamic({
       {loading || showLoading ? (
         showLoading && (
           <div className={cn("container text-center my-30", containerClassName)}>
-            <p className="text-muted-foreground">Loading...</p>
+            <p className="text-muted-foreground">{t('loading')}</p>
           </div>
         )
       ) : error ? (
@@ -215,7 +219,7 @@ export function ShowcasesFlowDynamic({
                     >
                       <Link href={`/create?prompt=${item.title}`} target="_self">
                         <Wand className="mr-2 size-4" />
-                        Create Similar
+                        {t('create_similar')}
                       </Link>
                     </Button>
                   </div>
@@ -307,6 +311,6 @@ export function ShowcasesFlowDynamic({
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </section>
   );
 }

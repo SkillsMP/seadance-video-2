@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 import { Coins, LayoutDashboard, Loader2, LogOut, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
-import { authClient, signOut, useSession } from '@/core/auth/client';
+import { signOut, useSession } from '@/core/auth/client';
 import { Link, useRouter } from '@/core/i18n/navigation';
 import {
   Avatar,
@@ -28,11 +29,6 @@ import { NavItem, UserNav } from '@/shared/types/blocks/common';
 import { SmartIcon } from '../common/smart-icon';
 import { SignModal } from './sign-modal';
 
-function extractSessionUser(data: any): UserType | null {
-  const u = data?.user ?? data?.data?.user ?? null;
-  return u && typeof u === 'object' ? (u as UserType) : null;
-}
-
 export function SignUser({
   isScrolled,
   signButtonSize = 'sm',
@@ -44,6 +40,7 @@ export function SignUser({
 }) {
   const t = useTranslations('common.sign');
   const router = useRouter();
+  const pathname = usePathname();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -53,7 +50,6 @@ export function SignUser({
   // get app context values
   const {
     configs,
-    fetchConfigs,
     setIsShowSignModal,
     isCheckSign,
     setIsCheckSign,
@@ -65,18 +61,9 @@ export function SignUser({
 
   // get session
   const { data: session, isPending } = useSession();
-  const sessionUser = extractSessionUser(session);
-  const displayUser = (user as UserType | null) ?? sessionUser;
-
-  // In dev (React StrictMode) effects can run twice; ensure we don't spam getSession().
-  const didFallbackSyncRef = useRef(false);
 
   // one tap initialized
   const oneTapInitialized = useRef(false);
-
-  useEffect(() => {
-    fetchConfigs();
-  }, []);
 
   // set is check sign
   useEffect(() => {
@@ -100,8 +87,9 @@ export function SignUser({
 
   // set user
   useEffect(() => {
+    const sessionUser = session?.user;
     const currentUserId = user?.id;
-    const sessionUserId = (sessionUser as any)?.id;
+    const sessionUserId = sessionUser?.id;
 
     if (sessionUser && sessionUserId !== currentUserId) {
       setUser(sessionUser as UserType);
@@ -109,32 +97,7 @@ export function SignUser({
     } else if (!sessionUser && currentUserId) {
       setUser(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionUser?.id, (sessionUser as any)?.email, user?.id]);
-
-  // Fallback: if the session cookie is present but useSession lags, do a single refresh.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (didFallbackSyncRef.current) return;
-    // Only run when useSession is done but still no user.
-    if (isPending) return;
-    if (sessionUser || user) return;
-
-    didFallbackSyncRef.current = true;
-    void (async () => {
-      try {
-        const res: any = await authClient.getSession();
-        const fresh = extractSessionUser(res?.data ?? res);
-        if (fresh?.id) {
-          setUser(fresh);
-          fetchUserInfo();
-        }
-      } catch {
-        // ignore
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPending, sessionUser, user?.id]);
+  }, [session?.user?.id, user?.id]);
 
   return (
     <>
@@ -142,7 +105,7 @@ export function SignUser({
         <div>
           <Loader2 className="size-4 animate-spin" />
         </div>
-      ) : displayUser ? (
+      ) : user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -151,10 +114,10 @@ export function SignUser({
             >
               <Avatar>
                 <AvatarImage
-                  src={displayUser.image || ''}
-                  alt={displayUser.name || ''}
+                  src={user.image || ''}
+                  alt={user.name || ''}
                 />
-                <AvatarFallback>{displayUser.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -167,7 +130,7 @@ export function SignUser({
                     href="/settings/profile"
                   >
                     <User />
-                    {displayUser.name}
+                    {user.name}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -183,7 +146,7 @@ export function SignUser({
                   >
                     <Coins />
                     {t('credits_title', {
-                      credits: displayUser.credits?.remainingCredits || 0,
+                      credits: user.credits?.remainingCredits || 0,
                     })}
                   </Link>
                 </DropdownMenuItem>
@@ -212,7 +175,7 @@ export function SignUser({
               </Fragment>
             ))}
 
-            {displayUser.isAdmin && (
+            {user.isAdmin && (
               <>
                 <DropdownMenuItem asChild>
                   <Link className="w-full cursor-pointer" href="/admin">
@@ -256,7 +219,7 @@ export function SignUser({
           >
             <span>{t('sign_in_title')}</span>
           </Button>
-          <SignModal />
+          <SignModal callbackUrl={pathname || '/'} />
         </div>
       )}
     </>

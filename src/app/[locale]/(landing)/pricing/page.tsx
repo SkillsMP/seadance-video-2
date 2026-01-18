@@ -7,7 +7,7 @@ import { getUserInfo } from '@/shared/models/user';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
 export const generateMetadata = getMetadata({
-  metadataKey: 'pricing.metadata',
+  metadataKey: 'pages.pricing.metadata',
   canonicalUrl: '/pricing',
 });
 
@@ -31,7 +31,7 @@ export default async function PricingPage({
   }
 
   // get pricing data
-  const t = await getTranslations('pricing');
+  const t = await getTranslations('pages.pricing');
 
   // get landing data
   const tl = await getTranslations('landing');

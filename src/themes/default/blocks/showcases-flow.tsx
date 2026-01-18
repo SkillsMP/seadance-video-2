@@ -1,4 +1,5 @@
 'use client';
+import { useTranslations } from 'next-intl';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,6 +19,7 @@ export function ShowcasesFlow({
   section: Section;
   className?: string;
 }) {
+  const t = useTranslations('pages.showcases.ui');
   const groups = (section as any).groups || [];
   const [selectedGroup, setSelectedGroup] = useState<string>(
     groups.length > 0 ? groups[0].name : ''
@@ -203,7 +205,7 @@ export function ShowcasesFlow({
                         target="_self"
                       >
                         <Wand className="mr-2 size-4" />
-                        Create Similar
+                        {t('create_similar')}
                       </Link>
                     </Button>
                   </div>

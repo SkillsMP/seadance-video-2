@@ -49,6 +49,16 @@
               "title": "文章",
               "icon": "FileText",
               "url": "/admin/posts"
+            },
+            {
+              "title": "提示词",
+              "icon": "Wand",
+              "url": "/admin/prompts"
+            },
+            {
+              "title": "案例展示",
+              "icon": "Image",
+              "url": "/admin/showcases"
             }
           ]
         },

@@ -10,6 +10,16 @@
     "description": "Read about our latest product features, solutions, and updates."
   },
   "page": {
+    "title": "Nano Banana Pro Blog",
+    "sections": {
+      "blog": {
+        "id": "blog",
+        "title": "Blog",
+        "description": "Read about our latest product features, solutions, and updates."
+      }
+    }
+  },
+  "messages": {
     "all": "All",
     "no_content": "No Content",
     "crumb": "Blog",

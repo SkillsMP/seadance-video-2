@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const generateMetadata = getMetadata({
-  metadataKey: 'hairstyles.metadata',
+  metadataKey: 'pages.hairstyles.metadata',
   canonicalUrl: '/hairstyles',
 });
 
@@ -22,7 +22,7 @@ export default async function HairstylesPage({
   setRequestLocale(locale);
 
   // load hairstyles data
-  const t = await getTranslations('hairstyles');
+  const t = await getTranslations('pages.hairstyles');
 
   const sectionData = t.raw('showcases-flow') as Section;
 
