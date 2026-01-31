@@ -6,7 +6,7 @@ import { routing } from '@/core/i18n/config';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Handle internationalization first
@@ -72,9 +72,6 @@ export async function proxy(request: NextRequest) {
   // For all other routes (including /, /sign-in, /sign-up, /sign-out), just return the intl response
   return intlResponse;
 }
-
-// Export proxy as middleware for Next.js
-export const middleware = proxy;
 
 export const config = {
   matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)',

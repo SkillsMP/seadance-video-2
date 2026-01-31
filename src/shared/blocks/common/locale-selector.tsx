@@ -29,7 +29,7 @@ export function LocaleSelector({
 
   useEffect(() => {
     setMounted(true);
-    console.log('localeNames (v2):', localeNames, 'locales:', locales);
+    // console.log('localeNames (v2):', localeNames, 'locales:', locales);
   }, []);
 
   const handleSwitchLanguage = (value: string) => {
