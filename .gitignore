@@ -60,7 +60,7 @@ src/config/db/migrations
 .debug 
 .test
 
-*.sql
+#*.sql
 .source
 
 .chats
