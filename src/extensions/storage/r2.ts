@@ -11,7 +11,7 @@ import type {
  * @docs https://developers.cloudflare.com/r2/
  */
 export interface R2Configs extends StorageConfigs {
-  accountId: string;
+  accountId?: string;
   accessKeyId: string;
   secretAccessKey: string;
   bucket: string;
@@ -45,10 +45,11 @@ export class R2Provider implements StorageProvider {
   }
 
   private getEndpoint() {
-    return (
-      this.configs.endpoint ||
-      `https://${this.configs.accountId}.r2.cloudflarestorage.com`
-    );
+    if (this.configs.endpoint) return this.configs.endpoint;
+    if (this.configs.accountId) {
+      return `https://${this.configs.accountId}.r2.cloudflarestorage.com`;
+    }
+    return '';
   }
 
   getPublicUrl = (options: { key: string; bucket?: string }) => {

@@ -13,13 +13,8 @@ export function getStorageServiceWithConfigs(configs: Configs) {
     configs.r2_secret_key &&
     configs.r2_bucket_name
   ) {
-    // r2_region in settings stores the Cloudflare Account ID
-    // For R2, region is typically "auto" but can be customized
-    const accountId = configs.r2_account_id || '';
-
     storageManager.addProvider(
       new R2Provider({
-        accountId: accountId,
         accessKeyId: configs.r2_access_key,
         secretAccessKey: configs.r2_secret_key,
         bucket: configs.r2_bucket_name,
