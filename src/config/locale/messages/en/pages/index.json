@@ -43,18 +43,6 @@
         "show_avatars": true,
         "avatars_tip": "999+ users are using Nano Banana Pro",
         "show_award": false,
-        "image": {
-          "src": "/imgs/features/admin.png",
-          "alt": "hero",
-          "width": 1200,
-          "height": 800
-        },
-        "image_invert": {
-          "src": "/imgs/features/admin-dark.png",
-          "alt": "hero",
-          "width": 1200,
-          "height": 800
-        },
         "background_image": {
           "src": "/imgs/bg/tree.jpg",
           "alt": "hero"
@@ -107,46 +95,26 @@
         "title": "What is Nano Banana Pro",
         "label": "Introduce",
         "description": "Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups, including templates, components, and documentation.",
-        "image": {
-          "src": "/imgs/features/landing-page.png",
-          "alt": "introduce"
-        },
         "items": [
           {
             "title": "Ready-to-use Templates",
             "description": "Choose from dozens of production-ready AI SaaS templates to quickly start your project.",
-            "icon": "RiNextjsFill",
-            "image": {
-              "src": "/imgs/features/1.png",
-              "alt": "introduce"
-            }
+            "icon": "RiNextjsFill"
           },
           {
             "title": "Infrastructure Setup",
             "description": "Get instant access to scalable infrastructure with best practices built-in.",
-            "icon": "RiDatabase2Line",
-            "image": {
-              "src": "/imgs/features/2.png",
-              "alt": "introduce"
-            }
+            "icon": "RiDatabase2Line"
           },
           {
             "title": "Quick Deployment",
             "description": "Deploy your AI SaaS application to production in hours, not days.",
-            "icon": "RiCloudyFill",
-            "image": {
-              "src": "/imgs/features/3.png",
-              "alt": "introduce"
-            }
+            "icon": "RiCloudyFill"
           },
           {
             "title": "AI Integration",
             "description": "Integrate AI into your project with ease using our built-in AI SDK.",
-            "icon": "RiRobot2Line",
-            "image": {
-              "src": "/imgs/features/4.png",
-              "alt": "introduce"
-            }
+            "icon": "RiRobot2Line"
           }
         ],
         "className": "bg-muted"
@@ -161,29 +129,17 @@
           {
             "title": "Complete Framework",
             "description": "Built on Next.js with authentication, payments, and AI integration - everything works out of the box.",
-            "icon": "RiNextjsFill",
-            "image": {
-              "src": "/imgs/features/user-billing.png",
-              "alt": "benefits"
-            }
+            "icon": "RiNextjsFill"
           },
           {
             "title": "Rich Templates Library",
             "description": "Choose from various AI SaaS templates to kickstart your project - chatbots, image generation, and more.",
-            "icon": "RiClapperboardAiLine",
-            "image": {
-              "src": "/imgs/features/admin-settings.png",
-              "alt": "benefits"
-            }
+            "icon": "RiClapperboardAiLine"
           },
           {
             "title": "Technical Guidance",
             "description": "Get dedicated support and join our developer community to ensure your successful launch.",
-            "icon": "RiCodeFill",
-            "image": {
-              "src": "/imgs/features/landing-page.png",
-              "alt": "benefits"
-            }
+            "icon": "RiCodeFill"
           }
         ]
       },
@@ -192,44 +148,24 @@
         "id": "usage",
         "title": "How to Launch with Nano Banana Pro",
         "description": "Get your AI SaaS startup running in three simple steps:",
-        "image": {
-          "src": "/imgs/features/1.png",
-          "alt": "usage"
-        },
         "image_position": "left",
         "text_align": "center",
         "items": [
           {
             "title": "Get Nano Banana Pro",
-            "description": "Buy Nano Banana Pro with a one-time payment. Check your email for the code and documentation.",
-            "image": {
-              "src": "/imgs/features/5.png",
-              "alt": "usage"
-            }
+            "description": "Buy Nano Banana Pro with a one-time payment. Check your email for the code and documentation."
           },
           {
             "title": "Start Your Project",
-            "description": "Read the documentation and clone the code of Nano Banana Pro. Start building your AI SaaS startup.",
-            "image": {
-              "src": "/imgs/features/6.png",
-              "alt": "usage"
-            }
+            "description": "Read the documentation and clone the code of Nano Banana Pro. Start building your AI SaaS startup."
           },
           {
             "title": "Customize Your Project",
-            "description": "Modify the template with your data and contents. Specific AI functionality needs.",
-            "image": {
-              "src": "/imgs/features/7.png",
-              "alt": "usage"
-            }
+            "description": "Modify the template with your data and contents. Specific AI functionality needs."
           },
           {
             "title": "Deploy to Production",
-            "description": "Deploy your project to production with a few steps and start serving customers immediately.",
-            "image": {
-              "src": "/imgs/features/8.png",
-              "alt": "usage"
-            }
+            "description": "Deploy your project to production with a few steps and start serving customers immediately."
           }
         ],
         "className": "bg-muted"
