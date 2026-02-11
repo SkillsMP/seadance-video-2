@@ -42,7 +42,7 @@ export default async function PricingPage({
       pricing: {
         block: 'pricing',
         data: {
-          pricing: t.raw('pricing'),
+          pricing: t.raw('page.sections.pricing'),
           currentSubscription,
         },
       },

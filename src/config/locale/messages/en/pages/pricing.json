@@ -3,126 +3,120 @@
     "title": "Nano Banana Pro Price",
     "description": "Start with a plan to generate images with Nano Banana Pro model."
   },
-  "pricing": {
-    "id": "pricing",
-    "sr_only_title": "Nano Banana Pro Pricing",
-    "title": "Nano Banana Pro Plan",
-    "description": "Get started to generate images with Nano Banana Pro model.",
-    "groups": [
-      {
-        "name": "one-time",
-        "title": "Pay as you go"
-      },
-      {
-        "name": "monthly",
-        "title": "Monthly",
-        "is_featured": true
-      },
-      {
-        "name": "yearly",
-        "title": "Annually",
-        "label": "save 23%"
-      }
-    ],
-    "items": [
-      {
-        "title": "Credits Package",
-        "description": "Start any time as you need.",
-        "features_title": "Includes",
-        "features": [
-          "400 credits, valid for 1 year",
-          "Text-to-image and image-to-image generation",
-          "High-quality images with Nano Banana 2 AI model",
-          "Free download of generated images"
-        ],
-        "interval": "one-time",
-        "amount": 2990,
-        "currency": "USD",
-        "price": "$29.9",
-        "original_price": "$39.9",
-        "unit": "/ 400 credits",
-        "is_featured": true,
-        "tip": "One-time payment",
-        "button": {
-          "title": "Buy Credits",
-          "url": "/#pricing",
-          "icon": "RiBankCardLine"
-        },
-        "product_id": "credits-package",
-        "product_name": "Credits Package",
-        "credits": 400,
-        "valid_days": 365,
-        "group": "one-time"
-      },
-      {
-        "title": "Starter Plan",
-        "description": "Auto renew monthly to get credits.",
-        "features_title": "Includes",
-        "features": [
-          "400 credits, valid for 1 month",
-          "Text-to-image and image-to-image generation",
-          "High-quality images with Nano Banana 2 AI model",
-          "Free download of generated images"
-        ],
-        "interval": "month",
-        "amount": 2490,
-        "currency": "USD",
-        "price": "$24.9",
-        "original_price": "$36.9",
-        "unit": "/ month",
-        "is_featured": true,
-        "tip": "Subscription can be canceled anytime!",
-        "button": {
-          "title": "Subscribe Plan",
-          "url": "/#pricing",
-          "icon": "RiBankCardLine"
-        },
-        "product_id": "starter-monthly",
-        "product_name": "Starter Plan Monthly",
-        "credits": 400,
-        "valid_days": 30,
-        "group": "monthly",
-        "plan_name": "Starter"
-      },
-      {
-        "title": "Premium Plan",
-        "description": "Around $19.2 / month, save 23% compared to monthly plan.",
-        "features_title": "Includes",
-        "features": [
-          "4800 credits, valid for 1 year",
-          "Text-to-image and image-to-image generation",
-          "High-quality images with Nano Banana 2 AI model",
-          "Free download of generated images"
-        ],
-        "interval": "year",
-        "amount": 22990,
-        "currency": "USD",
-        "price": "$229.9",
-        "original_price": "$299.9",
-        "unit": "/ year",
-        "is_featured": true,
-        "tip": "Subscription can be canceled anytime!",
-        "button": {
-          "title": "Subscribe Plan",
-          "url": "/#pricing",
-          "icon": "RiBankCardLine"
-        },
-        "product_id": "premium-yearly",
-        "product_name": "Premium Plan Annually",
-        "credits": 4800,
-        "valid_days": 365,
-        "group": "yearly",
-        "plan_name": "Premium"
-      }
-    ]
-  },
   "page": {
     "title": "Nano Banana Pro Pricing",
     "sections": {
       "pricing": {
         "id": "pricing",
         "title": "Nano Banana Pro Plan",
-        "description": "Get started to generate images with Nano Banana Pro model."
+        "description": "Get started to generate images with Nano Banana Pro model.",
+        "groups": [
+          {
+            "name": "one-time",
+            "title": "Pay as you go"
+          },
+          {
+            "name": "monthly",
+            "title": "Monthly",
+            "is_featured": true
+          },
+          {
+            "name": "yearly",
+            "title": "Annually",
+            "label": "save 23%"
+          }
+        ],
+        "items": [
+          {
+            "title": "Credits Package",
+            "description": "Start any time as you need.",
+            "features_title": "Includes",
+            "features": [
+              "400 credits, valid for 1 year",
+              "Text-to-image and image-to-image generation",
+              "High-quality images with Nano Banana 2 AI model",
+              "Free download of generated images"
+            ],
+            "interval": "one-time",
+            "amount": 2990,
+            "currency": "USD",
+            "price": "$29.9",
+            "original_price": "$39.9",
+            "unit": "/ 400 credits",
+            "is_featured": true,
+            "tip": "One-time payment",
+            "button": {
+              "title": "Buy Credits",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "credits-package",
+            "product_name": "Credits Package",
+            "credits": 400,
+            "valid_days": 365,
+            "group": "one-time"
+          },
+          {
+            "title": "Starter Plan",
+            "description": "Auto renew monthly to get credits.",
+            "features_title": "Includes",
+            "features": [
+              "400 credits, valid for 1 month",
+              "Text-to-image and image-to-image generation",
+              "High-quality images with Nano Banana 2 AI model",
+              "Free download of generated images"
+            ],
+            "interval": "month",
+            "amount": 2490,
+            "currency": "USD",
+            "price": "$24.9",
+            "original_price": "$36.9",
+            "unit": "/ month",
+            "is_featured": true,
+            "tip": "Subscription can be canceled anytime!",
+            "button": {
+              "title": "Subscribe Plan",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "starter-monthly",
+            "product_name": "Starter Plan Monthly",
+            "credits": 400,
+            "valid_days": 30,
+            "group": "monthly",
+            "plan_name": "Starter"
+          },
+          {
+            "title": "Premium Plan",
+            "description": "Around $19.2 / month, save 23% compared to monthly plan.",
+            "features_title": "Includes",
+            "features": [
+              "4800 credits, valid for 1 year",
+              "Text-to-image and image-to-image generation",
+              "High-quality images with Nano Banana 2 AI model",
+              "Free download of generated images"
+            ],
+            "interval": "year",
+            "amount": 22990,
+            "currency": "USD",
+            "price": "$229.9",
+            "original_price": "$299.9",
+            "unit": "/ year",
+            "is_featured": true,
+            "tip": "Subscription can be canceled anytime!",
+            "button": {
+              "title": "Subscribe Plan",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "premium-yearly",
+            "product_name": "Premium Plan Annually",
+            "credits": 4800,
+            "valid_days": 365,
+            "group": "yearly",
+            "plan_name": "Premium"
+          }
+        ]
       }
     }
   },
