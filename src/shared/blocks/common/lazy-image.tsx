@@ -29,6 +29,8 @@ export function LazyImage({
   sizes?: string;
   style?: React.CSSProperties;
 }) {
+  if (!src) return null;
+
   return (
     <LazyLoadImage
       src={src}
