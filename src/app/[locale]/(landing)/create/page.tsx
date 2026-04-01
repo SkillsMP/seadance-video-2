@@ -25,7 +25,7 @@ export default async function CreatePage({
   const t = await getTranslations('pages.create');
 
   // get landing page data
-  const tl = await getTranslations('landing');
+  // const tl = await getTranslations('landing');
 
   // build page sections
   const page: DynamicPage = {
