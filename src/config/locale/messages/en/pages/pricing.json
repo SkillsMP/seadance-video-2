@@ -117,6 +117,50 @@
             "plan_name": "Premium"
           }
         ]
+      },
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions about Pricing",
+        "items": [
+          {
+            "question": "What is the difference between the Credits Package and the subscription plans?",
+            "answer": "The Credits Package is a one-time purchase valid for 1 year. Subscription plans (Starter Monthly / Premium Annually) auto-renew and give you fresh credits every billing cycle at a lower per-credit rate."
+          },
+          {
+            "question": "Can I cancel my subscription at any time?",
+            "answer": "Yes. You can cancel your subscription at any time. You will continue to have access to your credits until the end of the current billing period."
+          },
+          {
+            "question": "Is there a free trial?",
+            "answer": "New accounts receive a small number of free credits to try the platform. No credit card is required to explore the free tier."
+          },
+          {
+            "question": "What payment methods are accepted?",
+            "answer": "We accept all major credit and debit cards (Visa, Mastercard, American Express) via our secure payment processor."
+          },
+          {
+            "question": "Do unused credits roll over?",
+            "answer": "Credits from the one-time package are valid for 1 year from purchase. Monthly subscription credits reset each billing cycle; unused credits do not roll over."
+          },
+          {
+            "question": "Can I upgrade or downgrade my plan?",
+            "answer": "Yes. You can upgrade or downgrade your subscription at any time from the billing settings page. Changes take effect at the start of the next billing cycle."
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "Get Started with Nano Banana Pro Today",
+        "description": "Choose a plan that fits your needs and start generating stunning images right away.",
+        "buttons": [
+          {
+            "title": "View Plans",
+            "url": "/pricing",
+            "target": "_self",
+            "icon": "DollarSign"
+          }
+        ],
+        "className": "bg-muted"
       }
     }
   },

@@ -33,9 +33,6 @@ export default async function PricingPage({
   // get pricing data
   const t = await getTranslations('pages.pricing');
 
-  // get landing data
-  const tl = await getTranslations('landing');
-
   // build page sections
   const page: DynamicPage = {
     sections: {
@@ -46,9 +43,8 @@ export default async function PricingPage({
           currentSubscription,
         },
       },
-      faq: tl.raw('faq'),
-      cta: tl.raw('cta'),
-      // testimonials: tl.raw('testimonials'),
+      faq: t.raw('page.sections.faq'),
+      cta: t.raw('page.sections.cta'),
     },
   };
 

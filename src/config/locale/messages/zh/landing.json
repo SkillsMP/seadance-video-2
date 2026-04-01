@@ -64,54 +64,6 @@
   },
 
 
-  "testimonials": {
-    "hidden": true
-  },
-  "faq": {
-    "id": "faq",
-    "title": "关于 Nano Banana Pro 的常见问题",
-    "items": [
-      {
-        "question": "Nano Banana Pro 是什么，它是如何工作的？",
-        "answer": "Nano Banana Pro 是由 Nano Banana 驱动的专业 AI 图像编辑模型。它支持自然语言文生图、文本+图像编辑、多图合成、迭代优化和高保真文字渲染，让您精确控制每次修改。"
-      },
-      {
-        "question": "如何使用 Nano Banana Pro 编辑现有图像？",
-        "answer": "上传基础图像，描述您需要的更改，Nano Banana Pro 会在无需蒙版的情况下应用添加、移除和风格转换。您可以持续对话式迭代，直到场景符合您的愿景，每个输出都带有 SynthID 水印以证明来源。"
-      },
-      {
-        "question": "哪些项目最适合使用 Nano Banana Pro？",
-        "answer": "使用 Nano Banana Pro 进行人像修饰、产品摄影、电影叙事、UGC 活动和品牌安全排版。Nano Banana 的多模态理解可以混合多个输入的元素，即使在大量编辑下也能保持背景完整。"
-      },
-      {
-        "question": "我可以控制输出尺寸和宽高比吗？",
-        "answer": "可以。指定 1:1、16:9 或 9:16 等宽高比以匹配您的渠道需求，引擎会自动渲染相应分辨率，让您无需手动裁剪即可输出像素完美的素材。"
-      },
-      {
-        "question": "如何为 Nano Banana Pro 制作有效的提示词？",
-        "answer": "从主体和场景开始，添加情绪或光照提示，然后指定您想要的细节程度或相机风格。您可以参考颜色、服装、材质，甚至上传引导图像来控制构图，并使用 Nano Banana Pro 保持角色一致性。"
-      },
-      {
-        "question": "我可以将 Nano Banana Pro 的输出用于商业项目吗？",
-        "answer": "可以。确保您拥有任何参考素材的权利，仔细检查品牌指南，并记住每个 Nano Banana Pro 输出都带有 SynthID 水印，以便在发布活动时帮助记录来源。"
-      }
-    ]
-  },
-  "cta": {
-    "id": "cta",
-    "title": "立即体验 Nano Banana Pro",
-    "description": "体验 Nano Banana Pro 强大的图像编辑能力。",
-    "buttons": [
-      {
-        "title": "体验 Nano Banana Pro",
-        "url": "/create",
-        "target": "_self",
-        "icon": "Wand"
-      }
-    ],
-    "className": "bg-muted"
-  },
-
   "footer": {
     "id": "footer",
     "brand": {

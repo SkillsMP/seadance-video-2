@@ -5,7 +5,53 @@
   },
   "page": {
     "title": "AI Music Generator",
-    "description": "Generate amazing music with AI"
+    "description": "Generate amazing music with AI",
+    "sections": {
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions about AI Music Generator",
+        "items": [
+          {
+            "question": "What music styles can the AI generate?",
+            "answer": "Our AI supports a wide range of genres including pop, rock, jazz, classical, electronic, hip-hop, country, and more. You can specify the style in your prompt or use Custom Mode for precise control."
+          },
+          {
+            "question": "Can I write my own lyrics?",
+            "answer": "Yes. In Custom Mode you can write your own lyrics. For best results, aim for two verses of eight lines each. You can also enable Instrumental mode to generate music without lyrics."
+          },
+          {
+            "question": "How long can the generated music be?",
+            "answer": "Generated songs are typically 1–4 minutes long. The exact duration depends on the model and the content of your prompt."
+          },
+          {
+            "question": "How long does music generation take?",
+            "answer": "Generation usually takes 2–3 minutes. You can monitor progress in real time while the model creates your track."
+          },
+          {
+            "question": "Can I download the generated music?",
+            "answer": "Yes. Once generation is complete you can preview and download the audio file directly from the generator."
+          },
+          {
+            "question": "Can I use the generated music commercially?",
+            "answer": "Yes, subject to our Terms of Service and the underlying model's licensing terms. We recommend reviewing those terms before publishing commercial work."
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "Create Your AI Music Track Now",
+        "description": "Compose original music in minutes with the power of AI. No musical experience required.",
+        "buttons": [
+          {
+            "title": "Generate Music Now",
+            "url": "/ai-music-generator",
+            "target": "_self",
+            "icon": "Music"
+          }
+        ],
+        "className": "bg-muted"
+      }
+    }
   },
   "generator": {
     "title": "Music Generator",

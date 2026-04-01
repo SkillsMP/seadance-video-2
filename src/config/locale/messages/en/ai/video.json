@@ -5,7 +5,53 @@
   },
   "page": {
     "title": "AI Video Generator",
-    "description": "Generate videos with AI models, support text-to-video, image-to-video and video-to-video."
+    "description": "Generate videos with AI models, support text-to-video, image-to-video and video-to-video.",
+    "sections": {
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions about AI Video Generator",
+        "items": [
+          {
+            "question": "What generation modes does the video generator support?",
+            "answer": "We support three modes: Text-to-Video (generate from a text prompt), Image-to-Video (animate a reference image), and Video-to-Video (transform an existing video using a reference URL)."
+          },
+          {
+            "question": "What is the maximum video length?",
+            "answer": "Generated videos are typically 5–10 seconds long, depending on the model selected. Longer durations may require more credits."
+          },
+          {
+            "question": "What resolutions are supported?",
+            "answer": "Supported resolutions vary by model and include 720p and 1080p options with common aspect ratios such as 16:9, 9:16, and 1:1."
+          },
+          {
+            "question": "How long does video generation take?",
+            "answer": "Video generation usually takes 1–5 minutes depending on length, resolution, and current load. Progress is displayed in real time."
+          },
+          {
+            "question": "How many credits does a video cost?",
+            "answer": "Credits consumed depend on the model and output length. You can see the estimated cost before you start generation."
+          },
+          {
+            "question": "Can I use generated videos commercially?",
+            "answer": "Yes, subject to our Terms of Service and the model's usage policies. Review the applicable terms before publishing commercial content."
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "Create Your First AI Video Now",
+        "description": "Turn your ideas into stunning videos with AI — no editing skills needed.",
+        "buttons": [
+          {
+            "title": "Generate a Video Now",
+            "url": "/ai-video-generator",
+            "target": "_self",
+            "icon": "Video"
+          }
+        ],
+        "className": "bg-muted"
+      }
+    }
   },
   "generator": {
     "title": "Video Generator",

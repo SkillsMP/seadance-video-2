@@ -5,7 +5,53 @@
   },
   "page": {
     "title": "AI Image Generator",
-    "description": "Generate images with AI models, support text-to-image and image-to-image."
+    "description": "Generate images with AI models, support text-to-image and image-to-image.",
+    "sections": {
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions about AI Image Generator",
+        "items": [
+          {
+            "question": "How many credits does generating an image cost?",
+            "answer": "Each image generation costs 1–4 credits depending on the model and resolution you choose. You can check the exact cost before generating."
+          },
+          {
+            "question": "What image formats and resolutions are supported?",
+            "answer": "We support JPEG and PNG output. You can choose aspect ratios including 1:1, 16:9, 9:16, 4:3, and 3:4, rendered at high resolution."
+          },
+          {
+            "question": "Can I use a reference image for generation?",
+            "answer": "Yes. Upload one or more reference images to guide style, composition, or character consistency. Our models support both text-to-image and image-to-image modes."
+          },
+          {
+            "question": "How long does image generation take?",
+            "answer": "Most images are generated within 10–30 seconds depending on the model selected and current server load."
+          },
+          {
+            "question": "Can I use generated images for commercial purposes?",
+            "answer": "Yes. You retain the rights to use generated images for commercial projects, provided you comply with our Terms of Service and the underlying model's usage policies."
+          },
+          {
+            "question": "What happens if generation fails?",
+            "answer": "If a generation fails due to a server error, your credits are automatically refunded. You can retry anytime without losing credits."
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "Start Generating Images with AI",
+        "description": "Create stunning images in seconds with the power of AI. No design skills required.",
+        "buttons": [
+          {
+            "title": "Generate an Image Now",
+            "url": "/create",
+            "target": "_self",
+            "icon": "Wand"
+          }
+        ],
+        "className": "bg-muted"
+      }
+    }
   },
   "generator": {
     "title": "Image Generator",

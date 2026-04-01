@@ -64,54 +64,6 @@
   },
 
 
-  "testimonials": {
-    "hidden": true
-  },
-  "faq": {
-    "id": "faq",
-    "title": "Frequently asked questions about Nano Banana Pro",
-    "items": [
-      {
-        "question": "What exactly is Nano Banana Pro and how does it work?",
-        "answer": "Nano Banana Pro is the professional AI image editing model powered by Nano Banana. It supports natural language text-to-image generation, text + image editing, multi-image composition, iterative refinements, and high-fidelity text rendering, giving you precise control over every revision."
-      },
-      {
-        "question": "How do I edit existing visuals with Nano Banana Pro?",
-        "answer": "Upload a base image, describe the changes you need, and Nano Banana Pro applies additions, removals, and style shifts without masks. You can keep iterating conversationally until the scene matches your vision, and every output ships with a SynthID watermark for provenance."
-      },
-      {
-        "question": "Which projects benefit most from Nano Banana Pro?",
-        "answer": "Use Nano Banana Pro for portrait retouching, product photography, cinematic storytelling, UGC campaigns, and brand-safe typography. Nano Banana's multimodal understanding blends elements from multiple inputs and keeps backgrounds intact even under heavy edits."
-      },
-      {
-        "question": "Can I control output size and aspect ratio?",
-        "answer": "Yes. Specify aspect ratios such as 1:1, 16:9, or 9:16 to match your channel requirements, and the engine renders the corresponding resolution automatically so you can ship pixel-perfect assets without manual cropping."
-      },
-      {
-        "question": "How do I craft effective prompts for Nano Banana Pro?",
-        "answer": "Start with the subject and setting, add mood or lighting cues, then specify the level of detail or camera style you want. You can reference colors, outfits, materials, or even upload guide images to steer composition and keep characters consistent with Nano Banana Pro."
-      },
-      {
-        "question": "Can l use Nano Banana Pro outputs for commercial projects?",
-        "answer": "Yes. Ensure you have rights to any reference assets, double-check brand guidelines, and remember that every Nano Banana Pro output carries a SynthID watermark to help document provenance when you launch campaigns."
-      }
-    ]
-  },
-  "cta": {
-    "id": "cta",
-    "title": "Try Nano Banana Pro now",
-    "description": "Experience the power of Nano Banana Pro with amazing image editing capabilities.",
-    "buttons": [
-      {
-        "title": "Try Nano Banana Pro",
-        "url": "/create",
-        "target": "_self",
-        "icon": "Wand"
-      }
-    ],
-    "className": "bg-muted"
-  },
-
   "footer": {
     "id": "footer",
     "brand": {

@@ -21,9 +21,6 @@ export default async function AiImageGeneratorPage({
   // get ai image data
   const t = await getTranslations('ai.image');
 
-  // get landing page data
-  const tl = await getTranslations('landing');
-
   // build page sections
   const page: DynamicPage = {
     sections: {
@@ -38,8 +35,8 @@ export default async function AiImageGeneratorPage({
       generator: {
         component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} />,
       },
-      faq: tl.raw('faq'),
-      cta: tl.raw('cta'),
+      faq: t.raw('page.sections.faq'),
+      cta: t.raw('page.sections.cta'),
     },
   };
 
