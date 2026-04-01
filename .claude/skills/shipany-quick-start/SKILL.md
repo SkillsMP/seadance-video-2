@@ -23,7 +23,7 @@ For the first pass, **only modify the files listed in** `references/09-checklist
   - Windows (cmd): `rmdir /s /q .next`
 - Then run `pnpm build` to validate the project (build + lint checks). If it fails, fix issues **only within the v1 allowlist** unless the user expands scope.
 
-## Project brief
+## Project brief 项目简报
 
 Normalize the user’s request first:
 
@@ -31,7 +31,7 @@ Normalize the user’s request first:
 
 ## Execution order (ShipAny Two)
 
-1. App basics (env-driven): `references/01-env-app-info.md`
+1. App basics (env-driven): `references/01-env-app-info.md`（这一步目前先不用做，用户自己做）
 2. SEO metadata: `references/02-seo-metadata.md`
 3. Landing page (EN/ZH): `references/03-landing-page.md`
    - Page sections live in `src/config/locale/messages/{locale}/pages/index.json`
