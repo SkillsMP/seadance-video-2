@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Nano Banana Pro",
-    "description": "Nano Banana Pro 是用于构建 AI SaaS 创业项目的 NextJS 脚手架。提供丰富模板和组件，助您快速上线产品。",
-    "keywords": "nano-banana-pro, nano-banana-pro, nano-banana-pro-demo"
+    "title": "Banana Pro — 让你的疯狂构思成真",
+    "description": "Banana Pro 是最新的最先进 AI 图片生成平台。以极速和精准度创作、编辑和合成图片。",
+    "keywords": "Banana Pro, AI 图片生成器, Nano Banana 2, 图片编辑, AI 艺术, 文字生成图片, 图片合成"
   },
   "sign": {
     "sign_in_title": "登录",

@@ -2,153 +2,68 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "Nano Banana Pro",
+      "title": "Banana Pro",
       "logo": {
         "src": "/logo.png",
-        "alt": "Nano Banana Pro"
+        "alt": "Banana Pro"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "创建",
-          "url": "/create",
-          "icon": "Zap"
-        },
-        {
-          "title": "价格",
-          "url": "/pricing",
-          "icon": "DollarSign"
-        },
-        {
-          "title": "案例展示",
-          "url": "/showcases",
-          "icon": "Box"
-        },
-        {
-          "title": "生成器",
-          "icon": "Sparkles",
-          "children": [
-            {
-              "title": "发型设计",
-              "url": "/hairstyles",
-              "icon": "Wind",
-              "description": "AI 发型生成器"
-            }
-          ]
+          "title": "核心功能",
+          "url": "/#features",
+          "icon": "Sparkles"
         }
       ]
     },
     "buttons": [],
     "user_nav": {
-      "show_name": true,
-      "show_credits": true,
-      "show_sign_out": true,
-      "items": [
-        {
-          "title": "账单",
-          "url": "/settings/billing",
-          "icon": "CreditCard"
-        },
-        {
-          "title": "活动",
-          "url": "/activity",
-          "icon": "Activity"
-        }
-      ]
+      "show_name": false,
+      "show_credits": false,
+      "show_sign_out": false,
+      "items": []
     },
-    "show_sign": true,
+    "show_sign": false,
     "show_theme": true,
     "show_locale": true
   },
-
-
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "Nano Banana Pro",
-      "description": "Nano Banana Pro 是第二代 Nano Banana，也是旗舰级 AI 图像编辑模型。提供一流的图像编辑体验。",
+      "title": "Banana Pro",
+      "description": "Banana Pro 是 Nano Banana 2 的专业界面，提供全球最先进的 AI 图像生成体验。",
       "logo": {
         "src": "/logo.png",
-        "alt": "Nano Banana Pro"
+        "alt": "Banana Pro"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "关于",
+          "title": "产品",
           "children": [
             {
-              "title": "创建",
-              "url": "/create",
-              "target": "_self"
-            },
-            {
-              "title": "功能",
+              "title": "功能介绍",
               "url": "/#features",
-              "target": "_self"
-            },
-            {
-              "title": "案例",
-              "url": "/#showcases",
               "target": "_self"
             },
             {
               "title": "常见问题",
               "url": "/#faq",
               "target": "_self"
-            },
-            {
-              "title": "博客",
-              "url": "/blog",
-              "target": "_self"
             }
           ]
         },
         {
-          "title": "提示词",
+          "title": "资源",
           "children": [
             {
-              "title": "3D 数字人漫画",
-              "url": "/create?prompt=3d-digital-human-comics",
-              "target": "_self"
-            },
-            {
-              "title": "竖版鱼眼自拍",
-              "url": "/create?prompt=vertical-fisheye-selfie",
-              "target": "_self"
-            },
-            {
-              "title": "GTA 罪恶都市",
-              "url": "/create?prompt=gta-vice-city",
-              "target": "_self"
-            },
-            {
-              "title": "照片修复",
-              "url": "/create?prompt=photo-restoration",
-              "target": "_self"
-            },
-            {
-              "title": "名人 3D 漫画像",
-              "url": "/create?prompt=3d-caricature-of-celebrity",
-              "target": "_self"
-            },
-            {
-              "title": "3D 城市天气",
-              "url": "/create?prompt=3d-city-weather",
-              "target": "_self"
-            }
-          ]
-        },
-        {
-          "title": "生成器",
-          "children": [
-            {
-              "title": "AI 发型生成器",
-              "url": "/hairstyles",
-              "target": "_self"
+              "title": "Gemini 概览",
+              "url": "https://gemini.google/overview/image-generation/",
+              "target": "_blank"
             }
           ]
         }
@@ -157,9 +72,9 @@
     "social": {
       "items": [
         {
-          "title": "邮箱",
+          "title": "邮件",
           "icon": "Mail",
-          "url": "mailto:support@shipany-template-nano-banana.ai",
+          "url": "mailto:support@bananapro.org",
           "target": "_self"
         }
       ]

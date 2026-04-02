@@ -2,97 +2,52 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "Nano Banana Pro",
+      "title": "Banana Pro",
       "logo": {
         "src": "/logo.png",
-        "alt": "Nano Banana Pro"
+        "alt": "Banana Pro"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "Create",
-          "url": "/create",
-          "icon": "Zap"
-        },
-        {
-          "title": "Pricing",
-          "url": "/pricing",
-          "icon": "DollarSign"
-        },
-                {
-          "title": "Showcases",
-          "url": "/showcases",
-          "icon": "Box"
-        },
-        {
-          "title": "Generators",
-          "icon": "Sparkles",
-          "children": [
-            {
-              "title": "Hairstyles",
-              "url": "/hairstyles",
-              "icon": "Wind",
-              "description": "AI Hairstyle Generator"
-            }
-          ]
+          "title": "Features",
+          "url": "/#features",
+          "icon": "Sparkles"
         }
       ]
     },
     "buttons": [],
     "user_nav": {
-      "show_name": true,
-      "show_credits": true,
-      "show_sign_out": true,
-      "items": [
-        {
-          "title": "Billing",
-          "url": "/settings/billing",
-          "icon": "CreditCard"
-        },
-        {
-          "title": "Activity",
-          "url": "/activity",
-          "icon": "Activity"
-        }
-      ]
+      "show_name": false,
+      "show_credits": false,
+      "show_sign_out": false,
+      "items": []
     },
-    "show_sign": true,
+    "show_sign": false,
     "show_theme": true,
     "show_locale": true
   },
-
-
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "Nano Banana Pro",
-      "description": "Nano Banana Pro is the second generation of Nano Banana, it's also the flagship AI image editing model. Provide the best-in-class image editing experience.",
+      "title": "Banana Pro",
+      "description": "Banana Pro is the professional interface for Nano Banana 2, providing the world's most advanced AI image generation experience.",
       "logo": {
         "src": "/logo.png",
-        "alt": "Nano Banana Pro"
+        "alt": "Banana Pro"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "About",
+          "title": "Product",
           "children": [
-            {
-              "title": "Create",
-              "url": "/create",
-              "target":"_self"
-            },
             {
               "title": "Features",
               "url": "/#features",
-              "target": "_self"
-            },
-            {
-              "title": "Showcases",
-              "url": "/#showcases",
               "target": "_self"
             },
             {
@@ -103,47 +58,12 @@
           ]
         },
         {
-          "title": "Prompts",
+          "title": "Resources",
           "children": [
             {
-              "title": "3D Digital Human Comics",
-              "url": "/create?prompt=3d-digital-human-comics",
-              "target": "_self"
-            },
-            {
-              "title": "Vertical fisheye selfie",
-              "url": "/create?prompt=vertical-fisheye-selfie",
-              "target": "_self"
-            },
-            {
-              "title": "GTA VICE CITY",
-              "url": "/create?prompt=gta-vice-city",
-              "target": "_self"
-            },
-            {
-              "title": "Photo restoration",
-              "url": "/create?prompt=photo-restoration",
-              "target": "_self"
-            },
-            {
-              "title": "3D caricature of celebrity",
-              "url": "/create?prompt=3d-caricature-of-celebrity",
-              "target": "_self"
-            },
-            {
-              "title": "3D City Weather",
-              "url": "/create?prompt=3d-city-weather",
-              "target": "_self"
-            }
-          ]
-        },
-        {
-          "title": "Generators",
-          "children": [
-            {
-              "title": "AI Hairstyle Generator",
-              "url": "/hairstyles",
-              "target": "_self"
+              "title": "Gemini Overview",
+              "url": "https://gemini.google/overview/image-generation/",
+              "target": "_blank"
             }
           ]
         }
@@ -154,7 +74,7 @@
         {
           "title": "Email",
           "icon": "Mail",
-          "url": "mailto:support@shipany-template-nano-banana.ai",
+          "url": "mailto:support@bananapro.org",
           "target": "_self"
         }
       ]

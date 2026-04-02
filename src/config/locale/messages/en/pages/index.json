@@ -2,119 +2,98 @@
   "page": {
     "show_sections": [
       "hero",
-      "logos",
       "introduce",
       "benefits",
-      "usage",
       "features",
-      "stats",
-      "testimonials",
       "faq",
       "cta"
     ],
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Ship AI Startups in hours, not days",
-        "highlight_text": "in hours",
-        "description": "Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups.<br/>Ship Fast with a variety of templates and components.",
+        "title": "Nano Banana 2 is here.",
+        "highlight_text": "is here",
+        "description": "Our latest state of the art image model. Bring your wildest ideas to life at the fast speed you need.",
         "announcement": {
           "badge": "New",
-          "title": "🎉 Nano Banana Pro",
-          "url": "/pricing"
+          "title": "🎉 Nano Banana 2",
+          "url": "/#features"
         },
-        "tip": "🎁 Special offer for the first 1000 users",
+        "tip": "🎁 Experience the advanced reasoning you love",
         "buttons": [
           {
-            "title": "Get Started",
+            "title": "Start Creating",
             "icon": "Zap",
-            "url": "/pricing",
+            "url": "/#features",
             "target": "_self",
             "variant": "default"
           },
           {
-            "title": "Read Document",
+            "title": "Learn More",
             "icon": "BookOpenText",
-            "url": "/docs",
+            "url": "https://gemini.google/overview/image-generation/",
             "target": "_blank",
             "variant": "outline"
           }
         ],
         "show_avatars": true,
-        "avatars_tip": "999+ users are using Nano Banana Pro",
+        "avatars_tip": "Join 1M+ creators using Banana Pro",
         "show_award": false,
+        "image": {
+          "src": "https://picsum.photos/seed/bananapro-en-hero-main/1200/800.webp",
+          "alt": "Banana Pro Hero"
+        },
+        "image_invert": {
+          "src": "https://picsum.photos/seed/bananapro-en-hero-invert/1200/800.webp",
+          "alt": "Banana Pro Hero Dark"
+        },
         "background_image": {
-          "src": "/imgs/bg/tree.jpg",
-          "alt": "hero"
+          "src": "https://picsum.photos/seed/bananapro-en-hero-bg/1600/900.webp",
+          "alt": "hero bg"
         }
-      },
-      "logos": {
-        "id": "logos",
-        "title": "Nano Banana Pro is built on the shoulders of giants",
-        "items": [
-          {
-            "title": "Next.js",
-            "image": {
-              "src": "/imgs/logos/nextjs.svg",
-              "alt": "Next.js"
-            }
-          },
-          {
-            "title": "React",
-            "image": {
-              "src": "/imgs/logos/react.svg",
-              "alt": "React"
-            }
-          },
-          {
-            "title": "TailwindCSS",
-            "image": {
-              "src": "/imgs/logos/tailwindcss.svg",
-              "alt": "TailwindCSS"
-            }
-          },
-          {
-            "title": "Shadcn/UI",
-            "image": {
-              "src": "/imgs/logos/shadcn.svg",
-              "alt": "Shadcn/UI"
-            }
-          },
-          {
-            "title": "Vercel",
-            "image": {
-              "src": "/imgs/logos/vercel.svg",
-              "alt": "Vercel"
-            }
-          }
-        ]
       },
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "What is Nano Banana Pro",
+        "title": "What is Banana Pro",
         "label": "Introduce",
-        "description": "Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups, including templates, components, and documentation.",
+        "description": "Banana Pro is the professional interface for Nano Banana 2, the world's most advanced image generation model.",
         "items": [
           {
-            "title": "Ready-to-use Templates",
-            "description": "Choose from dozens of production-ready AI SaaS templates to quickly start your project.",
-            "icon": "RiNextjsFill"
+            "title": "One visual, many sizes",
+            "description": "Instantly resize to any format without cropping for social media and professional design.",
+            "icon": "RiAspectLine",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-intro-1/960/640.webp",
+              "alt": "Resize"
+            }
           },
           {
-            "title": "Infrastructure Setup",
-            "description": "Get instant access to scalable infrastructure with best practices built-in.",
-            "icon": "RiDatabase2Line"
+            "title": "Dial in every detail",
+            "description": "Change the mood, adjust camera angles, and focus to get exactly the shot you want.",
+            "icon": "RiFocus2Line",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-intro-2/960/640.webp",
+              "alt": "Detail"
+            }
           },
           {
-            "title": "Quick Deployment",
-            "description": "Deploy your AI SaaS application to production in hours, not days.",
-            "icon": "RiCloudyFill"
+            "title": "Precise text placement",
+            "description": "Generate clear, readable text directly inside your images for logos, posters, and comics.",
+            "icon": "RiText",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-intro-3/960/640.webp",
+              "alt": "Text"
+            }
           },
           {
-            "title": "AI Integration",
-            "description": "Integrate AI into your project with ease using our built-in AI SDK.",
-            "icon": "RiRobot2Line"
+            "title": "Impossible selfies",
+            "description": "Effortlessly add any element or background to your selfies with professional-grade blending.",
+            "icon": "RiUserSmileLine",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-intro-4/960/640.webp",
+              "alt": "Selfie"
+            }
           }
         ],
         "className": "bg-muted"
@@ -122,237 +101,122 @@
       "benefits": {
         "block": "features-accordion",
         "id": "benefits",
-        "title": "Why Choose Nano Banana Pro",
+        "title": "Why Choose Banana Pro",
         "label": "Benefits",
-        "description": "Get everything you need to launch your AI startup - from ready-to-use templates to technical support.",
+        "description": "Nano Banana 2 combines world-class intelligence with industry-leading generation speed.",
         "items": [
           {
-            "title": "Complete Framework",
-            "description": "Built on Next.js with authentication, payments, and AI integration - everything works out of the box.",
-            "icon": "RiNextjsFill"
+            "title": "State of the Art Intelligence",
+            "description": "Built on the latest Nano Banana 2 model for unmatched creative understanding.",
+            "icon": "RiBrainLine",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-benefits-1/960/640.webp",
+              "alt": "Intelligence"
+            }
           },
           {
-            "title": "Rich Templates Library",
-            "description": "Choose from various AI SaaS templates to kickstart your project - chatbots, image generation, and more.",
-            "icon": "RiClapperboardAiLine"
+            "title": "Incredible Speed",
+            "description": "Go from prompt to high-quality image in seconds, keeping you in the creative flow.",
+            "icon": "RiTimerFlashLine",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-benefits-2/960/640.webp",
+              "alt": "Speed"
+            }
           },
           {
-            "title": "Technical Guidance",
-            "description": "Get dedicated support and join our developer community to ensure your successful launch.",
-            "icon": "RiCodeFill"
+            "title": "Professional Precision",
+            "description": "Fine-tune visuals with advanced controls for layout, composition, and style.",
+            "icon": "RiPencilRulerLine",
+            "image": {
+              "src": "https://picsum.photos/seed/bananapro-en-benefits-3/960/640.webp",
+              "alt": "Precision"
+            }
           }
         ]
-      },
-      "usage": {
-        "block": "features-step",
-        "id": "usage",
-        "title": "How to Launch with Nano Banana Pro",
-        "description": "Get your AI SaaS startup running in three simple steps:",
-        "image_position": "left",
-        "text_align": "center",
-        "items": [
-          {
-            "title": "Get Nano Banana Pro",
-            "description": "Buy Nano Banana Pro with a one-time payment. Check your email for the code and documentation."
-          },
-          {
-            "title": "Start Your Project",
-            "description": "Read the documentation and clone the code of Nano Banana Pro. Start building your AI SaaS startup."
-          },
-          {
-            "title": "Customize Your Project",
-            "description": "Modify the template with your data and contents. Specific AI functionality needs."
-          },
-          {
-            "title": "Deploy to Production",
-            "description": "Deploy your project to production with a few steps and start serving customers immediately."
-          }
-        ],
-        "className": "bg-muted"
       },
       "features": {
         "id": "features",
-        "title": "Key Features of Nano Banana Pro",
-        "description": "Everything you need to launch your AI SaaS startup quickly and efficiently.",
+        "title": "Advanced Creative Tools",
+        "description": "The most powerful tools for digital creators, designers, and visual storytellers.",
         "items": [
           {
-            "title": "Next.js Boilerplate",
-            "description": "Production-ready Next.js templates with SEO-friendly structure and i18n support.",
-            "icon": "RiNextjsFill"
+            "title": "Smart Aspect Ratios",
+            "description": "Intelligent resizing that preserves your composition across all formats.",
+            "icon": "RiCrop2Line"
           },
           {
-            "title": "Authentication & Payments",
-            "description": "Integrated Google OAuth, one-tap login, and Stripe payment processing.",
-            "icon": "RiKey2Fill"
+            "title": "Visual Context",
+            "description": "Advanced understanding of lighting, textures, and spatial relationships.",
+            "icon": "RiSunCloudyLine"
           },
           {
-            "title": "Data Infrastructure",
-            "description": "Built-in Supabase integration for reliable and scalable data storage.",
-            "icon": "RiDatabase2Line"
+            "title": "Typography Engine",
+            "description": "First-of-its-kind support for complex type and logo design integration.",
+            "icon": "RiTextDirectionLtr"
           },
           {
-            "title": "One-Click Deployment",
-            "description": "Seamless deployment to Vercel or Cloudflare with automated setup.",
-            "icon": "RiCloudy2Fill"
+            "title": "Person Realism",
+            "description": "Hyper-realistic rendering of people and skin tones for authentic portraits.",
+            "icon": "RiUserStarLine"
           },
           {
-            "title": "Business Analytics",
-            "description": "Integrated Google Analytics and Search Console for tracking growth.",
-            "icon": "RiBarChart2Line"
+            "title": "Multi-Image Blending",
+            "description": "Seamlessly combine two or more photos into a single coherent piece of art.",
+            "icon": "RiOverlapLine"
           },
           {
-            "title": "AI-Ready Infrastructure",
-            "description": "Pre-configured AI integration with built-in credits system and API sales.",
-            "icon": "RiRobot2Line"
-          }
-        ]
-      },
-      "stats": {
-        "id": "stats",
-        "title": "People Love Nano Banana Pro",
-        "description": "for it's easy to use and fast to ship.",
-        "items": [
-          {
-            "title": "999+",
-            "description": "Customers"
-          },
-          {
-            "title": "200+",
-            "description": "Blocks"
-          },
-          {
-            "title": "50+",
-            "description": "Templates"
-          }
-        ],
-        "className": "bg-muted"
-      },
-      "testimonials": {
-        "id": "testimonials",
-        "title": "What Users Say About Nano Banana Pro",
-        "description": "Hear from developers and founders who launched their AI startups with Nano Banana Pro.",
-        "items": [
-          {
-            "name": "David Chen",
-            "role": "Founder of AIWallpaper.shop",
-            "quote": "Nano Banana Pro saved us months of development time. We launched our AI wallpaper business in just 2 days and got our first paying customer within a week!",
-            "image": {
-              "src": "/imgs/avatars/1.png",
-              "alt": "david"
-            }
-          },
-          {
-            "name": "Rachel Kim",
-            "role": "CTO at HeyBeauty.ai",
-            "quote": "The pre-built AI infrastructure is a game-changer. We didn't have to worry about architecture - just focused on our AI beauty tech and went live fast.",
-            "image": {
-              "src": "/imgs/avatars/2.png",
-              "alt": "rachel"
-            }
-          },
-          {
-            "name": "Marcus Thompson",
-            "role": "Solo Developer",
-            "quote": "As a solo developer, Nano Banana Pro gave me everything I needed - auth, payments, AI integration, and beautiful UI. Launched my SaaS in a weekend!",
-            "image": {
-              "src": "/imgs/avatars/3.png",
-              "alt": "marcus"
-            }
-          },
-          {
-            "name": "Sofia Garcia",
-            "role": "CEO of Melodisco",
-            "quote": "The templates are production-ready and highly customizable. We built our AI music platform in hours instead of months. Incredible time-to-market!",
-            "image": {
-              "src": "/imgs/avatars/4.png",
-              "alt": "sofia"
-            }
-          },
-          {
-            "name": "James Wilson",
-            "role": "Tech Lead at GPTs.works",
-            "quote": "Nano Banana Pro's infrastructure is rock-solid. We scaled from 0 to 10k users without touching the backend. Best investment for our AI startup.",
-            "image": {
-              "src": "/imgs/avatars/5.png",
-              "alt": "james"
-            }
-          },
-          {
-            "name": "Anna Zhang",
-            "role": "Startup Founder",
-            "quote": "From idea to launch in 3 days! Nano Banana Pro's templates and deployment tools made it possible to test our AI business concept incredibly fast.",
-            "image": {
-              "src": "/imgs/avatars/6.png",
-              "alt": "anna"
-            }
+            "title": "Fast Reasoning",
+            "description": "Complex prompt following with deep semantic understanding.",
+            "icon": "RiFlashlightLine"
           }
         ]
       },
       "faq": {
         "id": "faq",
-        "title": "Frequently Asked Questions About Nano Banana Pro",
-        "description": "Have another question? Contact us on Discord or by email.",
+        "title": "Frequently Asked Questions",
+        "description": "Everything you need to know about Banana Pro and Nano Banana 2.",
         "items": [
           {
-            "question": "What exactly is Nano Banana Pro and how does it work?",
-            "answer": "Nano Banana Pro is a comprehensive NextJS boilerplate designed specifically for building AI SaaS startups. It provides ready-to-use templates, infrastructure setup, and deployment tools that help you launch your AI business in hours instead of days."
+            "question": "What makes Nano Banana 2 better than previous models?",
+            "answer": "Nano Banana 2 features a major leap in reasoning, world knowledge, and generation speed, allowing for more complex prompt following and faster results."
           },
           {
-            "question": "Do I need advanced technical skills to use Nano Banana Pro?",
-            "answer": "While basic programming knowledge is helpful, Nano Banana Pro is designed to be developer-friendly. Our templates and documentation make it easy to get started, even if you're not an expert in AI or cloud infrastructure."
+            "question": "Can I use Banana Pro for commercial design projects?",
+            "answer": "Yes, Banana Pro is designed for professionals with precision text placement, aspect ratio controls, and high-resolution output suitable for commercial use."
           },
           {
-            "question": "What types of AI SaaS can I build with Nano Banana Pro?",
-            "answer": "Nano Banana Pro supports a wide range of AI applications, from content generation to data analysis tools. Our templates cover popular use cases like AI chatbots, content generators, image processing apps, and more."
+            "question": "How does the 'Impossible Selfies' feature work?",
+            "answer": "By uploading a reference photo, Banana Pro can seamlessly place you in any environment or outfit while maintaining your unique features."
           },
           {
-            "question": "How long does it typically take to launch with Nano Banana Pro?",
-            "answer": "With Nano Banana Pro, you can have a working prototype in hours and a production-ready application in hours. Our one-click deployment and pre-configured infrastructure significantly reduce the traditional months-long development cycle."
+            "question": "Is the content generated safe and ethical?",
+            "answer": "We prioritize safety with advanced filters to prevent harmful content and use digital watermarking (SynthID) for transparent attribution."
           },
           {
-            "question": "What's included in the Nano Banana Pro infrastructure?",
-            "answer": "Nano Banana Pro provides a complete infrastructure stack including authentication, database setup, API integration, payment processing, and scalable cloud deployment. Everything is pre-configured following industry best practices."
-          },
-          {
-            "question": "Can I customize the templates to match my brand?",
-            "answer": "Absolutely! All Nano Banana Pro templates are fully customizable. You can modify the design, features, and functionality to match your brand identity and specific business requirements while maintaining the robust underlying infrastructure."
+            "question": "Does it support multiple languages?",
+            "answer": "Yes, Banana Pro understands and processes prompts in dozens of languages, including English and Chinese."
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "Ship your first AI SaaS Startup",
-        "description": "Start from here, ship with Nano Banana Pro.",
+        "title": "Bring your wildest ideas to life.",
+        "description": "Start creating with Nano Banana 2 and experience the future of image generation today.",
         "buttons": [
           {
-            "title": "Get Nano Banana Pro",
-            "url": "https://shipany.ai",
-            "target": "_blank",
+            "title": "Start for Free",
+            "url": "/#features",
+            "target": "_self",
             "icon": "Zap"
           },
           {
-            "title": "Read Document",
-            "url": "/docs",
+            "title": "Contact Sales",
+            "url": "mailto:support@bananapro.org",
             "target": "_blank",
             "variant": "outline",
-            "icon": "BookOpenText"
+            "icon": "Mail"
           }
         ],
-        "className": "bg-muted"
-      },
-      "subscribe": {
-        "id": "subscribe",
-        "title": "Subscribe to our newsletter",
-        "description": "Get the latest news and updates from Nano Banana Pro.",
-        "submit": {
-          "input": {
-            "placeholder": "Enter your email"
-          },
-          "button": {
-            "title": "Subscribe"
-          },
-          "action": "/api/subscribe"
-        },
         "className": "bg-muted"
       }
     }
