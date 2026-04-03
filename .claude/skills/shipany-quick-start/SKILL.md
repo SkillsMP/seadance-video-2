@@ -31,7 +31,7 @@ Normalize the user’s request first:
 
 ## Execution order (ShipAny Two)
 
-1. App basics (env-driven): `references/01-env-app-info.md`（这一步目前先不用做，用户自己做）
+1. App basics (env-driven): `references/01-env-app-info.md`
 2. SEO metadata: `references/02-seo-metadata.md`
 3. Landing page (EN/ZH): `references/03-landing-page.md`
    - Page sections live in `src/config/locale/messages/{locale}/pages/index.json`
