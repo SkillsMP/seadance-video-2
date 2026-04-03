@@ -11,25 +11,25 @@
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Nano Banana 2 is here.",
-        "highlight_text": "is here",
-        "description": "Our latest state of the art image model. Bring your wildest ideas to life at the fast speed you need.",
+        "title": "AI Image Generator: Nano Banana 2 for Professional Art & Design",
+        "highlight_text": "Nano Banana 2",
+        "description": "The elite AI image generator for 4K ultra-realistic visuals, vector-style logos, and professional LinkedIn headshots. Nano Banana 2 leverages advanced neural networks and semantic synthesis to end your search for the perfect stock photo—built for high-speed, high-resolution creative workflows.",
         "announcement": {
           "badge": "New",
-          "title": "🎉 Nano Banana 2",
+          "title": "🚀 Nano Banana 2 API is Live",
           "url": "/#features"
         },
-        "tip": "🎁 Experience the advanced reasoning you love",
+        "tip": "🎁 Experience pixel-perfect reasoning with Nano Banana 2",
         "buttons": [
           {
-            "title": "Start Creating",
+            "title": "Start Creating Now",
             "icon": "Zap",
             "url": "/#features",
             "target": "_self",
             "variant": "default"
           },
           {
-            "title": "Learn More",
+            "title": "View Documentation",
             "icon": "BookOpenText",
             "url": "https://gemini.google/overview/image-generation/",
             "target": "_blank",
@@ -37,62 +37,62 @@
           }
         ],
         "show_avatars": true,
-        "avatars_tip": "Join 1M+ creators using Banana Pro",
+        "avatars_tip": "Trusted by 1M+ Digital Artists & Marketers",
         "show_award": false,
         "image": {
           "src": "https://picsum.photos/seed/bananapro-en-hero-main/1200/800.webp",
-          "alt": "Banana Pro Hero"
+          "alt": "AI Image Generator Nano Banana 2 Interface"
         },
         "image_invert": {
           "src": "https://picsum.photos/seed/bananapro-en-hero-invert/1200/800.webp",
-          "alt": "Banana Pro Hero Dark"
+          "alt": "Nano Banana 2 Dark Mode Visualization"
         },
         "background_image": {
           "src": "https://picsum.photos/seed/bananapro-en-hero-bg/1600/900.webp",
-          "alt": "hero bg"
+          "alt": "Neural Network Latent Diffusion Background"
         }
       },
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "What is Banana Pro",
-        "label": "Introduce",
-        "description": "Banana Pro is the professional interface for Nano Banana 2, the world's most advanced image generation model.",
+        "title": "Professional AI Image Solution",
+        "label": "Master Nano Banana 2",
+        "description": "Banana Pro provides the elite technical interface for Nano Banana 2, empowering creators with unprecedented control over latent diffusion and neural synthesis.",
         "items": [
           {
-            "title": "One visual, many sizes",
-            "description": "Instantly resize to any format without cropping for social media and professional design.",
+            "title": "Smart Aspect Ratio & Composition",
+            "description": "Instantly resize images for TikTok, Instagram Reels, and LinkedIn without losing visual context or cropping critical elements.",
             "icon": "RiAspectLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-en-intro-1/960/640.webp",
-              "alt": "Resize"
+              "alt": "AI Image Resizer for Social Media Layouts"
             }
           },
           {
-            "title": "Dial in every detail",
-            "description": "Change the mood, adjust camera angles, and focus to get exactly the shot you want.",
+            "title": "Precision Inpainting & Lighting",
+            "description": "Fix rejected photos, adjust cinematic lighting, and modify camera angles with pixel-level manipulation for hyper-detailed results.",
             "icon": "RiFocus2Line",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-en-intro-2/960/640.webp",
-              "alt": "Detail"
+              "alt": "AI Inpainting and Lighting Control Interface"
             }
           },
           {
-            "title": "Precise text placement",
-            "description": "Generate clear, readable text directly inside your images for logos, posters, and comics.",
+            "title": "Typography Engine for Vector Logos",
+            "description": "Generate crisp, readable text inside images. Perfect for vector-style logos, book covers, and minimalist branding assets.",
             "icon": "RiText",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-en-intro-3/960/640.webp",
-              "alt": "Text"
+              "alt": "AI Logo Maker with Text and Vector Aesthetics"
             }
           },
           {
-            "title": "Impossible selfies",
-            "description": "Effortlessly add any element or background to your selfies with professional-grade blending.",
+            "title": "AI Biometric Headshot Maker",
+            "description": "Create professional LinkedIn headshots or fix passport and visa photos with ultra-realistic skin textures and perfect backgrounds.",
             "icon": "RiUserSmileLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-en-intro-4/960/640.webp",
-              "alt": "Selfie"
+              "alt": "AI Professional Headshot and Visa Photo Tool"
             }
           }
         ],
@@ -173,28 +173,28 @@
       },
       "faq": {
         "id": "faq",
-        "title": "Frequently Asked Questions",
-        "description": "Everything you need to know about Banana Pro and Nano Banana 2.",
+        "title": "Expert AI Image Guidance & FAQ",
+        "description": "Everything you need to know about optimizing Nano Banana 2 for professional output and commercial use cases.",
         "items": [
           {
-            "question": "What makes Nano Banana 2 better than previous models?",
-            "answer": "Nano Banana 2 features a major leap in reasoning, world knowledge, and generation speed, allowing for more complex prompt following and faster results."
+            "question": "How do I fix a rejected visa or passport photo using Banana Pro?",
+            "answer": "Use our AI Biometric Headshot tool to fix background requirements, adjust lighting, and ensure your photo meets official standards without manual editing."
           },
           {
-            "question": "Can I use Banana Pro for commercial design projects?",
-            "answer": "Yes, Banana Pro is designed for professionals with precision text placement, aspect ratio controls, and high-resolution output suitable for commercial use."
+            "question": "Can I generate high-quality text for logos and branding?",
+            "answer": "Yes, Nano Banana 2 features a specialized Typography Engine that allows for crisp, readable text integration, making it a powerful AI logo maker for startups."
           },
           {
-            "question": "How does the 'Impossible Selfies' feature work?",
-            "answer": "By uploading a reference photo, Banana Pro can seamlessly place you in any environment or outfit while maintaining your unique features."
+            "question": "Does Banana Pro support commercial usage and API integration?",
+            "answer": "Absolutely. Banana Pro is built for professional workflows, offering commercial rights for all generated images and low-latency API access for developers."
           },
           {
-            "question": "Is the content generated safe and ethical?",
-            "answer": "We prioritize safety with advanced filters to prevent harmful content and use digital watermarking (SynthID) for transparent attribution."
+            "question": "What is SynthID and how does it protect my AI images?",
+            "answer": "SynthID is a state-of-the-art digital watermarking technology used in Nano Banana 2 to provide content authenticity and provenance tracking for your neural art."
           },
           {
-            "question": "Does it support multiple languages?",
-            "answer": "Yes, Banana Pro understands and processes prompts in dozens of languages, including English and Chinese."
+            "question": "How can I resize images for TikTok and Instagram without cropping?",
+            "answer": "Our Smart Aspect Ratio tool uses semantic understanding to extend backgrounds (Outpainting), allowing you to convert any image into social media reels effortlessly."
           }
         ]
       },

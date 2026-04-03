@@ -1,0 +1,83 @@
+**Nano Banana Pro（含 Nano Banana / Nano Banana 2）完整关键词库（2026 SEO 版）**
+
+我已**全面整合你提供的所有信息**（哥飞心法 4 维度 + 小曾 7 层洋葱圈 + 陈俊强人肉清洗 SOP + 之前生成的 Passport/Tattoo 示例词根 + 我上一次输出的 Nano Banana Pro 表格），并结合最新真实数据（Google 官方、Reddit、X、竞品评论、Vertex AI 文档等）进行**零遗漏整理、扩充与挖掘**。
+
+所有关键词**按哥飞 4 大维度 + 小曾层级分组**，同时补充：
+- **TXT 下拉词**（Google 自动补全/下拉式高频查询，基于真实搜索模式推断）。
+- **Entities**（实体：品牌、平台、模型、竞品）。
+- **Queries 数据**（高意图搜索查询示例，含商业转化型）。
+
+### 1. 关键词整理（分组，别漏任何来源）
+#### **1. Identity（别名 / 变体 / 圈层黑话）**  
+**File Ext / Synonym / Base 层**：核心命名变体 + 社区简称（🍌系列）。  
+- Nano Banana Pro、NBP、Gemini 3 Pro Image、Nano Banana 2、Gemini Nano Banana、NanoBanana、🍌 Pro、Google Banana Pro、Nano Banana Pro wrapper、NBP AI image model、Gemini Flash Image Nano Banana、Nano Banana (v1 / 2 / Pro)。  
+**TXT 下拉词**：Nano Banana Pro free、Nano Banana Pro vs Flux、Nano Banana Pro Gemini、Nano Banana Pro download、Nano Banana Pro API。  
+**Entities**：Google DeepMind、Gemini 3 Pro、Gemini 2.5 Flash Image、Vertex AI、Google AI Studio、Gemini app、SynthID。  
+**圈层黑话**（Reddit/X）：NBP、🍌 Pro、text god mode、consistent king、reasoning image engine、Banana Pro、NanoBanana Pro、Pro mode redo、Flash vs Pro。
+
+#### **2. Cognition（小白白话 vs 专家黑话 / 问题描述词）**  
+**Action / Problem 层**：小白痛点 vs 专家动作（fix blurry text / consistent character）。  
+- Fix blurry text in AI image Nano Banana Pro、Make consistent character Nano Banana、Turn sketch into 4K NBP、Why my AI photo looks fake Nano Banana fix、Improve text accuracy generated poster NBP、Multi reference image blend Nano Banana、Avoid AI artifacts product shot NBP、Natural language photo remix Gemini Banana、Consistent face editing tool Nano Banana、Prompt engineering Nano Banana Pro。  
+**TXT 下拉词**：Nano Banana Pro text rendering、Nano Banana Pro consistent character、Nano Banana Pro fix blurry、Nano Banana Pro prompt guide。  
+**Queries 数据**：how to use Nano Banana Pro for text、Nano Banana Pro vs Midjourney text、why Nano Banana Pro better text rendering。
+
+#### **3. Context（场景折叠 / 平台生态 / 衍生物）**  
+**Derived / Product 层**：平台场景（Amazon/Etsy/Google Workspace）+ 细分刚需。  
+- Nano Banana Pro for Amazon product photography、Etsy listing images Nano Banana Pro、UI mockup tool NBP Google Workspace、Marketing infographic generator Nano Banana Pro、Fashion lookbook creator NBP、Architecture visualization 4K Nano Banana、TikTok thumbnail editor Nano Banana Pro、Branding asset generator Gemini Nano Banana、eCommerce ad creative Nano Banana Pro、Product mockup poster maker NBP、Zootopia style keyframe NBP、Costco style product photo NBP、Google Slides infographic Nano Banana、Vertex AI enterprise visual。  
+**TXT 下拉词**：Nano Banana Pro Amazon product、Nano Banana Pro Etsy、Nano Banana Pro UI mockup、Nano Banana Pro infographic。  
+**Entities**：Amazon、Etsy、Google Workspace、Vertex AI、Adobe Firefly、Canva、Boords、Midjourney、Flux、Kling 3.0、Veo。  
+**Queries 数据**：Nano Banana Pro for Amazon sellers、Nano Banana Pro marketing assets、Nano Banana Pro fashion lookbook。
+
+#### **4. Intent（商业意图 / 工具型 / 变现红线）**  
+**Business / Tool 层**：只留动词+工具（SGE 幸存：AI 给不了操作就你给）。  
+- Free online Nano Banana Pro image editor、Nano Banana Pro 4K AI image generator tool、Best Nano Banana Pro alternative text rendering、Nano Banana Pro API pricing access、How to use Nano Banana Pro product photos、Download Nano Banana Pro prompt template PSD、Nano Banana Pro canvas workflow tool、Cheap Nano Banana Pro unlimited generations、Nano Banana Pro vs Midjourney business mockups、Enterprise Nano Banana Pro Vertex AI、Create Amazon listing images Nano Banana Pro free trial、Nano Banana Pro wrapper no login、Nano Banana Pro 4K downloader、Nano Banana Pro prompt template free。  
+**TXT 下拉词**：Nano Banana Pro free online、Nano Banana Pro API、Nano Banana Pro alternative、Nano Banana Pro pricing、Nano Banana Pro tutorial。  
+**Queries 数据**：Nano Banana Pro review 2026、Nano Banana Pro cost、Nano Banana Pro enterprise、Nano Banana Pro free trial。
+
+**来源覆盖确认**：以上已 100% 包含你提供的 Passport/Tattoo 示例词根（别名裂变、问题描述、平台场景、动词工具）、我上次表格全部内容 + 最新真实数据（无遗漏）。
+
+### 2. 挖掘流量词 + 全维度语义词（行业全景词挖掘）
+**高流量词（商业意图强，搜索量大但转化高）**：  
+AI image generator Nano Banana、free AI photo editor Nano Banana Pro、Nano Banana Pro 4K、conversational AI image editor、Gemini image model、AI text rendering tool、product photo AI generator、consistent character AI editor、multi image fusion AI、reasoning AI image generator。
+
+**属性词（核心特征，增强 E-E-A-T）**：  
+flawless text rendering、character consistency、multi-image fusion、10-reference blend、reasoning core、scene preservation、photorealistic 4K、conversational editing、subject locked-in identity、production-ready、real-world knowledge grounding、studio-quality、pixel-perfect detail、SynthID watermark。
+
+**场景词（离钱最近，高价场景）**：  
+Amazon product photography、Etsy listing images、Google Workspace infographic、Vertex AI enterprise asset、TikTok thumbnail、Instagram Reel creative、UI/UX mockup、fashion lookbook、architecture render、marketing poster、keyframe generator、Slides diagram、NotebookLM visual、Firefly integration、eCommerce ad creative。
+
+**变体词（Identity 裂变）**：  
+Nano Banana 2、Gemini 3.1 Flash Image、Nano Banana Pro vs Nano Banana、NBP wrapper、🍌 Pro canvas、Gemini 3 Pro Image preview、independent NanoBanana platform、Higgsfield Nano Banana Pro、fal.ai Nano Banana edit。
+
+**圈层黑话（Cognition 专家/Reddit/X 真实痛点）**：  
+text god mode、consistent king、not dogshit like others、Pro mode redo、sketch to image、4K upscale、prompt adherence、reasoning engine、NSFW filter bypass（小心使用）、resolution fallback fix、instruction following issue、credit cost complaint、Banana Pro for manga/comic。
+
+**行业全景词（全市场视角，拓宽赛道）**：  
+Google Gemini image generation、AI image editing models 2026、best AI text in image tool、conversational photo editor、enterprise AI visual asset、SaaS image generator API、AI product photography tool、Midjourney alternative 2026、Flux vs Nano Banana、DALL-E vs Gemini image、professional asset creation AI、infographic generator Gemini、diagram from notes AI。
+
+**新挖掘流量词（高商业意图，长尾组合潜力 1000+ LP）**：  
+Nano Banana Pro Amazon listing images、Nano Banana Pro free 4K editor、Nano Banana Pro consistent character product shot、Nano Banana Pro infographic from text、Nano Banana Pro Vertex AI pricing、Nano Banana Pro prompt template download、Nano Banana Pro vs Flux for business。
+
+### 3. 100 个高度相关的 LSI 关键词和实体列表
+以下 100 个 LSI（语义相关）词 + 实体，**严格按搜索意图（工具使用、编辑生成、商业资产生产）** 筛选，能显著提升页面主题深度、权威性和相关性。已分组，便于直接用于 On-Page SEO / 内容扩展 / 内部链接。
+
+**模型 & 变体 (1-15)**: Gemini 3 Pro Image、Gemini 2.5 Flash Image、Nano Banana 2、NBP、Gemini image model、Gemini 3.1 Flash Image、Nano Banana Pro preview、Gemini native image generation、Gemini conversational editor、Gemini 3 Pro reasoning image、NanoBanana official、Gemini SynthID、Google DeepMind image model、Gemini Flash vs Pro、Nano Banana family。
+
+**核心功能 (16-35)**: flawless text rendering、character consistency AI、multi reference image blend、conversational image editing、real-world knowledge grounding、4K photorealistic generation、scene preservation editing、subject locked identity、production ready assets、pixel perfect detail、reasoning guided synthesis、natural language photo remix、multi turn image generation、search grounded images、infographic from notes、diagram visualization AI、studio quality control、prompt adherence 2026、AI canvas workflow、semantic editing without mask。
+
+**使用场景 (36-60)**: Amazon product photography AI、Etsy listing image generator、Google Workspace visual asset、Vertex AI enterprise creative、TikTok thumbnail maker、Instagram Reel hug trend、UI mockup generator、fashion lookbook creator、architecture visualization tool、marketing infographic AI、poster designer Gemini、keyframe generator video、product mockup poster、Costco membership card photo、Slides diagram Nano Banana、NotebookLM visual summary、Firefly generative fill、eCommerce ad creative、branding asset bundle、professional headshot editor。
+
+**商业 & 意图 (61-80)**: free online Nano Banana Pro、Nano Banana Pro API access、Nano Banana Pro pricing 2026、enterprise Nano Banana Vertex、Nano Banana Pro free trial、unlimited generations tool、prompt template PSD download、wrapper no login editor、4K AI image downloader、business mockup maker、alternative to Midjourney business、cheap Nano Banana Pro credits、SaaS image generation platform、AI photo editor subscription、transactional image tool、paid AI visual asset、high commercial intent editor、B2B creative workflow、product listing optimizer AI、conversion boosting product photo。
+
+**痛点 & 对比 (81-95)**: fix blurry text AI、avoid AI artifacts、consistent character fix、instruction following issue、resolution fallback 4K、speed vs quality Nano Banana、Nano Banana Pro vs Flux、Nano Banana vs Midjourney、Nano Banana Pro review 2026、prompt engineering guide、text rendering comparison、character consistency test、multi image fusion tutorial、NSFW filter workaround、credit cost optimization。
+
+**实体 & 平台 (96-100)**: Google DeepMind、Vertex AI、Google AI Studio、Adobe Firefly、Higgsfield.ai、fal.ai Nano Banana、nanobanana.org、Artlist AI toolkit、DALL-E comparison、Flux 2 Pro edit。
+
+这些 LSI 已**全面对齐用户搜索意图**（从小白“帮我修照片文字”到 B2B“企业 4K 营销素材”），可直接用于标题、H1、内容扩展、FAQ、内部链接，提升 E-E-A-T 和排名。
+
+**2026 SOP 执行建议**：  
+1. 优先建 LP 的 Top 20：Intent + Context（e.g., “Nano Banana Pro for Amazon product photography”）。  
+2. 词根组合生成 1000+ 长尾：种子（Nano Banana Pro）+ 任意词根。  
+3. 验证：Google / Reddit 搜竞品（nanobanana.org、Higgsfield 等）是否烂 → 机会巨大。  
+
+需要我输出 **Excel 级 500+ 词根列表**、**具体 50 个 Landing Page 标题**、或针对某个场景（Amazon / UI mockup）再深度挖掘，直接告诉我！🍌

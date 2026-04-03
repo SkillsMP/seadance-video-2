@@ -1,0 +1,91 @@
+
+
+
+恭喜您拿下了 **`bananapro.org`** 这个极具潜力的域名！
+
+结合您此前提供的数十万、数百万级搜索量数据，这个域名非常绝佳。`banana pro` 本身就是一个高达 **33.6万/月** 搜索量的主词，加上 `.org` 域名自带的“非盈利组织、社区、开源”属性，极容易建立用户信任。
+
+针对您的域名 `bananapro.org`，我为您制定了详细的**网站需求分析**和**SEO关键词规划**。
+
+---
+
+### 第一部分：网站需求分析 (Requirements Analysis)
+
+#### 1. 网站核心定位
+由于官方（Google）占据了绝对权威，`bananapro.org` 应该避开与官方硬刚，将网站定位为：**“全球最大的 Nano Banana Pro 非官方社区与提示词工具箱”**（The Unofficial Nano Banana Pro Community & Prompt Library）。
+主打特色：**免费体验入口 + 海量优质提示词库 + 新手教程**。
+
+#### 2. 目标用户画像与痛点
+*   **白嫖党（最大流量基数）：** 痛点是找不到官方免费入口，不想绑卡，需要免登录或轻量级的在线生成工具。
+*   **AI 创作者/设计师：** 痛点是不知道怎么写 prompt 才能生成稳定、高质量的图像（如证件照、建筑渲染等），需要“抄作业”。
+*   **出海/跨区域用户：** 日本、拉美等非英语母语用户，需要本地化的教程和工具。
+
+#### 3. 核心功能模块规划
+为了承接这些海量搜索需求，您的网站需要包含以下几个核心模块：
+*   **AI 生图体验区 (Web UI)：** 接入 API，提供每日限次（如 3-5 次）的免费生图功能。
+*   **提示词画廊 (Prompt Library / Generator)：** 高清图片展示，附带一键复制 Prompt 功能。
+*   **教程与资讯博客 (Blog/Docs)：** 发布各类玩法教程、API 接入指南、模型对比分析。
+*   **多语言支持 (i18n)：** 必须做**日文**和**繁体中文/西班牙文**子站。
+
+---
+
+### 第二部分：网站架构与 SEO 关键词规划 (Keyword Planning)
+
+合理的关键词布局是截流成功的关键。我们将庞大的关键词词库拆解并映射到网站的不同页面上：
+
+#### 🟢 1. 首页 (Homepage) - 主攻品牌词与免费生成
+*   **页面定位：** 提供一个极简的输入框，直接可以生图，吸引直接流量。
+*   **核心关键词 (Title & H1)：**
+    *   `Banana Pro` (336.5K 搜索量) - *完美契合您的域名*
+    *   `Nano Banana Pro` (5.4M)
+    *   `Nano Banana Pro Free` (157.1K)
+*   **长尾关键词 (H2/H3 埋词)：**
+    *   `Free Nano Banana Pro Image Generator`
+    *   `Google Banana Pro Alternative`
+*   **Title 示例：** Banana Pro | Free Nano Banana Pro AI Image Generator
+
+#### 🟡 2. 提示词库频道 (/prompts) - 主攻流量密码
+*   **页面定位：** 分类聚合高质量图片和提示词（人物、建筑、动漫等），这个频道的流量潜力极其巨大。
+*   **核心关键词：**
+    *   `Banana Prompts` (318.1K) - *核心引流词*
+    *   `Nano Banana Prompt` (172.5K)
+    *   `Banana Prompt Generator` (10.3K)
+*   **垂直场景关键词 (分类目录)：**
+    *   `/prompts/headshot`: `nano banana headshot prompt` (证件照/职业照 3K)
+    *   `/prompts/architecture`: `architecture design prompts for nano banana pro` (建筑设计 1.1K)
+    *   `/prompts/nsfw`: `nano banana pro uncensored` (3.7K - 视您的合规底线决定是否做此类内容)
+*   **Title 示例：** Best Banana Prompts Gallery | Nano Banana Prompt Generator
+
+#### 🔵 3. 博客与教程频道 (/blog) - 主攻“How-to”与对比搜索
+*   **页面定位：** 通过优质的图文教程和评测文章，解答用户疑问，做成长尾词收割机。
+*   **重点文章策划及埋词：**
+    *   **文章1 (新手入门)：** `How to use Nano Banana Pro` (36.6K), `where to use nano banana pro` (3.6K)
+    *   **文章2 (定价与API)：** `Nano Banana Pro Pricing` (32.5K), `Nano Banana Pro API Cost` (11.2K)
+    *   **文章3 (模型对比)：** `Nano Banana Pro vs Midjourney` (2.6K), `Flux 2 vs Nano Banana Pro` (2.6K)
+    *   **文章4 (下载避坑)：** `Nano Banana Pro Download / APK` (3.7K) - *注：写一篇文章告诉用户官方没有APP，顺便引流到您的网页版。*
+
+#### 🔴 4. 国际化多语言目录 (/ja, /es) - 主攻低竞争红利词
+*   **日文版 (/ja) - 强烈建议优先开发：**
+    *   `nano banana pro 無料` (98.2K) - 极高搜索量，竞争相对较小
+    *   `nano banana pro 使い方` (61.6K)
+    *   `nano banana pro 料金` (39.8K)
+*   **繁体中文版 (/zh-tw)：**
+    *   `nano banana pro 免費` (10.7K), `nano banana pro 教學` (2.1K)
+
+---
+
+### 第三部分：建站与运营落地建议
+
+**1. 域名优势利用 (.org 的光环)**
+`.org` 给人的感觉是“开源、非盈利社区”。您可以将网站包装成一个由 AI 爱好者维护的开源社区（Community-driven project），这样能鼓励用户主动分享他们自己的 Prompts 进来（UGC模式），极大降低您的内容生产成本。
+
+**2. 核心功能低成本实现（套壳 API）**
+您不需要自己跑模型。去寻找支持 Nano Banana 2 或 3 Pro 的廉价 API 中转站（比如 Fal.ai, OpenRouter，或者直接申请 Google AI Studio 免费额度池），在您的 `bananapro.org` 上套一个开源的前端界面（如 NextJS + TailwindCSS）。
+
+**3. 商业变现路径 (Monetization)**
+*   **第一阶段（流量期）：** 利用 `nano banana pro free` 打破流量口子，页面挂载 **Google AdSense** 或生图过程插播广告。
+*   **第二阶段（资源期）：** 售卖“高级提示词包”（High-quality Prompt Book），或者推广关联的 AI 工具赚取 Affiliate 佣金（CPS）。
+*   **第三阶段（订阅期）：** 当用户耗尽了您网站的免费额度，提供每月 $4.99 - $9.99 的包月套餐，对接背后的 API 赚取差价。
+
+**下一步行动建议：**
+立刻上线一个 **Coming Soon (即将推出)** 的着陆页，大标题写明 *"Banana Pro: The Ultimate Nano Banana Community & Prompt Generator is coming."*，并放置一个收集邮箱的表单。由于这个词正在爆发期，即使是单页也能开始积累谷歌的收录权重和早期种子用户。
