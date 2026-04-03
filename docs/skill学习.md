@@ -3,6 +3,42 @@
 这个 Skill 是为 **ShipAny Nano Banana (AI 图像生成器)** 打造的自动化定制流。它的核心思路是：**用一份“项目简报 (Project Brief)”驱动全站 9 个维度的自动化替换。**
 
 ---
+## 第一轮（v1）的自动化定制后，哪些还未完成
+
+### 1. 业务逻辑与付费 (关键)
+*   **配置定价方案**: 
+    - 修改 `src/config/locale/messages/*/pages/pricing.json`。
+    - 你需要在这里填入正式的套餐名称、积分数量以及 **Stripe Price ID**（如果你打算开启支付）。
+*   **填补环境变量 (Secrets)**:
+    - 我只帮你改了应用名称和域名，但核心密钥需要你填入 `.env.production`：
+        - `STRIPE_SECRET_KEY`: 支付密钥。
+        - 各类 AI 密钥: `KIE_API_KEY`, `REPLICATE_API_TOKEN` 等。
+*   **配置登录 Provider**:
+    - 登录功能目前是关闭的（禁用了登录入口（header.show_sign = false）），你需要在多语言配置中的 `landing.json` 中设置 `show_sign: true` 来开启它。
+
+
+### 2. 内容与视觉 (收尾)
+*   **替换正式图片**:
+    - 目前落地页 (`pages/index.json`) 使用的是 `https://picsum.photos/` 的随机图。
+    - **建议**: 生成几张 Banana Pro 真实的 AI 作品，上传到 `public/imgs/brand/`，然后把 JSON 里的 URL 改成指向这些本地文件。
+*   **Logo 与 Favicon**:
+    - 如你所说，目前的 `/public/logo.png` 是脚本生成的占位图。请将你设计的矢量 Logo 导出为 512x512 的 PNG 覆盖它；Favicon 同理。
+
+
+### 3. 页面适配 (细节)
+*   **首页文案微调**:
+    - 修改 `pages/index.json`。
+    
+*   **Create 页面微调**:
+    - 修改 `src/config/locale/messages/*/pages/create.json`。
+    - 这里的 `prompt_suggestions`（提示词建议）目前可能还是通用的，你可以改成更符合“Banana Pro”调性的词，例如“A hyper-realistic banana-shaped spaceship in deep space”。
+*   **完善导航栏**:
+    - 我为了快速上线，在 `landing.json` 中隐藏了除“功能介绍”外的所有链接。当你准备好“定价”或“案例展示”页面后，记得在 `landing.json` 的 `header.nav.items` 中把它们加回来。
+*   **法律页面最终核对**:
+    - 虽然我更新了 `privacy-policy.mdx` 和 `terms-of-service.mdx`，但法律条款建议你根据最终选用的支付工具（如 Stripe 或 Creem）的合规要求做一下最后的文本校对。
+
+
+-------------------
 
 ## Step 0 — 项目简报 (Project Brief Normalization)
 ### 核心目标
