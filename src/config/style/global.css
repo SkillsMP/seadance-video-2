@@ -106,6 +106,16 @@ pre {
   }
 }
 
+/* Rich text: style links injected via dangerouslySetInnerHTML */
+.rich-text a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.rich-text a:hover {
+  opacity: 0.8;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

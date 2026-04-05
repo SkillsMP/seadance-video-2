@@ -48,6 +48,12 @@ description: 精通经典技术SEO与索引优化的顶级内容架构师技能�
 - **通配文本**: `imageGenerator` 的三个 Tab 保持极简（Text to Image, Image to Image, Image to Video）。
 - **空位处理**: `"disabled": true` 的项保持内容为空或保持原样。
 - **外链**: 全局自然插入 4–6 个权威站点（如 Wikipedia, IEEE, 或行业顶级媒体）的外部链接作为事实共现的验证。
+  - **外链格式规则**: 在 JSON 文案中插入外链时，必须使用完整的 HTML `<a>` 标签，并包含 SEO 安全属性：
+    ```html
+    <a href="https://example.com" target="_blank" rel="nofollow noopener noreferrer">锚文本</a>
+    ```
+  - **渲染前提**: 包含外链的字段（如 FAQ 的 `answer`）必须通过 `dangerouslySetInnerHTML` 渲染，且容器需添加 `rich-text` CSS class 以激活链接样式（颜色、下划线、悬停效果）。全局样式定义在 `src/config/style/global.css` 中。
+  - **当前已支持 rich-text 的组件**: `faq.tsx`（answer 字段）、`hero.tsx`（description 字段）、`cta.tsx`（description 字段）。其他组件（如 `features.tsx`、`features-accordion.tsx`）目前以纯文本渲染 description，如需插入外链需先改为 `dangerouslySetInnerHTML` + `rich-text`。
 
 ---
 
