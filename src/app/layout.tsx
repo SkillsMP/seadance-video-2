@@ -7,6 +7,11 @@ import NextTopLoader from 'nextjs-toploader';
 import { envConfigs } from '@/config';
 import { locales } from '@/config/locale';
 import { UtmCapture } from '@/shared/blocks/common/utm-capture';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import {
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+} from '@/shared/lib/schema';
 import { getAllConfigs } from '@/shared/models/config';
 import { getAdsService } from '@/shared/services/ads';
 import { getAffiliateService } from '@/shared/services/affiliate';
@@ -145,6 +150,21 @@ export default async function RootLayout({
         {customerServiceMetaTags}
         {/* inject customer service head scripts */}
         {customerServiceHeadScripts}
+
+        {/* inject site-wide JSON-LD structured data */}
+        <JsonLd
+          data={buildWebSiteSchema({
+            name: envConfigs.app_name,
+            url: envConfigs.app_url,
+          })}
+        />
+        <JsonLd
+          data={buildOrganizationSchema({
+            name: envConfigs.app_name,
+            url: envConfigs.app_url,
+            logo: `${envConfigs.app_url}/logo.png`,
+          })}
+        />
       </head>
       <body suppressHydrationWarning className="overflow-x-hidden">
         <NextTopLoader

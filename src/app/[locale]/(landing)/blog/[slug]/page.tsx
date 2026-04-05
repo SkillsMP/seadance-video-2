@@ -3,6 +3,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { getThemePage } from '@/core/theme';
 import { envConfigs } from '@/config';
 import { Empty } from '@/shared/blocks/common';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+} from '@/shared/lib/schema';
 import { getPost } from '@/shared/models/post';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
@@ -67,5 +72,31 @@ export default async function BlogDetailPage({
 
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={page} />;
+  const appUrl = envConfigs.app_url;
+  const postUrl =
+    locale !== envConfigs.locale
+      ? `${appUrl}/${locale}/blog/${slug}`
+      : `${appUrl}/blog/${slug}`;
+
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', url: appUrl },
+          { name: 'Blog', url: `${appUrl}/blog` },
+          { name: post.title || slug, url: postUrl },
+        ])}
+      />
+      <JsonLd
+        data={buildArticleSchema({
+          title: post.title || '',
+          url: postUrl,
+          datePublished: post.created_at || '',
+          authorName: post.author_name || envConfigs.app_name,
+          description: post.description,
+        })}
+      />
+      <Page locale={locale} page={page} />
+    </>
+  );
 }

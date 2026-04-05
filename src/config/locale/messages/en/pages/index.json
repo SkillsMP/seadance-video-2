@@ -183,7 +183,7 @@
         "items": [
           {
             "question": "How do I fix a rejected visa or passport photo using Nano Banana Pro?",
-            "answer": "Our AI Biometric Headshot tool is purpose-built to resolve the most common rejection reasons for US, EU, and Asian visa applications. It automatically neutralizes background shadows, corrects lighting to meet official biometric standards, and uses neural upscaling to ensure your photo passes biometric facial scans at border control. Unlike generic editors, Nano Banana Pro uses conversational inpainting — simply describe the fix in plain language. See biometric photo standards on Wikipedia: https://en.wikipedia.org/wiki/Biometric_passport."
+            "answer": "Our AI Biometric Headshot tool is purpose-built to resolve the most common rejection reasons for US, EU, and Asian visa applications. It automatically neutralizes background shadows, corrects lighting to meet official biometric standards, and uses neural upscaling to ensure your photo passes biometric facial scans at border control. Unlike generic editors, Nano Banana Pro uses conversational inpainting — simply describe the fix in plain language. See biometric photo standards on <a href=\"https://en.wikipedia.org/wiki/Biometric_passport\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Wikipedia</a>."
           },
           {
             "question": "Can Nano Banana Pro generate high-quality text inside logos and marketing images?",
@@ -199,11 +199,11 @@
           },
           {
             "question": "How does Nano Banana Pro ensure content authenticity and avoid deepfake misuse?",
-            "answer": "We integrate Google's SynthID watermarking technology at the pixel-level generation layer, embedding an invisible but verifiable signature into every output. This meets IEEE ethical AI guidelines for responsible generative systems and enables downstream verification in publishing and legal contexts. We also maintain a human-in-the-loop review layer and adhere to Google DeepMind fair use guidelines for content authenticity and digital provenance tracking. Learn more about Generative AI ethics at Wikipedia: https://en.wikipedia.org/wiki/Artificial_intelligence_ethics."
+            "answer": "We integrate Google's SynthID watermarking technology at the pixel-level generation layer, embedding an invisible but verifiable signature into every output. This meets IEEE ethical AI guidelines for responsible generative systems and enables downstream verification in publishing and legal contexts. We also maintain a human-in-the-loop review layer and adhere to Google DeepMind fair use guidelines for content authenticity and digital provenance tracking. Learn more about <a href=\"https://en.wikipedia.org/wiki/Artificial_intelligence_ethics\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Generative AI ethics on Wikipedia</a>."
           },
           {
             "question": "Can I integrate Nano Banana Pro into my app or SaaS product via API?",
-            "answer": "Yes. Our low-latency REST API is built for enterprise-scale integration on Vertex AI infrastructure. Developers can access GPU clusters for real-time inference, run batch processing pipelines, and apply custom LoRA weight fine-tuning to build specialized AI creative tools — from automated Shopify product shot generators to AI avatar maker systems. API pricing is usage-based with a free trial tier. Visit Google AI Studio for Gemini 3 API documentation: https://ai.google.dev."
+            "answer": "Yes. Our low-latency REST API is built for enterprise-scale integration on Vertex AI infrastructure. Developers can access GPU clusters for real-time inference, run batch processing pipelines, and apply custom LoRA weight fine-tuning to build specialized AI creative tools — from automated Shopify product shot generators to AI avatar maker systems. API pricing is usage-based with a free trial tier. Visit <a href=\"https://ai.google.dev\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Google AI Studio</a> for Gemini 3 API documentation."
           },
           {
             "question": "How does Nano Banana Pro compare to Midjourney, Flux, and DALL-E in 2026?",

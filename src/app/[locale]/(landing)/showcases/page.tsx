@@ -1,5 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { envConfigs } from '@/config';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import { getMetadata } from '@/shared/lib/seo';
 import { ShowcasesFlowDynamic } from '@/themes/default/blocks/showcases-flow-dynamic';
 
@@ -22,12 +25,22 @@ export default async function ShowcasesPage({
   const t = await getTranslations('pages.showcases');
   const showcasesData = t.raw('showcases-flow');
 
+  const appUrl = envConfigs.app_url;
+
   return (
-    <ShowcasesFlowDynamic 
-      title={showcasesData.title}
-      description={showcasesData.description}
-      containerClassName="py-14"
-      usePrompts={true}
-    />
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', url: appUrl },
+          { name: 'Showcases', url: `${appUrl}/showcases` },
+        ])}
+      />
+      <ShowcasesFlowDynamic
+        title={showcasesData.title}
+        description={showcasesData.description}
+        containerClassName="py-14"
+        usePrompts={true}
+      />
+    </>
   );
 }

@@ -1,7 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { envConfigs } from '@/config';
 import { MusicGenerator } from '@/shared/blocks/generator';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import { getMetadata } from '@/shared/lib/seo';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
@@ -43,5 +46,17 @@ export default async function AiMusicGeneratorPage({
   // load page component
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={page} />;
+  const appUrl = envConfigs.app_url;
+
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', url: appUrl },
+          { name: 'AI Music Generator', url: `${appUrl}/ai-music-generator` },
+        ])}
+      />
+      <Page locale={locale} page={page} />
+    </>
+  );
 }

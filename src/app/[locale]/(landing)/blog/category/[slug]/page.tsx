@@ -4,6 +4,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { getThemePage } from '@/core/theme';
 import { envConfigs } from '@/config';
 import { Empty } from '@/shared/blocks/common';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import {
   PostType as DBPostType,
   getPosts,
@@ -140,5 +142,21 @@ export default async function CategoryBlogPage({
   // load page component
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={_page} />;
+  const appUrl = envConfigs.app_url;
+
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', url: appUrl },
+          { name: 'Blog', url: `${appUrl}/blog` },
+          {
+            name: categoryData.title,
+            url: `${appUrl}/blog/category/${categoryData.slug}`,
+          },
+        ])}
+      />
+      <Page locale={locale} page={_page} />
+    </>
+  );
 }

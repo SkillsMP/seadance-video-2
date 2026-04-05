@@ -1,6 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { envConfigs } from '@/config';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import { getMetadata } from '@/shared/lib/seo';
 import { getPostsAndCategories } from '@/shared/models/post';
 import {
@@ -82,5 +85,17 @@ export default async function BlogPage({
   // load page component
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={page} />;
+  const appUrl = envConfigs.app_url;
+
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', url: appUrl },
+          { name: 'Blog', url: `${appUrl}/blog` },
+        ])}
+      />
+      <Page locale={locale} page={page} />
+    </>
+  );
 }
