@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { ImageGenerator } from '@/shared/blocks/generator';
 import { getMetadata } from '@/shared/lib/seo';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
@@ -18,7 +19,18 @@ export default async function LandingPage({
   setRequestLocale(locale);
 
   const t = await getTranslations('pages.index');
-  const page: DynamicPage = t.raw('page');
+  const rawPage: DynamicPage = t.raw('page');
+
+  // build a fresh page object to avoid mutating the t.raw() internal reference
+  const page: DynamicPage = {
+    ...rawPage,
+    sections: {
+      ...rawPage.sections,
+      generator: {
+        component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} />,
+      },
+    },
+  };
 
   const Page = await getThemePage('dynamic-page');
 

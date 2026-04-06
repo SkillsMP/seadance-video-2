@@ -1,4 +1,7 @@
 {
+  "generator": {
+    "title": "Nano Banana Pro AI 图像生成器"
+  },
   "metadata": {
     "title": "Nano Banana Pro - AI图像生成平台，中文免费使用入口",
     "description": "Nano banana pro 是一款强大的 4K AI 图像生成引擎。了解 Nano banana pro 下载与免费使用方法，提供中文提示词、banana pro 去水印功能与 API 接入指南。立即访问 Banana pro 在线平台体验。",
@@ -7,6 +10,7 @@
   "page": {
     "show_sections": [
       "hero",
+      "generator",
       "introduce",
       "benefits",
       "features",
@@ -44,19 +48,17 @@
         "show_avatars": true,
         "avatars_tip": "超过 100 万名用户正在使用 banana pro ai 进行创作",
         "show_award": false,
-        "image": {
-          "src": "https://picsum.photos/seed/bananapro-zh-hero-main/1200/800.webp",
-          "alt": "Nano Banana Pro 平台界面展示图"
-        },
+
         "image_invert": {
-          "src": "https://picsum.photos/seed/bananapro-zh-hero-invert/1200/800.webp",
-          "alt": "Banana Pro AI 黑暗模式演示图"
+          "src": "",
+          "alt": ""
         },
         "background_image": {
-          "src": "https://picsum.photos/seed/bananapro-zh-hero-bg/1600/900.webp",
-          "alt": "Nano Banana Pro 背景特效图"
+          "src": "",
+          "alt": ""
         }
       },
+      "generator": {},
       "introduce": {
         "block": "features-list",
         "id": "introduce",

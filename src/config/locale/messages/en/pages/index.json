@@ -1,4 +1,7 @@
 {
+  "generator": {
+    "title": "Nano Banana Pro AI Image Generator"
+  },
   "metadata": {
     "title": "Nano Banana Pro: Free AI Image Generator – Gemini 3 Powered",
     "description": "Nano Banana Pro is the #1 free online AI image generator built on Google Gemini 3. Create 4K photorealistic art, fix rejected visa photos, generate vector logos & master banana prompts. Try free.",
@@ -7,6 +10,7 @@
   "page": {
     "show_sections": [
       "hero",
+      "generator",
       "introduce",
       "benefits",
       "features",
@@ -44,19 +48,17 @@
         "show_avatars": true,
         "avatars_tip": "Trusted by 1M+ Artists, Etsy Sellers & Marketing Agencies Worldwide",
         "show_award": false,
-        "image": {
-          "src": "https://picsum.photos/seed/bananapro-en-hero-main/1200/800.webp",
-          "alt": "Nano Banana Pro AI image generator interface showing 4K photorealistic output powered by Gemini 3 neural synthesis"
-        },
+
         "image_invert": {
-          "src": "https://picsum.photos/seed/bananapro-en-hero-invert/1200/800.webp",
-          "alt": "Nano Banana 2 dark mode canvas for GPU-accelerated rendering and multi-reference image blending workflow"
+          "src": "",
+          "alt": ""
         },
         "background_image": {
-          "src": "https://picsum.photos/seed/bananapro-en-hero-bg/1600/900.webp",
-          "alt": "Latent diffusion neural network background representing Nano Banana Pro AI image synthesis architecture"
+          "src": "",
+          "alt": ""
         }
       },
+      "generator": {},
       "introduce": {
         "block": "features-list",
         "id": "introduce",
