@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Nano Banana Pro 官网 - AI图像生成与中文免费使用入口",
-    "description": "寻找 Nano banana pro 官网 是 哪个？Nano banana pro 是一款强大的 4K 图像生成引擎。了解 Nano banana pro 下载与怎么免费使用，提供中文提示词、banana pro 去水印功能与 API 接入指南。欢迎访问 Banana pro 官网体验。",
-    "keywords": "Nano banana pro, Nano banana pro 官网, Nano banana pro 下载, Nano banana pro 免费 使用, Nano banana pro 中文, banana pro ai, banana pro 官网, banana pro 2, banana pro 免费, banana pro 去水印, banana pro 使用, banana pro 提示词, banana pro api, banana pro 3, banana pro 价格, Banana pro 官网, Nano banana 官网 入口, Banana pro api, nano banana pro ai, nano banana prompt, nano banana pro free, nano banana pro 如何使用, nano banana pro 入口, Nano banana 官网, Nano banana 入口"
+    "title": "Nano Banana Pro - AI图像生成平台，中文免费使用入口",
+    "description": "Nano banana pro 是一款强大的 4K AI 图像生成引擎。了解 Nano banana pro 下载与免费使用方法，提供中文提示词、banana pro 去水印功能与 API 接入指南。立即访问 Banana pro 在线平台体验。",
+    "keywords": "Nano banana pro, Nano banana pro 下载, Nano banana pro 免费 使用, Nano banana pro 中文, banana pro ai, banana pro, banana pro 2, banana pro 免费, banana pro 去水印, banana pro 使用, banana pro 提示词, banana pro api, banana pro 价格, Nano banana 入口, Banana pro api, nano banana pro ai, nano banana prompt, nano banana pro free, nano banana pro 如何使用, nano banana pro 入口, Nano banana 入口, Nano banana pro 使用"
   },
   "page": {
     "show_sections": [
@@ -16,15 +16,15 @@
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Nano banana pro 官网",
-        "highlight_text": "官网",
-        "description": "欢迎访问 Nano banana pro 官网。无论你是在寻找 Nano banana pro 下载 渠道，还是想了解 Nano banana pro 免费 使用 方法，这里都是你的最佳访问途径。探索最先进的 banana pro ai 图像技术。",
+        "title": "Nano banana pro 在线平台",
+        "highlight_text": "在线平台",
+        "description": "欢迎访问 Nano banana pro 在线平台。无论你是在寻找 Nano banana pro 下载 渠道，还是想了解 Nano banana pro 免费 使用 方法，这里都是你的最佳访问入口。探索最先进的 banana pro ai 图像技术。",
         "announcement": {
-          "badge": "官方发布",
+          "badge": "最新发布",
           "title": "🎉 欢迎来到 Nano banana 入口",
           "url": "/#features"
         },
-        "tip": "🎁 立即体验 Nano banana pro 中文 版的强大渲染能力",
+        "tip": "🎁 立即体验 Nano banana pro 中文版的强大渲染能力",
         "buttons": [
           {
             "title": "免费使用",
@@ -46,7 +46,7 @@
         "show_award": false,
         "image": {
           "src": "https://picsum.photos/seed/bananapro-zh-hero-main/1200/800.webp",
-          "alt": "Nano Banana Pro 官网展示图"
+          "alt": "Nano Banana Pro 平台界面展示图"
         },
         "image_invert": {
           "src": "https://picsum.photos/seed/bananapro-zh-hero-invert/1200/800.webp",
@@ -62,11 +62,11 @@
         "id": "introduce",
         "title": "Nano banana pro 是什么",
         "label": "产品简介",
-        "description": "Banana pro ai 是一款顶尖的智能图像模型。许多数字创作者关心 Nano banana pro 官网 是 哪个 以及如何获取 banana pro 2 和 banana pro 3 的最新核心功能。在这里我们为你提供可靠的官方功能支持。",
+        "description": "Banana pro ai 是一款顶尖的智能图像模型。许多数字创作者关心 Nano banana pro 是 哪个 平台 以及如何获取 banana pro 2 的最新核心功能。在这里我们为你提供稳定可靠的在线图像生成服务。",
         "items": [
           {
             "title": "原生 4K 高分辨率",
-            "description": "首先带你理解 nano banana pro 如何使用 我们的原生高宽比适应功能。通过官方 Nano banana 官网 入口 即可轻松生成适用于任何社交平台的高清图表与海报。",
+            "description": "带你了解 nano banana pro 如何使用 原生高宽比适应功能。通过 Nano banana 入口 即可轻松生成适用于任何社交平台的高清图表与海报。",
             "icon": "RiAspectLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-intro-1/960/640.webp",
@@ -84,7 +84,7 @@
           },
           {
             "title": "多语言文字渲染能力",
-            "description": "能够轻松驾驭多语言文本排版并融入画面设计环境。如果您正在搜索高可用性的 banana pro 提示词 组合或者更高效的 banana pro 去水印 方法，我们的智能引擎将扫清这些挑战。",
+            "description": "能够轻松驾驭多语言文本排版并融入画面设计环境。如果您正在搜索高可用性的 banana pro 提示词 组合或者更高效的 banana pro 去水印 方法，我们的智能引擎将一一解决这些挑战。",
             "icon": "RiText",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-intro-3/960/640.webp",
@@ -93,7 +93,7 @@
           },
           {
             "title": "角色极写实画面还原",
-            "description": "强大的多参考图处理机制帮助确保多维度条件下的角色一致性。立即寻找 nano banana pro 入口 进行操作，为你的设计项目增添如同专业摄影级的光影质感。",
+            "description": "强大的多参考图处理机制帮助确保多维度条件下的角色一致性。立即通过 nano banana pro 入口 进行操作，为你的设计项目增添如同专业摄影级的光影质感。",
             "icon": "RiUserSmileLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-intro-4/960/640.webp",
@@ -108,11 +108,11 @@
         "id": "benefits",
         "title": "为何选择 Banana pro ai",
         "label": "产品优势",
-        "description": "相比起市面上的同类产品，对于寻找适用 banana pro 免费 额度的用户来说，我们的渲染效率与极致语义理解力无疑是一个巨大的加分项。",
+        "description": "相比同类产品，对于寻找 banana pro 免费 额度的用户来说，我们的渲染效率与极致语义理解力无疑是一个巨大的加分项。",
         "items": [
           {
             "title": "卓越的逻辑推理能力",
-            "description": "产品本身更懂得你的商业意图与画面构思。获取最新的 nano banana pro 下载 资讯，并借助其出色的多轮对话体系来完成每一次严密的数字艺术构思。",
+            "description": "产品本身更懂你的商业意图与画面构思。获取最新的 nano banana pro 下载 资讯，并借助其出色的多轮对话体系来完成每一次严密的数字艺术构思。",
             "icon": "RiBrainLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-benefits-1/960/640.webp",
@@ -121,7 +121,7 @@
           },
           {
             "title": "极速响应的生成机制",
-            "description": "体验毫不拖泥带水的 nano banana pro free 极速图像生成过程。短短数秒内就能实现从文字创意到成品的无缝转化，绝不打断你连续的工作激情。",
+            "description": "体验 nano banana pro free 极速图像生成过程。短短数秒内就能实现从文字创意到成品的无缝转化，绝不打断你连续的工作激情。",
             "icon": "RiTimerFlashLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-benefits-2/960/640.webp",
@@ -130,7 +130,7 @@
           },
           {
             "title": "专业商用的 API 支持",
-            "description": "面向广大企业级开发人员，我们提供详细透明的 banana pro api 对接说明以及对应的 banana pro 价格，随时赋能并且加速中大型团队的日常创作工作流。",
+            "description": "面向企业级开发人员，我们提供详细透明的 banana pro api 对接说明以及对应的 banana pro 价格，随时赋能并加速中大型团队的日常创作工作流。",
             "icon": "RiPencilRulerLine",
             "image": {
               "src": "https://picsum.photos/seed/bananapro-zh-benefits-3/960/640.webp",
@@ -141,8 +141,8 @@
       },
       "features": {
         "id": "features",
-        "title": "Nano banana pro 使用 进阶指南",
-        "description": "致力于深化你的 banana pro 使用 技巧，我们不仅涵盖了基础的生图指南，更包含了从零开始的高效指令结构优化，协助你蜕变为合格的高级制图玩家。",
+        "title": "Nano banana pro 使用进阶指南",
+        "description": "致力于深化你的 banana pro 使用 技巧，我们不仅涵盖了基础的生图指南，更包含了从零开始的高效指令结构优化，协助你蜕变为高级制图玩家。",
         "items": [
           {
             "title": "多风格画面合成处理",
@@ -151,7 +151,7 @@
           },
           {
             "title": "环境物理级高精渲染",
-            "description": "准确定位并还原环境中的光照路径及反馈，达到非常罕见的写实级模型精度。",
+            "description": "准确定位并还原环境中的光照路径及反馈，达到写实级模型精度。",
             "icon": "RiSunCloudyLine"
           },
           {
@@ -179,34 +179,34 @@
       "faq": {
         "id": "faq",
         "title": "平台常见问题解惑",
-        "description": "全方位为你梳理关于 Nano banana pro 免费 使用 以及 Nano banana pro 中文 版本的最新服务内容及解答。",
+        "description": "全方位为你梳理关于 Nano banana pro 免费 使用 以及 Nano banana pro 中文版本的最新服务内容及解答。",
         "items": [
           {
-            "question": "Nano banana pro 官网 是 哪个，要怎么才能安全访问？",
-            "answer": "您目前所在的就是官方维护且信誉极佳的 Nano banana pro 官网。我们当前主要提供在浏览器端直接访问网页的基础生成服务，这就意味着你在大部分情况下不需要另外进行多余的 Nano banana pro 下载 步骤。"
+            "question": "Nano banana pro 是哪个平台，要怎么才能安全访问？",
+            "answer": "您目前所在的就是 Nano banana pro 的在线服务平台。我们主要提供在浏览器端直接访问的基础生成服务，这意味着大部分情况下你不需要额外进行 Nano banana pro 下载 的操作。"
           },
           {
-            "question": "关于 Nano banana pro 免费 使用 的具体适用范围是什么？",
-            "answer": "我们希望所有初学者能够有机会尝试各项惊艳功能，因此针对大量用户会释放免费的生成信用额度。想要亲自验证可以直接点击前方的 nano banana pro 入口进行体验和验证。"
+            "question": "Nano banana pro 免费 使用 的具体范围是什么？",
+            "answer": "我们希望所有初学者都有机会尝试各项核心功能，因此会为大量用户释放免费的生成信用额度。想要亲自体验可以直接点击页面上的 nano banana pro 入口进行验证。"
           },
           {
-            "question": "如果考虑升级迭代，banana pro 2 与 banana pro 3 之间有何实质区别？",
-            "answer": "不论你正在关注我们的哪一次大版本推进，最新一代的 nano banana pro ai 模型在图文契合度、原生大图生成时间占用以及中英复杂长短句交互理解速度层面，均取得了非常强劲的跨世纪提升。"
+            "question": "banana pro 2 相比此前版本有哪些主要提升？",
+            "answer": "最新一代的 nano banana pro ai 模型在图文契合度、原生大图生成速度以及中英文复杂指令的理解上均取得了非常显著的提升，尤其在商业级输出精度方面表现突出。"
           },
           {
-            "question": "新手小白能否马上找到有效的 nano banana pro 如何使用 教程？",
-            "answer": "在我们的开发者平台和社区博客内积累了丰富多元的创作灵感与系统化的 banana pro 提示词 书写建议，无论你想刻画怎样的场景结构都能迅速获取到相应的启发思路与操作细节。"
+            "question": "新手能否快速找到有效的 nano banana pro 如何使用 教程？",
+            "answer": "在我们的开发者平台和社区博客内积累了丰富的创作灵感与系统化的 banana pro 提示词 书写建议，无论你想刻画怎样的场景都能迅速获取相应的操作细节。"
           },
           {
-            "question": "对于商业用户关心 Banana pro api 与具体的接口计费方案等，有什么对应内容吗？",
-            "answer": "我们的平台向来乐意接纳大型企业的诉求。欢迎详细参阅后台公开展示的 banana pro 价格 和相关的计费策略详情，并查看对接 Banana pro api 的标准步骤，以便您能够随时将其规模化且定制化地引入工作环节。"
+            "question": "商业用户关心 Banana pro api 与接口计费方案，平台有对应内容吗？",
+            "answer": "我们的平台向来乐意接纳企业级诉求。欢迎参阅公开展示的 banana pro 价格 和计费策略，并查看对接 Banana pro api 的标准步骤，以便随时将其规模化引入工作环节。"
           }
         ]
       },
       "cta": {
         "id": "cta",
         "title": "现在就开始属于你的高效艺术航程",
-        "description": "准备好体验流畅精准的 nano banana prompt 互动了么？不要犹豫，立刻从当前经过认证的 Nano banana 官网 进行在线操作并发散你无尽的数字灵感。",
+        "description": "准备好体验流畅精准的 nano banana prompt 互动了吗？不要犹豫，立刻通过 Nano banana 在线平台进行操作，发散你无尽的数字灵感。",
         "buttons": [
           {
             "title": "限时免费启动",
