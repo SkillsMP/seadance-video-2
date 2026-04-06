@@ -33,7 +33,7 @@
           {
             "title": "免费使用",
             "icon": "Zap",
-            "url": "/#features",
+            "url": "/#generator",
             "target": "_self",
             "variant": "default"
           },
@@ -212,7 +212,7 @@
         "buttons": [
           {
             "title": "限时免费启动",
-            "url": "/#features",
+            "url": "/#generator",
             "target": "_self",
             "icon": "Zap"
           },

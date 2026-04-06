@@ -862,7 +862,7 @@ export function ImageGenerator({
   };
 
   return (
-    <section className={cn('py-16 md:py-24', className)}>
+    <section id="generator" className={cn('py-16 md:py-24', className)}>
       <div className="container">
         <div className="mx-auto max-w-6xl">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">

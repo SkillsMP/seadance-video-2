@@ -33,7 +33,7 @@
           {
             "title": "Start Creating for Free",
             "icon": "Zap",
-            "url": "/#features",
+            "url": "/#generator",
             "target": "_self",
             "variant": "default"
           },
@@ -220,7 +220,7 @@
         "buttons": [
           {
             "title": "Start Creating for Free",
-            "url": "/#features",
+            "url": "/#generator",
             "target": "_self",
             "icon": "Zap"
           },
