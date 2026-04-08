@@ -20,9 +20,9 @@
     },
     "buttons": [],
     "user_nav": {
-      "show_name": false,
-      "show_credits": false,
-      "show_sign_out": false,
+      "show_name": true,
+      "show_credits": true,
+      "show_sign_out": true,
       "items": []
     },
     "show_sign": true,
