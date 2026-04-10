@@ -1,3 +1,8 @@
+/**
+ * 图像生成器组件
+ * 支持文本生成图像（text-to-image）和图像编辑（image-to-image）两种模式
+ * 集成多个 AI 服务提供商（fal、replicate、gemini 等）
+ */
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -41,6 +46,9 @@ import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
 import { cn } from '@/shared/lib/utils';
 
+// ============ 接口定义 ============
+
+/** 组件 Props */
 interface ImageGeneratorProps {
   allowMultipleImages?: boolean;
   maxImages?: number;
@@ -50,6 +58,7 @@ interface ImageGeneratorProps {
   promptKey?: string;
 }
 
+/** 生成的图像数据 */
 interface GeneratedImage {
   id: string;
   url: string;
@@ -58,6 +67,7 @@ interface GeneratedImage {
   prompt?: string;
 }
 
+/** 后端任务数据 */
 interface BackendTask {
   id: string;
   status: string;
@@ -68,12 +78,16 @@ interface BackendTask {
   taskResult: string | null;
 }
 
+/** 标签页类型：文本生成图像 或 图像编辑 */
 type ImageGeneratorTab = 'text-to-image' | 'image-to-image';
 
-const POLL_INTERVAL = 5000;
-const GENERATION_TIMEOUT = 180000;
-const MAX_PROMPT_LENGTH = 2000;
+// ============ 常量配置 ============
 
+const POLL_INTERVAL = 5000;        // 轮询间隔（毫秒）
+const GENERATION_TIMEOUT = 180000; // 生成超时时间（3分钟）
+const MAX_PROMPT_LENGTH = 2000;    // 提示词最大长度
+
+/** AI 模型配置列表 */
 const MODEL_OPTIONS = [
   {
     value: 'nano-banana-pro',
@@ -131,6 +145,7 @@ const MODEL_OPTIONS = [
   },
 ];
 
+/** AI 服务提供商列表 */
 const PROVIDER_OPTIONS = [
   {
     value: 'kie',
@@ -150,6 +165,11 @@ const PROVIDER_OPTIONS = [
   },
 ];
 
+// ============ 工具函数 ============
+
+/**
+ * 解析任务结果 JSON 字符串
+ */
 function parseTaskResult(taskResult: string | null): any {
   if (!taskResult) {
     return null;
@@ -163,6 +183,10 @@ function parseTaskResult(taskResult: string | null): any {
   }
 }
 
+/**
+ * 从 AI 响应中提取图像 URL
+ * 支持多种响应格式（output、images、data 等）
+ */
 function extractImageUrls(result: any): string[] {
   if (!result) {
     return [];
@@ -204,6 +228,8 @@ function extractImageUrls(result: any): string[] {
   return [];
 }
 
+// ============ 主组件 ============
+
 export function ImageGenerator({
   allowMultipleImages = true,
   maxImages = 9,
@@ -214,9 +240,13 @@ export function ImageGenerator({
 }: ImageGeneratorProps) {
   const t = useTranslations('ai.image.generator');
 
+  // ============ 状态管理 ============
+  
+  // UI 状态
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
+  // 生成配置
   const [costCredits, setCostCredits] = useState<number>(4);
   const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
   const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
@@ -231,10 +261,14 @@ export function ImageGenerator({
       ? '' 
       : 'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg'
   );
+  
+  // 参考图像
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
   const [referenceImageUrls, setReferenceImageUrls] = useState<string[]>([]);
+  
+  // 生成结果
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -246,8 +280,10 @@ export function ImageGenerator({
   const [downloadingImageId, setDownloadingImageId] = useState<string | null>(
     null
   );
+  
+  // 加载状态
   const [isMounted, setIsMounted] = useState(false);
-  const savedTaskIdsRef = useRef<Set<string>>(new Set());
+  const savedTaskIdsRef = useRef<Set<string>>(new Set()); // 防止重复保存
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
@@ -256,6 +292,11 @@ export function ImageGenerator({
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
 
+  // ============ 初始化 Effects ============
+  
+  /**
+   * 组件挂载时获取可用的 AI 提供商
+   */
   useEffect(() => {
     setIsMounted(true);
     
@@ -303,6 +344,9 @@ export function ImageGenerator({
   // Track user ID to reset credits loading flag when user changes
   const userIdRef = useRef<string | null>(null);
   
+  /**
+   * 用户积分加载（仅加载一次）
+   */
   useEffect(() => {
     // Reset flag when user changes
     if (user?.id !== userIdRef.current) {
@@ -320,6 +364,9 @@ export function ImageGenerator({
     }
   }, [user?.id, user?.credits, fetchUserCredits]);
 
+  /**
+   * 根据 promptKey 加载预设提示词和图像
+   */
   useEffect(() => {
     if (promptKey) {
       fetch(`/api/prompts/by-title?title=${encodeURIComponent(promptKey)}`)
@@ -383,11 +430,18 @@ export function ImageGenerator({
     }
   }, [promptKey, availableProviders]);
 
+  // ============ 计算属性 ============
+  
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const isTextToImageMode = activeTab === 'text-to-image';
 
+  // ============ 事件处理函数 ============
+  
+  /**
+   * 标签页切换处理
+   */
   const handleTabChange = (value: string) => {
     const tab = value as ImageGeneratorTab;
     setActiveTab(tab);
@@ -412,6 +466,9 @@ export function ImageGenerator({
     }
   };
 
+  /**
+   * AI 提供商切换处理
+   */
   const handleProviderChange = (value: string) => {
     setProvider(value);
 
@@ -429,6 +486,9 @@ export function ImageGenerator({
     }
   };
 
+  /**
+   * 任务状态标签
+   */
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
       return '';
@@ -448,6 +508,9 @@ export function ImageGenerator({
     }
   }, [taskStatus]);
 
+  /**
+   * 参考图像变化处理
+   */
   const handleReferenceImagesChange = useCallback(
     (items: ImageUploaderValue[]) => {
       setReferenceImageItems(items);
@@ -459,16 +522,21 @@ export function ImageGenerator({
     []
   );
 
+  /** 参考图像是否正在上传 */
   const isReferenceUploading = useMemo(
     () => referenceImageItems.some((item) => item.status === 'uploading'),
     [referenceImageItems]
   );
 
+  /** 参考图像上传是否有错误 */
   const hasReferenceUploadError = useMemo(
     () => referenceImageItems.some((item) => item.status === 'error'),
     [referenceImageItems]
   );
 
+  /**
+   * 重置任务状态
+   */
   const resetTaskState = useCallback(() => {
     setIsGenerating(false);
     setProgress(0);
@@ -478,6 +546,12 @@ export function ImageGenerator({
     // Don't clear savedTaskIds here - keep it to prevent duplicates across generations
   }, []);
 
+  /**
+   * 保存生成的图像到展示库
+   * 1. 压缩图像
+   * 2. 上传到服务器
+   * 3. 保存到数据库
+   */
   const saveShowcase = useCallback(async (imageUrl: string, taskIdForTracking: string) => {
     // Prevent duplicate saves for the same task
     if (savedTaskIdsRef.current.has(taskIdForTracking)) {
@@ -549,6 +623,10 @@ export function ImageGenerator({
     }
   }, [prompt, promptKey]);
 
+  /**
+   * 轮询任务状态
+   * 定期查询后端任务状态，更新进度和结果
+   */
   const pollTaskStatus = useCallback(
     async (id: string) => {
       try {
@@ -665,6 +743,10 @@ export function ImageGenerator({
     [generationStartTime, resetTaskState, fetchUserCredits, saveShowcase]
   );
 
+  /**
+   * 轮询任务状态 Effect
+   * 每 5 秒查询一次任务状态
+   */
   useEffect(() => {
     if (!taskId || !isGenerating) {
       return;
@@ -701,6 +783,12 @@ export function ImageGenerator({
     };
   }, [taskId, isGenerating, pollTaskStatus]);
 
+  /**
+   * 生成图像处理函数
+   * 1. 验证前置条件（提供商、积分、提示词等）
+   * 2. 调用后端 API 创建生成任务
+   * 3. 启动轮询获取结果
+   */
   const handleGenerate = async () => {
     console.log('=== Generate Debug Info ===');
     console.log('availableProviders:', availableProviders);
@@ -828,6 +916,9 @@ export function ImageGenerator({
     }
   };
 
+  /**
+   * 下载生成的图像
+   */
   const handleDownloadImage = async (image: GeneratedImage) => {
     if (!image.url) {
       return;
@@ -861,11 +952,15 @@ export function ImageGenerator({
     }
   };
 
+  // ============ UI 渲染 ============
+
   return (
     <section id="generator" className={cn('py-16 md:py-24', className)}>
       <div className="container">
         <div className="mx-auto max-w-6xl">
+          {/* 两列布局：左侧生成表单，右侧生成结果 */}
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            {/* 左侧：生成表单卡片 */}
             <Card>
               <CardHeader>
                 {srOnlyTitle && <h2 className="sr-only">{srOnlyTitle}</h2>}
@@ -875,6 +970,7 @@ export function ImageGenerator({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 pb-8">
+                {/* 标签页：文本生成 vs 图像编辑 */}
                 <Tabs value={activeTab} onValueChange={handleTabChange}>
                   <TabsList className="bg-primary/10 grid w-full grid-cols-2">
                     <TabsTrigger value="text-to-image">
@@ -886,6 +982,7 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
+                {/* 提供商和模型选择（已注释） */}
                 {/* <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>{t('form.provider')}</Label>
@@ -927,6 +1024,7 @@ export function ImageGenerator({
                   </div>
                 </div> */}
 
+                {/* 参考图像上传（仅在图像编辑模式显示） */}
                 {!isTextToImageMode && (
                   <div className="space-y-4">
                     <ImageUploader
@@ -946,6 +1044,7 @@ export function ImageGenerator({
                   </div>
                 )}
 
+                {/* 提示词输入框 */}
                 <div className="space-y-2">
                   <Label htmlFor="image-prompt">{t('form.prompt')}</Label>
                   <Textarea
@@ -967,6 +1066,7 @@ export function ImageGenerator({
                   </div>
                 </div>
 
+                {/* 生成按钮 - 根据不同状态显示不同内容 */}
                 {!isMounted ? (
                   <Button className="w-full" disabled size="lg">
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -1021,6 +1121,7 @@ export function ImageGenerator({
                   </Button>
                 )}
 
+                {/* 积分显示和充值 */}
                 {!isMounted || isLoadingCredits || isLoadingProviders ? (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-primary">
@@ -1059,6 +1160,7 @@ export function ImageGenerator({
                   </div>
                 )}
 
+                {/* 生成进度条（仅在生成中时显示） */}
                 {isGenerating && (
                   <div className="space-y-2 rounded-lg border p-4">
                     <div className="flex items-center justify-between text-sm">
@@ -1076,6 +1178,7 @@ export function ImageGenerator({
               </CardContent>
             </Card>
 
+            {/* 右侧：生成结果卡片 */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl font-semibold">
@@ -1084,6 +1187,7 @@ export function ImageGenerator({
                 </CardTitle>
               </CardHeader>
               <CardContent className="pb-8">
+                {/* 显示生成的图像 */}
                 {generatedImages.length > 0 ? (
                   <div
                     className={
@@ -1111,6 +1215,7 @@ export function ImageGenerator({
                             }
                           />
 
+                          {/* 下载按钮 */}
                           <div className="absolute right-2 bottom-2 flex justify-end text-sm">
                             <Button
                               size="sm"
@@ -1135,6 +1240,7 @@ export function ImageGenerator({
                     ))}
                   </div>
                 ) : (
+                  // 没有生成图像时显示预览或提示
                   <div className="flex flex-col items-center justify-center py-4 text-center">
                     {previewImage && (
                       <LazyImage 
