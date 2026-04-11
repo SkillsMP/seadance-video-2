@@ -10,10 +10,10 @@ import {
   CreditCard,
   Download,
   ImageIcon,
-  Wand,
   Loader2,
   Sparkles,
   User,
+  Wand,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
@@ -34,13 +34,13 @@ import {
 } from '@/shared/components/ui/card';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from '@/shared/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
@@ -81,63 +81,84 @@ interface BackendTask {
 /** 标签页类型：文本生成图像 或 图像编辑 */
 type ImageGeneratorTab = 'text-to-image' | 'image-to-image';
 
+interface ModelOption {
+  family: string;
+  value: string;
+  label: string;
+  provider: string;
+  scenes: ImageGeneratorTab[];
+}
+
 // ============ 常量配置 ============
 
-const POLL_INTERVAL = 5000;        // 轮询间隔（毫秒）
+const POLL_INTERVAL = 5000; // 轮询间隔（毫秒）
 const GENERATION_TIMEOUT = 180000; // 生成超时时间（3分钟）
-const MAX_PROMPT_LENGTH = 2000;    // 提示词最大长度
+const MAX_PROMPT_LENGTH = 2000; // 提示词最大长度
+const DEFAULT_PROMPT =
+  'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset';
+const DEFAULT_PREVIEW_IMAGE =
+  'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg';
 
 /** AI 模型配置列表 */
-const MODEL_OPTIONS = [
+const MODEL_OPTIONS: ModelOption[] = [
   {
+    family: 'nano-banana-pro',
     value: 'nano-banana-pro',
     label: 'Nano Banana Pro',
     provider: 'kie',
     scenes: ['text-to-image', 'image-to-image'],
   },
   {
+    family: 'nano-banana-pro',
     value: 'google/nano-banana-pro',
     label: 'Nano Banana Pro',
     provider: 'replicate',
     scenes: ['text-to-image', 'image-to-image'],
   },
   {
+    family: 'seedream-4',
     value: 'bytedance/seedream-4',
     label: 'Seedream 4',
     provider: 'replicate',
     scenes: ['text-to-image', 'image-to-image'],
   },
   {
+    family: 'nano-banana-pro',
     value: 'fal-ai/nano-banana-pro',
     label: 'Nano Banana Pro',
     provider: 'fal',
     scenes: ['text-to-image'],
   },
   {
+    family: 'nano-banana-pro',
     value: 'fal-ai/nano-banana-pro/edit',
     label: 'Nano Banana Pro',
     provider: 'fal',
     scenes: ['image-to-image'],
   },
   {
+    family: 'seedream-4',
     value: 'fal-ai/bytedance/seedream/v4/edit',
     label: 'Seedream 4',
     provider: 'fal',
     scenes: ['image-to-image'],
   },
   {
+    family: 'z-image-turbo',
     value: 'fal-ai/z-image/turbo',
     label: 'Z-Image Turbo',
     provider: 'fal',
     scenes: ['text-to-image'],
   },
   {
+    family: 'flux-2-flex',
     value: 'fal-ai/flux-2-flex',
     label: 'Flux 2 Flex',
     provider: 'fal',
     scenes: ['text-to-image'],
   },
   {
+    family: 'gemini-3-pro-image-preview',
     value: 'gemini-3-pro-image-preview',
     label: 'Gemini 3 Pro Image Preview',
     provider: 'gemini',
@@ -145,27 +166,20 @@ const MODEL_OPTIONS = [
   },
 ];
 
-/** AI 服务提供商列表 */
-const PROVIDER_OPTIONS = [
-  {
-    value: 'kie',
-    label: 'Kie',
-  },
-  {
-    value: 'replicate',
-    label: 'Replicate',
-  },
-  {
-    value: 'fal',
-    label: 'Fal',
-  },
-  {
-    value: 'gemini',
-    label: 'Gemini',
-  },
-];
-
 // ============ 工具函数 ============
+
+function dedupeModelFamilies(options: ModelOption[]) {
+  const seenFamilies = new Set<string>();
+
+  return options.filter((option) => {
+    if (seenFamilies.has(option.family)) {
+      return false;
+    }
+
+    seenFamilies.add(option.family);
+    return true;
+  });
+}
 
 /**
  * 解析任务结果 JSON 字符串
@@ -241,33 +255,26 @@ export function ImageGenerator({
   const t = useTranslations('ai.image.generator');
 
   // ============ 状态管理 ============
-  
+
   // UI 状态
   const [activeTab, setActiveTab] =
     useState<ImageGeneratorTab>('text-to-image');
 
   // 生成配置
   const [costCredits, setCostCredits] = useState<number>(4);
-  const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
-  const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
+  const [selectedFamily, setSelectedFamily] = useState('');
   // Set default values only when no promptKey is provided
-  const [prompt, setPrompt] = useState(
-    promptKey 
-      ? '' 
-      : 'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset'
-  );
+  const [prompt, setPrompt] = useState(promptKey ? '' : DEFAULT_PROMPT);
   const [previewImage, setPreviewImage] = useState<string>(
-    promptKey 
-      ? '' 
-      : 'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg'
+    promptKey ? '' : DEFAULT_PREVIEW_IMAGE
   );
-  
+
   // 参考图像
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
   >([]);
   const [referenceImageUrls, setReferenceImageUrls] = useState<string[]>([]);
-  
+
   // 生成结果
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -280,7 +287,7 @@ export function ImageGenerator({
   const [downloadingImageId, setDownloadingImageId] = useState<string | null>(
     null
   );
-  
+
   // 加载状态
   const [isMounted, setIsMounted] = useState(false);
   const savedTaskIdsRef = useRef<Set<string>>(new Set()); // 防止重复保存
@@ -293,13 +300,13 @@ export function ImageGenerator({
     useAppContext();
 
   // ============ 初始化 Effects ============
-  
+
   /**
    * 组件挂载时获取可用的 AI 提供商
    */
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Fetch available AI providers
     fetch('/api/ai/providers')
       .then((res) => res.json())
@@ -308,28 +315,6 @@ export function ImageGenerator({
           const providers = data.data.providers || [];
           console.log('Available AI providers:', providers);
           setAvailableProviders(providers);
-          
-          // Set initial provider and model based on available providers
-          if (providers.length > 0) {
-            const firstProvider = providers[0];
-            setProvider(firstProvider);
-            
-            // Find first available model for this provider
-            const availableModel = MODEL_OPTIONS.find(
-              (option) => 
-                option.scenes.includes(activeTab) && 
-                option.provider === firstProvider
-            );
-            
-            if (availableModel) {
-              setModel(availableModel.value);
-            }
-          } else {
-            // No providers configured, clear provider and model
-            console.log('No AI providers configured, clearing provider and model');
-            setProvider('');
-            setModel('');
-          }
         }
       })
       .catch((error) => {
@@ -343,7 +328,7 @@ export function ImageGenerator({
 
   // Track user ID to reset credits loading flag when user changes
   const userIdRef = useRef<string | null>(null);
-  
+
   /**
    * 用户积分加载（仅加载一次）
    */
@@ -353,7 +338,7 @@ export function ImageGenerator({
       userIdRef.current = user?.id || null;
       hasLoadedCreditsRef.current = false;
     }
-    
+
     // Only fetch credits once per user session
     if (user && !user.credits && !hasLoadedCreditsRef.current) {
       hasLoadedCreditsRef.current = true;
@@ -379,66 +364,87 @@ export function ImageGenerator({
             if (data.data.image) {
               setPreviewImage(data.data.image);
             }
-            // When promptKey is provided, switch to image-to-image tab
             setActiveTab('image-to-image');
             setCostCredits(6);
-
-            // Update model based on available providers for image-to-image
-            if (availableProviders.length > 0) {
-              const availableModel = MODEL_OPTIONS.find(
-                (option) =>
-                  option.scenes.includes('image-to-image') &&
-                  availableProviders.includes(option.provider)
-              );
-
-              if (availableModel) {
-                setProvider(availableModel.provider);
-                setModel(availableModel.value);
-              }
-            }
           }
         })
         .catch((error) => {
           console.error('Failed to fetch prompt:', error);
         });
     } else {
-      // Reset to default values when no promptKey is provided
-      setPrompt(
-        'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset'
-      );
-      setPreviewImage(
-        'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg'
-      );
+      setPrompt(DEFAULT_PROMPT);
+      setPreviewImage(DEFAULT_PREVIEW_IMAGE);
       setActiveTab('text-to-image');
       setCostCredits(4);
-
-      // Reset to default provider and model for text-to-image
-      if (availableProviders.length > 0) {
-        const firstProvider = availableProviders[0];
-        setProvider(firstProvider);
-
-        const availableModel = MODEL_OPTIONS.find(
-          (option) =>
-            option.scenes.includes('text-to-image') &&
-            option.provider === firstProvider
-        );
-
-        if (availableModel) {
-          setModel(availableModel.value);
-        }
-      }
     }
-  }, [promptKey, availableProviders]);
+  }, [promptKey]);
 
   // ============ 计算属性 ============
-  
+
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
   const isTextToImageMode = activeTab === 'text-to-image';
+  const availableModelOptions = useMemo(
+    () =>
+      MODEL_OPTIONS.filter(
+        (option) =>
+          option.scenes.includes(activeTab) &&
+          availableProviders.includes(option.provider)
+      ),
+    [activeTab, availableProviders]
+  );
+  const availableFamilyOptions = useMemo(
+    () => dedupeModelFamilies(availableModelOptions),
+    [availableModelOptions]
+  );
+  const selectedCandidates = useMemo(
+    () =>
+      availableModelOptions.filter(
+        (option) => option.family === selectedFamily
+      ),
+    [availableModelOptions, selectedFamily]
+  );
+  const hasAvailableFamilies = availableFamilyOptions.length > 0;
+  const canGenerateForModelSelection =
+    !isLoadingProviders &&
+    hasAvailableFamilies &&
+    selectedCandidates.length > 0;
+  const modelAvailabilityMessage = useMemo(() => {
+    if (isLoadingProviders) {
+      return '';
+    }
+
+    if (availableProviders.length === 0) {
+      return 'Please contact the administrator to configure AI models.';
+    }
+
+    if (!hasAvailableFamilies) {
+      return 'No models are available for the current generation mode.';
+    }
+
+    return '';
+  }, [isLoadingProviders, availableProviders.length, hasAvailableFamilies]);
+
+  useEffect(() => {
+    if (availableFamilyOptions.length === 0) {
+      if (selectedFamily) {
+        setSelectedFamily('');
+      }
+      return;
+    }
+
+    const hasCurrentFamily = availableFamilyOptions.some(
+      (option) => option.family === selectedFamily
+    );
+
+    if (!hasCurrentFamily) {
+      setSelectedFamily(availableFamilyOptions[0].family);
+    }
+  }, [availableFamilyOptions, selectedFamily]);
 
   // ============ 事件处理函数 ============
-  
+
   /**
    * 标签页切换处理
    */
@@ -446,43 +452,10 @@ export function ImageGenerator({
     const tab = value as ImageGeneratorTab;
     setActiveTab(tab);
 
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => 
-        option.scenes.includes(tab) && 
-        option.provider === provider &&
-        availableProviders.includes(option.provider)
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
-    }
-
     if (tab === 'text-to-image') {
       setCostCredits(4);
     } else {
       setCostCredits(6);
-    }
-  };
-
-  /**
-   * AI 提供商切换处理
-   */
-  const handleProviderChange = (value: string) => {
-    setProvider(value);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => 
-        option.scenes.includes(activeTab) && 
-        option.provider === value &&
-        availableProviders.includes(option.provider)
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
     }
   };
 
@@ -552,76 +525,81 @@ export function ImageGenerator({
    * 2. 上传到服务器
    * 3. 保存到数据库
    */
-  const saveShowcase = useCallback(async (imageUrl: string, taskIdForTracking: string) => {
-    // Prevent duplicate saves for the same task
-    if (savedTaskIdsRef.current.has(taskIdForTracking)) {
-      console.log('Already saved, skipping:', taskIdForTracking);
-      return;
-    }
+  const saveShowcase = useCallback(
+    async (imageUrl: string, taskIdForTracking: string) => {
+      // Prevent duplicate saves for the same task
+      if (savedTaskIdsRef.current.has(taskIdForTracking)) {
+        console.log('Already saved, skipping:', taskIdForTracking);
+        return;
+      }
 
-    // Mark as saved immediately to prevent race conditions
-    savedTaskIdsRef.current.add(taskIdForTracking);
-    console.log('Saving showcase for task:', taskIdForTracking);
+      // Mark as saved immediately to prevent race conditions
+      savedTaskIdsRef.current.add(taskIdForTracking);
+      console.log('Saving showcase for task:', taskIdForTracking);
 
-    try {
-      const compressImageFile = async (imageUrl: string): Promise<string> => {
-        console.log('Fetching image from proxy...');
-        const response = await fetch(`/api/proxy/file?url=${encodeURIComponent(imageUrl)}`);
-        if (!response.ok) throw new Error('Failed to fetch image');
-        
-        const blob = await response.blob();
-        const file = new File([blob], 'showcase.jpg', { type: blob.type });
+      try {
+        const compressImageFile = async (imageUrl: string): Promise<string> => {
+          console.log('Fetching image from proxy...');
+          const response = await fetch(
+            `/api/proxy/file?url=${encodeURIComponent(imageUrl)}`
+          );
+          if (!response.ok) throw new Error('Failed to fetch image');
 
-        // Use shared compressImage function
-        const { compressImage } = await import('@/shared/blocks/common');
-        const compressedFile = await compressImage(file);
+          const blob = await response.blob();
+          const file = new File([blob], 'showcase.jpg', { type: blob.type });
 
-        return new Promise((resolve, reject) => {
-           const formData = new FormData();
-           formData.append('file', compressedFile);
+          // Use shared compressImage function
+          const { compressImage } = await import('@/shared/blocks/common');
+          const compressedFile = await compressImage(file);
 
-           console.log('Uploading compressed image...');
-           fetch('/api/upload', {
-             method: 'POST',
-             body: formData,
-           })
-           .then(res => {
-             if (!res.ok) throw new Error('Upload failed');
-             return res.json();
-           })
-           .then(result => {
-             if (!result.success || !result.url) {
-               throw new Error(result.error || 'Upload failed');
-             }
-             console.log('Upload successful:', result.url);
-             resolve(result.url);
-           })
-           .catch(reject);
+          return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file', compressedFile);
+
+            console.log('Uploading compressed image...');
+            fetch('/api/upload', {
+              method: 'POST',
+              body: formData,
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error('Upload failed');
+                return res.json();
+              })
+              .then((result) => {
+                if (!result.success || !result.url) {
+                  throw new Error(result.error || 'Upload failed');
+                }
+                console.log('Upload successful:', result.url);
+                resolve(result.url);
+              })
+              .catch(reject);
+          });
+        };
+
+        const compressedImageUrl = await compressImageFile(imageUrl);
+
+        console.log('Adding showcase to database...');
+        await fetch('/api/showcases/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: prompt.trim().substring(0, 100),
+            prompt: prompt.trim(),
+            image: compressedImageUrl,
+            tags: promptKey || null,
+          }),
         });
-      };
-
-      const compressedImageUrl = await compressImageFile(imageUrl);
-
-      console.log('Adding showcase to database...');
-      await fetch('/api/showcases/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: prompt.trim().substring(0, 100),
-          prompt: prompt.trim(),
-          image: compressedImageUrl,
-          tags: promptKey || null,
-        }),
-      });
-      console.log('Showcase saved successfully');
-    } catch (error) {
-      console.error('Failed to save showcase:', error);
-      // Remove from saved set if failed
-      savedTaskIdsRef.current.delete(taskIdForTracking);
-    }
-  }, [prompt, promptKey]);
+        console.log('Showcase saved successfully');
+      } catch (error) {
+        console.error('Failed to save showcase:', error);
+        // Remove from saved set if failed
+        savedTaskIdsRef.current.delete(taskIdForTracking);
+      }
+    },
+    [prompt, promptKey]
+  );
 
   /**
    * 轮询任务状态
@@ -704,7 +682,7 @@ export function ImageGenerator({
               prompt: task.prompt ?? undefined,
             }));
             setGeneratedImages(images);
-            
+
             // Save showcase only once - check before saving
             if (images.length > 0 && !savedTaskIdsRef.current.has(task.id)) {
               await saveShowcase(images[0].url, task.id);
@@ -792,22 +770,29 @@ export function ImageGenerator({
   const handleGenerate = async () => {
     console.log('=== Generate Debug Info ===');
     console.log('availableProviders:', availableProviders);
-    console.log('current provider:', provider);
-    console.log('current model:', model);
+    console.log('selectedFamily:', selectedFamily);
+    console.log(
+      'selectedCandidates:',
+      selectedCandidates.map((candidate) => ({
+        provider: candidate.provider,
+        model: candidate.value,
+      }))
+    );
     console.log('remainingCredits:', remainingCredits);
     console.log('costCredits:', costCredits);
-    
-    // Check AI providers FIRST - highest priority
+
     if (availableProviders.length === 0) {
-      console.log('No AI providers configured - showing error');
       toast.error('Please contact the administrator to configure AI models.');
       return;
     }
 
-    // Check if current provider is in available providers
-    if (!availableProviders.includes(provider)) {
-      console.log('Current provider not in available providers - showing error');
-      toast.error('Please contact the administrator to configure AI models.');
+    if (!hasAvailableFamilies) {
+      toast.error('No models are available for the current generation mode.');
+      return;
+    }
+
+    if (selectedCandidates.length === 0) {
+      toast.error('Please select a model before generating.');
       return;
     }
 
@@ -824,11 +809,6 @@ export function ImageGenerator({
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) {
       toast.error('Please enter a prompt before generating.');
-      return;
-    }
-
-    if (!provider || !model) {
-      toast.error('Provider or model is not configured correctly.');
       return;
     }
 
@@ -858,8 +838,11 @@ export function ImageGenerator({
         body: JSON.stringify({
           mediaType: AIMediaType.IMAGE,
           scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
-          provider,
-          model,
+          family: selectedFamily,
+          candidates: selectedCandidates.map((candidate) => ({
+            provider: candidate.provider,
+            model: candidate.value,
+          })),
           prompt: trimmedPrompt,
           options,
         }),
@@ -887,15 +870,15 @@ export function ImageGenerator({
           const images = imageUrls.map((url, index) => ({
             id: `${newTaskId}-${index}`,
             url,
-            provider,
-            model,
+            provider: data.provider,
+            model: data.model,
             prompt: trimmedPrompt,
           }));
           setGeneratedImages(images);
           setProgress(100);
           resetTaskState();
           await fetchUserCredits();
-          
+
           // Save showcase - this handles immediate success case
           if (images.length > 0 && !savedTaskIdsRef.current.has(newTaskId)) {
             await saveShowcase(images[0].url, newTaskId);
@@ -982,47 +965,36 @@ export function ImageGenerator({
                   </TabsList>
                 </Tabs>
 
-                {/* 提供商和模型选择（已注释） */}
-                {/* <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t('form.provider')}</Label>
-                    <Select
-                      value={provider}
-                      onValueChange={handleProviderChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_provider')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PROVIDER_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>{t('form.model')}</Label>
-                    <Select value={model} onValueChange={setModel}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_model')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {MODEL_OPTIONS.filter(
-                          (option) =>
-                            option.scenes.includes(activeTab) &&
-                            option.provider === provider
-                        ).map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div> */}
+                <div className="space-y-2">
+                  <Label>{t('form.model')}</Label>
+                  <Select
+                    value={selectedFamily}
+                    onValueChange={setSelectedFamily}
+                    disabled={isLoadingProviders || !hasAvailableFamilies}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          isLoadingProviders
+                            ? t('loading')
+                            : t('form.select_model')
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableFamilyOptions.map((option) => (
+                        <SelectItem key={option.family} value={option.family}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {modelAvailabilityMessage && (
+                    <p className="text-muted-foreground text-xs">
+                      {modelAvailabilityMessage}
+                    </p>
+                  )}
+                </div>
 
                 {/* 参考图像上传（仅在图像编辑模式显示） */}
                 {!isTextToImageMode && (
@@ -1085,7 +1057,7 @@ export function ImageGenerator({
                     disabled={
                       isGenerating ||
                       isLoadingCredits ||
-                      isLoadingProviders ||
+                      !canGenerateForModelSelection ||
                       !prompt.trim() ||
                       isPromptTooLong ||
                       isReferenceUploading ||
@@ -1115,6 +1087,7 @@ export function ImageGenerator({
                     size="lg"
                     className="w-full"
                     onClick={() => setIsShowSignModal(true)}
+                    disabled={isLoadingProviders || !hasAvailableFamilies}
                   >
                     <User className="mr-2 h-4 w-4" />
                     {t('sign_in_to_generate')}
@@ -1243,8 +1216,8 @@ export function ImageGenerator({
                   // 没有生成图像时显示预览或提示
                   <div className="flex flex-col items-center justify-center py-4 text-center">
                     {previewImage && (
-                      <LazyImage 
-                        src={previewImage} 
+                      <LazyImage
+                        src={previewImage}
                         alt="Preview image"
                         className="mb-6"
                       />

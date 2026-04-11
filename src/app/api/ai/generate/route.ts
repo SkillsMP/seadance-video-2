@@ -7,43 +7,51 @@ import { getRemainingCredits } from '@/shared/models/credit';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
 
+interface GenerateCandidate {
+  provider: string;
+  model: string;
+}
+
+interface GenerateRequest {
+  mediaType?: string;
+  prompt?: string;
+  options?: any;
+  scene?: string;
+  family?: string;
+  candidates?: GenerateCandidate[];
+  provider?: string;
+  model?: string;
+}
+
 export async function POST(request: Request) {
   try {
-    let { provider, mediaType, model, prompt, options, scene } =
-      await request.json();
+    const requestBody = (await request.json()) as GenerateRequest;
+    let { provider, mediaType, model, prompt, options, scene, candidates } =
+      requestBody;
 
-    if (!provider || !mediaType || !model) {
+    if (!mediaType) {
       throw new Error('invalid params');
     }
 
     if (!prompt && !options) {
       throw new Error('prompt or options is required');
     }
+    const requestPrompt = prompt ?? '';
 
     const aiService = await getAIService();
 
-    // check generate type
     if (!aiService.getMediaTypes().includes(mediaType)) {
       throw new Error('invalid mediaType');
     }
 
-    // check ai provider
-    const aiProvider = aiService.getProvider(provider);
-    if (!aiProvider) {
-      throw new Error('invalid provider');
-    }
-
-    // get current user
     const user = await getUserInfo();
     if (!user) {
       throw new Error('no auth, please sign in');
     }
 
-    // todo: get cost credits from settings
     let costCredits = 4;
 
     if (mediaType === AIMediaType.IMAGE) {
-      // generate image
       if (scene === 'image-to-image') {
         costCredits = 6;
       } else if (scene === 'text-to-image') {
@@ -52,7 +60,6 @@ export async function POST(request: Request) {
         throw new Error('invalid scene');
       }
     } else if (mediaType === AIMediaType.VIDEO) {
-      // generate video
       if (scene === 'text-to-video') {
         costCredits = 6;
       } else if (scene === 'image-to-video') {
@@ -63,45 +70,105 @@ export async function POST(request: Request) {
         throw new Error('invalid scene');
       }
     } else if (mediaType === AIMediaType.MUSIC) {
-      // generate music
       costCredits = 10;
       scene = 'text-to-music';
     } else {
       throw new Error('invalid mediaType');
     }
 
-    // check credits
     const remainingCredits = await getRemainingCredits(user.id);
     if (remainingCredits < costCredits) {
       throw new Error('insufficient credits');
     }
 
-    const callbackUrl = `${envConfigs.app_url}/api/ai/notify/${provider}`;
+    const createProviderTask = async (
+      providerName: string,
+      modelName: string
+    ) => {
+      const aiProvider = aiService.getProvider(providerName);
+      if (!aiProvider) {
+        throw new Error('provider not found');
+      }
 
-    const params: any = {
-      mediaType,
-      model,
-      prompt,
-      callbackUrl,
-      options,
+      const callbackUrl = `${envConfigs.app_url}/api/ai/notify/${providerName}`;
+      const params: any = {
+        mediaType,
+        model: modelName,
+        prompt: requestPrompt,
+        callbackUrl,
+        options,
+      };
+
+      const result = await aiProvider.generate({ params });
+      if (!result?.taskId) {
+        throw new Error(
+          `ai generate failed, mediaType: ${mediaType}, provider: ${providerName}, model: ${modelName}`
+        );
+      }
+
+      return result;
     };
 
-    // generate content
-    const result = await aiProvider.generate({ params });
-    if (!result?.taskId) {
-      throw new Error(
-        `ai generate failed, mediaType: ${mediaType}, provider: ${provider}, model: ${model}`
-      );
+    let finalProvider = provider;
+    let finalModel = model;
+    let result;
+
+    if (mediaType === AIMediaType.IMAGE && candidates?.length) {
+      const candidateErrors: string[] = [];
+
+      for (const candidate of candidates) {
+        if (!candidate?.provider || !candidate?.model) {
+          candidateErrors.push(`invalid candidate/${scene ?? 'unknown-scene'}`);
+          continue;
+        }
+
+        try {
+          result = await createProviderTask(
+            candidate.provider,
+            candidate.model
+          );
+          finalProvider = candidate.provider;
+          finalModel = candidate.model;
+
+          if (candidateErrors.length > 0) {
+            console.warn('Model fallback used after candidate failures:', {
+              scene,
+              family: requestBody.family,
+              errors: candidateErrors,
+            });
+          }
+
+          break;
+        } catch (error: any) {
+          candidateErrors.push(
+            `${candidate.provider}/${candidate.model}/${scene}: ${error.message}`
+          );
+        }
+      }
+
+      if (!result || !finalProvider || !finalModel) {
+        console.error('All model candidates failed:', {
+          scene,
+          family: requestBody.family,
+          errors: candidateErrors,
+        });
+        throw new Error('All model candidates failed');
+      }
+    } else if (provider && model) {
+      result = await createProviderTask(provider, model);
+      finalProvider = provider;
+      finalModel = model;
+    } else {
+      throw new Error('invalid params');
     }
 
-    // create ai task
     const newAITask: NewAITask = {
       id: getUuid(),
       userId: user.id,
       mediaType,
-      provider,
-      model,
-      prompt,
+      provider: finalProvider,
+      model: finalModel,
+      prompt: requestPrompt,
       scene,
       options: options ? JSON.stringify(options) : null,
       status: result.taskStatus,
