@@ -1,3 +1,9 @@
+//配置中心，支持"数据库配置 + 环境变量"双来源，环境变量优先，并且区分了公开配置和私有配置。
+//getConfigs — 从数据库读取所有配置，结果会被 Next.js 缓存（1小时），tag 是 configs
+//getAllConfigs — 合并数据库配置 + 环境变量，环境变量优先级更高，覆盖同名的数据库配置
+//getPublicConfigs — 从全量配置里过滤出可以暴露给前端的配置项（通过 publicSettingNames 白名单控制）
+//saveConfigs / addConfig — 写入/更新配置到数据库，写完后会 revalidateTag 让缓存失效
+
 import { revalidateTag, unstable_cache } from 'next/cache';
 
 import { db } from '@/core/db';
