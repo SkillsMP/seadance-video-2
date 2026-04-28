@@ -100,6 +100,7 @@ const DEFAULT_PREVIEW_IMAGE =
   'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg';
 
 /** AI 模型配置列表 */
+// 数组中元素的存放顺序即为调用优先级
 const MODEL_OPTIONS: ModelOption[] = [
   {
     family: 'nano-banana-pro',
