@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { envConfigs } from '@/config';
-import { defaultLocale } from '@/config/locale';
+import { defaultLocale, locales } from '@/config/locale';
 
 // get metadata for page component
 export function getMetadata(
@@ -47,10 +47,9 @@ export function getMetadata(
     }
 
     // canonical url
-    const canonicalUrl = await getCanonicalUrl(
-      options.canonicalUrl || '',
-      locale || ''
-    );
+    const hasExplicitCanonicalUrl = Boolean(options.canonicalUrl);
+    const canonicalPath = options.canonicalUrl || '';
+    const canonicalUrl = await getCanonicalUrl(canonicalPath, locale || '');
 
     const title =
       passedMetadata.title || translatedMetadata.title || defaultMetadata.title;
@@ -88,6 +87,9 @@ export function getMetadata(
         defaultMetadata.keywords,
       alternates: {
         canonical: canonicalUrl,
+        ...(hasExplicitCanonicalUrl
+          ? { languages: await buildLanguageAlternates(canonicalPath) }
+          : {}),
       },
 
       openGraph: {
@@ -129,28 +131,44 @@ async function getTranslatedMetadata(metadataKey: string, locale: string) {
   };
 }
 
-async function getCanonicalUrl(canonicalUrl: string, locale: string) {
+export async function getCanonicalUrl(canonicalUrl: string, locale: string) {
   if (!canonicalUrl) {
     canonicalUrl = '/';
   }
 
   if (canonicalUrl.startsWith('http')) {
     // full url
-    canonicalUrl = canonicalUrl;
-  } else {
-    // relative path
-    if (!canonicalUrl.startsWith('/')) {
-      canonicalUrl = `/${canonicalUrl}`;
-    }
+    return canonicalUrl;
+  }
 
-    canonicalUrl = `${envConfigs.app_url}${
-      !locale || locale === defaultLocale ? '' : `/${locale}`
-    }${canonicalUrl}`;
+  // relative path
+  if (!canonicalUrl.startsWith('/')) {
+    canonicalUrl = `/${canonicalUrl}`;
+  }
 
-    if (locale !== defaultLocale && canonicalUrl.endsWith('/')) {
-      canonicalUrl = canonicalUrl.slice(0, -1);
-    }
+  canonicalUrl = `${envConfigs.app_url}${
+    !locale || locale === defaultLocale ? '' : `/${locale}`
+  }${canonicalUrl}`;
+
+  if (locale !== defaultLocale && canonicalUrl.endsWith('/')) {
+    canonicalUrl = canonicalUrl.slice(0, -1);
   }
 
   return canonicalUrl;
+}
+
+export async function buildLanguageAlternates(canonicalUrl: string) {
+  const languages = Object.fromEntries(
+    await Promise.all(
+      locales.map(async (locale) => [
+        locale,
+        await getCanonicalUrl(canonicalUrl, locale),
+      ])
+    )
+  );
+
+  return {
+    ...languages,
+    'x-default': await getCanonicalUrl(canonicalUrl, defaultLocale),
+  };
 }

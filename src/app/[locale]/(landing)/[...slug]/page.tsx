@@ -2,7 +2,10 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
-import { envConfigs } from '@/config';
+import {
+  buildLanguageAlternates,
+  getCanonicalUrl,
+} from '@/shared/lib/seo';
 import { getLocalPage } from '@/shared/models/post';
 
 // dynamic page metadata
@@ -26,10 +29,9 @@ export async function generateMetadata({
     typeof slug === 'string' ? slug : (slug as string[]).join('/') || '';
 
   // build canonical url
-  canonicalUrl =
-    locale !== envConfigs.locale
-      ? `${envConfigs.app_url}/${locale}/${staticPageSlug}`
-      : `${envConfigs.app_url}/${staticPageSlug}`;
+  const pagePath = `/${staticPageSlug}`;
+  canonicalUrl = await getCanonicalUrl(pagePath, locale);
+  const languages = await buildLanguageAlternates(pagePath);
 
   // get static page content
   const staticPage = await getLocalPage({ slug: staticPageSlug, locale });
@@ -44,6 +46,7 @@ export async function generateMetadata({
       description,
       alternates: {
         canonical: canonicalUrl,
+        languages,
       },
     };
   }
@@ -70,6 +73,7 @@ export async function generateMetadata({
         description,
         alternates: {
           canonical: canonicalUrl,
+          languages,
         },
       };
     }
@@ -88,6 +92,7 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: canonicalUrl,
+      languages,
     },
   };
 }

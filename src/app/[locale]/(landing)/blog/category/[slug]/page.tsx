@@ -7,6 +7,10 @@ import { Empty } from '@/shared/blocks/common';
 import { JsonLd } from '@/shared/components/seo/json-ld';
 import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import {
+  buildLanguageAlternates,
+  getCanonicalUrl,
+} from '@/shared/lib/seo';
+import {
   PostType as DBPostType,
   getPosts,
   PostStatus,
@@ -31,15 +35,16 @@ export async function generateMetadata({
 }) {
   const { locale, slug } = await params;
   const t = await getTranslations('blog.metadata');
+  const pagePath = `/blog/category/${slug}`;
+  const canonicalUrl = await getCanonicalUrl(pagePath, locale);
+  const languages = await buildLanguageAlternates(pagePath);
 
   return {
     title: `${slug} | ${t('title')}`,
     description: t('description'),
     alternates: {
-      canonical:
-        locale !== envConfigs.locale
-          ? `${envConfigs.app_url}/${locale}/blog/category/${slug}`
-          : `${envConfigs.app_url}/blog/category/${slug}`,
+      canonical: canonicalUrl,
+      languages,
     },
   };
 }
