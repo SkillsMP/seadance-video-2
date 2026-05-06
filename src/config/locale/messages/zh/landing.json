@@ -15,6 +15,11 @@
           "title": "核心功能",
           "url": "/#features",
           "icon": "Sparkles"
+        },
+        {
+          "title": "AI 任务",
+          "url": "/activity/ai-tasks",
+          "icon": "ListChecks"
         }
       ]
     },
