@@ -24,7 +24,8 @@
     },
     "buttons": {
       "view": "View Task",
-      "refresh": "Refresh Task"
+      "refresh": "Refresh Task",
+      "download": "Download"
     },
     "empty_message": "No tasks found"
   }

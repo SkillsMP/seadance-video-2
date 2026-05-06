@@ -8,6 +8,31 @@ import { getUserInfo } from '@/shared/models/user';
 import { Button, Tab } from '@/shared/types/blocks/common';
 import { type Table } from '@/shared/types/blocks/table';
 
+function DownloadLink({ href, title }: { href: string; title: string }) {
+  const isRemote = /^https?:\/\//.test(href);
+  const downloadHref = isRemote
+    ? `/api/proxy/file?url=${encodeURIComponent(href)}`
+    : href;
+
+  let filename = '';
+  try {
+    const url = new URL(href, 'http://x');
+    filename = decodeURIComponent(url.pathname.split('/').pop() || '');
+  } catch {
+    // ignore invalid href
+  }
+
+  return (
+    <a
+      href={downloadHref}
+      download={filename || true}
+      className="text-primary text-sm font-medium hover:underline"
+    >
+      {title}
+    </a>
+  );
+}
+
 export default async function AiTasksPage({
   searchParams,
 }: {
@@ -39,9 +64,13 @@ export default async function AiTasksPage({
   const table: Table = {
     title: t('list.title'),
     columns: [
-      { name: 'prompt', title: t('fields.prompt'), type: 'copy' },
+      {
+        name: 'prompt',
+        title: t('fields.prompt'),
+        type: 'copy',
+        className: 'min-w-64 max-w-[360px] whitespace-normal break-words',
+      },
       { name: 'mediaType', title: t('fields.media_type'), type: 'label' },
-      { name: 'provider', title: t('fields.provider'), type: 'label' },
       { name: 'model', title: t('fields.model'), type: 'label' },
       // { name: 'options', title: t('fields.options'), type: 'copy' },
       { name: 'status', title: t('fields.status'), type: 'label' },
@@ -66,29 +95,45 @@ export default async function AiTasksPage({
                 return (
                   <div className="flex flex-col gap-2">
                     {songs.map((song: any) => (
-                      <AudioPlayer
-                        key={song.id}
-                        src={song.audioUrl}
-                        title={song.title}
-                        className="w-80"
-                      />
+                      <div key={song.id} className="flex flex-col gap-2">
+                        <AudioPlayer
+                          src={song.audioUrl}
+                          title={song.title}
+                          className="w-80"
+                        />
+                        <DownloadLink
+                          href={song.audioUrl}
+                          title={t('list.buttons.download')}
+                        />
+                      </div>
                     ))}
                   </div>
                 );
               }
             } else if (taskInfo.images && taskInfo.images.length > 0) {
-              return (
-                <div className="flex flex-col gap-2">
-                  {taskInfo.images.map((image: any, index: number) => (
-                    <LazyImage
-                      key={index}
-                      src={image.imageUrl}
-                      alt="Generated image"
-                      className="h-32 w-auto"
-                    />
-                  ))}
-                </div>
+              const images: any[] = taskInfo.images.filter(
+                (image: any) => image.imageUrl
               );
+
+              if (images.length > 0) {
+                return (
+                  <div className="flex flex-col gap-3">
+                    {images.map((image: any, index: number) => (
+                      <div key={index} className="flex flex-col gap-2">
+                        <LazyImage
+                          src={image.imageUrl}
+                          alt="Generated image"
+                          className="h-auto max-h-32 w-auto max-w-[240px] object-contain"
+                        />
+                        <DownloadLink
+                          href={image.imageUrl}
+                          title={t('list.buttons.download')}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
             } else {
               return '-';
             }

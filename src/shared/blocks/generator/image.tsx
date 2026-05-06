@@ -1190,7 +1190,7 @@ export function ImageGenerator({
                           />
 
                           {/* 下载按钮 */}
-                          <div className="absolute right-2 bottom-2 flex justify-end text-sm">
+                          <div className="absolute top-2 right-2 flex justify-end text-sm">
                             <Button
                               size="sm"
                               variant="ghost"
@@ -1204,7 +1204,7 @@ export function ImageGenerator({
                                 </>
                               ) : (
                                 <>
-                                  <Download className="h-4 w-4" />
+                                  <Download className="h-5 w-5" />
                                 </>
                               )}
                             </Button>
