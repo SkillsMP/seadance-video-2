@@ -1,46 +1,46 @@
 {
   "metadata": {
-    "title": "AI Video Generator",
-    "description": "Generate videos with AI models, support text-to-video, image-to-video and video-to-video."
+    "title": "AI Video Generator – Multi-Model Studio for Text, Image and Clip Inputs",
+    "description": "Banana Pro brings Veo 3, Sora 2 Pro, Kling and Wan Pro into a single AI video studio. Turn a written scene, a still photo or an existing clip into a polished short video in just a few minutes."
   },
   "page": {
-    "title": "AI Video Generator",
-    "description": "Generate videos with AI models, support text-to-video, image-to-video and video-to-video.",
+    "title": "Multi-Model AI Video Generator",
+    "description": "Animate any idea you can describe, photograph or record. Pick a generation mode, drop in your prompt or reference, and our orchestrator routes the job to the strongest video model for the task — no editing software required.",
     "sections": {
       "faq": {
         "id": "faq",
-        "title": "Frequently Asked Questions about AI Video Generator",
+        "title": "AI Video Generator – Things People Often Ask",
         "items": [
           {
-            "question": "What generation modes does the video generator support?",
-            "answer": "We support three modes: Text-to-Video (generate from a text prompt), Image-to-Video (animate a reference image), and Video-to-Video (transform an existing video using a reference URL)."
+            "question": "Which generation modes are available?",
+            "answer": "Three modes ship out of the box. Text-to-Video composes a clip from a written scene, Image-to-Video animates a still you upload, and Video-to-Video remixes an existing clip when you paste its URL."
           },
           {
-            "question": "What is the maximum video length?",
-            "answer": "Generated videos are typically 5–10 seconds long, depending on the model selected. Longer durations may require more credits."
+            "question": "How long can a generated clip be?",
+            "answer": "Clips usually land between 5 and 10 seconds, with the exact upper bound depending on the model you pick. A few models also let you trade duration for resolution if you need extra room."
           },
           {
-            "question": "What resolutions are supported?",
-            "answer": "Supported resolutions vary by model and include 720p and 1080p options with common aspect ratios such as 16:9, 9:16, and 1:1."
+            "question": "What resolutions and aspect ratios can I get?",
+            "answer": "Output capabilities vary by model, but you can typically choose between 720p and 1080p, and switch between 16:9 cinematic, 9:16 vertical or 1:1 social-friendly framing."
           },
           {
-            "question": "How long does video generation take?",
-            "answer": "Video generation usually takes 1–5 minutes depending on length, resolution, and current load. Progress is displayed in real time."
+            "question": "How long does a single render take?",
+            "answer": "Most generations finish in 1–5 minutes. Heavier models, longer durations and busy traffic can push that higher; the page shows live progress so you don't have to refresh."
           },
           {
-            "question": "How many credits does a video cost?",
-            "answer": "Credits consumed depend on the model and output length. You can see the estimated cost before you start generation."
+            "question": "How are credits charged?",
+            "answer": "Credit cost depends on the chosen mode, model and output length. The estimate is shown on the generator before you confirm, and only successful renders are billed."
           },
           {
-            "question": "Can I use generated videos commercially?",
-            "answer": "Yes, subject to our Terms of Service and the model's usage policies. Review the applicable terms before publishing commercial content."
+            "question": "Are the videos safe to use commercially?",
+            "answer": "Yes, within the limits of our Terms of Service and the underlying model's own usage policy. Always re-check the policy of the specific model you used before shipping a paid campaign."
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "Create Your First AI Video Now",
-        "description": "Turn your ideas into stunning videos with AI — no editing skills needed.",
+        "title": "From Idea to Motion in a Few Clicks",
+        "description": "Skip the editing timeline. Type a scene, upload a frame or paste a clip URL — and let the studio do the heavy lifting.",
         "buttons": [
           {
             "title": "Generate a Video Now",
@@ -55,7 +55,7 @@
   },
   "generator": {
     "title": "Video Generator",
-    "description": "Generate videos with AI models, support text-to-video, image-to-video and video-to-video.",
+    "description": "Compose video from text, image or another clip — orchestrated across a curated set of frontier models.",
     "tabs": {
       "text-to-video": "Text to Video",
       "image-to-video": "Image to Video",

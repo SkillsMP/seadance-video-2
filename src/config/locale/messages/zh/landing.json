@@ -17,6 +17,11 @@
           "icon": "Sparkles"
         },
         {
+          "title": "AI 视频生成",
+          "url": "/ai-video-generator",
+          "icon": "Video"
+        },
+        {
           "title": "AI 任务",
           "url": "/activity/ai-tasks",
           "icon": "ListChecks"
