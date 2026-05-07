@@ -60,6 +60,14 @@ interface BackendTask {
 
 type VideoGeneratorTab = 'text-to-video' | 'image-to-video' | 'video-to-video';
 
+interface VideoModelOption {
+  family: string;
+  value: string;
+  label: string;
+  provider: string;
+  scenes: VideoGeneratorTab[];
+}
+
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
@@ -68,68 +76,75 @@ const textToVideoCredits = 6;
 const imageToVideoCredits = 8;
 const videoToVideoCredits = 10;
 
-const MODEL_OPTIONS = [
+const MODEL_OPTIONS: VideoModelOption[] = [
+    // Kie models
+    {
+      family: 'sora-2-pro',
+      value: 'sora-2-pro-image-to-video',
+      label: 'Sora 2 Pro',
+      provider: 'kie',
+      scenes: ['image-to-video'],
+    },
+    {
+      family: 'sora-2-pro',
+      value: 'sora-2-pro-text-to-video',
+      label: 'Sora 2 Pro',
+      provider: 'kie',
+      scenes: ['text-to-video'],
+    },
   // Replicate models
-  {
-    value: 'google/veo-3.1',
-    label: 'Veo 3.1',
-    provider: 'replicate',
-    scenes: ['text-to-video', 'image-to-video'],
-  },
-  {
-    value: 'openai/sora-2',
-    label: 'Sora 2',
-    provider: 'replicate',
-    scenes: ['text-to-video', 'image-to-video'],
-  },
+  // 临时停用：Replicate 视频模型成本过高，先注释掉避免被选用
+  // {
+  //   family: 'veo-3-1',
+  //   value: 'google/veo-3.1',
+  //   label: 'Veo 3.1',
+  //   provider: 'replicate',
+  //   scenes: ['text-to-video', 'image-to-video'],
+  // },
+  // {
+  //   family: 'sora-2',
+  //   value: 'openai/sora-2',
+  //   label: 'Sora 2',
+  //   provider: 'replicate',
+  //   scenes: ['text-to-video', 'image-to-video'],
+  // },
   // Fal models
   {
+    family: 'veo-3',
     value: 'fal-ai/veo3',
     label: 'Veo 3',
     provider: 'fal',
     scenes: ['text-to-video'],
   },
   {
+    family: 'wan-pro',
     value: 'fal-ai/wan-pro/image-to-video',
     label: 'Wan Pro',
     provider: 'fal',
     scenes: ['image-to-video'],
   },
   {
+    family: 'kling-video-o1',
     value: 'fal-ai/kling-video/o1/video-to-video/edit',
     label: 'Kling Video O1',
     provider: 'fal',
     scenes: ['video-to-video'],
   },
-  // Kie models
-  {
-    value: 'sora-2-pro-image-to-video',
-    label: 'Sora 2 Pro',
-    provider: 'kie',
-    scenes: ['image-to-video'],
-  },
-  {
-    value: 'sora-2-pro-text-to-video',
-    label: 'Sora 2 Pro',
-    provider: 'kie',
-    scenes: ['text-to-video'],
-  },
+
 ];
 
-const PROVIDER_OPTIONS = [
-  {
-    value: 'replicate',
-    label: 'Replicate',
-  },
-  {
-    value: 'fal',
-    label: 'Fal',
-  },
-  {
-    value: 'kie',
-    label: 'Kie',
-  },
-];
+function dedupeModelFamilies(options: VideoModelOption[]) {
+  const seenFamilies = new Set<string>();
+
+  return options.filter((option) => {
+    if (seenFamilies.has(option.family)) {
+      return false;
+    }
+
+    seenFamilies.add(option.family);
+    return true;
+  });
+}
 
 function parseTaskResult(taskResult: string | null): any {
   if (!taskResult) {
@@ -213,8 +228,7 @@ export function VideoGenerator({
     useState<VideoGeneratorTab>('text-to-video');
 
   const [costCredits, setCostCredits] = useState<number>(textToVideoCredits);
-  const [provider, setProvider] = useState(PROVIDER_OPTIONS[0]?.value ?? '');
-  const [model, setModel] = useState(MODEL_OPTIONS[0]?.value ?? '');
+  const [selectedFamily, setSelectedFamily] = useState('');
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -233,12 +247,29 @@ export function VideoGenerator({
     null
   );
   const [isMounted, setIsMounted] = useState(false);
+  const [availableProviders, setAvailableProviders] = useState<string[]>([]);
+  const [isLoadingProviders, setIsLoadingProviders] = useState(true);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
     useAppContext();
 
   useEffect(() => {
     setIsMounted(true);
+
+    fetch('/api/ai/providers')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code === 0 && data.data?.providers !== undefined) {
+          setAvailableProviders(data.data.providers || []);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch AI providers:', error);
+        setAvailableProviders([]);
+      })
+      .finally(() => {
+        setIsLoadingProviders(false);
+      });
   }, []);
 
   const promptLength = prompt.trim().length;
@@ -247,20 +278,67 @@ export function VideoGenerator({
   const isTextToVideoMode = activeTab === 'text-to-video';
   const isImageToVideoMode = activeTab === 'image-to-video';
   const isVideoToVideoMode = activeTab === 'video-to-video';
+  const availableModelOptions = useMemo(
+    () =>
+      MODEL_OPTIONS.filter(
+        (option) =>
+          option.scenes.includes(activeTab) &&
+          availableProviders.includes(option.provider)
+      ),
+    [activeTab, availableProviders]
+  );
+  const availableFamilyOptions = useMemo(
+    () => dedupeModelFamilies(availableModelOptions),
+    [availableModelOptions]
+  );
+  const selectedCandidates = useMemo(
+    () =>
+      availableModelOptions.filter(
+        (option) => option.family === selectedFamily
+      ),
+    [availableModelOptions, selectedFamily]
+  );
+  const hasAvailableFamilies = availableFamilyOptions.length > 0;
+  const canGenerateForModelSelection =
+    !isLoadingProviders &&
+    hasAvailableFamilies &&
+    selectedCandidates.length > 0;
+  const modelAvailabilityMessage = useMemo(() => {
+    if (isLoadingProviders) {
+      return '';
+    }
+
+    if (availableProviders.length === 0) {
+      return 'Please contact the administrator to configure AI models.';
+    }
+
+    if (!hasAvailableFamilies) {
+      return 'No models are available for the current generation mode.';
+    }
+
+    return '';
+  }, [isLoadingProviders, availableProviders.length, hasAvailableFamilies]);
+
+  useEffect(() => {
+    if (availableFamilyOptions.length === 0) {
+      if (selectedFamily) {
+        setSelectedFamily('');
+      }
+      return;
+    }
+
+    const hasCurrentFamily = availableFamilyOptions.some(
+      (option) => option.family === selectedFamily
+    );
+
+    if (!hasCurrentFamily) {
+      setSelectedFamily(availableFamilyOptions[0].family);
+    }
+  }, [availableFamilyOptions, selectedFamily]);
 
   const handleTabChange = (value: string) => {
     const tab = value as VideoGeneratorTab;
     setActiveTab(tab);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(tab) && option.provider === provider
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
-    }
 
     if (tab === 'text-to-video') {
       setCostCredits(textToVideoCredits);
@@ -268,20 +346,6 @@ export function VideoGenerator({
       setCostCredits(imageToVideoCredits);
     } else if (tab === 'video-to-video') {
       setCostCredits(videoToVideoCredits);
-    }
-  };
-
-  const handleProviderChange = (value: string) => {
-    setProvider(value);
-
-    const availableModels = MODEL_OPTIONS.filter(
-      (option) => option.scenes.includes(activeTab) && option.provider === value
-    );
-
-    if (availableModels.length > 0) {
-      setModel(availableModels[0].value);
-    } else {
-      setModel('');
     }
   };
 
@@ -436,7 +500,7 @@ export function VideoGenerator({
         return true;
       }
     },
-    [generationStartTime, resetTaskState]
+    [generationStartTime, resetTaskState, fetchUserCredits]
   );
 
   useEffect(() => {
@@ -476,6 +540,21 @@ export function VideoGenerator({
   }, [taskId, isGenerating, pollTaskStatus]);
 
   const handleGenerate = async () => {
+    if (availableProviders.length === 0) {
+      toast.error('Please contact the administrator to configure AI models.');
+      return;
+    }
+
+    if (!hasAvailableFamilies) {
+      toast.error('No models are available for the current generation mode.');
+      return;
+    }
+
+    if (selectedCandidates.length === 0) {
+      toast.error('Please select a model before generating.');
+      return;
+    }
+
     if (!user) {
       setIsShowSignModal(true);
       return;
@@ -487,13 +566,9 @@ export function VideoGenerator({
     }
 
     const trimmedPrompt = prompt.trim();
+    const trimmedReferenceVideoUrl = referenceVideoUrl.trim();
     if (!trimmedPrompt && isTextToVideoMode) {
       toast.error('Please enter a prompt before generating.');
-      return;
-    }
-
-    if (!provider || !model) {
-      toast.error('Provider or model is not configured correctly.');
       return;
     }
 
@@ -502,7 +577,7 @@ export function VideoGenerator({
       return;
     }
 
-    if (isVideoToVideoMode && !referenceVideoUrl) {
+    if (isVideoToVideoMode && !trimmedReferenceVideoUrl) {
       toast.error('Please provide a reference video URL before generating.');
       return;
     }
@@ -521,7 +596,7 @@ export function VideoGenerator({
       }
 
       if (isVideoToVideoMode) {
-        options.video_input = [referenceVideoUrl];
+        options.video_input = [trimmedReferenceVideoUrl];
       }
 
       const resp = await fetch('/api/ai/generate', {
@@ -532,8 +607,11 @@ export function VideoGenerator({
         body: JSON.stringify({
           mediaType: AIMediaType.VIDEO,
           scene: activeTab,
-          provider,
-          model,
+          family: selectedFamily,
+          candidates: selectedCandidates.map((candidate) => ({
+            provider: candidate.provider,
+            model: candidate.value,
+          })),
           prompt: trimmedPrompt,
           options,
         }),
@@ -562,8 +640,8 @@ export function VideoGenerator({
             videoUrls.map((url, index) => ({
               id: `${newTaskId}-${index}`,
               url,
-              provider,
-              model,
+              provider: data.provider,
+              model: data.model,
               prompt: trimmedPrompt,
             }))
           );
@@ -646,45 +724,35 @@ export function VideoGenerator({
                   </TabsList>
                 </Tabs>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t('form.provider')}</Label>
-                    <Select
-                      value={provider}
-                      onValueChange={handleProviderChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_provider')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PROVIDER_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>{t('form.model')}</Label>
-                    <Select value={model} onValueChange={setModel}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t('form.select_model')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {MODEL_OPTIONS.filter(
-                          (option) =>
-                            option.scenes.includes(activeTab) &&
-                            option.provider === provider
-                        ).map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <Label>{t('form.model')}</Label>
+                  <Select
+                    value={selectedFamily}
+                    onValueChange={setSelectedFamily}
+                    disabled={isLoadingProviders || !hasAvailableFamilies}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          isLoadingProviders
+                            ? t('loading')
+                            : t('form.select_model')
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableFamilyOptions.map((option) => (
+                        <SelectItem key={option.family} value={option.family}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {modelAvailabilityMessage && (
+                    <p className="text-muted-foreground text-xs">
+                      {modelAvailabilityMessage}
+                    </p>
+                  )}
                 </div>
 
                 {isImageToVideoMode && (
@@ -759,18 +827,24 @@ export function VideoGenerator({
                     onClick={handleGenerate}
                     disabled={
                       isGenerating ||
+                      !canGenerateForModelSelection ||
                       (isTextToVideoMode && !prompt.trim()) ||
                       isPromptTooLong ||
                       isReferenceUploading ||
                       hasReferenceUploadError ||
                       (isImageToVideoMode && referenceImageUrls.length === 0) ||
-                      (isVideoToVideoMode && !referenceVideoUrl)
+                      (isVideoToVideoMode && !referenceVideoUrl.trim())
                     }
                   >
                     {isGenerating ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {t('generating')}
+                      </>
+                    ) : isLoadingProviders ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t('loading')}
                       </>
                     ) : (
                       <>
@@ -784,6 +858,7 @@ export function VideoGenerator({
                     size="lg"
                     className="w-full"
                     onClick={() => setIsShowSignModal(true)}
+                    disabled={isLoadingProviders || !hasAvailableFamilies}
                   >
                     <User className="mr-2 h-4 w-4" />
                     {t('sign_in_to_generate')}

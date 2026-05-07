@@ -113,7 +113,10 @@ export async function POST(request: Request) {
     let finalModel = model;
     let result;
 
-    if (mediaType === AIMediaType.IMAGE && candidates?.length) {
+    const supportCandidatesFallback =
+      mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
+
+    if (supportCandidatesFallback && candidates?.length) {
       const candidateErrors: string[] = [];
 
       for (const candidate of candidates) {
@@ -132,6 +135,7 @@ export async function POST(request: Request) {
 
           if (candidateErrors.length > 0) {
             console.warn('Model fallback used after candidate failures:', {
+              mediaType,
               scene,
               family: requestBody.family,
               errors: candidateErrors,
@@ -148,6 +152,7 @@ export async function POST(request: Request) {
 
       if (!result || !finalProvider || !finalModel) {
         console.error('All model candidates failed:', {
+          mediaType,
           scene,
           family: requestBody.family,
           errors: candidateErrors,
