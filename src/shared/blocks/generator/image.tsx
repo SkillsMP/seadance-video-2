@@ -18,6 +18,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
+import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import { Link } from '@/core/i18n/navigation';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
@@ -262,7 +263,6 @@ export function ImageGenerator({
     useState<ImageGeneratorTab>('text-to-image');
 
   // 生成配置
-  const [costCredits, setCostCredits] = useState<number>(4);
   const [selectedFamily, setSelectedFamily] = useState('');
   // Set default values only when no promptKey is provided
   const [prompt, setPrompt] = useState(promptKey ? '' : DEFAULT_PROMPT);
@@ -366,7 +366,6 @@ export function ImageGenerator({
               setPreviewImage(data.data.image);
             }
             setActiveTab('image-to-image');
-            setCostCredits(6);
           }
         })
         .catch((error) => {
@@ -376,12 +375,20 @@ export function ImageGenerator({
       setPrompt(DEFAULT_PROMPT);
       setPreviewImage(DEFAULT_PREVIEW_IMAGE);
       setActiveTab('text-to-image');
-      setCostCredits(4);
     }
   }, [promptKey]);
 
   // ============ 计算属性 ============
 
+  const costCredits = useMemo(
+    () =>
+      getGenerationCreditCost({
+        mediaType: AIMediaType.IMAGE,
+        scene: activeTab,
+        family: selectedFamily,
+      }),
+    [activeTab, selectedFamily]
+  );
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
@@ -452,12 +459,6 @@ export function ImageGenerator({
   const handleTabChange = (value: string) => {
     const tab = value as ImageGeneratorTab;
     setActiveTab(tab);
-
-    if (tab === 'text-to-image') {
-      setCostCredits(4);
-    } else {
-      setCostCredits(6);
-    }
   };
 
   /**

@@ -12,6 +12,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
+import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import { Link } from '@/core/i18n/navigation';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import { ImageUploader, ImageUploaderValue } from '@/shared/blocks/common';
@@ -71,10 +72,6 @@ interface VideoModelOption {
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
-
-const textToVideoCredits = 6;
-const imageToVideoCredits = 8;
-const videoToVideoCredits = 10;
 
 const MODEL_OPTIONS: VideoModelOption[] = [
     // Kie models
@@ -227,7 +224,6 @@ export function VideoGenerator({
   const [activeTab, setActiveTab] =
     useState<VideoGeneratorTab>('text-to-video');
 
-  const [costCredits, setCostCredits] = useState<number>(textToVideoCredits);
   const [selectedFamily, setSelectedFamily] = useState('');
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
@@ -275,6 +271,15 @@ export function VideoGenerator({
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
+  const costCredits = useMemo(
+    () =>
+      getGenerationCreditCost({
+        mediaType: AIMediaType.VIDEO,
+        scene: activeTab,
+        family: selectedFamily,
+      }),
+    [activeTab, selectedFamily]
+  );
   const isTextToVideoMode = activeTab === 'text-to-video';
   const isImageToVideoMode = activeTab === 'image-to-video';
   const isVideoToVideoMode = activeTab === 'video-to-video';
@@ -339,14 +344,6 @@ export function VideoGenerator({
   const handleTabChange = (value: string) => {
     const tab = value as VideoGeneratorTab;
     setActiveTab(tab);
-
-    if (tab === 'text-to-video') {
-      setCostCredits(textToVideoCredits);
-    } else if (tab === 'image-to-video') {
-      setCostCredits(imageToVideoCredits);
-    } else if (tab === 'video-to-video') {
-      setCostCredits(videoToVideoCredits);
-    }
   };
 
   const taskStatusLabel = useMemo(() => {

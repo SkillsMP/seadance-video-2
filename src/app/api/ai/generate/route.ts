@@ -1,4 +1,5 @@
 import { envConfigs } from '@/config';
+import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -49,32 +50,16 @@ export async function POST(request: Request) {
       throw new Error('no auth, please sign in');
     }
 
-    let costCredits = 4;
-
-    if (mediaType === AIMediaType.IMAGE) {
-      if (scene === 'image-to-image') {
-        costCredits = 6;
-      } else if (scene === 'text-to-image') {
-        costCredits = 4;
-      } else {
-        throw new Error('invalid scene');
-      }
-    } else if (mediaType === AIMediaType.VIDEO) {
-      if (scene === 'text-to-video') {
-        costCredits = 6;
-      } else if (scene === 'image-to-video') {
-        costCredits = 8;
-      } else if (scene === 'video-to-video') {
-        costCredits = 10;
-      } else {
-        throw new Error('invalid scene');
-      }
-    } else if (mediaType === AIMediaType.MUSIC) {
-      costCredits = 10;
+    if (mediaType === AIMediaType.MUSIC) {
       scene = 'text-to-music';
-    } else {
-      throw new Error('invalid mediaType');
     }
+
+    const costCredits = getGenerationCreditCost({
+      mediaType,
+      scene,
+      family: requestBody.family,
+      model,
+    });
 
     const remainingCredits = await getRemainingCredits(user.id);
     if (remainingCredits < costCredits) {
