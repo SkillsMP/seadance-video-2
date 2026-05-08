@@ -9,7 +9,7 @@
       "pricing": {
         "id": "pricing",
         "title": "Nano Banana Pro Plan",
-        "description": "Get started to generate images with Nano Banana Pro model.",
+        "description": "Choose credits or a subscription plan that fits your generation needs.",
         "groups": [
           {
             "name": "one-time",
@@ -22,99 +22,265 @@
           },
           {
             "name": "yearly",
-            "title": "Annually",
-            "label": "save 23%"
+            "title": "Annual",
+            "label": "Pay 10 months, get 12"
           }
         ],
         "items": [
           {
-            "title": "Credits Package",
-            "description": "Start any time as you need.",
+            "title": "Starter Credits",
+            "description": "A flexible credit pack for occasional generation.",
             "features_title": "Includes",
             "features": [
-              "400 credits, valid for 1 year",
-              "Text-to-image and image-to-image generation",
-              "High-quality images with Nano Banana 2 AI model",
-              "Free download of generated images"
+              "400 credits",
+              "Credits valid for 365 days",
+              "Use credits for Nano Banana Pro image generation",
+              "One-time purchase, no subscription"
             ],
             "interval": "one-time",
-            "amount": 2990,
+            "amount": 1490,
             "currency": "USD",
-            "price": "$29.9",
-            "original_price": "$39.9",
+            "price": "$14.90",
             "unit": "/ 400 credits",
-            "is_featured": true,
-            "tip": "One-time payment",
+            "tip": "One-time payment.",
             "button": {
               "title": "Buy Credits",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "credits-package",
-            "product_name": "Credits Package",
+            "product_id": "credits_starter",
+            "product_name": "Starter Credits",
             "credits": 400,
             "valid_days": 365,
-            "group": "one-time"
+            "group": "one-time",
+            "plan_name": ""
           },
           {
-            "title": "Starter Plan",
-            "description": "Auto renew monthly to get credits.",
+            "title": "Growth Credits",
+            "description": "More credits for larger batches and active projects.",
             "features_title": "Includes",
             "features": [
-              "400 credits, valid for 1 month",
-              "Text-to-image and image-to-image generation",
-              "High-quality images with Nano Banana 2 AI model",
-              "Free download of generated images"
+              "1,200 credits",
+              "Credits valid for 365 days",
+              "Use credits for Nano Banana Pro image generation",
+              "One-time purchase, no subscription"
+            ],
+            "interval": "one-time",
+            "amount": 3990,
+            "currency": "USD",
+            "price": "$39.90",
+            "unit": "/ 1,200 credits",
+            "tip": "One-time payment.",
+            "button": {
+              "title": "Buy Credits",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "credits_growth",
+            "product_name": "Growth Credits",
+            "credits": 1200,
+            "valid_days": 365,
+            "group": "one-time",
+            "plan_name": ""
+          },
+          {
+            "title": "Scale Credits",
+            "description": "A larger credit pack for production workloads.",
+            "features_title": "Includes",
+            "features": [
+              "3,600 credits",
+              "Credits valid for 365 days",
+              "Use credits for Nano Banana Pro image generation",
+              "One-time purchase, no subscription"
+            ],
+            "interval": "one-time",
+            "amount": 9990,
+            "currency": "USD",
+            "price": "$99.90",
+            "unit": "/ 3,600 credits",
+            "tip": "One-time payment.",
+            "button": {
+              "title": "Buy Credits",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "credits_scale",
+            "product_name": "Scale Credits",
+            "credits": 3600,
+            "valid_days": 365,
+            "group": "one-time",
+            "plan_name": ""
+          },
+          {
+            "title": "Basic Monthly",
+            "description": "For light monthly generation needs.",
+            "features_title": "Includes",
+            "features": [
+              "360 credits per month",
+              "Credits valid for 30 days",
+              "Use credits for Nano Banana Pro image generation",
+              "Cancel anytime"
             ],
             "interval": "month",
-            "amount": 2490,
+            "amount": 990,
             "currency": "USD",
-            "price": "$24.9",
-            "original_price": "$36.9",
+            "price": "$9.90",
             "unit": "/ month",
-            "is_featured": true,
-            "tip": "Subscription can be canceled anytime!",
+            "tip": "Subscription can be canceled anytime.",
             "button": {
-              "title": "Subscribe Plan",
+              "title": "Subscribe",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "starter-monthly",
-            "product_name": "Starter Plan Monthly",
-            "credits": 400,
+            "product_id": "monthly_basic",
+            "product_name": "Basic Monthly",
+            "credits": 360,
             "valid_days": 30,
             "group": "monthly",
-            "plan_name": "Starter"
+            "plan_name": "Basic"
           },
           {
-            "title": "Premium Plan",
-            "description": "Around $19.2 / month, save 23% compared to monthly plan.",
+            "title": "Pro Monthly",
+            "description": "Best for regular image generation.",
             "features_title": "Includes",
             "features": [
-              "4800 credits, valid for 1 year",
-              "Text-to-image and image-to-image generation",
-              "High-quality images with Nano Banana 2 AI model",
-              "Free download of generated images"
+              "1,200 credits per month",
+              "Credits valid for 30 days",
+              "Use credits for Nano Banana Pro image generation",
+              "Cancel anytime"
             ],
-            "interval": "year",
-            "amount": 22990,
+            "interval": "month",
+            "amount": 2990,
             "currency": "USD",
-            "price": "$229.9",
-            "original_price": "$299.9",
-            "unit": "/ year",
+            "price": "$29.90",
+            "unit": "/ month",
+            "label": "Popular",
             "is_featured": true,
-            "tip": "Subscription can be canceled anytime!",
+            "tip": "Subscription can be canceled anytime.",
             "button": {
-              "title": "Subscribe Plan",
+              "title": "Subscribe",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "premium-yearly",
-            "product_name": "Premium Plan Annually",
-            "credits": 4800,
+            "product_id": "monthly_pro",
+            "product_name": "Pro Monthly",
+            "credits": 1200,
+            "valid_days": 30,
+            "group": "monthly",
+            "plan_name": "Pro"
+          },
+          {
+            "title": "Ultimate Monthly",
+            "description": "For high-volume monthly generation.",
+            "features_title": "Includes",
+            "features": [
+              "3,600 credits per month",
+              "Credits valid for 30 days",
+              "Use credits for Nano Banana Pro image generation",
+              "Cancel anytime"
+            ],
+            "interval": "month",
+            "amount": 7990,
+            "currency": "USD",
+            "price": "$79.90",
+            "unit": "/ month",
+            "tip": "Subscription can be canceled anytime.",
+            "button": {
+              "title": "Subscribe",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "monthly_ultimate",
+            "product_name": "Ultimate Monthly",
+            "credits": 3600,
+            "valid_days": 30,
+            "group": "monthly",
+            "plan_name": "Ultimate"
+          },
+          {
+            "title": "Basic Annual",
+            "description": "A full year of Basic credits at a lower monthly equivalent.",
+            "features_title": "Includes",
+            "features": [
+              "4,320 credits per year",
+              "Credits valid for 365 days",
+              "Pay 10 months, get 12 months",
+              "Cancel anytime"
+            ],
+            "interval": "year",
+            "amount": 9900,
+            "currency": "USD",
+            "price": "$99",
+            "unit": "/ year",
+            "tip": "Annual credits are granted upfront.",
+            "button": {
+              "title": "Subscribe",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_basic",
+            "product_name": "Basic Annual",
+            "credits": 4320,
             "valid_days": 365,
             "group": "yearly",
-            "plan_name": "Premium"
+            "plan_name": "Basic"
+          },
+          {
+            "title": "Pro Annual",
+            "description": "Best value for steady generation throughout the year.",
+            "features_title": "Includes",
+            "features": [
+              "14,400 credits per year",
+              "Credits valid for 365 days",
+              "Pay 10 months, get 12 months",
+              "Cancel anytime"
+            ],
+            "interval": "year",
+            "amount": 29900,
+            "currency": "USD",
+            "price": "$299",
+            "unit": "/ year",
+            "label": "Best value",
+            "tip": "Annual credits are granted upfront.",
+            "button": {
+              "title": "Subscribe",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_pro",
+            "product_name": "Pro Annual",
+            "credits": 14400,
+            "valid_days": 365,
+            "group": "yearly",
+            "plan_name": "Pro"
+          },
+          {
+            "title": "Ultimate Annual",
+            "description": "For teams and heavy production usage.",
+            "features_title": "Includes",
+            "features": [
+              "43,200 credits per year",
+              "Credits valid for 365 days",
+              "Pay 10 months, get 12 months",
+              "Cancel anytime"
+            ],
+            "interval": "year",
+            "amount": 79900,
+            "currency": "USD",
+            "price": "$799",
+            "unit": "/ year",
+            "tip": "Annual credits are granted upfront.",
+            "button": {
+              "title": "Subscribe",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_ultimate",
+            "product_name": "Ultimate Annual",
+            "credits": 43200,
+            "valid_days": 365,
+            "group": "yearly",
+            "plan_name": "Ultimate"
           }
         ]
       },
@@ -123,12 +289,12 @@
         "title": "Frequently Asked Questions about Pricing",
         "items": [
           {
-            "question": "What is the difference between the Credits Package and the subscription plans?",
-            "answer": "The Credits Package is a one-time purchase valid for 1 year. Subscription plans (Starter Monthly / Premium Annually) auto-renew and give you fresh credits every billing cycle at a lower per-credit rate."
+            "question": "What is the difference between credit packs and subscriptions?",
+            "answer": "Credit packs are one-time purchases valid for 365 days. Subscriptions renew on a monthly or annual cycle and grant fresh credits based on the selected plan."
           },
           {
             "question": "Can I cancel my subscription at any time?",
-            "answer": "Yes. You can cancel your subscription at any time. You will continue to have access to your credits until the end of the current billing period."
+            "answer": "Yes. You can cancel your subscription at any time. You will continue to have access to your credits until they expire."
           },
           {
             "question": "Is there a free trial?",
@@ -136,15 +302,15 @@
           },
           {
             "question": "What payment methods are accepted?",
-            "answer": "We accept all major credit and debit cards (Visa, Mastercard, American Express) via our secure payment processor."
+            "answer": "We accept all major credit and debit cards through our secure payment processor."
           },
           {
             "question": "Do unused credits roll over?",
-            "answer": "Credits from the one-time package are valid for 1 year from purchase. Monthly subscription credits reset each billing cycle; unused credits do not roll over."
+            "answer": "Credit pack and annual plan credits are valid for 365 days. Monthly subscription credits are valid for 30 days."
           },
           {
-            "question": "Can I upgrade or downgrade my plan?",
-            "answer": "Yes. You can upgrade or downgrade your subscription at any time from the billing settings page. Changes take effect at the start of the next billing cycle."
+            "question": "How are annual credits granted?",
+            "answer": "Annual subscription credits are granted upfront after payment succeeds."
           }
         ]
       },

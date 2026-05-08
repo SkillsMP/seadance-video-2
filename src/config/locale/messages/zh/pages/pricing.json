@@ -9,7 +9,7 @@
       "pricing": {
         "id": "pricing",
         "title": "Nano Banana Pro 方案",
-        "description": "立即开始使用 Nano Banana Pro 模型生成图像。",
+        "description": "选择适合您生成需求的积分包或订阅方案。",
         "groups": [
           {
             "name": "one-time",
@@ -23,98 +23,264 @@
           {
             "name": "yearly",
             "title": "年付",
-            "label": "立省 23%"
+            "label": "付 10 个月，得 12 个月"
           }
         ],
         "items": [
           {
-            "title": "积分包",
-            "description": "根据需要随时开始。",
+            "title": "Starter 积分包",
+            "description": "适合偶尔生成的灵活积分包。",
             "features_title": "包含内容",
             "features": [
-              "400 积分，有效期 1 年",
-              "文生图和图生图生成",
-              "使用 Nano Banana 2 AI 模型的高质量图像",
-              "免费下载生成的图像"
+              "400 积分",
+              "积分有效期 365 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "一次性购买，无需订阅"
             ],
             "interval": "one-time",
-            "amount": 2990,
+            "amount": 1490,
             "currency": "USD",
-            "price": "$29.9",
-            "original_price": "$39.9",
+            "price": "$14.90",
             "unit": "/ 400 积分",
-            "is_featured": true,
-            "tip": "一次性支付",
+            "tip": "一次性支付。",
             "button": {
               "title": "购买积分",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "credits-package",
-            "product_name": "积分包",
+            "product_id": "credits_starter",
+            "product_name": "Starter 积分包",
             "credits": 400,
             "valid_days": 365,
-            "group": "one-time"
+            "group": "one-time",
+            "plan_name": ""
           },
           {
-            "title": "入门版方案",
-            "description": "每月自动续订获取积分。",
+            "title": "Growth 积分包",
+            "description": "适合更大批量和活跃项目的积分包。",
             "features_title": "包含内容",
             "features": [
-              "400 积分，有效期 1 个月",
-              "文生图和图生图生成",
-              "使用 Nano Banana 2 AI 模型的高质量图像",
-              "免费下载生成的图像"
+              "1,200 积分",
+              "积分有效期 365 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "一次性购买，无需订阅"
+            ],
+            "interval": "one-time",
+            "amount": 3990,
+            "currency": "USD",
+            "price": "$39.90",
+            "unit": "/ 1,200 积分",
+            "tip": "一次性支付。",
+            "button": {
+              "title": "购买积分",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "credits_growth",
+            "product_name": "Growth 积分包",
+            "credits": 1200,
+            "valid_days": 365,
+            "group": "one-time",
+            "plan_name": ""
+          },
+          {
+            "title": "Scale 积分包",
+            "description": "适合生产级使用的大额积分包。",
+            "features_title": "包含内容",
+            "features": [
+              "3,600 积分",
+              "积分有效期 365 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "一次性购买，无需订阅"
+            ],
+            "interval": "one-time",
+            "amount": 9990,
+            "currency": "USD",
+            "price": "$99.90",
+            "unit": "/ 3,600 积分",
+            "tip": "一次性支付。",
+            "button": {
+              "title": "购买积分",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "credits_scale",
+            "product_name": "Scale 积分包",
+            "credits": 3600,
+            "valid_days": 365,
+            "group": "one-time",
+            "plan_name": ""
+          },
+          {
+            "title": "Basic 月付",
+            "description": "适合轻量月度生成需求。",
+            "features_title": "包含内容",
+            "features": [
+              "每月 360 积分",
+              "积分有效期 30 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "可随时取消"
             ],
             "interval": "month",
-            "amount": 2490,
+            "amount": 990,
             "currency": "USD",
-            "price": "$24.9",
-            "original_price": "$36.9",
+            "price": "$9.90",
             "unit": "/ 月",
-            "is_featured": true,
-            "tip": "订阅可以随时取消！",
+            "tip": "订阅可以随时取消。",
             "button": {
-              "title": "订阅方案",
+              "title": "订阅",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "starter-monthly",
-            "product_name": "入门版方案（月付）",
-            "credits": 400,
+            "product_id": "monthly_basic",
+            "product_name": "Basic 月付",
+            "credits": 360,
             "valid_days": 30,
             "group": "monthly",
-            "plan_name": "入门版"
+            "plan_name": "Basic"
           },
           {
-            "title": "高级版方案",
-            "description": "约 $19.2 / 月，比月付方案节省 23%。",
+            "title": "Pro 月付",
+            "description": "适合稳定使用图像生成的用户。",
             "features_title": "包含内容",
             "features": [
-              "4800 积分，有效期 1 年",
-              "文生图和图生图生成",
-              "使用 Nano Banana 2 AI 模型的高质量图像",
-              "免费下载生成的图像"
+              "每月 1,200 积分",
+              "积分有效期 30 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "可随时取消"
             ],
-            "interval": "year",
-            "amount": 22990,
+            "interval": "month",
+            "amount": 2990,
             "currency": "USD",
-            "price": "$229.9",
-            "original_price": "$299.9",
-            "unit": "/ 年",
+            "price": "$29.90",
+            "unit": "/ 月",
+            "label": "热门",
             "is_featured": true,
-            "tip": "订阅可以随时取消！",
+            "tip": "订阅可以随时取消。",
             "button": {
-              "title": "订阅方案",
+              "title": "订阅",
               "url": "/#pricing",
               "icon": "RiBankCardLine"
             },
-            "product_id": "premium-yearly",
-            "product_name": "高级版方案（年付）",
-            "credits": 4800,
+            "product_id": "monthly_pro",
+            "product_name": "Pro 月付",
+            "credits": 1200,
+            "valid_days": 30,
+            "group": "monthly",
+            "plan_name": "Pro"
+          },
+          {
+            "title": "Ultimate 月付",
+            "description": "适合高频月度生成需求。",
+            "features_title": "包含内容",
+            "features": [
+              "每月 3,600 积分",
+              "积分有效期 30 天",
+              "可用于 Nano Banana Pro 图像生成",
+              "可随时取消"
+            ],
+            "interval": "month",
+            "amount": 7990,
+            "currency": "USD",
+            "price": "$79.90",
+            "unit": "/ 月",
+            "tip": "订阅可以随时取消。",
+            "button": {
+              "title": "订阅",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "monthly_ultimate",
+            "product_name": "Ultimate 月付",
+            "credits": 3600,
+            "valid_days": 30,
+            "group": "monthly",
+            "plan_name": "Ultimate"
+          },
+          {
+            "title": "Basic 年付",
+            "description": "以更低月均成本获得全年 Basic 积分。",
+            "features_title": "包含内容",
+            "features": [
+              "每年 4,320 积分",
+              "积分有效期 365 天",
+              "付 10 个月，得 12 个月",
+              "可随时取消"
+            ],
+            "interval": "year",
+            "amount": 9900,
+            "currency": "USD",
+            "price": "$99",
+            "unit": "/ 年",
+            "tip": "年付积分会在支付成功后一次性发放。",
+            "button": {
+              "title": "订阅",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_basic",
+            "product_name": "Basic 年付",
+            "credits": 4320,
             "valid_days": 365,
             "group": "yearly",
-            "plan_name": "高级版"
+            "plan_name": "Basic"
+          },
+          {
+            "title": "Pro 年付",
+            "description": "适合全年稳定生成的高性价比方案。",
+            "features_title": "包含内容",
+            "features": [
+              "每年 14,400 积分",
+              "积分有效期 365 天",
+              "付 10 个月，得 12 个月",
+              "可随时取消"
+            ],
+            "interval": "year",
+            "amount": 29900,
+            "currency": "USD",
+            "price": "$299",
+            "unit": "/ 年",
+            "label": "高性价比",
+            "tip": "年付积分会在支付成功后一次性发放。",
+            "button": {
+              "title": "订阅",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_pro",
+            "product_name": "Pro 年付",
+            "credits": 14400,
+            "valid_days": 365,
+            "group": "yearly",
+            "plan_name": "Pro"
+          },
+          {
+            "title": "Ultimate 年付",
+            "description": "适合团队和重度生产使用。",
+            "features_title": "包含内容",
+            "features": [
+              "每年 43,200 积分",
+              "积分有效期 365 天",
+              "付 10 个月，得 12 个月",
+              "可随时取消"
+            ],
+            "interval": "year",
+            "amount": 79900,
+            "currency": "USD",
+            "price": "$799",
+            "unit": "/ 年",
+            "tip": "年付积分会在支付成功后一次性发放。",
+            "button": {
+              "title": "订阅",
+              "url": "/#pricing",
+              "icon": "RiBankCardLine"
+            },
+            "product_id": "annual_ultimate",
+            "product_name": "Ultimate 年付",
+            "credits": 43200,
+            "valid_days": 365,
+            "group": "yearly",
+            "plan_name": "Ultimate"
           }
         ]
       },
@@ -124,11 +290,11 @@
         "items": [
           {
             "question": "积分包和订阅方案有什么区别？",
-            "answer": "积分包是一次性购买，有效期 1 年。订阅方案（入门版月付 / 高级版年付）自动续订，每个计费周期获得新积分，且每积分单价更低。"
+            "answer": "积分包是一次性购买，有效期 365 天。订阅方案按月或按年自动续订，并根据所选方案发放对应积分。"
           },
           {
             "question": "可以随时取消订阅吗？",
-            "answer": "可以。您可以随时取消订阅，剩余积分在当前计费周期结束前仍可使用。"
+            "answer": "可以。您可以随时取消订阅，剩余积分在有效期内仍可使用。"
           },
           {
             "question": "有免费试用吗？",
@@ -136,15 +302,15 @@
           },
           {
             "question": "支持哪些支付方式？",
-            "answer": "我们通过安全支付处理商支持所有主流信用卡和借记卡（Visa、Mastercard、American Express）。"
+            "answer": "我们通过安全支付处理商支持主流信用卡和借记卡。"
           },
           {
             "question": "未使用的积分会结转吗？",
-            "answer": "一次性积分包的积分自购买之日起有效期 1 年。月付订阅的积分每个计费周期重置，未使用的积分不会结转。"
+            "answer": "积分包和年付方案的积分有效期为 365 天。月付订阅积分有效期为 30 天。"
           },
           {
-            "question": "可以升级或降级方案吗？",
-            "answer": "可以。您可以随时在账单设置页面升级或降级订阅方案，变更将在下一个计费周期生效。"
+            "question": "年付积分如何发放？",
+            "answer": "年付订阅在支付成功后一次性发放全年积分。"
           }
         ]
       },
