@@ -17,6 +17,11 @@
           "icon": "Sparkles"
         },
         {
+          "title": "Pricing",
+          "url": "/pricing",
+          "icon": "CreditCard"
+        },
+        {
           "title": "AI Video Generator",
           "url": "/ai-video-generator",
           "icon": "Video"

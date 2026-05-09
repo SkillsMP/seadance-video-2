@@ -20,22 +20,39 @@ const DEFAULT_SCENE_CREDIT_COSTS: Record<
   Partial<Record<string, number>>
 > = {
   image: {
-    'text-to-image': 4,
-    'image-to-image': 6,
+    'text-to-image': 15,
+    'image-to-image': 20,
   },
   video: {
-    'text-to-video': 6,
-    'image-to-video': 8,
-    'video-to-video': 10,
+    'text-to-video': 45,
+    'image-to-video': 60,
+    'video-to-video': 90,
   },
   music: {
     'text-to-music': 10,
   },
 };
 
+const FAMILY_CREDIT_COST_OVERRIDES: Record<
+  string,
+  Partial<Record<string, number>>
+> = {
+  'nano-banana-pro': {
+    'text-to-image': 20,
+    'image-to-image': 20,
+  },
+  'sora-2-pro': {
+    'image-to-video': 90,
+  },
+  'wan-pro': {
+    'image-to-video': 60,
+  },
+};
+
 export function getGenerationCreditCost({
   mediaType,
   scene,
+  family,
 }: GenerationCreditCostInput): number {
   const mediaCosts = DEFAULT_SCENE_CREDIT_COSTS[mediaType];
 
@@ -47,6 +64,15 @@ export function getGenerationCreditCost({
 
   if (!normalizedScene) {
     throw new Error('invalid scene');
+  }
+
+  if (family) {
+    const familyCost =
+      FAMILY_CREDIT_COST_OVERRIDES[family]?.[normalizedScene];
+
+    if (typeof familyCost === 'number') {
+      return familyCost;
+    }
   }
 
   const cost = mediaCosts[normalizedScene];

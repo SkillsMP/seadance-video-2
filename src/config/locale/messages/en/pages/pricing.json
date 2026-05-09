@@ -1,15 +1,15 @@
 {
   "metadata": {
-    "title": "Nano Banana Pro Price",
-    "description": "Start with a plan to generate images with Nano Banana Pro model."
+    "title": "AI Image and Video Credits Pricing",
+    "description": "Buy credits or choose a subscription for image and video generation."
   },
   "page": {
-    "title": "Nano Banana Pro Pricing",
+    "title": "AI Credits Pricing",
     "sections": {
       "pricing": {
         "id": "pricing",
-        "title": "Nano Banana Pro Plan",
-        "description": "Choose credits or a subscription plan that fits your generation needs.",
+        "title": "Image and Video Credit Plans",
+        "description": "Credits work across image and video generation. Higher-quality models use more credits.",
         "groups": [
           {
             "name": "one-time",
@@ -29,12 +29,12 @@
         "items": [
           {
             "title": "Starter Credits",
-            "description": "A flexible credit pack for occasional generation.",
+            "description": "A flexible credit pack for light trials and occasional generation.",
             "features_title": "Includes",
             "features": [
               "400 credits",
               "Credits valid for 365 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 20 Pro images or 8 fast videos",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -62,7 +62,7 @@
             "features": [
               "1,200 credits",
               "Credits valid for 365 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 60 Pro images or 26 fast videos",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -90,7 +90,7 @@
             "features": [
               "3,600 credits",
               "Credits valid for 365 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 180 Pro images or 80 fast videos",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -118,7 +118,7 @@
             "features": [
               "360 credits per month",
               "Credits valid for 30 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 18 Pro images or 8 fast videos",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -141,12 +141,12 @@
           },
           {
             "title": "Pro Monthly",
-            "description": "Best for regular image generation.",
+            "description": "Best for regular image and video generation.",
             "features_title": "Includes",
             "features": [
               "1,200 credits per month",
               "Credits valid for 30 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 60 Pro images or 26 fast videos",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -176,7 +176,7 @@
             "features": [
               "3,600 credits per month",
               "Credits valid for 30 days",
-              "Use credits for Nano Banana Pro image generation",
+              "About 180 Pro images or 80 fast videos",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -204,8 +204,9 @@
             "features": [
               "4,320 credits per year",
               "Credits valid for 365 days",
+              "About 216 Pro images or 96 fast videos",
               "Pay 10 months, get 12 months",
-              "Cancel anytime"
+              "Annual credits are granted upfront"
             ],
             "interval": "year",
             "amount": 9900,
@@ -232,8 +233,9 @@
             "features": [
               "14,400 credits per year",
               "Credits valid for 365 days",
+              "About 720 Pro images or 320 fast videos",
               "Pay 10 months, get 12 months",
-              "Cancel anytime"
+              "Annual credits are granted upfront"
             ],
             "interval": "year",
             "amount": 29900,
@@ -261,8 +263,9 @@
             "features": [
               "43,200 credits per year",
               "Credits valid for 365 days",
+              "About 2,160 Pro images or 960 fast videos",
               "Pay 10 months, get 12 months",
-              "Cancel anytime"
+              "Annual credits are granted upfront"
             ],
             "interval": "year",
             "amount": 79900,
@@ -293,12 +296,16 @@
             "answer": "Credit packs are one-time purchases valid for 365 days. Subscriptions renew on a monthly or annual cycle and grant fresh credits based on the selected plan."
           },
           {
+            "question": "Can I use the same credits for images and videos?",
+            "answer": "Yes. Image and video generation share the same credit balance. Higher-quality models and advanced video settings use more credits."
+          },
+          {
             "question": "Can I cancel my subscription at any time?",
             "answer": "Yes. You can cancel your subscription at any time. You will continue to have access to your credits until they expire."
           },
           {
             "question": "Is there a free trial?",
-            "answer": "New accounts receive a small number of free credits to try the platform. No credit card is required to explore the free tier."
+            "answer": "New accounts receive a small number of free credits for basic image generation. Video generation requires paid credits."
           },
           {
             "question": "What payment methods are accepted?",
@@ -316,8 +323,8 @@
       },
       "cta": {
         "id": "cta",
-        "title": "Get Started with Nano Banana Pro Today",
-        "description": "Choose a plan that fits your needs and start generating stunning images right away.",
+        "title": "Start Generating with AI Credits",
+        "description": "Choose a plan that fits your needs and start generating images and videos.",
         "buttons": [
           {
             "title": "View Plans",

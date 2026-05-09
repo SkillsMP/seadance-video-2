@@ -17,6 +17,11 @@
           "icon": "Sparkles"
         },
         {
+          "title": "定价",
+          "url": "/pricing",
+          "icon": "CreditCard"
+        },
+        {
           "title": "AI 视频生成",
           "url": "/ai-video-generator",
           "icon": "Video"
