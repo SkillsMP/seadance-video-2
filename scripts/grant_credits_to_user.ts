@@ -1,4 +1,4 @@
-// scripts/grant_credits_to_user.ts
+// npx tsx scripts/grant_credits_to_user.ts
 import { getUsers } from '@/shared/models/user';
 import { grantCreditsForUser } from '@/shared/models/credit';
 

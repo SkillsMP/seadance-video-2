@@ -37,11 +37,23 @@ const FAMILY_CREDIT_COST_OVERRIDES: Record<
   string,
   Partial<Record<string, number>>
 > = {
+  'nano-banana': {
+    'text-to-image': 5,
+    'image-to-image': 5,
+  },
+  'nano-banana-2': {
+    'text-to-image': 15,
+    'image-to-image': 15,
+  },
   'nano-banana-pro': {
     'text-to-image': 20,
     'image-to-image': 20,
   },
+  'seedance-2-fast-720p': {
+    'text-to-video': 90,
+  },
   'sora-2-pro': {
+    'text-to-video': 90,
     'image-to-video': 90,
   },
   'wan-pro': {

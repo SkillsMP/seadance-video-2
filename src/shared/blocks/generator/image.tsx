@@ -102,6 +102,7 @@ const DEFAULT_PREVIEW_IMAGE =
 
 /** AI 模型配置列表 */
 // 数组中元素的存放顺序即为调用优先级
+// value 要参考厂商 API 文档，这个必须准。
 const MODEL_OPTIONS: ModelOption[] = [
   {
     family: 'nano-banana-pro',
@@ -111,61 +112,82 @@ const MODEL_OPTIONS: ModelOption[] = [
     scenes: ['text-to-image', 'image-to-image'],
   },
   {
-    family: 'nano-banana-pro',
-    value: 'google/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'replicate',
+    family: 'nano-banana-2',
+    value: 'nano-banana-2',
+    label: 'Nano Banana 2',
+    provider: 'kie',
     scenes: ['text-to-image', 'image-to-image'],
   },
   {
-    family: 'seedream-4',
-    value: 'bytedance/seedream-4',
-    label: 'Seedream 4',
-    provider: 'replicate',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    family: 'nano-banana-pro',
-    value: 'fal-ai/nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
+    family: 'nano-banana',
+    value: 'google/nano-banana',
+    label: 'Nano Banana',
+    provider: 'kie',
     scenes: ['text-to-image'],
   },
   {
-    family: 'nano-banana-pro',
-    value: 'fal-ai/nano-banana-pro/edit',
-    label: 'Nano Banana Pro',
-    provider: 'fal',
+    family: 'nano-banana',
+    value: 'google/nano-banana-edit',
+    label: 'Nano Banana',
+    provider: 'kie',
     scenes: ['image-to-image'],
   },
-  {
-    family: 'seedream-4',
-    value: 'fal-ai/bytedance/seedream/v4/edit',
-    label: 'Seedream 4',
-    provider: 'fal',
-    scenes: ['image-to-image'],
-  },
-  {
-    family: 'z-image-turbo',
-    value: 'fal-ai/z-image/turbo',
-    label: 'Z-Image Turbo',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    family: 'flux-2-flex',
-    value: 'fal-ai/flux-2-flex',
-    label: 'Flux 2 Flex',
-    provider: 'fal',
-    scenes: ['text-to-image'],
-  },
-  {
-    family: 'gemini-3-pro-image-preview',
-    value: 'gemini-3-pro-image-preview',
-    label: 'Gemini 3 Pro Image Preview',
-    provider: 'gemini',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
+  // {
+  //   family: 'nano-banana-pro',
+  //   value: 'google/nano-banana-pro',
+  //   label: 'Nano Banana Pro',
+  //   provider: 'replicate',
+  //   scenes: ['text-to-image', 'image-to-image'],
+  // },
+  // {
+  //   family: 'seedream-4',
+  //   value: 'bytedance/seedream-4',
+  //   label: 'Seedream 4',
+  //   provider: 'replicate',
+  //   scenes: ['text-to-image', 'image-to-image'],
+  // },
+  // {
+  //   family: 'nano-banana-pro',
+  //   value: 'fal-ai/nano-banana-pro',
+  //   label: 'Nano Banana Pro',
+  //   provider: 'fal',
+  //   scenes: ['text-to-image'],
+  // },
+  // {
+  //   family: 'nano-banana-pro',
+  //   value: 'fal-ai/nano-banana-pro/edit',
+  //   label: 'Nano Banana Pro',
+  //   provider: 'fal',
+  //   scenes: ['image-to-image'],
+  // },
+  // {
+  //   family: 'seedream-4',
+  //   value: 'fal-ai/bytedance/seedream/v4/edit',
+  //   label: 'Seedream 4',
+  //   provider: 'fal',
+  //   scenes: ['image-to-image'],
+  // },
+  // {
+  //   family: 'z-image-turbo',
+  //   value: 'fal-ai/z-image/turbo',
+  //   label: 'Z-Image Turbo',
+  //   provider: 'fal',
+  //   scenes: ['text-to-image'],
+  // },
+  // {
+  //   family: 'flux-2-flex',
+  //   value: 'fal-ai/flux-2-flex',
+  //   label: 'Flux 2 Flex',
+  //   provider: 'fal',
+  //   scenes: ['text-to-image'],
+  // },
+  // {
+  //   family: 'gemini-3-pro-image-preview',
+  //   value: 'gemini-3-pro-image-preview',
+  //   label: 'Gemini 3 Pro Image Preview',
+  //   provider: 'gemini',
+  //   scenes: ['text-to-image', 'image-to-image'],
+  // },
 ];
 
 // ============ 工具函数 ============

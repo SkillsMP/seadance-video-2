@@ -74,21 +74,28 @@ const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
 
 const MODEL_OPTIONS: VideoModelOption[] = [
-    // Kie models
-    {
-      family: 'sora-2-pro',
-      value: 'sora-2-pro-image-to-video',
-      label: 'Sora 2 Pro',
-      provider: 'kie',
-      scenes: ['image-to-video'],
-    },
-    {
-      family: 'sora-2-pro',
-      value: 'sora-2-pro-text-to-video',
-      label: 'Sora 2 Pro',
-      provider: 'kie',
-      scenes: ['text-to-video'],
-    },
+  // Kie models
+  {
+    family: 'seedance-2-fast-720p',
+    value: 'bytedance/seedance-2-fast',
+    label: 'Seedance 2.0 Fast 720p',
+    provider: 'kie',
+    scenes: ['text-to-video'],
+  },
+  {
+    family: 'sora-2-pro',
+    value: 'sora-2-pro-image-to-video',
+    label: 'Sora 2 Pro',
+    provider: 'kie',
+    scenes: ['image-to-video'],
+  },
+  {
+    family: 'sora-2-pro',
+    value: 'sora-2-pro-text-to-video',
+    label: 'Sora 2 Pro',
+    provider: 'kie',
+    scenes: ['text-to-video'],
+  },
   // Replicate models
   // 临时停用：Replicate 视频模型成本过高，先注释掉避免被选用
   // {
@@ -106,28 +113,27 @@ const MODEL_OPTIONS: VideoModelOption[] = [
   //   scenes: ['text-to-video', 'image-to-video'],
   // },
   // Fal models
-  {
-    family: 'veo-3',
-    value: 'fal-ai/veo3',
-    label: 'Veo 3',
-    provider: 'fal',
-    scenes: ['text-to-video'],
-  },
-  {
-    family: 'wan-pro',
-    value: 'fal-ai/wan-pro/image-to-video',
-    label: 'Wan Pro',
-    provider: 'fal',
-    scenes: ['image-to-video'],
-  },
-  {
-    family: 'kling-video-o1',
-    value: 'fal-ai/kling-video/o1/video-to-video/edit',
-    label: 'Kling Video O1',
-    provider: 'fal',
-    scenes: ['video-to-video'],
-  },
-
+  // {
+  //   family: 'veo-3',
+  //   value: 'fal-ai/veo3',
+  //   label: 'Veo 3',
+  //   provider: 'fal',
+  //   scenes: ['text-to-video'],
+  // },
+  // {
+  //   family: 'wan-pro',
+  //   value: 'fal-ai/wan-pro/image-to-video',
+  //   label: 'Wan Pro',
+  //   provider: 'fal',
+  //   scenes: ['image-to-video'],
+  // },
+  // {
+  //   family: 'kling-video-o1',
+  //   value: 'fal-ai/kling-video/o1/video-to-video/edit',
+  //   label: 'Kling Video O1',
+  //   provider: 'fal',
+  //   scenes: ['video-to-video'],
+  // },
 ];
 
 function dedupeModelFamilies(options: VideoModelOption[]) {
