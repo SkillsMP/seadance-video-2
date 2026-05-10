@@ -314,6 +314,7 @@ export function ImageGenerator({
   // 加载状态
   const [isMounted, setIsMounted] = useState(false);
   const savedTaskIdsRef = useRef<Set<string>>(new Set()); // 防止重复保存
+  const queryFailCountRef = useRef(0);
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
@@ -540,6 +541,7 @@ export function ImageGenerator({
     setTaskId(null);
     setGenerationStartTime(null);
     setTaskStatus(null);
+    queryFailCountRef.current = 0;
     // Don't clear savedTaskIds here - keep it to prevent duplicates across generations
   }, []);
 
@@ -617,7 +619,7 @@ export function ImageGenerator({
         });
         console.log('Showcase saved successfully');
       } catch (error) {
-        console.error('Failed to save showcase:', error);
+        console.warn('Failed to save showcase, ignored:', error);
         // Remove from saved set if failed
         savedTaskIdsRef.current.delete(taskIdForTracking);
       }
@@ -663,6 +665,8 @@ export function ImageGenerator({
         if (code !== 0) {
           throw new Error(message || 'Query task failed');
         }
+
+        queryFailCountRef.current = 0;
 
         const task = data as BackendTask;
         const currentStatus = task.status as AITaskStatus;
@@ -733,6 +737,17 @@ export function ImageGenerator({
         setProgress((prev) => Math.min(prev + 5, 95));
         return false;
       } catch (error: any) {
+        queryFailCountRef.current += 1;
+
+        console.warn(
+          `Polling image task failed (${queryFailCountRef.current}/3), will retry:`,
+          error
+        );
+
+        if (queryFailCountRef.current < 3) {
+          return false;
+        }
+
         console.error('Error polling image task:', error);
         toast.error(`Query task failed: ${error.message}`);
         resetTaskState();
