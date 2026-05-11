@@ -1,3 +1,5 @@
+import { MODELS } from './models';
+
 export type GenerationMediaType = 'image' | 'video' | 'music';
 
 export type GenerationScene =
@@ -33,33 +35,21 @@ const DEFAULT_SCENE_CREDIT_COSTS: Record<
   },
 };
 
-const FAMILY_CREDIT_COST_OVERRIDES: Record<
-  string,
-  Partial<Record<string, number>>
-> = {
-  'nano-banana': {
-    'text-to-image': 5,
-    'image-to-image': 5,
-  },
-  'nano-banana-2': {
-    'text-to-image': 15,
-    'image-to-image': 15,
-  },
-  'nano-banana-pro': {
-    'text-to-image': 20,
-    'image-to-image': 20,
-  },
-  'seedance-2-fast-720p': {
-    'text-to-video': 90,
-  },
-  'sora-2-pro': {
-    'text-to-video': 90,
-    'image-to-video': 90,
-  },
-  'wan-pro': {
-    'image-to-video': 60,
-  },
-};
+const FAMILY_CREDIT_COST_OVERRIDES = MODELS.reduce<
+  Record<string, Partial<Record<string, number>>>
+>((costs, model) => {
+  if (!model.enabled) {
+    return costs;
+  }
+
+  const familyCosts = (costs[model.family] ??= {});
+
+  for (const scene of model.scenes) {
+    familyCosts[scene] = model.credits[scene];
+  }
+
+  return costs;
+}, {});
 
 export function getGenerationCreditCost({
   mediaType,
@@ -79,8 +69,7 @@ export function getGenerationCreditCost({
   }
 
   if (family) {
-    const familyCost =
-      FAMILY_CREDIT_COST_OVERRIDES[family]?.[normalizedScene];
+    const familyCost = FAMILY_CREDIT_COST_OVERRIDES[family]?.[normalizedScene];
 
     if (typeof familyCost === 'number') {
       return familyCost;

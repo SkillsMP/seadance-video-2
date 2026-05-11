@@ -1,3 +1,4 @@
+import { validateModels } from '@/config/ai/models';
 import {
   AIManager,
   FalProvider,
@@ -7,10 +8,35 @@ import {
 } from '@/extensions/ai';
 import { Configs, getAllConfigs } from '@/shared/models/config';
 
+let modelsValidated = false;
+
+function ensureTrustedModelsValid() {
+  if (modelsValidated) {
+    return;
+  }
+
+  const errors = validateModels();
+  if (errors.length === 0) {
+    modelsValidated = true;
+    return;
+  }
+
+  const message = `Invalid AI model registry:\n${errors.join('\n')}`;
+  if (process.env.NODE_ENV === 'production') {
+    console.error(message);
+    modelsValidated = true;
+    return;
+  }
+
+  throw new Error(message);
+}
+
 /**
  * get ai manager with configs
  */
 export function getAIManagerWithConfigs(configs: Configs) {
+  ensureTrustedModelsValid();
+
   const aiManager = new AIManager();
 
   if (configs.kie_api_key) {

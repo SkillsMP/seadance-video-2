@@ -18,8 +18,9 @@ import {
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
-import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import { Link } from '@/core/i18n/navigation';
+import { getGenerationCreditCost } from '@/config/ai/credit-costs';
+import { MODELS } from '@/config/ai/models';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
   ImageUploader,
@@ -82,14 +83,6 @@ interface BackendTask {
 /** 标签页类型：文本生成图像 或 图像编辑 */
 type ImageGeneratorTab = 'text-to-image' | 'image-to-image';
 
-interface ModelOption {
-  family: string;
-  value: string;
-  label: string;
-  provider: string;
-  scenes: ImageGeneratorTab[];
-}
-
 // ============ 常量配置 ============
 
 const POLL_INTERVAL = 5000; // 轮询间隔（毫秒）
@@ -103,96 +96,13 @@ const DEFAULT_PREVIEW_IMAGE =
 /** AI 模型配置列表 */
 // 数组中元素的存放顺序即为调用优先级
 // value 要参考厂商 API 文档，这个必须准。
-const MODEL_OPTIONS: ModelOption[] = [
-  {
-    family: 'nano-banana-pro',
-    value: 'nano-banana-pro',
-    label: 'Nano Banana Pro',
-    provider: 'kie',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    family: 'nano-banana-2',
-    value: 'nano-banana-2',
-    label: 'Nano Banana 2',
-    provider: 'kie',
-    scenes: ['text-to-image', 'image-to-image'],
-  },
-  {
-    family: 'nano-banana',
-    value: 'google/nano-banana',
-    label: 'Nano Banana',
-    provider: 'kie',
-    scenes: ['text-to-image'],
-  },
-  {
-    family: 'nano-banana',
-    value: 'google/nano-banana-edit',
-    label: 'Nano Banana',
-    provider: 'kie',
-    scenes: ['image-to-image'],
-  },
-  // {
-  //   family: 'nano-banana-pro',
-  //   value: 'google/nano-banana-pro',
-  //   label: 'Nano Banana Pro',
-  //   provider: 'replicate',
-  //   scenes: ['text-to-image', 'image-to-image'],
-  // },
-  // {
-  //   family: 'seedream-4',
-  //   value: 'bytedance/seedream-4',
-  //   label: 'Seedream 4',
-  //   provider: 'replicate',
-  //   scenes: ['text-to-image', 'image-to-image'],
-  // },
-  // {
-  //   family: 'nano-banana-pro',
-  //   value: 'fal-ai/nano-banana-pro',
-  //   label: 'Nano Banana Pro',
-  //   provider: 'fal',
-  //   scenes: ['text-to-image'],
-  // },
-  // {
-  //   family: 'nano-banana-pro',
-  //   value: 'fal-ai/nano-banana-pro/edit',
-  //   label: 'Nano Banana Pro',
-  //   provider: 'fal',
-  //   scenes: ['image-to-image'],
-  // },
-  // {
-  //   family: 'seedream-4',
-  //   value: 'fal-ai/bytedance/seedream/v4/edit',
-  //   label: 'Seedream 4',
-  //   provider: 'fal',
-  //   scenes: ['image-to-image'],
-  // },
-  // {
-  //   family: 'z-image-turbo',
-  //   value: 'fal-ai/z-image/turbo',
-  //   label: 'Z-Image Turbo',
-  //   provider: 'fal',
-  //   scenes: ['text-to-image'],
-  // },
-  // {
-  //   family: 'flux-2-flex',
-  //   value: 'fal-ai/flux-2-flex',
-  //   label: 'Flux 2 Flex',
-  //   provider: 'fal',
-  //   scenes: ['text-to-image'],
-  // },
-  // {
-  //   family: 'gemini-3-pro-image-preview',
-  //   value: 'gemini-3-pro-image-preview',
-  //   label: 'Gemini 3 Pro Image Preview',
-  //   provider: 'gemini',
-  //   scenes: ['text-to-image', 'image-to-image'],
-  // },
-];
+const MODEL_OPTIONS = MODELS.filter(
+  (model) => model.mediaType === AIMediaType.IMAGE && model.enabled
+);
 
 // ============ 工具函数 ============
 
-function dedupeModelFamilies(options: ModelOption[]) {
+function dedupeModelFamilies(options: typeof MODEL_OPTIONS) {
   const seenFamilies = new Set<string>();
 
   return options.filter((option) => {

@@ -25,6 +25,15 @@ export interface KieConfigs extends AIConfigs {
   customStorage?: boolean; // use custom storage to save files
 }
 
+const KIE_IMAGE_FIELD: Record<string, 'image_input' | 'image_urls'> = {
+  'google/nano-banana': 'image_input',
+  'google/nano-banana-edit': 'image_urls',
+};
+
+const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
+  'bytedance/seedance-2-fast': 'duration',
+};
+
 /**
  * Kie provider
  * @docs https://kie.ai/
@@ -156,7 +165,8 @@ export class KieProvider implements AIProvider {
     if (params.options) {
       const options = params.options;
       if (options.image_input && Array.isArray(options.image_input)) {
-        payload.input.image_input = options.image_input;
+        const field = KIE_IMAGE_FIELD[params.model] ?? 'image_input';
+        payload.input[field] = options.image_input;
       }
       if (options.aspect_ratio) {
         payload.input.aspect_ratio = options.aspect_ratio;
@@ -234,13 +244,31 @@ export class KieProvider implements AIProvider {
       if (options.image_input && Array.isArray(options.image_input)) {
         payload.input.image_urls = options.image_input;
       }
+      if (options.video_input && Array.isArray(options.video_input)) {
+        payload.input.reference_video_urls = options.video_input;
+      }
       if (options.aspect_ratio) {
         payload.input.aspect_ratio = options.aspect_ratio;
       }
-      if (options.duration) {
-        payload.input.n_frames = options.duration;
+      if (options.resolution) {
+        payload.input.resolution = options.resolution;
       }
-      if (!payload.input.n_frames) {
+      if (typeof options.generate_audio === 'boolean') {
+        payload.input.generate_audio = options.generate_audio;
+      }
+      if (options.duration) {
+        const durationField =
+          KIE_VIDEO_DURATION_FIELD[params.model] ?? 'n_frames';
+
+        if (durationField === 'duration') {
+          payload.input.duration = options.duration;
+          delete payload.input.n_frames;
+          delete payload.input.size;
+        } else {
+          payload.input.n_frames = options.duration;
+        }
+      }
+      if (!payload.input.n_frames && !payload.input.duration) {
         payload.input.n_frames = '10';
       }
     }

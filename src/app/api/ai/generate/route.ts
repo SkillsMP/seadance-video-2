@@ -1,5 +1,6 @@
 import { envConfigs } from '@/config';
 import { getGenerationCreditCost } from '@/config/ai/credit-costs';
+import { findModel, type ModelEntry } from '@/config/ai/models';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -27,8 +28,16 @@ interface GenerateRequest {
 export async function POST(request: Request) {
   try {
     const requestBody = (await request.json()) as GenerateRequest;
-    let { provider, mediaType, model, prompt, options, scene, candidates } =
-      requestBody;
+    let {
+      provider,
+      mediaType,
+      model,
+      prompt,
+      options,
+      scene,
+      family,
+      candidates,
+    } = requestBody;
 
     if (!mediaType) {
       throw new Error('invalid params');
@@ -54,12 +63,58 @@ export async function POST(request: Request) {
       scene = 'text-to-music';
     }
 
-    const costCredits = getGenerationCreditCost({
-      mediaType,
-      scene,
-      family: requestBody.family,
-      model,
-    });
+    const supportCandidatesFallback =
+      mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
+
+    let candidateEntries: ModelEntry[] = [];
+    let costCredits: number;
+
+    if (supportCandidatesFallback) {
+      if (!family || !scene || !candidates?.length) {
+        throw new Error(
+          'family, scene and candidates are required for image/video'
+        );
+      }
+
+      candidateEntries = candidates.map((candidate) => {
+        if (!candidate?.provider || !candidate?.model) {
+          throw new Error('invalid candidate');
+        }
+
+        const entry = findModel(
+          mediaType,
+          candidate.provider,
+          family,
+          scene,
+          candidate.model
+        );
+
+        if (!entry) {
+          throw new Error(
+            `invalid candidate: ${candidate.provider}/${candidate.model}`
+          );
+        }
+
+        return entry;
+      });
+
+      const entryCostCredits = candidateEntries[0]?.credits[scene];
+      if (typeof entryCostCredits !== 'number') {
+        throw new Error(`invalid credits: ${family}/${scene}`);
+      }
+      costCredits = entryCostCredits;
+    } else {
+      if (!provider || !model) {
+        throw new Error('invalid params');
+      }
+
+      costCredits = getGenerationCreditCost({
+        mediaType,
+        scene,
+        family,
+        model,
+      });
+    }
 
     const remainingCredits = await getRemainingCredits(user.id);
     if (remainingCredits < costCredits) {
@@ -68,7 +123,8 @@ export async function POST(request: Request) {
 
     const createProviderTask = async (
       providerName: string,
-      modelName: string
+      modelName: string,
+      taskOptions = options
     ) => {
       const aiProvider = aiService.getProvider(providerName);
       if (!aiProvider) {
@@ -81,7 +137,7 @@ export async function POST(request: Request) {
         model: modelName,
         prompt: requestPrompt,
         callbackUrl,
-        options,
+        options: taskOptions,
       };
 
       const result = await aiProvider.generate({ params });
@@ -96,33 +152,35 @@ export async function POST(request: Request) {
 
     let finalProvider = provider;
     let finalModel = model;
+    let finalOptionsForTask = options;
     let result;
 
-    const supportCandidatesFallback =
-      mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
+    if (supportCandidatesFallback) {
+      if (!scene) {
+        throw new Error('invalid scene');
+      }
 
-    if (supportCandidatesFallback && candidates?.length) {
       const candidateErrors: string[] = [];
 
-      for (const candidate of candidates) {
-        if (!candidate?.provider || !candidate?.model) {
-          candidateErrors.push(`invalid candidate/${scene ?? 'unknown-scene'}`);
-          continue;
-        }
-
+      for (const entry of candidateEntries) {
         try {
+          const enforced = entry.enforced?.[scene] ?? {};
+          const finalOptions = { ...(options ?? {}), ...enforced };
+
           result = await createProviderTask(
-            candidate.provider,
-            candidate.model
+            entry.provider,
+            entry.value,
+            finalOptions
           );
-          finalProvider = candidate.provider;
-          finalModel = candidate.model;
+          finalOptionsForTask = finalOptions;
+          finalProvider = entry.provider;
+          finalModel = entry.value;
 
           if (candidateErrors.length > 0) {
             console.warn('Model fallback used after candidate failures:', {
               mediaType,
               scene,
-              family: requestBody.family,
+              family,
               errors: candidateErrors,
             });
           }
@@ -130,7 +188,7 @@ export async function POST(request: Request) {
           break;
         } catch (error: any) {
           candidateErrors.push(
-            `${candidate.provider}/${candidate.model}/${scene}: ${error.message}`
+            `${entry.provider}/${entry.value}/${scene}: ${error.message}`
           );
         }
       }
@@ -139,7 +197,7 @@ export async function POST(request: Request) {
         console.error('All model candidates failed:', {
           mediaType,
           scene,
-          family: requestBody.family,
+          family,
           errors: candidateErrors,
         });
         throw new Error('All model candidates failed');
@@ -152,6 +210,10 @@ export async function POST(request: Request) {
       throw new Error('invalid params');
     }
 
+    if (!result || !finalProvider || !finalModel) {
+      throw new Error('ai generate failed');
+    }
+
     const newAITask: NewAITask = {
       id: getUuid(),
       userId: user.id,
@@ -160,7 +222,7 @@ export async function POST(request: Request) {
       model: finalModel,
       prompt: requestPrompt,
       scene,
-      options: options ? JSON.stringify(options) : null,
+      options: finalOptionsForTask ? JSON.stringify(finalOptionsForTask) : null,
       status: result.taskStatus,
       costCredits,
       taskId: result.taskId,
