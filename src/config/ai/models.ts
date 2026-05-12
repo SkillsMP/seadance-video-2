@@ -75,6 +75,24 @@ export const MODELS: ModelEntry[] = [
   },
   {
     mediaType: 'video',
+    family: 'seedance-2-fast-480p',
+    value: 'bytedance/seedance-2-fast',
+    label: 'Seedance 2.0 Fast 480p',
+    provider: 'kie',
+    scenes: ['text-to-video'],
+    enabled: true,
+    credits: { 'text-to-video': 45 },
+    enforced: {
+      'text-to-video': {
+        resolution: '480p',
+        duration: 5,
+        generate_audio: false,
+        aspect_ratio: '16:9',
+      },
+    },
+  },
+  {
+    mediaType: 'video',
     family: 'seedance-2-fast-720p',
     value: 'bytedance/seedance-2-fast',
     label: 'Seedance 2.0 Fast 720p',
@@ -82,6 +100,14 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-video'],
     enabled: true,
     credits: { 'text-to-video': 90 },
+    enforced: {
+      'text-to-video': {
+        resolution: '720p',
+        duration: 5,
+        generate_audio: false,
+        aspect_ratio: '16:9',
+      },
+    },
   },
   {
     mediaType: 'video',
@@ -97,6 +123,7 @@ export const MODELS: ModelEntry[] = [
         resolution: '480p',
         duration: 5,
         generate_audio: false,
+        aspect_ratio: '16:9',
       },
     },
   },
