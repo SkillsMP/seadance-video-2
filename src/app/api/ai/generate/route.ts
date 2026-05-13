@@ -8,6 +8,7 @@ import { createAITask, NewAITask } from '@/shared/models/ai_task';
 import { getRemainingCredits } from '@/shared/models/credit';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
+import { moderateGenerationInput } from '@/shared/services/moderation';
 
 interface GenerateCandidate {
   provider: string;
@@ -120,6 +121,14 @@ export async function POST(request: Request) {
     if (remainingCredits < costCredits) {
       throw new Error('insufficient credits');
     }
+
+    await moderateGenerationInput({
+      userId: user.id,
+      mediaType,
+      scene,
+      prompt: requestPrompt,
+      options,
+    });
 
     const createProviderTask = async (
       providerName: string,
