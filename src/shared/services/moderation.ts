@@ -92,6 +92,12 @@ export async function moderateGenerationInput({
       check: () => checkImageUrl(imageUrl, sightengineConfig),
     });
   }
+
+  console.log('generation moderation allowed', {
+    userId,
+    mediaType,
+    scene,
+  });
 }
 
 async function runModerationCheck({
