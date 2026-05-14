@@ -1,3 +1,5 @@
+// 以后删，以后等 music 也纳入 MODELS + candidates，并且没有旧 provider/model 路径后，再考虑把 getGenerationCreditCost() 移到 models.ts 或 src/config/ai/pricing.ts，然后删掉 credit-costs.ts
+// 明确它是派生层，不是配置源。短期保持，但未来考虑清理。收窄它的职责。
 import { MODELS } from './models';
 
 export type GenerationMediaType = 'image' | 'video' | 'music';
