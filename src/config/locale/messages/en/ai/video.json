@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "AI Video Generator – Multi-Model Studio for Text, Image and Clip Inputs",
-    "description": "Banana Pro brings Veo 3, Sora 2 Pro, Kling and Wan Pro into a single AI video studio. Turn a written scene, a still photo or an existing clip into a polished short video in just a few minutes."
+    "description": "Banana Pro brings Veo 3, Seedance 2.0, Kling and Wan Pro into a single AI video studio. Turn a written scene, a still photo or an existing clip into a polished short video in just a few minutes."
   },
   "page": {
     "title": "Multi-Model AI Video Generator",
@@ -90,4 +90,3 @@
     "no_videos_generated": "No Videos Generated"
   }
 }
-

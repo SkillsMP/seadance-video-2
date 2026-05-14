@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "AI 视频生成器 – 文本 / 图片 / 视频多模型工作室",
-    "description": "Banana Pro 把 Veo 3、Sora 2 Pro、Kling、Wan Pro 等顶尖视频模型聚合到同一界面，让一段文字、一张照片或一条样片，几分钟内变成短视频成片。"
+    "description": "Banana Pro 把 Veo 3、Seedance 2.0、Kling、Wan Pro 等顶尖视频模型聚合到同一界面，让一段文字、一张照片或一条样片，几分钟内变成短视频成片。"
   },
   "page": {
     "title": "多模型 AI 视频生成器",
@@ -90,4 +90,3 @@
     "no_videos_generated": "没有生成视频"
   }
 }
-

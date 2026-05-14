@@ -65,16 +65,6 @@ export const MODELS: ModelEntry[] = [
   },
   {
     mediaType: 'video',
-    family: 'sora-2-lite',
-    value: 'sora-2-text-to-video',
-    label: 'Sora 2 Lite',
-    provider: 'kie',
-    scenes: ['text-to-video'],
-    enabled: true,
-    credits: { 'text-to-video': 30 },
-  },
-  {
-    mediaType: 'video',
     family: 'seedance-2-fast-480p',
     value: 'bytedance/seedance-2-fast',
     label: 'Seedance 2.0 Fast 480p',
@@ -126,26 +116,6 @@ export const MODELS: ModelEntry[] = [
         aspect_ratio: '16:9',
       },
     },
-  },
-  {
-    mediaType: 'video',
-    family: 'sora-2-pro',
-    value: 'sora-2-pro-image-to-video',
-    label: 'Sora 2 Pro',
-    provider: 'kie',
-    scenes: ['image-to-video'],
-    enabled: true,
-    credits: { 'image-to-video': 90 },
-  },
-  {
-    mediaType: 'video',
-    family: 'sora-2-pro',
-    value: 'sora-2-pro-text-to-video',
-    label: 'Sora 2 Pro',
-    provider: 'kie',
-    scenes: ['text-to-video'],
-    enabled: true,
-    credits: { 'text-to-video': 90 },
   },
 ];
 
