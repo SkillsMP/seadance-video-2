@@ -318,6 +318,10 @@
           {
             "question": "How are annual credits granted?",
             "answer": "Annual subscription credits are granted upfront after payment succeeds."
+          },
+          {
+            "question": "Does 1 credit equal 1 generation?",
+            "answer": "No, 1 credit does not equal 1 generation. Advanced models and higher resolutions require more credits per use."
           }
         ]
       },

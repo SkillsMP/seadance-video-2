@@ -1,24 +1,37 @@
 /**
  * Trusted Model Registry
  *
+ * 【架构设计核心概念：family】
+ * family 是「产品计费策略」与「底层技术供应商（Providers）」之间的核心解耦层。
+ * - 前端表现：呈现为稳定、语义清晰、易于用户认知的“产品服务/计费档位”（例如：Seedance 2.0 Fast 720p），屏蔽底层复杂多变的技术实现细节。
+ * - 后端处理：作为高内聚的 SKU 抽象，使后端可基于服务可用性、延迟等指标，动态且透明地对真实供应商进行切换与容灾路由。
  * `family` is a stable billing SKU identifier surfaced as a product choice,
  * not a model lineage tag. For example, `seedance-2-fast-480p-video-input` is
  * a billing tier, not a model family name.
  *
- * Invariant: for the same (mediaType, family, scene), credits MUST be
- * identical across all providers. family is a billing SKU; price is a property
- * of the SKU, not of the provider serving it.
+ * 核心约束（Invariant）：
+ * 相同的 (mediaType, family, scene) 组合，其积分消耗（credits）在所有供应商（providers）之间必须完全一致。
+ * 价格是属于 SKU（family）的固有属，family is a billing SKU，而不是底层具体服务供应商的属性。
  */
 
 export interface ModelEntry {
+  /** 媒体类型：图像 ('image') | 视频 ('video') | 音乐 ('music') */
   mediaType: 'image' | 'video' | 'music';
+  /** 统一计费 SKU 标识符，作为产品选项，也是路由和计费校验的核心标识（如 'seedance-2-fast-720p'） */
   family: string;
+  /** 底层具体技术供应商的模型物理名/版本 ID（例如：'bytedance/seedance-2-fast'） */
   value: string;
+  /** 前端下拉框或界面呈现给用户的友好显示名称（例如：'Seedance 2.0 Fast 720p'） */
   label: string;
+  /** 模型供应商的唯一标识符（例如：'kie', 'replicate'） */
   provider: string;
+  /** 适用的生成场景列表（例如：['text-to-video', 'video-to-video']） */
   scenes: string[];
+  /** 是否启用该模型项。设置为 false 则不参与前端展示与后端路由 */
   enabled: boolean;
+  /** 积分消耗配置。Key 为具体场景 (scene)，Value 为单次生成所需消耗的积分数量 */
   credits: Record<string, number>;
+  /** 服务端强控参数字典。指定场景下，后端发起生成请求时强制覆盖/注入的 API 参数（例如分辨率、宽高比、时长限制等） */
   enforced?: Record<string, Record<string, unknown>>;
 }
 
