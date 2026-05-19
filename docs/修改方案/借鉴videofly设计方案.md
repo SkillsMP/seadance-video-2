@@ -355,22 +355,25 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 
 ## 11. 分阶段执行方案
 
-### Phase 0A 完成状态总结
+### Phase 0A + Phase 0A-post 完成状态总结
 
-> **Phase 0A 已于 2026-05-19 全部完成并通过验收。**
+> **Phase 0A（含 0A-post）已于 2026-05-19 全部完成并通过验收。**
 >
 > 以下为各子阶段实际完成结果：
 >
-> - **0A-1**：已完成 Registry 结构重整。`SEEDANCE_CATALOG` + `buildSeedanceModels()` 工厂已就位，`MODELS` 对外导出保持兼容，`validateModels()` 校验通过。
-> - **0A-2**：已完成服务端 `finalOptions` 链路。`sanitizeGenerationOptions()` 和 `resolveFinalOptions()` 已集成到 `/api/ai/generate`，provider 调用、moderation、任务快照统一使用 `finalOptions`。
-> - **0A-3**：已完成 Kie `generateVideo()` adapter 默认值清理。移除了 `aspect_ratio: 'landscape'`、`n_frames: '10'`、`size: 'standard'` 等业务默认值和隐藏兜底逻辑。
+> - **0A-1 Registry 结构重整** ✅：`SEEDANCE_CATALOG` + `buildSeedanceModels()` 工厂已就位，`MODELS` 对外导出保持兼容，`validateModels()` 校验通过。Registry 已完成 `skuAttributes` / `defaults` / `controls` / `pricing` / `enforced` 结构预埋。
+> - **0A-2 finalOptions 链路** ✅：`sanitizeGenerationOptions()` 和 `resolveFinalOptions()` 已集成到 `/api/ai/generate`，provider 调用、moderation、任务快照统一使用 `finalOptions`。`finalOptions` 链路已接入 image/video candidates 路径。`task.options` 已记录 `finalOptions`。
+> - **0A-3 Kie adapter 清理** ✅：移除了 `aspect_ratio: 'landscape'`、`n_frames: '10'`、`size: 'standard'` 等业务默认值和隐藏兜底逻辑。Kie `generateVideo` 已完成默认值清理。
+> - **0A-post Seedance catalog disabled 预埋** ✅：Seedance 候选 SKU 已完成 disabled catalog 预埋。依据扣费矩阵共新增 7 条 disabled SKU（含 Standard 全系列和 Fast 720p video-input）。`SeedanceCatalogItem` 类型已扩展支持 `enabled`、`modelValue`、`image-to-video` scene、`1080p` resolution。
 >
 > 当前真实状态：
 >
-> - 当前真实扣费仍保持旧 credits 逻辑，Seedance 仍为 `45 / 90 / 45`。
-> - `pricing` 仍只是预埋结构，未接入真实扣费。
+> - 真实扣费仍走旧 credits 逻辑，Seedance 已上线 SKU 保持 `45 / 90 / 45`。
+> - 已验证 480p text-to-video 真实生成成功，扣费 45 credits。
+> - `task.options` 已记录 `finalOptions`。
+> - `pricing` 仍只是预埋结构，尚未接入真实扣费。
 > - 前端 `duration` / `aspect_ratio` 控件尚未开放。
-> - `image-to-video` 尚未默认开放。
+> - `image-to-video` 尚未开放。
 >
 > 验证通过记录：
 >
@@ -536,7 +539,7 @@ pnpm.cmd run ai:validate-models
 pnpm.cmd exec eslint src/extensions/ai/kie.ts
 ```
 
-## 12. Phase 0A-post：Seedance catalog disabled 预埋
+## 12. Phase 0A-post：Seedance catalog disabled 预埋 ✅ 已完成
 
 依据下方 Seedance 2 系列扣费矩阵，将候选 SKU 预注册到 `SEEDANCE_CATALOG`，全部 `enabled: false`，仅做 registry 层配置预埋。不设 `enabled: true`，不接入前端展示，不接入 Kie adapter，不影响真实扣费。
 
@@ -593,9 +596,9 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - `pnpm.cmd run ai:validate-models` 通过。
 - `pnpm.cmd exec eslint src/config/ai/models.ts` 通过。
 
-**Phase 0A-1 当前状态**：
+**Phase 0A-post 验收结果**：
 
-`SEEDANCE_CATALOG` 只注册了 3 条已启用 SKU，`pricing.creditsPerSecond` 是按 `credits ÷ defaultDuration` 镜像的旧固定值，不代表真实按秒扣费。
+`SEEDANCE_CATALOG` 现包含 10 条 SKU：3 条 `enabled: true`（已上线），7 条 `enabled: false`（候选预埋）。`pricing.creditsPerSecond` 按扣费矩阵设置，但仍不参与真实扣费。
 
 现网实际扣费仍为：
 
@@ -603,26 +606,53 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - `seedance-2-fast-720p`：90 credits / 5s 固定
 - `seedance-2-fast-480p-video-input`：45 credits / 5s 固定
 
+候选 SKU 全部 disabled，前端不可见、不可调用、不影响当前扣费。
+
+验证通过：
+
+- `pnpm.cmd exec tsc --noEmit` — ✅ 零错误
+- `pnpm.cmd run ai:validate-models` — ✅ `AI model registry is valid.`
+- `pnpm.cmd exec eslint src/config/ai/models.ts` — ✅ 零警告零错误
+
 ## 13. Phase 0B：真实扣费迁移
 
 目标：在 Phase 0A-1 / 0A-2 / 0A-3 全部稳定后，把视频真实扣费从固定 `credits` 口径迁移到 `pricing + finalOptions` 动态口径。
 
-**Phase 0B 迁移规则**：
+Phase 0B 涉及余额预检、真实扣费、失败退款、任务 `costCredits`、前端价格展示和余额不足提示，属于资金链路，不允许一次性切换。保留分阶段思想，但不再拆成过细的 0B-3a / 0B-3b；执行时只按以下三步推进。
 
-1. 只有确认上线的 SKU 才进入 `SEEDANCE_CATALOG` 并设 `enabled: true`。
-2. `creditsPerSecond` 必须改为本表「本站积分/秒」列的精确值。
-3. `calculateModelCredits()` 必须优先命中 `family + scene + creditsPerSecond`。
-4. `Seedance 2 Standard` 和 `1080p` 规格不在 Phase 0B 首批，只作为 candidate 预留。
-5. 前台套餐页只展示稳定锚点，例如 `Fast Video from 12 Credits/s`。
-6. Phase 0B 之前，不允许把本表候选 SKU 提前接入前端展示、Kie adapter 或真实扣费逻辑。
+**Phase 0B-1：`calculateModelCredits()` 纯函数 + 测试**
 
-前置条件：
+- 只实现计价函数和单元测试。
+- 不接入 `/api/ai/generate`。
+- 不读取 env。
+- 不改变真实扣费。
+- 函数必须优先命中 `family + scene + pricing`，并使用 `finalOptions.duration` 计算 `perSecond` 价格。
+- 当 `pricing` 缺失或不合法时必须显式报错，不允许静默回落到错误价格。
 
-- `ENABLE_DYNAMIC_VIDEO_PRICING=true`。
-- 前台价格展示已同步。
-- 余额不足提示已同步。
-- `/api/ai/generate` 的余额预检、任务 `costCredits` 落库、实际扣费、失败退款全部使用同一个 `calculateModelCredits()` 结果。
+**Phase 0B-2：feature flag 接入生成链路**
+
+- 接入 `ENABLE_DYNAMIC_VIDEO_PRICING`，默认值必须为 `false`。
+- flag 关闭时，视频真实扣费仍走旧 `credits` 口径，现网 `45 / 90 / 45` 保持不变。
+- flag 开启时，`/api/ai/generate` 的余额预检、任务 `costCredits` 落库、实际扣费、失败退款必须使用同一个 `calculateModelCredits()` 结果。
+- 同一次请求内不得分别计算多次价格后各自使用，避免预检、落库、扣费、退款出现漂移。
 - 历史任务不回写旧价格。
+
+**Phase 0B-3：价格展示对齐 + 灰度开启**
+
+- 前端价格展示、余额不足提示与后端动态计费口径对齐。
+- 前台套餐页只展示稳定锚点，例如 `Fast Video from 12 Credits/s`。
+- 只有确认上线的 SKU 才进入 `SEEDANCE_CATALOG` 并设 `enabled: true`。
+- `creditsPerSecond` 必须改为本表「本站积分/秒」列的精确值。
+- `Seedance 2 Standard` 和 `1080p` 规格不在 Phase 0B 首批，只作为 candidate 预留。
+- 产品确认价格锚点、公告、灰度和回滚策略后，才允许通过 feature flag 开启真实动态扣费。
+
+全局红线：
+
+- 不提前开放 `duration / aspect_ratio` 前端控件。
+- 不提前开放 `image-to-video`。
+- 不启用 disabled SKU。
+- 不混入 Phase 1。
+- Phase 0B 之前，不允许把本表候选 SKU 提前接入前端展示、Kie adapter 或真实扣费逻辑。
 
 需要产品和运营确认：
 
@@ -634,10 +664,11 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 
 验收标准：
 
-- feature flag 关闭时，真实扣费仍走旧逻辑。
-- feature flag 开启时，真实扣费、余额预检、失败退款使用同一个动态计价结果。
-- 前台展示价格与后端真实扣费一致。
-- 余额不足提示按新口径计算。
+- Phase 0B-1 只新增纯函数和测试，不改变 `/api/ai/generate` 行为。
+- Phase 0B-2 在 feature flag 关闭时，真实扣费仍走旧逻辑。
+- Phase 0B-2 在 feature flag 开启时，真实扣费、余额预检、失败退款使用同一个动态计价结果。
+- Phase 0B-3 前台展示价格与后端真实扣费一致。
+- Phase 0B-3 余额不足提示按新口径计算。
 - 历史任务保持原 `costCredits`，不回写。
 
 ## 14. Phase 1：前端参数开放
@@ -688,8 +719,11 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 | `resolveFinalOptions()` | 校验 defaults、用户参数、auto 参数、skuAttributes、enforced 的合并顺序 |
 | `sanitizeGenerationOptions()` | 校验未知 key、非法 value、scene 不匹配参数不会透传 |
 | `/api/ai/generate` | Phase 0A 下真实扣费保持旧逻辑 |
-| `/api/ai/generate` | feature flag 未开启时不使用动态计价作为真实扣费来源 |
-| `calculateModelCredits()` | 只完成函数骨架和单元测试，不接入真实扣费 |
+| `calculateModelCredits()` | Phase 0B-1 只完成纯函数和单元测试，不接入真实扣费 |
+| `calculateModelCredits()` | 覆盖固定价、按秒价、`finalOptions.duration`、默认时长、非法 pricing 显式报错 |
+| `/api/ai/generate` | Phase 0B-2 feature flag 未开启时不使用动态计价作为真实扣费来源 |
+| `/api/ai/generate` | Phase 0B-2 feature flag 开启时余额预检、任务 `costCredits`、实际扣费、失败退款使用同一价格结果 |
+| UI pricing | Phase 0B-3 前端价格展示、余额不足提示与后端动态计费口径一致 |
 | Kie adapter | adapter 不再补业务默认值，只做字段映射 |
 | UI tabs | `image-to-video` 无 enabled model 时隐藏或禁用 |
 | 历史任务 | 老任务 options 缺少新字段时不报错 |
@@ -702,7 +736,11 @@ Phase 0A-2 通过，只代表 `finalOptions` 链路统一完成，不代表真�
 
 Phase 0A-3 通过，只代表 Kie adapter 不再补业务默认值，不代表前端参数已经开放。
 
-Phase 0B 通过，才代表真实扣费已迁移到动态计价口径，并且必须受 `ENABLE_DYNAMIC_VIDEO_PRICING` 控制。
+Phase 0B-1 通过，只代表 `calculateModelCredits()` 纯函数和测试完成，不代表真实扣费已经切换。
+
+Phase 0B-2 通过，只代表动态计价已接入生成链路且受 `ENABLE_DYNAMIC_VIDEO_PRICING` 控制；flag 关闭时现网旧价格必须保持不变。
+
+Phase 0B-3 通过，才代表前端展示、余额不足提示和真实扣费已经迁移到动态计价口径，并且可以按灰度策略开启。
 
 Phase 1 通过，才代表前端参数控件可以正式开放给用户。
 

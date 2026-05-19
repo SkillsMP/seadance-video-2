@@ -1,6 +1,6 @@
 // 以后删，以后等 music 也纳入 MODELS + candidates，并且没有旧 provider/model 路径后，再考虑把 getGenerationCreditCost() 移到 models.ts 或 src/config/ai/pricing.ts，然后删掉 credit-costs.ts
 // 明确它是派生层，不是配置源。短期保持，但未来考虑清理。收窄它的职责。
-import { MODELS } from './models';
+import { MODELS, type ModelEntry, type ScenePricing } from './models';
 
 export type GenerationMediaType = 'image' | 'video' | 'music';
 
@@ -17,6 +17,71 @@ export interface GenerationCreditCostInput {
   scene?: GenerationScene | string;
   family?: string;
   model?: string;
+}
+
+export type FinalGenerationOptions = Record<string, unknown>;
+
+function isFinitePositiveNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+function getScenePricing(entry: ModelEntry, scene: string): ScenePricing {
+  if (!entry.scenes.includes(scene)) {
+    throw new Error(`invalid pricing scene: ${entry.family}/${scene}`);
+  }
+
+  const pricing = entry.pricing?.[scene];
+  if (!pricing) {
+    throw new Error(`missing pricing: ${entry.family}/${scene}`);
+  }
+
+  return pricing;
+}
+
+function resolveDuration(
+  pricing: ScenePricing,
+  finalOptions: FinalGenerationOptions
+): number {
+  const duration = finalOptions.duration ?? pricing.defaultDuration;
+
+  if (!isFinitePositiveNumber(duration)) {
+    throw new Error('invalid pricing duration');
+  }
+
+  return duration;
+}
+
+export function calculateModelCredits(
+  entry: ModelEntry,
+  scene: string,
+  finalOptions: FinalGenerationOptions = {}
+): number {
+  const pricing = getScenePricing(entry, scene);
+
+  if (pricing.mode === 'fixed') {
+    if (!isFinitePositiveNumber(pricing.credits)) {
+      throw new Error(`invalid fixed pricing: ${entry.family}/${scene}`);
+    }
+
+    return pricing.credits;
+  }
+
+  if (pricing.mode === 'perSecond') {
+    if (!isFinitePositiveNumber(pricing.creditsPerSecond)) {
+      throw new Error(`invalid per-second pricing: ${entry.family}/${scene}`);
+    }
+
+    const duration = resolveDuration(pricing, finalOptions);
+    const credits = duration * pricing.creditsPerSecond;
+
+    if (!Number.isFinite(credits)) {
+      throw new Error(`invalid calculated pricing: ${entry.family}/${scene}`);
+    }
+
+    return credits;
+  }
+
+  throw new Error(`invalid pricing mode: ${entry.family}/${scene}`);
 }
 
 const DEFAULT_SCENE_CREDIT_COSTS: Record<
