@@ -1,6 +1,7 @@
 import { envConfigs } from '@/config';
 import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import { findModel, type ModelEntry } from '@/config/ai/models';
+import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -18,7 +19,7 @@ interface GenerateCandidate {
 interface GenerateRequest {
   mediaType?: string;
   prompt?: string;
-  options?: any;
+  options?: unknown;
   scene?: string;
   family?: string;
   candidates?: GenerateCandidate[];
@@ -103,6 +104,8 @@ export async function POST(request: Request) {
       if (typeof entryCostCredits !== 'number') {
         throw new Error(`invalid credits: ${family}/${scene}`);
       }
+      // Phase 0A keeps real charging on the existing fixed credits path.
+      // Registry pricing metadata must not become the source of truth here.
       costCredits = entryCostCredits;
     } else {
       if (!provider || !model) {
@@ -122,18 +125,10 @@ export async function POST(request: Request) {
       throw new Error('insufficient credits');
     }
 
-    await moderateGenerationInput({
-      userId: user.id,
-      mediaType,
-      scene,
-      prompt: requestPrompt,
-      options,
-    });
-
     const createProviderTask = async (
       providerName: string,
       modelName: string,
-      taskOptions = options
+      taskOptions?: unknown
     ) => {
       const aiProvider = aiService.getProvider(providerName);
       if (!aiProvider) {
@@ -161,7 +156,7 @@ export async function POST(request: Request) {
 
     let finalProvider = provider;
     let finalModel = model;
-    let finalOptionsForTask = options;
+    let finalOptionsForTask: unknown = options;
     let result;
 
     if (supportCandidatesFallback) {
@@ -172,10 +167,22 @@ export async function POST(request: Request) {
       const candidateErrors: string[] = [];
 
       for (const entry of candidateEntries) {
-        try {
-          const enforced = entry.enforced?.[scene] ?? {};
-          const finalOptions = { ...(options ?? {}), ...enforced };
+        const finalOptions = resolveFinalOptions({
+          mediaType,
+          scene,
+          entry,
+          options,
+        });
 
+        await moderateGenerationInput({
+          userId: user.id,
+          mediaType,
+          scene,
+          prompt: requestPrompt,
+          options: finalOptions,
+        });
+
+        try {
           result = await createProviderTask(
             entry.provider,
             entry.value,
@@ -212,7 +219,15 @@ export async function POST(request: Request) {
         throw new Error('All model candidates failed');
       }
     } else if (provider && model) {
-      result = await createProviderTask(provider, model);
+      await moderateGenerationInput({
+        userId: user.id,
+        mediaType,
+        scene,
+        prompt: requestPrompt,
+        options,
+      });
+
+      result = await createProviderTask(provider, model, options);
       finalProvider = provider;
       finalModel = model;
     } else {
