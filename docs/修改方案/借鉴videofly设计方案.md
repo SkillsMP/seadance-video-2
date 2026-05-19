@@ -427,6 +427,92 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 - 旧的视频转视频仍能正常生成。
 - 没有因为 adapter 清理导致 provider 请求缺字段。
 
+#### Phase 0A-3 执行补充：Kie generateVideo 最小清理
+
+本阶段只清理 `src/extensions/ai/kie.ts` 中的 `generateVideo()`，目标是让 Kie video adapter 只负责 provider 字段映射，不再承担业务默认值决策。
+
+本阶段不改：
+
+- `generateImage()`
+- `generateMusic()`
+- query / callback 相关逻辑
+- `/api/ai/generate`
+- `src/config/ai/options.ts`
+- `src/config/ai/models.ts`
+- 前端控件
+- 真实扣费逻辑
+
+具体要求：
+
+1. 删除 `generateVideo()` 初始 payload 中的业务默认值：
+
+```ts
+aspect_ratio: 'landscape'
+n_frames: '10'
+size: 'standard'
+```
+
+2. 删除上述默认值后，`payload.input` 应初始化为空对象：
+
+```ts
+input: {}
+```
+
+3. 删除末尾隐藏时长兜底：
+
+```ts
+if (!payload.input.n_frames && !payload.input.duration) {
+  payload.input.n_frames = '10';
+}
+```
+
+4. 删除 duration 映射块中已经无意义的清理语句：
+
+```ts
+delete payload.input.n_frames;
+delete payload.input.size;
+```
+
+5. 保留 provider 字段映射逻辑：
+
+- 保留 `KIE_VIDEO_DURATION_FIELD`
+- 保留 `duration -> duration / n_frames` 映射
+- 保留 `aspect_ratio` 透传
+- 保留 `resolution` 透传
+- 保留 `image_input -> image_urls`
+- 保留 `video_input -> reference_video_urls`
+- 保留 `generate_audio` 透传
+
+6. 保留现有防御式条件赋值：
+
+- 本阶段不把 `if (options.xxx)` 改成直接赋值。
+- Phase 0A-3 只删除业务默认值，不重构赋值模式。
+
+7. 当前 Seedance 参数应来自上游 `finalOptions`：
+
+- `duration`
+- `aspect_ratio`
+- `resolution`
+- `generate_audio`
+
+验收标准：
+
+- Kie video adapter 不再偷偷补业务默认参数。
+- `generateVideo()` 的 payload 只由输入参数和字段映射产生。
+- Seedance 仍走 `duration` 字段。
+- 现有 text-to-video / video-to-video 行为不变。
+- 不接入动态计费。
+- 不混入前端参数开放。
+- 不修改 image/music/query/callback 相关逻辑。
+
+验证命令：
+
+```bash
+pnpm.cmd exec tsc --noEmit
+pnpm.cmd run ai:validate-models
+pnpm.cmd exec eslint src/extensions/ai/kie.ts
+```
+
 ## 12. Phase 0B：真实扣费迁移
 
 目标：在 Phase 0A-1 / 0A-2 / 0A-3 全部稳定后，把视频真实扣费从固定 `credits` 口径迁移到 `pricing + finalOptions` 动态口径。

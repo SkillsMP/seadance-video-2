@@ -225,11 +225,7 @@ export class KieProvider implements AIProvider {
     let payload: any = {
       model: params.model,
       callBackUrl: params.callbackUrl,
-      input: {
-        aspect_ratio: 'landscape',
-        n_frames: '10',
-        size: 'standard',
-      },
+      input: {},
     };
 
     if (params.prompt) {
@@ -262,14 +258,9 @@ export class KieProvider implements AIProvider {
 
         if (durationField === 'duration') {
           payload.input.duration = options.duration;
-          delete payload.input.n_frames;
-          delete payload.input.size;
         } else {
           payload.input.n_frames = options.duration;
         }
-      }
-      if (!payload.input.n_frames && !payload.input.duration) {
-        payload.input.n_frames = '10';
       }
     }
 
