@@ -66,7 +66,8 @@ export interface ModelEntry {
   enforced?: SceneParameterMap;
 }
 
-const SEEDANCE_MODEL_VALUE = 'bytedance/seedance-2-fast';
+const SEEDANCE_FAST_MODEL_VALUE = 'bytedance/seedance-2-fast';
+const SEEDANCE_STANDARD_MODEL_VALUE = 'bytedance/seedance-2';
 const SEEDANCE_DEFAULT_DURATION = 5;
 const SEEDANCE_DEFAULT_ASPECT_RATIO = '16:9';
 const SEEDANCE_TEXT_DURATION_OPTIONS = [
@@ -75,43 +76,199 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 
+type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
+type SeedanceResolution = '480p' | '720p' | '1080p';
+
 interface SeedanceCatalogItem {
   family: string;
+  modelValue: string;
   label: string;
-  scene: 'text-to-video' | 'video-to-video';
-  resolution: '480p' | '720p';
+  scene: SeedanceScene;
+  enabled: boolean;
+  resolution: SeedanceResolution;
   inputBilling: 'no-video-input' | 'video-input';
   credits: number;
+  creditsPerSecond?: number;
   durationOptions: number[];
 }
 
 const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
   {
     family: 'seedance-2-fast-480p',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
     label: 'Seedance 2.0 Fast 480p',
     scene: 'text-to-video',
+    enabled: true,
     resolution: '480p',
     inputBilling: 'no-video-input',
     credits: 45,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
   },
   {
+    family: 'seedance-2-fast-480p',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
+    label: 'Seedance 2.0 Fast 480p',
+    scene: 'image-to-video',
+    enabled: false,
+    resolution: '480p',
+    inputBilling: 'no-video-input',
+    credits: 60,
+    creditsPerSecond: 12,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
     family: 'seedance-2-fast-720p',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
     label: 'Seedance 2.0 Fast 720p',
     scene: 'text-to-video',
+    enabled: true,
     resolution: '720p',
     inputBilling: 'no-video-input',
     credits: 90,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
   },
   {
+    family: 'seedance-2-fast-720p',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
+    label: 'Seedance 2.0 Fast 720p',
+    scene: 'image-to-video',
+    enabled: false,
+    resolution: '720p',
+    inputBilling: 'no-video-input',
+    credits: 120,
+    creditsPerSecond: 24,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
     family: 'seedance-2-fast-480p-video-input',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
     label: 'Seedance 2.0 Fast 480p',
     scene: 'video-to-video',
+    enabled: true,
     resolution: '480p',
     inputBilling: 'video-input',
     credits: 45,
     durationOptions: SEEDANCE_VIDEO_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-fast-720p-video-input',
+    modelValue: SEEDANCE_FAST_MODEL_VALUE,
+    label: 'Seedance 2.0 Fast 720p',
+    scene: 'video-to-video',
+    enabled: false,
+    resolution: '720p',
+    inputBilling: 'video-input',
+    credits: 75,
+    creditsPerSecond: 15,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-480p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 480p',
+    scene: 'text-to-video',
+    enabled: false,
+    resolution: '480p',
+    inputBilling: 'no-video-input',
+    credits: 70,
+    creditsPerSecond: 14,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-480p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 480p',
+    scene: 'image-to-video',
+    enabled: false,
+    resolution: '480p',
+    inputBilling: 'no-video-input',
+    credits: 70,
+    creditsPerSecond: 14,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-480p-video-input',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 480p',
+    scene: 'video-to-video',
+    enabled: false,
+    resolution: '480p',
+    inputBilling: 'video-input',
+    credits: 45,
+    creditsPerSecond: 9,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-720p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 720p',
+    scene: 'text-to-video',
+    enabled: false,
+    resolution: '720p',
+    inputBilling: 'no-video-input',
+    credits: 150,
+    creditsPerSecond: 30,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-720p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 720p',
+    scene: 'image-to-video',
+    enabled: false,
+    resolution: '720p',
+    inputBilling: 'no-video-input',
+    credits: 150,
+    creditsPerSecond: 30,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-720p-video-input',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 720p',
+    scene: 'video-to-video',
+    enabled: false,
+    resolution: '720p',
+    inputBilling: 'video-input',
+    credits: 90,
+    creditsPerSecond: 18,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-1080p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 1080p',
+    scene: 'text-to-video',
+    enabled: false,
+    resolution: '1080p',
+    inputBilling: 'no-video-input',
+    credits: 375,
+    creditsPerSecond: 75,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-1080p',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 1080p',
+    scene: 'image-to-video',
+    enabled: false,
+    resolution: '1080p',
+    inputBilling: 'no-video-input',
+    credits: 375,
+    creditsPerSecond: 75,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+  },
+  {
+    family: 'seedance-2-standard-1080p-video-input',
+    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
+    label: 'Seedance 2.0 Standard 1080p',
+    scene: 'video-to-video',
+    enabled: false,
+    resolution: '1080p',
+    inputBilling: 'video-input',
+    credits: 225,
+    creditsPerSecond: 45,
+    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
   },
 ];
 
@@ -121,11 +278,11 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
   return {
     mediaType: 'video',
     family: item.family,
-    value: SEEDANCE_MODEL_VALUE,
+    value: item.modelValue,
     label: item.label,
     provider: 'kie',
     scenes: [scene],
-    enabled: true,
+    enabled: item.enabled,
     credits: { [scene]: item.credits },
     skuAttributes: {
       [scene]: {
@@ -156,9 +313,10 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
     pricing: {
       [scene]: {
         mode: 'perSecond',
-        // Phase 0A-1: pricing mirrors current fixed credits for schema prefill only.
-        // Phase 0B may update these values after product/pricing decision.
-        creditsPerSecond: item.credits / SEEDANCE_DEFAULT_DURATION,
+        // Enabled legacy entries mirror current fixed credits; disabled
+        // candidates may carry the Phase 0A-post matrix prefill.
+        creditsPerSecond:
+          item.creditsPerSecond ?? item.credits / SEEDANCE_DEFAULT_DURATION,
         defaultDuration: SEEDANCE_DEFAULT_DURATION,
       },
     },

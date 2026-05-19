@@ -355,7 +355,30 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 
 ## 11. 分阶段执行方案
 
-### Phase 0A-1：Registry 结构重整
+### Phase 0A 完成状态总结
+
+> **Phase 0A 已于 2026-05-19 全部完成并通过验收。**
+>
+> 以下为各子阶段实际完成结果：
+>
+> - **0A-1**：已完成 Registry 结构重整。`SEEDANCE_CATALOG` + `buildSeedanceModels()` 工厂已就位，`MODELS` 对外导出保持兼容，`validateModels()` 校验通过。
+> - **0A-2**：已完成服务端 `finalOptions` 链路。`sanitizeGenerationOptions()` 和 `resolveFinalOptions()` 已集成到 `/api/ai/generate`，provider 调用、moderation、任务快照统一使用 `finalOptions`。
+> - **0A-3**：已完成 Kie `generateVideo()` adapter 默认值清理。移除了 `aspect_ratio: 'landscape'`、`n_frames: '10'`、`size: 'standard'` 等业务默认值和隐藏兜底逻辑。
+>
+> 当前真实状态：
+>
+> - 当前真实扣费仍保持旧 credits 逻辑，Seedance 仍为 `45 / 90 / 45`。
+> - `pricing` 仍只是预埋结构，未接入真实扣费。
+> - 前端 `duration` / `aspect_ratio` 控件尚未开放。
+> - `image-to-video` 尚未默认开放。
+>
+> 验证通过记录：
+>
+> - `pnpm.cmd exec tsc --noEmit` — ✅ 零错误
+> - `pnpm.cmd run ai:validate-models` — ✅ `AI model registry is valid.`
+> - `pnpm.cmd exec eslint` (models.ts / options.ts / route.ts / kie.ts) — ✅ 零警告零错误
+
+### Phase 0A-1：Registry 结构重整 ✅ 已完成
 
 目标：只调整模型注册表结构，不改变真实请求链路、不改变真实扣费。
 
@@ -386,7 +409,7 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 - `validateModels()` 能发现明显配置错误。
 - Phase 0A-1 完成后，Seedance 用户可见扣费仍保持现网 `45 / 90 / 45`。
 
-### Phase 0A-2：服务端 finalOptions 链路
+### Phase 0A-2：服务端 finalOptions 链路 ✅ 已完成
 
 目标：统一服务端最终参数解析逻辑，但仍不改变真实扣费。
 
@@ -409,7 +432,7 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 - 真实扣费金额与当前线上保持一致。
 - feature flag 未开启时不调用动态计价作为真实扣费来源。
 
-### Phase 0A-3：Kie adapter 清理
+### Phase 0A-3：Kie adapter 清理 ✅ 已完成
 
 目标：让 Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 
@@ -513,11 +536,11 @@ pnpm.cmd run ai:validate-models
 pnpm.cmd exec eslint src/extensions/ai/kie.ts
 ```
 
-## 12. Phase 0B：真实扣费迁移
+## 12. Phase 0A-post：Seedance catalog disabled 预埋
 
-目标：在 Phase 0A-1 / 0A-2 / 0A-3 全部稳定后，把视频真实扣费从固定 `credits` 口径迁移到 `pricing + finalOptions` 动态口径。
+依据下方 Seedance 2 系列扣费矩阵，将候选 SKU 预注册到 `SEEDANCE_CATALOG`，全部 `enabled: false`，仅做 registry 层配置预埋。不设 `enabled: true`，不接入前端展示，不接入 Kie adapter，不影响真实扣费。
 
-### Seedance 2 系列 Phase 0B 执行扣费矩阵
+### Seedance 2 系列执行扣费矩阵
 
 | 媒体类型 | 模型 | 规格 | 输入口径 | 场景 | 代码 family key | 时长能力 | KIE 基础价 | 本站积分/秒 | 状态 |
 |---|---|---|---|---|---|---|---:|---:|---|
@@ -532,6 +555,44 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 | video | Seedance 2 Standard | 1080p | no video input | `text-to-video` / `image-to-video` | `seedance-2-standard-1080p` | `4-15s` | $0.51/s | 75 | 高阶候选 / 白名单 |
 | video | Seedance 2 Standard | 1080p | with video input | `video-to-video` | `seedance-2-standard-1080p-video-input` | `4-15s` | $0.31/s | 45 | 高阶候选 / 白名单 |
 
+### Phase 0A-post 执行边界
+
+本阶段只做 Seedance 候选 SKU 的 registry 层 disabled 预埋，不开放、不展示、不调用、不计费。
+
+允许修改：
+
+- `src/config/ai/models.ts`
+
+不允许修改：
+
+- `/api/ai/generate`
+- `src/config/ai/options.ts`
+- `src/extensions/ai/kie.ts`
+- 前端控件
+- 真实扣费逻辑
+- 动态计价开关逻辑
+
+执行约束：
+
+1. 当前已经上线的 3 个 Seedance SKU 保持 `enabled: true`，不得改变现有 `family`、`value`、`credits`、`scenes` 和真实行为。
+2. 新增候选 SKU 必须全部 `enabled: false`。
+3. 新增候选 SKU 不得被前端展示，不得进入真实生成链路，不得影响当前扣费。
+4. 只补充本节矩阵中已经明确列出的 SKU，不猜测额外模型或额外规格。
+5. 如果某个 SKU 的 Kie `modelValue` 无法从现有文档或代码中确认，不得编造，应先列为待确认。
+6. 可以对 `SeedanceCatalogItem` 做最小类型扩展，例如 `enabled`、`modelValue`、`image-to-video` scene、`1080p` resolution。
+7. 不新增复杂 registry framework，继续保持轻量 `SEEDANCE_CATALOG + createSeedanceEntry()`。
+
+验收标准：
+
+- 现有 3 个 Seedance 上线 SKU 行为不变。
+- 新增 Seedance SKU 全部 `enabled: false`。
+- 真实扣费仍保持旧 credits 逻辑。
+- 前端不可见、不可调用新增 SKU。
+- 未修改请求链路、Kie adapter、前端控件或动态计费逻辑。
+- `pnpm.cmd exec tsc --noEmit` 通过。
+- `pnpm.cmd run ai:validate-models` 通过。
+- `pnpm.cmd exec eslint src/config/ai/models.ts` 通过。
+
 **Phase 0A-1 当前状态**：
 
 `SEEDANCE_CATALOG` 只注册了 3 条已启用 SKU，`pricing.creditsPerSecond` 是按 `credits ÷ defaultDuration` 镜像的旧固定值，不代表真实按秒扣费。
@@ -541,6 +602,10 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - `seedance-2-fast-480p`：45 credits / 5s 固定
 - `seedance-2-fast-720p`：90 credits / 5s 固定
 - `seedance-2-fast-480p-video-input`：45 credits / 5s 固定
+
+## 13. Phase 0B：真实扣费迁移
+
+目标：在 Phase 0A-1 / 0A-2 / 0A-3 全部稳定后，把视频真实扣费从固定 `credits` 口径迁移到 `pricing + finalOptions` 动态口径。
 
 **Phase 0B 迁移规则**：
 
@@ -575,7 +640,7 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - 余额不足提示按新口径计算。
 - 历史任务保持原 `costCredits`，不回写。
 
-## 13. Phase 1：前端参数开放
+## 14. Phase 1：前端参数开放
 
 目标：只在 Phase 0B 稳定后，开放可由 registry 描述、可由服务端校验、可由动态计价覆盖的参数。
 
@@ -602,7 +667,7 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - music 迁移到公共 hook
 - 新增并行 analytics 入口
 
-## 14. 本轮不做清单
+## 15. 本轮不做清单
 
 为避免范围继续扩张，本轮明确不做：
 
@@ -615,7 +680,7 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 - 不把 provider 成本一致性作为 Phase 0A 阻塞项。
 - 不把 `family` 在本轮改成纯产品模型家族。
 
-## 15. 测试矩阵
+## 16. 测试矩阵
 
 | 模块 | 测试内容 |
 | --- | --- |
@@ -629,7 +694,7 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 | UI tabs | `image-to-video` 无 enabled model 时隐藏或禁用 |
 | 历史任务 | 老任务 options 缺少新字段时不报错 |
 
-## 16. 上线闸门
+## 17. 上线闸门
 
 Phase 0A-1 通过，只代表 registry 结构重整完成，不代表服务端参数链路或 adapter 已清理。
 
