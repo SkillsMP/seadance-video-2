@@ -1,5 +1,8 @@
 import { envConfigs } from '@/config';
-import { getGenerationCreditCost } from '@/config/ai/credit-costs';
+import {
+  calculateModelCredits,
+  getGenerationCreditCost,
+} from '@/config/ai/credit-costs';
 import { findModel, type ModelEntry } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType } from '@/extensions/ai';
@@ -67,6 +70,9 @@ export async function POST(request: Request) {
 
     const supportCandidatesFallback =
       mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
+    const useDynamicVideoPricing =
+      process.env.ENABLE_DYNAMIC_VIDEO_PRICING === 'true' &&
+      mediaType === AIMediaType.VIDEO;
 
     let candidateEntries: ModelEntry[] = [];
     let costCredits: number;
@@ -100,13 +106,31 @@ export async function POST(request: Request) {
         return entry;
       });
 
-      const entryCostCredits = candidateEntries[0]?.credits[scene];
-      if (typeof entryCostCredits !== 'number') {
-        throw new Error(`invalid credits: ${family}/${scene}`);
+      const firstEntry = candidateEntries[0];
+      if (!firstEntry) {
+        throw new Error('invalid candidate');
       }
-      // Phase 0A keeps real charging on the existing fixed credits path.
-      // Registry pricing metadata must not become the source of truth here.
-      costCredits = entryCostCredits;
+
+      if (useDynamicVideoPricing) {
+        const pricingFinalOptions = resolveFinalOptions({
+          mediaType,
+          scene,
+          entry: firstEntry,
+          options,
+        });
+
+        costCredits = calculateModelCredits(
+          firstEntry,
+          scene,
+          pricingFinalOptions
+        );
+      } else {
+        const entryCostCredits = firstEntry.credits[scene];
+        if (typeof entryCostCredits !== 'number') {
+          throw new Error(`invalid credits: ${family}/${scene}`);
+        }
+        costCredits = entryCostCredits;
+      }
     } else {
       if (!provider || !model) {
         throw new Error('invalid params');
