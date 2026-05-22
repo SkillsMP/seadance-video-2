@@ -148,6 +148,14 @@ assert.equal(
 );
 assert.equal(
   calculateModelCredits(
+    findEnabledModel('seedance-2-fast-480p', 'text-to-video'),
+    'text-to-video',
+    { duration: 10 }
+  ),
+  120
+);
+assert.equal(
+  calculateModelCredits(
     findEnabledModel('seedance-2-fast-720p', 'text-to-video'),
     'text-to-video',
     { duration: 5 }
@@ -156,11 +164,27 @@ assert.equal(
 );
 assert.equal(
   calculateModelCredits(
+    findEnabledModel('seedance-2-fast-720p', 'text-to-video'),
+    'text-to-video',
+    { duration: 10 }
+  ),
+  240
+);
+assert.equal(
+  calculateModelCredits(
     findEnabledModel('seedance-2-fast-480p-video-input', 'video-to-video'),
     'video-to-video',
     { duration: 5 }
   ),
   35
+);
+assert.equal(
+  calculateModelCredits(
+    findEnabledModel('seedance-2-fast-480p-video-input', 'video-to-video'),
+    'video-to-video',
+    { duration: 10 }
+  ),
+  70
 );
 
 assert.equal(
