@@ -325,10 +325,7 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
     },
     enforced: {
       [scene]: {
-        resolution: item.resolution,
-        duration: SEEDANCE_DEFAULT_DURATION,
         generate_audio: false,
-        aspect_ratio: SEEDANCE_DEFAULT_ASPECT_RATIO,
       },
     },
   };

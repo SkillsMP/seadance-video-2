@@ -73,6 +73,8 @@ export async function POST(request: Request) {
     const useDynamicVideoPricing =
       process.env.ENABLE_DYNAMIC_VIDEO_PRICING === 'true' &&
       mediaType === AIMediaType.VIDEO;
+    const allowControlOptions =
+      mediaType !== AIMediaType.VIDEO || useDynamicVideoPricing;
 
     let candidateEntries: ModelEntry[] = [];
     let costCredits: number;
@@ -117,6 +119,7 @@ export async function POST(request: Request) {
           scene,
           entry: firstEntry,
           options,
+          allowControlOptions,
         });
 
         costCredits = calculateModelCredits(
@@ -196,6 +199,7 @@ export async function POST(request: Request) {
           scene,
           entry,
           options,
+          allowControlOptions,
         });
 
         await moderateGenerationInput({

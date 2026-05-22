@@ -7,6 +7,7 @@ interface ResolveOptionsInput {
   scene: string;
   entry: ModelEntry;
   options?: unknown;
+  allowControlOptions?: boolean;
 }
 
 interface ResolveAutoOptionsInput {
@@ -69,6 +70,7 @@ export function sanitizeGenerationOptions({
   scene,
   entry,
   options,
+  allowControlOptions = true,
 }: ResolveOptionsInput): GenerationOptions {
   if (options === undefined || options === null) {
     return {};
@@ -78,7 +80,7 @@ export function sanitizeGenerationOptions({
     throw new Error('generation options must be an object');
   }
 
-  const controls = entry.controls?.[scene] ?? {};
+  const controls = allowControlOptions ? (entry.controls?.[scene] ?? {}) : {};
   const sceneInputOptions = SCENE_INPUT_OPTIONS[scene] ?? new Set<string>();
   const sanitizedOptions: GenerationOptions = {};
 
@@ -130,6 +132,7 @@ export function resolveFinalOptions({
   scene,
   entry,
   options,
+  allowControlOptions = true,
 }: ResolveOptionsInput): GenerationOptions {
   if (entry.mediaType !== mediaType) {
     throw new Error(
@@ -147,6 +150,7 @@ export function resolveFinalOptions({
     scene,
     entry,
     options,
+    allowControlOptions,
   });
   const baseOptions = {
     ...defaults,
