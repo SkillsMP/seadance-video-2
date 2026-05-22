@@ -30,6 +30,8 @@ export async function GET(request: NextRequest) {
       message: 'success',
       data: {
         providers: availableProviders,
+        dynamicVideoPricingEnabled:
+          process.env.ENABLE_DYNAMIC_VIDEO_PRICING === 'true',
       },
     });
   } catch (error: any) {

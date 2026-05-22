@@ -102,6 +102,7 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
     resolution: '480p',
     inputBilling: 'no-video-input',
     credits: 45,
+    creditsPerSecond: 12,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
   },
   {
@@ -125,6 +126,7 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
     resolution: '720p',
     inputBilling: 'no-video-input',
     credits: 90,
+    creditsPerSecond: 24,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
   },
   {
@@ -148,6 +150,7 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
     resolution: '480p',
     inputBilling: 'video-input',
     credits: 45,
+    creditsPerSecond: 7,
     durationOptions: SEEDANCE_VIDEO_DURATION_OPTIONS,
   },
   {

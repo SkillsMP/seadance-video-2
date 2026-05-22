@@ -13,8 +13,12 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
-import { getGenerationCreditCost } from '@/config/ai/credit-costs';
+import {
+  calculateModelCredits,
+  getGenerationCreditCost,
+} from '@/config/ai/credit-costs';
 import { MODELS } from '@/config/ai/models';
+import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import { ImageUploader, ImageUploaderValue } from '@/shared/blocks/common';
 import { Button } from '@/shared/components/ui/button';
@@ -184,6 +188,8 @@ export function VideoGenerator({
   );
   const [isMounted, setIsMounted] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
+  const [dynamicVideoPricingEnabled, setDynamicVideoPricingEnabled] =
+    useState(false);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
@@ -197,11 +203,15 @@ export function VideoGenerator({
       .then((data) => {
         if (data.code === 0 && data.data?.providers !== undefined) {
           setAvailableProviders(data.data.providers || []);
+          setDynamicVideoPricingEnabled(
+            data.data.dynamicVideoPricingEnabled === true
+          );
         }
       })
       .catch((error) => {
         console.error('Failed to fetch AI providers:', error);
         setAvailableProviders([]);
+        setDynamicVideoPricingEnabled(false);
       })
       .finally(() => {
         setIsLoadingProviders(false);
@@ -211,15 +221,6 @@ export function VideoGenerator({
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
-  const costCredits = useMemo(
-    () =>
-      getGenerationCreditCost({
-        mediaType: AIMediaType.VIDEO,
-        scene: activeTab,
-        family: selectedFamily,
-      }),
-    [activeTab, selectedFamily]
-  );
   const isTextToVideoMode = activeTab === 'text-to-video';
   const isImageToVideoMode = activeTab === 'image-to-video';
   const isVideoToVideoMode = activeTab === 'video-to-video';
@@ -243,6 +244,30 @@ export function VideoGenerator({
       ),
     [availableModelOptions, selectedFamily]
   );
+  const costCredits = useMemo(() => {
+    if (dynamicVideoPricingEnabled && selectedCandidates[0]) {
+      const entry = selectedCandidates[0];
+      const finalOptions = resolveFinalOptions({
+        mediaType: AIMediaType.VIDEO,
+        scene: activeTab,
+        entry,
+        options: {},
+      });
+
+      return calculateModelCredits(entry, activeTab, finalOptions);
+    }
+
+    return getGenerationCreditCost({
+      mediaType: AIMediaType.VIDEO,
+      scene: activeTab,
+      family: selectedFamily,
+    });
+  }, [
+    activeTab,
+    dynamicVideoPricingEnabled,
+    selectedCandidates,
+    selectedFamily,
+  ]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
     !isLoadingProviders &&
@@ -648,12 +673,9 @@ export function VideoGenerator({
               </CardHeader>
               <CardContent className="space-y-6 pb-8">
                 <Tabs value={activeTab} onValueChange={handleTabChange}>
-                  <TabsList className="bg-primary/10 grid w-full grid-cols-3">
+                  <TabsList className="bg-primary/10 grid w-full grid-cols-2">
                     <TabsTrigger value="text-to-video">
                       {t('tabs.text-to-video')}
-                    </TabsTrigger>
-                    <TabsTrigger value="image-to-video">
-                      {t('tabs.image-to-video')}
                     </TabsTrigger>
                     <TabsTrigger value="video-to-video">
                       {t('tabs.video-to-video')}
