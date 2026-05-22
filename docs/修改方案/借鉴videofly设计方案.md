@@ -641,8 +641,20 @@ Phase 0B 涉及余额预检、真实扣费、失败退款、任务 `costCredits`
 
 **Phase 0B-3：价格展示对齐 + 灰度开启**
 
+Phase 0B-3 不再继续拆分子阶段，但执行时必须先完成价格展示口径梳理和对齐，再考虑灰度开启真实动态扣费。不得在未确认前端展示、余额不足提示、失败退款和产品价格锚点前，将 `ENABLE_DYNAMIC_VIDEO_PRICING` 改为 `true`。本阶段仍不得开放 `duration / aspect_ratio` 参数控件、不得开放 `image-to-video`、不得启用 disabled SKU。
+
+Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计价对齐」，暂不修改套餐页 pricing 文案、套餐用量示例和对外营销价格锚点。套餐页文案应等到准备灰度开启 `ENABLE_DYNAMIC_VIDEO_PRICING=true` 前，结合产品价格锚点、公告、灰度和回滚策略单独处理，避免出现套餐页展示新价格但生产环境仍按旧 `credits` 扣费的错位。
+
+同时补充执行范围限制：
+- 当前 0B-3 可修改 `models.ts`、`/api/ai/providers`、`video.tsx` 及必要的 service 类型。
+- 当前 0B-3 不修改套餐页 pricing 文案。
+- 当前 0B-3 不打开 `ENABLE_DYNAMIC_VIDEO_PRICING=true`。
+- 当前 0B-3 不开放 `duration / aspect_ratio` 控件。
+- 当前 0B-3 不开放 `image-to-video`。
+- 当前 0B-3 不启用 disabled SKU。
+- 套餐页 pricing 文案留到生产灰度开启前单独处理。
+
 - 前端价格展示、余额不足提示与后端动态计费口径对齐。
-- 前台套餐页只展示稳定锚点，例如 `Fast Video from 12 Credits/s`。
 - 只有确认上线的 SKU 才进入 `SEEDANCE_CATALOG` 并设 `enabled: true`。
 - `creditsPerSecond` 必须改为本表「本站积分/秒」列的精确值。
 - `Seedance 2 Standard` 和 `1080p` 规格不在 Phase 0B 首批，只作为 candidate 预留。
@@ -654,7 +666,7 @@ Phase 0B 涉及余额预检、真实扣费、失败退款、任务 `costCredits`
 - 不提前开放 `image-to-video`。
 - 不启用 disabled SKU。
 - 不混入 Phase 1。
-- Phase 0B 之前，不允许把本表候选 SKU 提前接入前端展示、Kie adapter 或真实扣费逻辑。
+- 在明确启用对应 SKU 前，不允许把候选 SKU 接入前端展示、Kie adapter 或真实扣费逻辑。
 
 需要产品和运营确认：
 

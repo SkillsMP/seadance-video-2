@@ -144,7 +144,7 @@ assert.equal(
     'text-to-video',
     { duration: 5 }
   ),
-  45
+  60
 );
 assert.equal(
   calculateModelCredits(
@@ -152,7 +152,7 @@ assert.equal(
     'text-to-video',
     { duration: 5 }
   ),
-  90
+  120
 );
 assert.equal(
   calculateModelCredits(
@@ -160,7 +160,7 @@ assert.equal(
     'video-to-video',
     { duration: 5 }
   ),
-  45
+  35
 );
 
 assert.equal(
@@ -192,6 +192,6 @@ const generateRoute = readFileSync(
   join(process.cwd(), 'src/app/api/ai/generate/route.ts'),
   'utf8'
 );
-assert.equal(generateRoute.includes('calculateModelCredits'), false);
+assert.equal(generateRoute.includes('calculateModelCredits'), true);
 
 console.log('calculateModelCredits checks passed.');
