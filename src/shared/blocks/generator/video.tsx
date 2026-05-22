@@ -17,7 +17,11 @@ import {
   calculateModelCredits,
   getGenerationCreditCost,
 } from '@/config/ai/credit-costs';
-import { MODELS } from '@/config/ai/models';
+import {
+  MODELS,
+  type ControlOption,
+  type ControlValue,
+} from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import { ImageUploader, ImageUploaderValue } from '@/shared/blocks/common';
@@ -69,6 +73,7 @@ type VideoGeneratorTab = 'text-to-video' | 'image-to-video' | 'video-to-video';
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
+const VIDEO_CONTROL_NAMES = ['duration', 'aspect_ratio'] as const;
 
 const MODEL_OPTIONS = MODELS.filter(
   (model) => model.mediaType === AIMediaType.VIDEO && model.enabled
@@ -159,6 +164,64 @@ function extractVideoUrls(result: any): string[] {
   return [];
 }
 
+function getControlLabel(name: string): string {
+  if (name === 'duration') {
+    return 'Duration';
+  }
+
+  if (name === 'aspect_ratio') {
+    return 'Aspect ratio';
+  }
+
+  return name.replaceAll('_', ' ');
+}
+
+function getControlDefaultValue(control: ControlOption): string {
+  return String(control.default ?? control.options[0] ?? '');
+}
+
+function controlHasValue(control: ControlOption, value: string): boolean {
+  return control.options.some((option) => String(option) === value);
+}
+
+function parseControlValue(
+  value: string,
+  control: ControlOption
+): ControlValue | undefined {
+  if (control.type === 'number') {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : undefined;
+  }
+
+  if (control.type === 'boolean') {
+    return value === 'true';
+  }
+
+  return value;
+}
+
+function formatControlOption(name: string, value: ControlValue): string {
+  if (name === 'duration' && typeof value === 'number') {
+    return `${value}s`;
+  }
+
+  return String(value);
+}
+
+function areControlValuesEqual(
+  left: Record<string, string>,
+  right: Record<string, string>
+): boolean {
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+
+  return leftKeys.every((key) => left[key] === right[key]);
+}
+
 export function VideoGenerator({
   maxSizeMB = 50,
   srOnlyTitle,
@@ -169,6 +232,9 @@ export function VideoGenerator({
     useState<VideoGeneratorTab>('text-to-video');
 
   const [selectedFamily, setSelectedFamily] = useState('');
+  const [selectedControlValues, setSelectedControlValues] = useState<
+    Record<string, string>
+  >({});
   const [prompt, setPrompt] = useState('');
   const [referenceImageItems, setReferenceImageItems] = useState<
     ImageUploaderValue[]
@@ -244,17 +310,53 @@ export function VideoGenerator({
       ),
     [availableModelOptions, selectedFamily]
   );
+  const selectedEntry = selectedCandidates[0];
+  const selectedControlEntries = useMemo(
+    () =>
+      VIDEO_CONTROL_NAMES.flatMap((name) => {
+        const control = selectedEntry?.controls?.[activeTab]?.[name];
+        return control ? ([[name, control]] as const) : [];
+      }),
+    [activeTab, selectedEntry]
+  );
+  const selectedGenerationOptions = useMemo(() => {
+    const generationOptions: Record<string, unknown> = {};
+
+    if (!dynamicVideoPricingEnabled) {
+      return generationOptions;
+    }
+
+    for (const [name, control] of selectedControlEntries) {
+      const selectedValue =
+        selectedControlValues[name] ?? getControlDefaultValue(control);
+
+      if (!selectedValue || !controlHasValue(control, selectedValue)) {
+        continue;
+      }
+
+      const parsedValue = parseControlValue(selectedValue, control);
+      if (parsedValue !== undefined) {
+        generationOptions[name] = parsedValue;
+      }
+    }
+
+    return generationOptions;
+  }, [
+    dynamicVideoPricingEnabled,
+    selectedControlEntries,
+    selectedControlValues,
+  ]);
   const costCredits = useMemo(() => {
-    if (dynamicVideoPricingEnabled && selectedCandidates[0]) {
-      const entry = selectedCandidates[0];
+    if (dynamicVideoPricingEnabled && selectedEntry) {
       const finalOptions = resolveFinalOptions({
         mediaType: AIMediaType.VIDEO,
         scene: activeTab,
-        entry,
-        options: {},
+        entry: selectedEntry,
+        options: selectedGenerationOptions,
+        allowControlOptions: true,
       });
 
-      return calculateModelCredits(entry, activeTab, finalOptions);
+      return calculateModelCredits(selectedEntry, activeTab, finalOptions);
     }
 
     return getGenerationCreditCost({
@@ -265,8 +367,9 @@ export function VideoGenerator({
   }, [
     activeTab,
     dynamicVideoPricingEnabled,
-    selectedCandidates,
+    selectedEntry,
     selectedFamily,
+    selectedGenerationOptions,
   ]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
@@ -305,6 +408,31 @@ export function VideoGenerator({
       setSelectedFamily(availableFamilyOptions[0].family);
     }
   }, [availableFamilyOptions, selectedFamily]);
+
+  useEffect(() => {
+    setSelectedControlValues((currentValues) => {
+      const nextValues: Record<string, string> = {};
+
+      for (const [name, control] of selectedControlEntries) {
+        const currentValue = currentValues[name];
+        nextValues[name] =
+          currentValue && controlHasValue(control, currentValue)
+            ? currentValue
+            : getControlDefaultValue(control);
+      }
+
+      return areControlValuesEqual(currentValues, nextValues)
+        ? currentValues
+        : nextValues;
+    });
+  }, [selectedControlEntries]);
+
+  const handleControlChange = (name: string, value: string) => {
+    setSelectedControlValues((currentValues) => ({
+      ...currentValues,
+      [name]: value,
+    }));
+  };
 
   const handleTabChange = (value: string) => {
     const tab = value as VideoGeneratorTab;
@@ -551,7 +679,7 @@ export function VideoGenerator({
     setGenerationStartTime(Date.now());
 
     try {
-      const options: any = {};
+      const options: any = { ...selectedGenerationOptions };
 
       if (isImageToVideoMode) {
         options.image_input = referenceImageUrls;
@@ -747,6 +875,52 @@ export function VideoGenerator({
                     />
                   </div>
                 )}
+
+                {dynamicVideoPricingEnabled &&
+                  selectedControlEntries.length > 0 && (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {selectedControlEntries.map(([name, control]) => {
+                        const selectedValue =
+                          selectedControlValues[name] ??
+                          getControlDefaultValue(control);
+
+                        return (
+                          <div key={name} className="space-y-2">
+                            <Label htmlFor={`video-control-${name}`}>
+                              {getControlLabel(name)}
+                            </Label>
+                            <Select
+                              value={selectedValue}
+                              onValueChange={(value) =>
+                                handleControlChange(name, value)
+                              }
+                              disabled={
+                                isLoadingProviders || !hasAvailableFamilies
+                              }
+                            >
+                              <SelectTrigger
+                                id={`video-control-${name}`}
+                                className="w-full"
+                              >
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {control.options.map((option) => {
+                                  const value = String(option);
+
+                                  return (
+                                    <SelectItem key={value} value={value}>
+                                      {formatControlOption(name, option)}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
 
                 <div className="space-y-2">
                   <Label htmlFor="video-prompt">{t('form.prompt')}</Label>
