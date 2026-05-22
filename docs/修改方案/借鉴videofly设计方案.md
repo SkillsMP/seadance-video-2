@@ -637,28 +637,28 @@ Phase 0B 涉及余额预检、真实扣费、失败退款、任务 `costCredits`
 - 同一次请求内不得分别计算多次价格后各自使用，避免预检、落库、扣费、退款出现漂移。
 - 历史任务不回写旧价格。
 
-`ENABLE_DYNAMIC_VIDEO_PRICING` 是动态视频计费迁移期的安全开关。当前阶段必须默认 `false`，保持旧 `credits` 扣费逻辑；只有 Phase 0B-3 完成前端价格展示、余额不足提示、失败退款、产品价格锚点和灰度策略确认后，才允许在灰度环境开启为 `true`。若动态计费出现异常，可通过改回 `false` 快速回滚旧扣费逻辑。动态计费稳定运行后，后续可评估是否移除旧扣费 fallback 和该 feature flag。
+`ENABLE_DYNAMIC_VIDEO_PRICING` 是动态视频计费迁移期的安全开关。代码默认值仍应保持 `false`，用于防止未配置环境误切换；但当前站点暂无真实外部用户，且 Phase 0B 生产真实链路已验证通过时，生产环境可以继续保持 `ENABLE_DYNAMIC_VIDEO_PRICING=true`，不必再做复杂灰度和长时间观察。若动态计费出现异常，仍可通过改回 `false` 快速回滚旧扣费逻辑；后续真实用户流量增长后，再评估是否移除旧扣费 fallback 和该 feature flag。
 
-**Phase 0B-3：价格展示对齐 + 灰度开启**
+**Phase 0B-3：价格展示对齐 + 生产链路确认**
 
-Phase 0B-3 不再继续拆分子阶段，但执行时必须先完成价格展示口径梳理和对齐，再考虑灰度开启真实动态扣费。不得在未确认前端展示、余额不足提示、失败退款和产品价格锚点前，将 `ENABLE_DYNAMIC_VIDEO_PRICING` 改为 `true`。本阶段仍不得开放 `duration / aspect_ratio` 参数控件、不得开放 `image-to-video`、不得启用 disabled SKU。
+Phase 0B-3 不再继续拆分子阶段，但执行时必须先完成价格展示口径梳理和对齐。在当前站点暂无外部用户、生产真实链路验证已通过的情况下，可以让生产 `ENABLE_DYNAMIC_VIDEO_PRICING` 继续保持 `true`，不再要求复杂灰度节奏或长时间观察。本阶段仍不得开放 `duration / aspect_ratio` 参数控件、不得开放 `image-to-video`、不得启用 disabled SKU。
 
-Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计价对齐」，暂不修改套餐页 pricing 文案、套餐用量示例和对外营销价格锚点。套餐页文案应等到准备灰度开启 `ENABLE_DYNAMIC_VIDEO_PRICING=true` 前，结合产品价格锚点、公告、灰度和回滚策略单独处理，避免出现套餐页展示新价格但生产环境仍按旧 `credits` 扣费的错位。
+Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计价对齐」，暂不修改套餐页 pricing 文案、套餐用量示例和对外营销价格锚点。套餐页文案仍应结合产品价格锚点、公告和回滚策略单独处理，避免套餐页展示口径与视频生成页真实扣费口径错位。
 
 同时补充执行范围限制：
 - 当前 0B-3 可修改 `models.ts`、`/api/ai/providers`、`video.tsx` 及必要的 service 类型。
 - 当前 0B-3 不修改套餐页 pricing 文案。
-- 当前 0B-3 不打开 `ENABLE_DYNAMIC_VIDEO_PRICING=true`。
+- 当前 0B-3 不要求再做复杂灰度或长时间观察；生产已开启时可保持 `ENABLE_DYNAMIC_VIDEO_PRICING=true`。
 - 当前 0B-3 不开放 `duration / aspect_ratio` 控件。
 - 当前 0B-3 不开放 `image-to-video`。
 - 当前 0B-3 不启用 disabled SKU。
-- 套餐页 pricing 文案留到生产灰度开启前单独处理。
+- 套餐页 pricing 文案留到产品价格锚点确认后单独处理。
 
 - 前端价格展示、余额不足提示与后端动态计费口径对齐。
 - 只有确认上线的 SKU 才进入 `SEEDANCE_CATALOG` 并设 `enabled: true`。
 - `creditsPerSecond` 必须改为本表「本站积分/秒」列的精确值。
 - `Seedance 2 Standard` 和 `1080p` 规格不在 Phase 0B 首批，只作为 candidate 预留。
-- 产品确认价格锚点、公告、灰度和回滚策略后，才允许通过 feature flag 开启真实动态扣费。
+- 当前无外部用户且生产真实链路已验证时，feature flag 可保持开启；未来有真实用户流量后，产品公告、价格锚点和回滚策略仍需单独确认。
 
 全局红线：
 
@@ -685,15 +685,83 @@ Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计
 - Phase 0B-3 余额不足提示按新口径计算。
 - 历史任务保持原 `costCredits`，不回写。
 
+## Phase 1 拆分说明：先后端防线，再前端控件
+
+在当前站点暂无外部用户的情况下，Phase 0B 生产真实链路验证通过后，可直接进入 Phase 1 开发。Phase 1 仍按 Phase 1A / Phase 1B 的逻辑顺序推进，但两阶段可在同一个开发分支连续完成，不需要中间等待很久；commit 最好分开，便于回滚。
+
+推荐执行顺序：
+
+- commit 1：Phase 1A 后端参数职责与测试。
+- commit 2：Phase 1B 前端控件与价格联动。
+
+由于 Phase 1 涉及 `duration` 和 `aspect_ratio` 等用户可选参数开放，不能直接从前端 UI 控件开始做，需要先处理服务端参数职责和回滚安全问题。因此 Phase 1 拆分为 Phase 1A 和 Phase 1B 两个逻辑阶段推进。
+
+### Phase 1A：参数职责重构与后端防线
+
+Phase 1A 的目标是先理清 `duration`、`aspect_ratio`、`resolution`、`generate_audio` 等参数的职责边界，保证后端在任何情况下都是最终可信校验层。
+
+当前问题是，`duration` 和 `aspect_ratio` 虽然已经配置在模型注册表的 `defaults` 和 `controls` 中，但同时也存在于 `enforced` 中。由于 `resolveFinalOptions()` 的合并顺序中 `enforced` 优先级最高，用户即使传入新的 `duration` 或 `aspect_ratio`，最终也会被覆盖回默认值。因此，在开放前端控件之前，需要先将这两个参数从强制参数中拆出。
+
+Phase 1A 的调整方向如下：
+
+- `defaults` 负责提供默认值，例如 `duration=5`、`aspect_ratio=16:9`；
+- `controls` 负责声明用户可选范围，例如可选时长和画面比例；
+- `skuAttributes` 负责 SKU 固有属性，例如 `resolution`；
+- `enforced` 只保留服务端强控参数，例如 `generate_audio=false`；
+- `pricing` 继续负责动态计费规则。
+
+同时，为了保证回滚安全，需要增加 `allowControlOptions` 这类后端保护逻辑：只有在 `ENABLE_DYNAMIC_VIDEO_PRICING=true` 且当前生成为 video 时，服务端才接受用户传入的 `duration` 和 `aspect_ratio`。当 `ENABLE_DYNAMIC_VIDEO_PRICING=false` 时，即使请求中传入 `duration=10` 或其他可选参数，服务端也应忽略这些参数，并回落到默认的 `duration=5` 和 `aspect_ratio=16:9`，避免出现生成 10 秒但只按旧固定价扣费的资损坑。
+
+Phase 1A 不开放任何前端控件，只完成后端参数职责调整和测试验证。当前可以在同一开发分支里继续推进 Phase 1B，但 Phase 1A 的后端边界和测试应单独提交。
+
+### Phase 1B：前端参数控件开放
+
+Phase 1A 验证通过后，逻辑上再进入 Phase 1B。当前无外部用户时，Phase 1B 可以和 Phase 1A 连续完成，但仍应保持独立 commit。Phase 1B 的目标是在视频生成页面开放 `duration` 和 `aspect_ratio` 控件，并让前端价格随用户选择实时更新。
+
+Phase 1B 的前端控件必须从模型注册表中的 `controls` 读取，不能在组件中硬编码可选项。前端只负责展示和传参，后端仍负责最终校验。
+
+Phase 1B 初期只开放：
+
+- text-to-video 的 `duration` 和 `aspect_ratio`；
+- video-to-video 的 `duration` 和 `aspect_ratio`。
+
+暂不开放：
+
+- image-to-video；
+- disabled SKU；
+- 1080p 或未启用模型；
+- pricing plan 文案调整；
+- 数据库结构调整。
+
+### Phase 1 验收重点
+
+Phase 1A 验收重点：
+
+- `duration` 和 `aspect_ratio` 不再被 `enforced` 覆盖；
+- 新增 `allowControlOptions` 或等价保护逻辑；
+- `ENABLE_DYNAMIC_VIDEO_PRICING=true` 时，用户选择的参数可以生效；
+- `ENABLE_DYNAMIC_VIDEO_PRICING=false` 时，用户传入的参数会被忽略并回落默认值；
+- `resolution` 仍由 SKU 控制，不能被用户请求覆盖；
+- 非法 `duration`、非法 `aspect_ratio` 不会透传给 provider；
+- image-to-video 和 disabled SKU 仍未开放。
+
+Phase 1B 验收重点：
+
+- 前端控件从 `controls` 读取选项；
+- 用户切换 `duration` 后，展示价格同步变化；
+- 生成请求携带用户选择的 `duration` 和 `aspect_ratio`；
+- 后端落库的 `cost_credits` 与实际扣费一致；
+- flag 回滚后仍能恢复旧价格和默认参数。
+
 ## 14. Phase 1：前端参数开放
 
-目标：只在 Phase 0B 稳定后，开放可由 registry 描述、可由服务端校验、可由动态计价覆盖的参数。
+目标：在 Phase 1A 完成参数职责重构与后端防线验证后，开放可由 registry 描述、可由服务端校验、可由动态计价覆盖的参数。当前站点暂无外部用户时，Phase 1A 和 Phase 1B 可以连续完成，但不得跳过后端校验。
 
 可优先开放：
 
 - `aspect_ratio`
 - Seedance `duration` 离散选项
-- Seedance `480p / 720p` 产品规格聚合展示
+- 价格随 `duration` 和 SKU 实时更新
 
 必须满足：
 
@@ -701,6 +769,8 @@ Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计
 - 切换模型或 scene 后，不支持的参数会清理或回落到合法默认值。
 - 后端仍是唯一可信源，前端估算不参与实际扣费。
 - `duration` 不做自由输入，只从 `controls.duration.options` 渲染。
+- `resolution` 仍由 SKU 控制，不能被用户请求覆盖。
+- `ENABLE_DYNAMIC_VIDEO_PRICING=false` 时，用户传入的 `duration / aspect_ratio` 必须被忽略并回落默认值。
 
 不在 Phase 1 首批做：
 
@@ -716,9 +786,10 @@ Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计
 
 为避免范围继续扩张，本轮明确不做：
 
-- 不切换真实动态扣费，除非进入 Phase 0B 且打开 `ENABLE_DYNAMIC_VIDEO_PRICING`。
+- 不在 Phase 1 中反复切换或关闭已验证的动态扣费链路；flag=false 必须仍能回滚旧价和默认参数。
 - 不默认开放 `image-to-video`。
-- 不把 `duration` 前端开放、真实扣费迁移、`image-to-video` 上线放进同一批。
+- 不把 `duration / aspect_ratio` 控件开放、`image-to-video` 上线、disabled SKU 启用混在同一批；Phase 1B 只开放已启用 video SKU 的 `duration / aspect_ratio`。
+- 不允许 flag=false 时仍接受 10s 等用户参数并只按旧固定价扣费。
 - 不新增完整 VideoFly 工作台、侧边栏、历史面板。
 - 不新增第二套 analytics 入口。
 - 不把 URL 域名白名单、签名 URL、HTTPS 限制塞进 `sanitizeGenerationOptions()` 的 Phase 0A 必做项。
@@ -738,6 +809,9 @@ Phase 0B-3 当前优先只处理「视频生成页价格展示与后端动态计
 | `/api/ai/generate` | Phase 0B-2 feature flag 未开启时不使用动态计价作为真实扣费来源 |
 | `/api/ai/generate` | Phase 0B-2 feature flag 开启时余额预检、任务 `costCredits`、实际扣费、失败退款使用同一价格结果 |
 | UI pricing | Phase 0B-3 前端价格展示、余额不足提示与后端动态计费口径一致 |
+| `resolveFinalOptions()` | Phase 1A 校验 `duration / aspect_ratio` 不再被 `enforced` 覆盖，`resolution` 仍由 `skuAttributes` 控制 |
+| `resolveFinalOptions()` | Phase 1A 校验 `ENABLE_DYNAMIC_VIDEO_PRICING=false` 时忽略用户控制参数并回落默认值 |
+| video UI controls | Phase 1B 校验控件选项来自 `controls`，价格随 `duration` 和 SKU 实时更新，生成请求携带用户选择参数 |
 | Kie adapter | adapter 不再补业务默认值，只做字段映射 |
 | UI tabs | `image-to-video` 无 enabled model 时隐藏或禁用 |
 | 历史任务 | 老任务 options 缺少新字段时不报错 |
@@ -754,7 +828,7 @@ Phase 0B-1 通过，只代表 `calculateModelCredits()` 纯函数和测试完成
 
 Phase 0B-2 通过，只代表动态计价已接入生成链路且受 `ENABLE_DYNAMIC_VIDEO_PRICING` 控制；flag 关闭时现网旧价格必须保持不变。
 
-Phase 0B-3 通过，才代表前端展示、余额不足提示和真实扣费已经迁移到动态计价口径，并且可以按灰度策略开启。
+Phase 0B-3 通过，才代表前端展示、余额不足提示和真实扣费已经迁移到动态计价口径。当前站点暂无外部用户时，生产 `ENABLE_DYNAMIC_VIDEO_PRICING` 可继续保持 `true`，并可直接进入 Phase 1 开发。
 
 Phase 1 通过，才代表前端参数控件可以正式开放给用户。
 
