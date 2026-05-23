@@ -6,6 +6,7 @@ import {
   type GenerationPricingSnapshot,
 } from '@/config/ai/generation-pricing';
 import { findModel, type ModelEntry } from '@/config/ai/models';
+import { getVideoGenerationFeatureFlags } from '@/config/ai/video-feature-flags';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -71,12 +72,15 @@ export async function POST(request: Request) {
 
     const supportCandidatesFallback =
       mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
+    const videoFeatureFlags = getVideoGenerationFeatureFlags();
     const useDynamicVideoPricing =
-      process.env.ENABLE_DYNAMIC_VIDEO_PRICING === 'true' &&
-      mediaType === AIMediaType.VIDEO;
+      mediaType === AIMediaType.VIDEO &&
+      videoFeatureFlags.dynamicVideoPricingEnabled;
     const allowControlOptions =
       mediaType !== AIMediaType.VIDEO || useDynamicVideoPricing;
-    const allowResolutionControl = false;
+    const allowResolutionControl =
+      mediaType === AIMediaType.VIDEO &&
+      videoFeatureFlags.videoResolutionControlEnabled;
 
     let candidateEntries: ModelEntry[] = [];
     let costCredits: number;

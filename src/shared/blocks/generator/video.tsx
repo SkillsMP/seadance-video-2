@@ -17,11 +17,7 @@ import {
   calculateModelCredits,
   getGenerationCreditCost,
 } from '@/config/ai/credit-costs';
-import {
-  MODELS,
-  type ControlOption,
-  type ControlValue,
-} from '@/config/ai/models';
+import { MODELS } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import { ImageUploader, ImageUploaderValue } from '@/shared/blocks/common';
@@ -44,6 +40,16 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+
+import {
+  areControlValuesEqual,
+  buildVideoGenerationOptions,
+  formatControlOption,
+  getControlDefaultValue,
+  getControlLabel,
+  getVideoControlEntries,
+  normalizeVideoControlValues,
+} from './video-controls';
 
 interface VideoGeneratorProps {
   maxSizeMB?: number;
@@ -73,7 +79,6 @@ type VideoGeneratorTab = 'text-to-video' | 'image-to-video' | 'video-to-video';
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
-const VIDEO_CONTROL_NAMES = ['duration', 'aspect_ratio'] as const;
 
 const MODEL_OPTIONS = MODELS.filter(
   (model) => model.mediaType === AIMediaType.VIDEO && model.enabled
@@ -164,64 +169,6 @@ function extractVideoUrls(result: any): string[] {
   return [];
 }
 
-function getControlLabel(name: string): string {
-  if (name === 'duration') {
-    return 'Duration';
-  }
-
-  if (name === 'aspect_ratio') {
-    return 'Aspect ratio';
-  }
-
-  return name.replaceAll('_', ' ');
-}
-
-function getControlDefaultValue(control: ControlOption): string {
-  return String(control.default ?? control.options[0] ?? '');
-}
-
-function controlHasValue(control: ControlOption, value: string): boolean {
-  return control.options.some((option) => String(option) === value);
-}
-
-function parseControlValue(
-  value: string,
-  control: ControlOption
-): ControlValue | undefined {
-  if (control.type === 'number') {
-    const parsedValue = Number(value);
-    return Number.isFinite(parsedValue) ? parsedValue : undefined;
-  }
-
-  if (control.type === 'boolean') {
-    return value === 'true';
-  }
-
-  return value;
-}
-
-function formatControlOption(name: string, value: ControlValue): string {
-  if (name === 'duration' && typeof value === 'number') {
-    return `${value}s`;
-  }
-
-  return String(value);
-}
-
-function areControlValuesEqual(
-  left: Record<string, string>,
-  right: Record<string, string>
-): boolean {
-  const leftKeys = Object.keys(left);
-  const rightKeys = Object.keys(right);
-
-  if (leftKeys.length !== rightKeys.length) {
-    return false;
-  }
-
-  return leftKeys.every((key) => left[key] === right[key]);
-}
-
 export function VideoGenerator({
   maxSizeMB = 50,
   srOnlyTitle,
@@ -256,6 +203,8 @@ export function VideoGenerator({
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
   const [dynamicVideoPricingEnabled, setDynamicVideoPricingEnabled] =
     useState(false);
+  const [videoResolutionControlEnabled, setVideoResolutionControlEnabled] =
+    useState(false);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
@@ -272,12 +221,16 @@ export function VideoGenerator({
           setDynamicVideoPricingEnabled(
             data.data.dynamicVideoPricingEnabled === true
           );
+          setVideoResolutionControlEnabled(
+            data.data.videoResolutionControlEnabled === true
+          );
         }
       })
       .catch((error) => {
         console.error('Failed to fetch AI providers:', error);
         setAvailableProviders([]);
         setDynamicVideoPricingEnabled(false);
+        setVideoResolutionControlEnabled(false);
       })
       .finally(() => {
         setIsLoadingProviders(false);
@@ -313,39 +266,26 @@ export function VideoGenerator({
   const selectedEntry = selectedCandidates[0];
   const selectedControlEntries = useMemo(
     () =>
-      VIDEO_CONTROL_NAMES.flatMap((name) => {
-        const control = selectedEntry?.controls?.[activeTab]?.[name];
-        return control ? ([[name, control]] as const) : [];
+      getVideoControlEntries({
+        entry: selectedEntry,
+        scene: activeTab,
+        allowResolutionControl: videoResolutionControlEnabled,
       }),
-    [activeTab, selectedEntry]
+    [activeTab, selectedEntry, videoResolutionControlEnabled]
   );
-  const selectedGenerationOptions = useMemo(() => {
-    const generationOptions: Record<string, unknown> = {};
-
-    if (!dynamicVideoPricingEnabled) {
-      return generationOptions;
-    }
-
-    for (const [name, control] of selectedControlEntries) {
-      const selectedValue =
-        selectedControlValues[name] ?? getControlDefaultValue(control);
-
-      if (!selectedValue || !controlHasValue(control, selectedValue)) {
-        continue;
-      }
-
-      const parsedValue = parseControlValue(selectedValue, control);
-      if (parsedValue !== undefined) {
-        generationOptions[name] = parsedValue;
-      }
-    }
-
-    return generationOptions;
-  }, [
-    dynamicVideoPricingEnabled,
-    selectedControlEntries,
-    selectedControlValues,
-  ]);
+  const selectedGenerationOptions = useMemo(
+    () =>
+      buildVideoGenerationOptions({
+        dynamicVideoPricingEnabled,
+        controlEntries: selectedControlEntries,
+        selectedControlValues,
+      }),
+    [
+      dynamicVideoPricingEnabled,
+      selectedControlEntries,
+      selectedControlValues,
+    ]
+  );
   const costCredits = useMemo(() => {
     if (dynamicVideoPricingEnabled && selectedEntry) {
       const finalOptions = resolveFinalOptions({
@@ -354,6 +294,7 @@ export function VideoGenerator({
         entry: selectedEntry,
         options: selectedGenerationOptions,
         allowControlOptions: true,
+        allowResolutionControl: videoResolutionControlEnabled,
       });
 
       return calculateModelCredits(selectedEntry, activeTab, finalOptions);
@@ -370,6 +311,7 @@ export function VideoGenerator({
     selectedEntry,
     selectedFamily,
     selectedGenerationOptions,
+    videoResolutionControlEnabled,
   ]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
@@ -411,15 +353,10 @@ export function VideoGenerator({
 
   useEffect(() => {
     setSelectedControlValues((currentValues) => {
-      const nextValues: Record<string, string> = {};
-
-      for (const [name, control] of selectedControlEntries) {
-        const currentValue = currentValues[name];
-        nextValues[name] =
-          currentValue && controlHasValue(control, currentValue)
-            ? currentValue
-            : getControlDefaultValue(control);
-      }
+      const nextValues = normalizeVideoControlValues({
+        currentValues,
+        controlEntries: selectedControlEntries,
+      });
 
       return areControlValuesEqual(currentValues, nextValues)
         ? currentValues

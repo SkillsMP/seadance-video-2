@@ -1029,7 +1029,18 @@ Phase 2 不需要在套餐页堆满所有细分价格，但应避免继续使用
 
 这部分不需要和 registry 重构绑在同一个 commit 中，但应作为 Phase 2 的收尾对齐项，并同步检查中英文 i18n 文案。
 
-### 18.11 Phase 2 建议执行顺序
+### 18.11 Phase 2 核心实现约束
+
+本阶段代码实现应遵守以下约束，避免前端展示、后端计费、provider 调用参数和任务落库出现分叉。
+
+1. `finalOptions` 是唯一参数口径。`resolveFinalOptions()` 的输出应作为本次生成请求的最终参数来源，`calculateModelCredits()`、provider payload 和任务落库 options 必须使用同一份 `finalOptions`，不能分别从用户原始输入重新解析。
+2. `resolution` 开放必须有显式开关。`ENABLE_DYNAMIC_VIDEO_PRICING=true` 不等于 `resolution` 已开放；是否接受用户输入的 `resolution`，应由 `allowResolutionControl` 或等价显式逻辑控制。未开放时，后端必须忽略用户传入的 `resolution` 并回落默认值。
+3. controls 只暴露 enabled 规格。普通用户前端 controls 只能展示 `availability = 'enabled'` 的 `resolution`；`candidate / whitelist / disabled` 可以保留在 pricing 中，但不得进入普通用户 controls。
+4. 后端必须拒绝非 enabled 规格。即使前端没有展示，后端也必须防御用户手动传入 `candidate / whitelist / disabled` 或 pricing 中不存在的 `resolution`。
+5. fallback 不允许计费漂移。fallback 候选模型实际使用的 `finalOptions` 和 `costCredits` 必须与预检口径一致；如果发生漂移，应拒绝生成或报错，不允许实际生成规格与预扣费用不一致。
+6. Commit 3 开放 `resolution` 时必须同步三处：providers 返回的 control 开放状态、前端是否展示和提交 `resolution`、generate route 是否接受 `resolution`。三者必须一致，不能只改前端。
+
+### 18.12 Phase 2 建议执行顺序
 
 Phase 2 按 5 个可回滚 commit 拆分，避免把 registry、计费、前端控件、URL 安全和产品文案混在同一批。
 

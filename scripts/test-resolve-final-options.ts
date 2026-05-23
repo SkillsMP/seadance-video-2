@@ -2,6 +2,12 @@ import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
 import { resolveFinalOptions } from '../src/config/ai/options';
+import { resolveVideoGenerationFeatureFlags } from '../src/config/ai/video-feature-flags';
+import {
+  buildVideoGenerationOptions,
+  getVideoControlEntries,
+  normalizeVideoControlValues,
+} from '../src/shared/blocks/generator/video-controls';
 
 function findEnabledModel(family: string, scene: string): ModelEntry {
   const entry = MODELS.find(
@@ -19,6 +25,37 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
 const textScene = 'text-to-video';
 
+assert.deepEqual(
+  resolveVideoGenerationFeatureFlags({
+    ENABLE_DYNAMIC_VIDEO_PRICING: 'true',
+    ENABLE_VIDEO_RESOLUTION_CONTROL: 'false',
+  }),
+  {
+    dynamicVideoPricingEnabled: true,
+    videoResolutionControlEnabled: false,
+  }
+);
+assert.deepEqual(
+  resolveVideoGenerationFeatureFlags({
+    ENABLE_DYNAMIC_VIDEO_PRICING: 'true',
+    ENABLE_VIDEO_RESOLUTION_CONTROL: 'true',
+  }),
+  {
+    dynamicVideoPricingEnabled: true,
+    videoResolutionControlEnabled: true,
+  }
+);
+assert.deepEqual(
+  resolveVideoGenerationFeatureFlags({
+    ENABLE_DYNAMIC_VIDEO_PRICING: 'false',
+    ENABLE_VIDEO_RESOLUTION_CONTROL: 'true',
+  }),
+  {
+    dynamicVideoPricingEnabled: false,
+    videoResolutionControlEnabled: false,
+  }
+);
+
 assert.deepEqual(textEntry.enforced?.[textScene], {
   generate_audio: false,
 });
@@ -26,6 +63,70 @@ assert.deepEqual(textEntry.controls?.[textScene]?.resolution?.options, [
   '480p',
   '720p',
 ]);
+
+const openControlEntries = getVideoControlEntries({
+  entry: textEntry,
+  scene: textScene,
+  allowResolutionControl: true,
+});
+assert.deepEqual(
+  openControlEntries.map(([name]) => name),
+  ['duration', 'aspect_ratio', 'resolution']
+);
+const openControlValues = normalizeVideoControlValues({
+  currentValues: {
+    duration: '10',
+    aspect_ratio: '9:16',
+    resolution: '720p',
+  },
+  controlEntries: openControlEntries,
+});
+assert.deepEqual(openControlValues, {
+  duration: '10',
+  aspect_ratio: '9:16',
+  resolution: '720p',
+});
+assert.deepEqual(
+  buildVideoGenerationOptions({
+    dynamicVideoPricingEnabled: true,
+    controlEntries: openControlEntries,
+    selectedControlValues: openControlValues,
+  }),
+  {
+    duration: 10,
+    aspect_ratio: '9:16',
+    resolution: '720p',
+  }
+);
+
+const lockedControlEntries = getVideoControlEntries({
+  entry: textEntry,
+  scene: textScene,
+  allowResolutionControl: false,
+});
+assert.deepEqual(
+  lockedControlEntries.map(([name]) => name),
+  ['duration', 'aspect_ratio']
+);
+assert.deepEqual(
+  buildVideoGenerationOptions({
+    dynamicVideoPricingEnabled: true,
+    controlEntries: lockedControlEntries,
+    selectedControlValues: openControlValues,
+  }),
+  {
+    duration: 10,
+    aspect_ratio: '9:16',
+  }
+);
+assert.deepEqual(
+  buildVideoGenerationOptions({
+    dynamicVideoPricingEnabled: false,
+    controlEntries: openControlEntries,
+    selectedControlValues: openControlValues,
+  }),
+  {}
+);
 
 const controlledOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -111,6 +212,22 @@ const videoInputEntry = findEnabledModel('seedance-2-fast', 'video-to-video');
 assert.deepEqual(
   videoInputEntry.controls?.['video-to-video']?.resolution?.options,
   ['480p']
+);
+const videoInputControlEntries = getVideoControlEntries({
+  entry: videoInputEntry,
+  scene: 'video-to-video',
+  allowResolutionControl: true,
+});
+assert.deepEqual(
+  normalizeVideoControlValues({
+    currentValues: openControlValues,
+    controlEntries: videoInputControlEntries,
+  }),
+  {
+    duration: '10',
+    aspect_ratio: '9:16',
+    resolution: '480p',
+  }
 );
 assert.throws(
   () =>

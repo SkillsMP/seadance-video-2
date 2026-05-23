@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getVideoGenerationFeatureFlags } from '@/config/ai/video-feature-flags';
 import { getAllConfigs } from '@/shared/models/config';
 
 export async function GET(request: NextRequest) {
@@ -24,6 +25,7 @@ export async function GET(request: NextRequest) {
     if (configs.gemini_api_key) {
       availableProviders.push('gemini');
     }
+    const videoFeatureFlags = getVideoGenerationFeatureFlags();
 
     return NextResponse.json({
       code: 0,
@@ -31,7 +33,9 @@ export async function GET(request: NextRequest) {
       data: {
         providers: availableProviders,
         dynamicVideoPricingEnabled:
-          process.env.ENABLE_DYNAMIC_VIDEO_PRICING === 'true',
+          videoFeatureFlags.dynamicVideoPricingEnabled,
+        videoResolutionControlEnabled:
+          videoFeatureFlags.videoResolutionControlEnabled,
       },
     });
   } catch (error: any) {
