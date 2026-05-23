@@ -5,9 +5,8 @@
  * family 是「产品计费策略」与「底层技术供应商（Providers）」之间的核心解耦层。
  * - 前端表现：呈现为稳定、语义清晰、易于用户认知的“产品服务/计费档位”（例如：Seedance 2.0 Fast 720p），屏蔽底层复杂多变的技术实现细节。
  * - 后端处理：作为高内聚的 SKU 抽象，使后端可基于服务可用性、延迟等指标，动态且透明地对真实供应商进行切换与容灾路由。
- * `family` is a stable billing SKU identifier surfaced as a product choice,
- * not a model lineage tag. For example, `seedance-2-fast-480p-video-input` is
- * a billing tier, not a model family name.
+ * `family` is a stable product model family surfaced as a product choice.
+ * Resolution and input billing live in scene metadata and pricing.
  *
  * 核心约束（Invariant）：
  * 相同的 (mediaType, family, scene) 组合，其积分消耗（credits）在所有供应商（providers）之间必须完全一致。
@@ -29,6 +28,7 @@ export interface ScenePricing {
   credits?: number;
   creditsPerSecond?: number;
   defaultDuration?: number;
+  byResolution?: Partial<Record<VideoResolution, VideoResolutionPricing>>;
 }
 
 export type SceneParameterMap = Partial<
@@ -40,7 +40,7 @@ export type ScenePricingMap = Partial<Record<string, ScenePricing>>;
 export interface ModelEntry {
   /** 媒体类型：图像 ('image') | 视频 ('video') | 音乐 ('music') */
   mediaType: 'image' | 'video' | 'music';
-  /** 统一计费 SKU 标识符，作为产品选项，也是路由和计费校验的核心标识（如 'seedance-2-fast-720p'） */
+  /** Product model family key used for routing, display grouping, and pricing lookup. */
   family: string;
   /** 底层具体技术供应商的模型物理名/版本 ID（例如：'bytedance/seedance-2-fast'） */
   value: string;
@@ -77,7 +77,19 @@ const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 
 type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
-type SeedanceResolution = '480p' | '720p' | '1080p';
+export type VideoResolution = '480p' | '720p' | '1080p';
+export type VideoPricingAvailability =
+  | 'enabled'
+  | 'candidate'
+  | 'whitelist'
+  | 'disabled';
+
+export interface VideoResolutionPricing {
+  creditsPerSecond: number;
+  availability: VideoPricingAvailability;
+}
+
+type SeedanceResolution = VideoResolution;
 
 interface SeedanceCatalogItem {
   family: string;
@@ -85,198 +97,151 @@ interface SeedanceCatalogItem {
   label: string;
   scene: SeedanceScene;
   enabled: boolean;
-  resolution: SeedanceResolution;
+  defaultResolution: SeedanceResolution;
   inputBilling: 'no-video-input' | 'video-input';
   credits: number;
-  creditsPerSecond?: number;
   durationOptions: number[];
+  byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>;
 }
 
 const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
   {
-    family: 'seedance-2-fast-480p',
+    family: 'seedance-2-fast',
     modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 480p',
+    label: 'Seedance 2.0 Fast',
     scene: 'text-to-video',
     enabled: true,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'no-video-input',
     credits: 45,
-    creditsPerSecond: 12,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 12, availability: 'enabled' },
+      '720p': { creditsPerSecond: 24, availability: 'enabled' },
+    },
   },
   {
-    family: 'seedance-2-fast-480p',
+    family: 'seedance-2-fast',
     modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 480p',
+    label: 'Seedance 2.0 Fast',
     scene: 'image-to-video',
     enabled: false,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'no-video-input',
     credits: 60,
-    creditsPerSecond: 12,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 12, availability: 'candidate' },
+      '720p': { creditsPerSecond: 24, availability: 'candidate' },
+    },
   },
   {
-    family: 'seedance-2-fast-720p',
+    family: 'seedance-2-fast',
     modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 720p',
-    scene: 'text-to-video',
-    enabled: true,
-    resolution: '720p',
-    inputBilling: 'no-video-input',
-    credits: 90,
-    creditsPerSecond: 24,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-fast-720p',
-    modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 720p',
-    scene: 'image-to-video',
-    enabled: false,
-    resolution: '720p',
-    inputBilling: 'no-video-input',
-    credits: 120,
-    creditsPerSecond: 24,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-fast-480p-video-input',
-    modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 480p',
+    label: 'Seedance 2.0 Fast',
     scene: 'video-to-video',
     enabled: true,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'video-input',
     credits: 45,
-    creditsPerSecond: 7,
     durationOptions: SEEDANCE_VIDEO_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 7, availability: 'enabled' },
+      '720p': { creditsPerSecond: 15, availability: 'candidate' },
+    },
   },
   {
-    family: 'seedance-2-fast-720p-video-input',
-    modelValue: SEEDANCE_FAST_MODEL_VALUE,
-    label: 'Seedance 2.0 Fast 720p',
-    scene: 'video-to-video',
-    enabled: false,
-    resolution: '720p',
-    inputBilling: 'video-input',
-    credits: 75,
-    creditsPerSecond: 15,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-480p',
+    family: 'seedance-2-standard',
     modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 480p',
+    label: 'Seedance 2.0 Standard',
     scene: 'text-to-video',
     enabled: false,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'no-video-input',
     credits: 70,
-    creditsPerSecond: 14,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 14, availability: 'candidate' },
+      '720p': { creditsPerSecond: 30, availability: 'candidate' },
+      '1080p': { creditsPerSecond: 75, availability: 'candidate' },
+    },
   },
   {
-    family: 'seedance-2-standard-480p',
+    family: 'seedance-2-standard',
     modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 480p',
+    label: 'Seedance 2.0 Standard',
     scene: 'image-to-video',
     enabled: false,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'no-video-input',
     credits: 70,
-    creditsPerSecond: 14,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 14, availability: 'candidate' },
+      '720p': { creditsPerSecond: 30, availability: 'candidate' },
+      '1080p': { creditsPerSecond: 75, availability: 'candidate' },
+    },
   },
   {
-    family: 'seedance-2-standard-480p-video-input',
+    family: 'seedance-2-standard',
     modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 480p',
+    label: 'Seedance 2.0 Standard',
     scene: 'video-to-video',
     enabled: false,
-    resolution: '480p',
+    defaultResolution: '480p',
     inputBilling: 'video-input',
     credits: 45,
-    creditsPerSecond: 9,
     durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-720p',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 720p',
-    scene: 'text-to-video',
-    enabled: false,
-    resolution: '720p',
-    inputBilling: 'no-video-input',
-    credits: 150,
-    creditsPerSecond: 30,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-720p',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 720p',
-    scene: 'image-to-video',
-    enabled: false,
-    resolution: '720p',
-    inputBilling: 'no-video-input',
-    credits: 150,
-    creditsPerSecond: 30,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-720p-video-input',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 720p',
-    scene: 'video-to-video',
-    enabled: false,
-    resolution: '720p',
-    inputBilling: 'video-input',
-    credits: 90,
-    creditsPerSecond: 18,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-1080p',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 1080p',
-    scene: 'text-to-video',
-    enabled: false,
-    resolution: '1080p',
-    inputBilling: 'no-video-input',
-    credits: 375,
-    creditsPerSecond: 75,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-1080p',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 1080p',
-    scene: 'image-to-video',
-    enabled: false,
-    resolution: '1080p',
-    inputBilling: 'no-video-input',
-    credits: 375,
-    creditsPerSecond: 75,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
-  },
-  {
-    family: 'seedance-2-standard-1080p-video-input',
-    modelValue: SEEDANCE_STANDARD_MODEL_VALUE,
-    label: 'Seedance 2.0 Standard 1080p',
-    scene: 'video-to-video',
-    enabled: false,
-    resolution: '1080p',
-    inputBilling: 'video-input',
-    credits: 225,
-    creditsPerSecond: 45,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    byResolution: {
+      '480p': { creditsPerSecond: 9, availability: 'candidate' },
+      '720p': { creditsPerSecond: 18, availability: 'candidate' },
+      '1080p': { creditsPerSecond: 45, availability: 'candidate' },
+    },
   },
 ];
 
+function getResolutionPricingEntries(
+  byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>
+): Array<[SeedanceResolution, VideoResolutionPricing | undefined]> {
+  return Object.entries(byResolution) as Array<
+    [SeedanceResolution, VideoResolutionPricing | undefined]
+  >;
+}
+
+function getEnabledResolutionOptions(
+  byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>
+): SeedanceResolution[] {
+  return getResolutionPricingEntries(byResolution).flatMap(
+    ([resolution, pricing]) =>
+      pricing?.availability === 'enabled' ? [resolution] : []
+  );
+}
+
 function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
   const scene = item.scene;
+  const controls: SceneControls = {
+    duration: {
+      type: 'number',
+      default: SEEDANCE_DEFAULT_DURATION,
+      options: item.durationOptions,
+    },
+    aspect_ratio: {
+      type: 'string',
+      default: SEEDANCE_DEFAULT_ASPECT_RATIO,
+      options: SEEDANCE_ASPECT_RATIO_OPTIONS,
+    },
+  };
+  const enabledResolutionOptions = getEnabledResolutionOptions(
+    item.byResolution
+  );
+
+  if (enabledResolutionOptions.length > 0) {
+    controls.resolution = {
+      type: 'string',
+      default: item.defaultResolution,
+      options: enabledResolutionOptions,
+    };
+  }
 
   return {
     mediaType: 'video',
@@ -289,7 +254,6 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
     credits: { [scene]: item.credits },
     skuAttributes: {
       [scene]: {
-        resolution: item.resolution,
         inputBilling: item.inputBilling,
       },
     },
@@ -297,30 +261,17 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
       [scene]: {
         duration: SEEDANCE_DEFAULT_DURATION,
         aspect_ratio: SEEDANCE_DEFAULT_ASPECT_RATIO,
+        resolution: item.defaultResolution,
       },
     },
     controls: {
-      [scene]: {
-        duration: {
-          type: 'number',
-          default: SEEDANCE_DEFAULT_DURATION,
-          options: item.durationOptions,
-        },
-        aspect_ratio: {
-          type: 'string',
-          default: SEEDANCE_DEFAULT_ASPECT_RATIO,
-          options: SEEDANCE_ASPECT_RATIO_OPTIONS,
-        },
-      },
+      [scene]: controls,
     },
     pricing: {
       [scene]: {
         mode: 'perSecond',
-        // Enabled legacy entries mirror current fixed credits; disabled
-        // candidates may carry the Phase 0A-post matrix prefill.
-        creditsPerSecond:
-          item.creditsPerSecond ?? item.credits / SEEDANCE_DEFAULT_DURATION,
         defaultDuration: SEEDANCE_DEFAULT_DURATION,
+        byResolution: item.byResolution,
       },
     },
     enforced: {
@@ -591,6 +542,27 @@ function isNonNegativeNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0;
 }
 
+function isPositiveNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+function isVideoPricingAvailability(
+  value: unknown
+): value is VideoPricingAvailability {
+  return (
+    value === 'enabled' ||
+    value === 'candidate' ||
+    value === 'whitelist' ||
+    value === 'disabled'
+  );
+}
+
+const VIDEO_INPUT_BILLING_BY_SCENE: Record<SeedanceScene, string> = {
+  'text-to-video': 'no-video-input',
+  'image-to-video': 'no-video-input',
+  'video-to-video': 'video-input',
+};
+
 function validatePricing(model: ModelEntry, errors: string[]): void {
   if (!model.pricing) {
     return;
@@ -609,17 +581,59 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
       continue;
     }
 
+    const byResolution = pricing.byResolution;
+
     if (pricing.mode === 'fixed') {
       if (!isNonNegativeNumber(pricing.credits)) {
         errors.push(
           `pricing fixed credits is invalid: ${modelRef(model)}/${scene}`
         );
       }
-    } else if (pricing.mode === 'perSecond') {
-      if (!isNonNegativeNumber(pricing.creditsPerSecond)) {
+      if (byResolution !== undefined) {
         errors.push(
-          `pricing creditsPerSecond is invalid: ${modelRef(model)}/${scene}`
+          `pricing byResolution is only valid for perSecond: ${modelRef(model)}/${scene}`
         );
+      }
+    } else if (pricing.mode === 'perSecond') {
+      if (byResolution === undefined) {
+        if (!isNonNegativeNumber(pricing.creditsPerSecond)) {
+          errors.push(
+            `pricing creditsPerSecond is invalid: ${modelRef(model)}/${scene}`
+          );
+        }
+      } else if (!isPlainRecord(byResolution)) {
+        errors.push(
+          `pricing byResolution must be an object: ${modelRef(model)}/${scene}`
+        );
+      } else {
+        for (const [resolution, resolutionPricing] of Object.entries(
+          byResolution
+        )) {
+          if (!['480p', '720p', '1080p'].includes(resolution)) {
+            errors.push(
+              `pricing resolution is invalid: ${modelRef(model)}/${scene}/${resolution}`
+            );
+          }
+
+          if (!isPlainRecord(resolutionPricing)) {
+            errors.push(
+              `pricing resolution value must be an object: ${modelRef(model)}/${scene}/${resolution}`
+            );
+            continue;
+          }
+
+          if (!isPositiveNumber(resolutionPricing.creditsPerSecond)) {
+            errors.push(
+              `pricing resolution creditsPerSecond is invalid: ${modelRef(model)}/${scene}/${resolution}`
+            );
+          }
+
+          if (!isVideoPricingAvailability(resolutionPricing.availability)) {
+            errors.push(
+              `pricing availability is invalid: ${modelRef(model)}/${scene}/${resolution}`
+            );
+          }
+        }
       }
     } else {
       errors.push(`pricing mode is invalid: ${modelRef(model)}/${scene}`);
@@ -633,6 +647,182 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
       errors.push(
         `pricing defaultDuration is invalid: ${modelRef(model)}/${scene}`
       );
+    }
+  }
+}
+
+function getVideoInputBilling(
+  model: ModelEntry,
+  scene: string
+): string | undefined {
+  if (!(scene in VIDEO_INPUT_BILLING_BY_SCENE)) {
+    return undefined;
+  }
+
+  const expected =
+    VIDEO_INPUT_BILLING_BY_SCENE[
+      scene as keyof typeof VIDEO_INPUT_BILLING_BY_SCENE
+    ];
+  const skuAttributes = model.skuAttributes?.[scene];
+
+  if (!isPlainRecord(skuAttributes)) {
+    return expected;
+  }
+
+  const inputBilling = skuAttributes.inputBilling;
+  return typeof inputBilling === 'string' ? inputBilling : expected;
+}
+
+function validateVideoModelMetadata(model: ModelEntry, errors: string[]): void {
+  if (model.mediaType !== 'video') {
+    return;
+  }
+
+  if (
+    model.family.startsWith('seedance-2-') &&
+    /-\d{3,4}p(?:-|$)|-video-input(?:-|$)/.test(model.family)
+  ) {
+    errors.push(`video family is not converged: ${model.family}`);
+  }
+
+  for (const scene of model.scenes) {
+    const expectedInputBilling = getVideoInputBilling(model, scene);
+    const configuredInputBilling = model.skuAttributes?.[scene]?.inputBilling;
+
+    if (
+      expectedInputBilling &&
+      configuredInputBilling !== undefined &&
+      configuredInputBilling !== expectedInputBilling
+    ) {
+      errors.push(
+        `inputBilling does not match scene: ${modelRef(model)}/${scene}`
+      );
+    }
+  }
+}
+
+function validateVideoResolutionControls(
+  model: ModelEntry,
+  errors: string[]
+): void {
+  if (model.mediaType !== 'video' || !model.pricing) {
+    return;
+  }
+
+  for (const [scene, pricing] of Object.entries(model.pricing)) {
+    const byResolution = pricing?.byResolution;
+    if (!byResolution) {
+      continue;
+    }
+
+    const enabledResolutionOptions = getEnabledResolutionOptions(byResolution);
+    const resolutionControl = model.controls?.[scene]?.resolution;
+    if (enabledResolutionOptions.length === 0) {
+      if (model.enabled) {
+        errors.push(`missing enabled resolution: ${modelRef(model)}/${scene}`);
+      }
+
+      if (resolutionControl) {
+        errors.push(
+          `resolution control has no enabled pricing: ${modelRef(model)}/${scene}`
+        );
+      }
+      continue;
+    }
+
+    if (!resolutionControl) {
+      errors.push(`missing resolution control: ${modelRef(model)}/${scene}`);
+      continue;
+    }
+
+    if (resolutionControl.type !== 'string') {
+      errors.push(
+        `resolution control must be string: ${modelRef(model)}/${scene}`
+      );
+      continue;
+    }
+
+    const resolutionOptions = resolutionControl.options;
+    for (const option of resolutionOptions) {
+      if (typeof option !== 'string') {
+        errors.push(
+          `resolution control option is invalid: ${modelRef(model)}/${scene}/${String(
+            option
+          )}`
+        );
+        continue;
+      }
+
+      const optionPricing = byResolution[option as VideoResolution];
+      if (!optionPricing) {
+        errors.push(
+          `resolution control option missing pricing: ${modelRef(model)}/${scene}/${option}`
+        );
+        continue;
+      }
+
+      if (optionPricing.availability !== 'enabled') {
+        errors.push(
+          `resolution control option is not enabled: ${modelRef(model)}/${scene}/${option}`
+        );
+      }
+    }
+
+    const defaultResolution = resolutionControl.default;
+    if (typeof defaultResolution !== 'string') {
+      continue;
+    }
+
+    const defaultPricing = byResolution[defaultResolution as VideoResolution];
+    if (!defaultPricing) {
+      errors.push(
+        `resolution control default missing pricing: ${modelRef(model)}/${scene}/${defaultResolution}`
+      );
+      continue;
+    }
+
+    if (defaultPricing.availability !== 'enabled') {
+      errors.push(
+        `resolution control default is not enabled: ${modelRef(model)}/${scene}/${defaultResolution}`
+      );
+    }
+  }
+}
+
+function validateVideoPricingCostPaths(errors: string[]): void {
+  const costsByPath = new Map<string, number>();
+
+  for (const model of MODELS) {
+    if (model.mediaType !== 'video' || !model.pricing) {
+      continue;
+    }
+
+    for (const [scene, pricing] of Object.entries(model.pricing)) {
+      const inputBilling = getVideoInputBilling(model, scene);
+      if (!inputBilling || !pricing?.byResolution) {
+        continue;
+      }
+
+      for (const [resolution, resolutionPricing] of Object.entries(
+        pricing.byResolution
+      )) {
+        if (!resolutionPricing) {
+          continue;
+        }
+
+        const key = `${model.mediaType}/${model.family}/${resolution}/${inputBilling}`;
+        const creditsPerSecond = resolutionPricing.creditsPerSecond;
+
+        if (costsByPath.has(key) && costsByPath.get(key) !== creditsPerSecond) {
+          errors.push(
+            `pricing cost path drift: ${key} has ${costsByPath.get(
+              key
+            )} and ${creditsPerSecond}`
+          );
+        } else {
+          costsByPath.set(key, creditsPerSecond);
+        }
+      }
     }
   }
 }
@@ -682,7 +872,11 @@ export function validateModels(): string[] {
     validateControls(m, errors);
     validateDefaultsAgainstControls(m, errors);
     validatePricing(m, errors);
+    validateVideoModelMetadata(m, errors);
+    validateVideoResolutionControls(m, errors);
   }
+
+  validateVideoPricingCostPaths(errors);
 
   return errors;
 }

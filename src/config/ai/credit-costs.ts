@@ -1,6 +1,11 @@
 // 以后删，以后等 music 也纳入 MODELS + candidates，并且没有旧 provider/model 路径后，再考虑把 getGenerationCreditCost() 移到 models.ts 或 src/config/ai/pricing.ts，然后删掉 credit-costs.ts
 // 明确它是派生层，不是配置源。短期保持，但未来考虑清理。收窄它的职责。
-import { MODELS, type ModelEntry, type ScenePricing } from './models';
+import {
+  MODELS,
+  type ModelEntry,
+  type ScenePricing,
+  type VideoResolution,
+} from './models';
 
 export type GenerationMediaType = 'image' | 'video' | 'music';
 
@@ -51,6 +56,25 @@ function resolveDuration(
   return duration;
 }
 
+function resolveResolution(
+  entry: ModelEntry,
+  scene: string,
+  finalOptions: FinalGenerationOptions
+): VideoResolution {
+  const resolution =
+    finalOptions.resolution ?? entry.defaults?.[scene]?.resolution;
+
+  if (
+    resolution !== '480p' &&
+    resolution !== '720p' &&
+    resolution !== '1080p'
+  ) {
+    throw new Error('invalid pricing resolution');
+  }
+
+  return resolution;
+}
+
 export function calculateModelCredits(
   entry: ModelEntry,
   scene: string,
@@ -67,12 +91,25 @@ export function calculateModelCredits(
   }
 
   if (pricing.mode === 'perSecond') {
-    if (!isFinitePositiveNumber(pricing.creditsPerSecond)) {
+    const resolutionPricing = pricing.byResolution
+      ? pricing.byResolution[resolveResolution(entry, scene, finalOptions)]
+      : undefined;
+
+    if (resolutionPricing && resolutionPricing.availability !== 'enabled') {
+      throw new Error(
+        `unavailable pricing resolution: ${entry.family}/${scene}`
+      );
+    }
+
+    const creditsPerSecond =
+      resolutionPricing?.creditsPerSecond ?? pricing.creditsPerSecond;
+
+    if (!isFinitePositiveNumber(creditsPerSecond)) {
       throw new Error(`invalid per-second pricing: ${entry.family}/${scene}`);
     }
 
     const duration = resolveDuration(pricing, finalOptions);
-    const credits = duration * pricing.creditsPerSecond;
+    const credits = duration * creditsPerSecond;
 
     if (!Number.isFinite(credits)) {
       throw new Error(`invalid calculated pricing: ${entry.family}/${scene}`);

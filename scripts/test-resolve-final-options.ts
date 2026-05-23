@@ -18,12 +18,16 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
   return entry;
 }
 
-const textEntry = findEnabledModel('seedance-2-fast-480p', 'text-to-video');
+const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
 const textScene = 'text-to-video';
 
 assert.deepEqual(textEntry.enforced?.[textScene], {
   generate_audio: false,
 });
+assert.deepEqual(textEntry.controls?.[textScene]?.resolution?.options, [
+  '480p',
+  '720p',
+]);
 
 const controlledOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -32,7 +36,7 @@ const controlledOptions = resolveFinalOptions({
   options: {
     duration: 10,
     aspect_ratio: '9:16',
-    resolution: '1080p',
+    resolution: '720p',
     generate_audio: true,
   },
   allowControlOptions: true,
@@ -40,7 +44,7 @@ const controlledOptions = resolveFinalOptions({
 
 assert.equal(controlledOptions.duration, 10);
 assert.equal(controlledOptions.aspect_ratio, '9:16');
-assert.equal(controlledOptions.resolution, '480p');
+assert.equal(controlledOptions.resolution, '720p');
 assert.equal(controlledOptions.generate_audio, false);
 assert.equal(controlledOptions.inputBilling, 'no-video-input');
 
@@ -86,9 +90,10 @@ const ignoredInvalidOptions = resolveFinalOptions({
 assert.equal(ignoredInvalidOptions.duration, 5);
 assert.equal(ignoredInvalidOptions.aspect_ratio, '16:9');
 
-const videoInputEntry = findEnabledModel(
-  'seedance-2-fast-480p-video-input',
-  'video-to-video'
+const videoInputEntry = findEnabledModel('seedance-2-fast', 'video-to-video');
+assert.deepEqual(
+  videoInputEntry.controls?.['video-to-video']?.resolution?.options,
+  ['480p']
 );
 const videoInputOptions = resolveFinalOptions({
   mediaType: 'video',

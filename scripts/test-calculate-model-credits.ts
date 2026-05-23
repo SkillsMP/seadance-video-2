@@ -140,7 +140,7 @@ assert.throws(
 
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-480p', 'text-to-video'),
+    findEnabledModel('seedance-2-fast', 'text-to-video'),
     'text-to-video',
     { duration: 5 }
   ),
@@ -148,7 +148,7 @@ assert.equal(
 );
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-480p', 'text-to-video'),
+    findEnabledModel('seedance-2-fast', 'text-to-video'),
     'text-to-video',
     { duration: 10 }
   ),
@@ -156,23 +156,23 @@ assert.equal(
 );
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-720p', 'text-to-video'),
+    findEnabledModel('seedance-2-fast', 'text-to-video'),
     'text-to-video',
-    { duration: 5 }
+    { duration: 5, resolution: '720p' }
   ),
   120
 );
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-720p', 'text-to-video'),
+    findEnabledModel('seedance-2-fast', 'text-to-video'),
     'text-to-video',
-    { duration: 10 }
+    { duration: 10, resolution: '720p' }
   ),
   240
 );
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-480p-video-input', 'video-to-video'),
+    findEnabledModel('seedance-2-fast', 'video-to-video'),
     'video-to-video',
     { duration: 5 }
   ),
@@ -180,7 +180,7 @@ assert.equal(
 );
 assert.equal(
   calculateModelCredits(
-    findEnabledModel('seedance-2-fast-480p-video-input', 'video-to-video'),
+    findEnabledModel('seedance-2-fast', 'video-to-video'),
     'video-to-video',
     { duration: 10 }
   ),
@@ -191,23 +191,15 @@ assert.equal(
   getGenerationCreditCost({
     mediaType: 'video',
     scene: 'text-to-video',
-    family: 'seedance-2-fast-480p',
+    family: 'seedance-2-fast',
   }),
   45
 );
 assert.equal(
   getGenerationCreditCost({
     mediaType: 'video',
-    scene: 'text-to-video',
-    family: 'seedance-2-fast-720p',
-  }),
-  90
-);
-assert.equal(
-  getGenerationCreditCost({
-    mediaType: 'video',
     scene: 'video-to-video',
-    family: 'seedance-2-fast-480p-video-input',
+    family: 'seedance-2-fast',
   }),
   45
 );

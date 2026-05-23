@@ -547,16 +547,16 @@ pnpm.cmd exec eslint src/extensions/ai/kie.ts
 
 | 媒体类型 | 模型 | 规格 | 输入口径 | 场景 | 代码 family key | 时长能力 | KIE 基础价 | 本站积分/秒 | 状态 |
 |---|---|---|---|---|---|---|---:|---:|---|
-| video | Seedance 2 Fast | 480p | no video input | `text-to-video` / `image-to-video` | `seedance-2-fast-480p` | `4-15s` | $0.0775/s | 12 | 当前主线 |
-| video | Seedance 2 Fast | 480p | with video input | `video-to-video` | `seedance-2-fast-480p-video-input` | `4-15s` | $0.045/s | 7 | 当前低成本测试档 |
-| video | Seedance 2 Fast | 720p | no video input | `text-to-video` / `image-to-video` | `seedance-2-fast-720p` | `4-15s` | $0.165/s | 24 | 当前主线 |
-| video | Seedance 2 Fast | 720p | with video input | `video-to-video` | `seedance-2-fast-720p-video-input` | `4-15s` | $0.100/s | 15 | 候选，不默认公开 |
-| video | Seedance 2 Standard | 480p | no video input | `text-to-video` / `image-to-video` | `seedance-2-standard-480p` | `4-15s` | $0.095/s | 14 | 候选，不默认公开 |
-| video | Seedance 2 Standard | 480p | with video input | `video-to-video` | `seedance-2-standard-480p-video-input` | `4-15s` | $0.0575/s | 9 | 候选，不默认公开 |
-| video | Seedance 2 Standard | 720p | no video input | `text-to-video` / `image-to-video` | `seedance-2-standard-720p` | `4-15s` | $0.205/s | 30 | 候选，不默认公开 |
-| video | Seedance 2 Standard | 720p | with video input | `video-to-video` | `seedance-2-standard-720p-video-input` | `4-15s` | $0.125/s | 18 | 候选，不默认公开 |
-| video | Seedance 2 Standard | 1080p | no video input | `text-to-video` / `image-to-video` | `seedance-2-standard-1080p` | `4-15s` | $0.51/s | 75 | 高阶候选 / 白名单 |
-| video | Seedance 2 Standard | 1080p | with video input | `video-to-video` | `seedance-2-standard-1080p-video-input` | `4-15s` | $0.31/s | 45 | 高阶候选 / 白名单 |
+| video | Seedance 2 Fast | 480p | `no-video-input` | `text-to-video` / `image-to-video` | `seedance-2-fast-480p` | `4-15s` | $0.0775/s | 12 | 当前主线 |
+| video | Seedance 2 Fast | 480p | `video-input` | `video-to-video` | `seedance-2-fast-480p-video-input` | `4-15s` | $0.045/s | 7 | 当前低成本测试档 |
+| video | Seedance 2 Fast | 720p | `no-video-input` | `text-to-video` / `image-to-video` | `seedance-2-fast-720p` | `4-15s` | $0.165/s | 24 | 当前主线 |
+| video | Seedance 2 Fast | 720p | `video-input` | `video-to-video` | `seedance-2-fast-720p-video-input` | `4-15s` | $0.100/s | 15 | 候选，不默认公开 |
+| video | Seedance 2 Standard | 480p | `no-video-input` | `text-to-video` / `image-to-video` | `seedance-2-standard-480p` | `4-15s` | $0.095/s | 14 | 候选，不默认公开 |
+| video | Seedance 2 Standard | 480p | `video-input` | `video-to-video` | `seedance-2-standard-480p-video-input` | `4-15s` | $0.0575/s | 9 | 候选，不默认公开 |
+| video | Seedance 2 Standard | 720p | `no-video-input` | `text-to-video` / `image-to-video` | `seedance-2-standard-720p` | `4-15s` | $0.205/s | 30 | 候选，不默认公开 |
+| video | Seedance 2 Standard | 720p | `video-input` | `video-to-video` | `seedance-2-standard-720p-video-input` | `4-15s` | $0.125/s | 18 | 候选，不默认公开 |
+| video | Seedance 2 Standard | 1080p | `no-video-input` | `text-to-video` / `image-to-video` | `seedance-2-standard-1080p` | `4-15s` | $0.51/s | 75 | 高阶候选 / 白名单 |
+| video | Seedance 2 Standard | 1080p | `video-input` | `video-to-video` | `seedance-2-standard-1080p-video-input` | `4-15s` | $0.31/s | 45 | 高阶候选 / 白名单 |
 
 ### Phase 0A-post 执行边界
 
@@ -836,9 +836,9 @@ Phase 1 通过，才代表前端参数控件可以正式开放给用户。
 
 ## 18. Phase 2 升级目标：收敛阶段性设计
 
-Phase 0A、Phase 0B 和 Phase 1 的目标是以较小改动跑通模型注册表、动态计费、参数控件、任务落库和积分流水。这些阶段为了降低上线风险，保留了一些阶段性设计，例如带分辨率的 `family`、偏单一的 `creditsPerSecond` 计费结构、隐藏的 `image-to-video` 入口，以及尚未补齐的输入资源 URL 安全校验。
+Phase 0A、Phase 0B 和 Phase 1 的目标是以较小改动跑通模型注册表、动态计费、参数控件、任务落库和积分流水。这些阶段为了降低上线风险，保留了一些阶段性设计，例如带分辨率的 `family`、按单个 SKU 维护 `creditsPerSecond`、隐藏的 `image-to-video` 入口，以及尚未补齐的输入资源 URL 安全校验。
 
-Phase 2 的目标不是继续叠加临时逻辑，而是在现有链路验证通过后，把这些阶段性设计升级为更稳定的 registry、pricing、controls 和兼容策略。
+Phase 2 的目标不是继续叠加临时逻辑，而是在现有链路验证通过后，把这些阶段性设计升级为更稳定的 registry、pricing、controls 和兼容策略。Kimi 的简化方向有参考价值，但不宜一刀切删除状态字段和计费口径。Phase 2 应采用 `pricing[scene].byResolution[resolution] + availability` 的结构，降低查价歧义，同时保留 `candidate / whitelist` 的后端防御能力。
 
 当前站点暂无外部访问量和真实用户，因此 Phase 2 不需要按大规模存量系统迁移处理。可以减少复杂灰度、公告、老用户价格保护、批量数据迁移和多层兼容状态机，但仍需要保留几个底线：
 
@@ -849,96 +849,167 @@ Phase 2 的目标不是继续叠加临时逻辑，而是在现有链路验证通
 
 ### 18.1 `family` 从带分辨率 SKU 收敛为模型家族
 
-Phase 1 结束时，系统仍可能使用 `seedance-2-fast-480p`、`seedance-2-fast-720p` 这类带分辨率的 `family` / SKU 标识。这个做法有利于早期快速验证不同分辨率的价格和扣费，但长期会让 `family` 同时承担模型家族、分辨率、计费 SKU 和 UI 分组等多重含义。
+Phase 1 结束时，系统仍使用 `seedance-2-fast-480p`、`seedance-2-fast-720p`、`seedance-2-fast-480p-video-input` 这类带分辨率或输入口径的 `family` / SKU 标识。这个做法有利于早期快速验证不同分辨率的价格和扣费，但长期会让 `family` 同时承担模型家族、分辨率、计费 SKU 和 UI 分组等多重含义。
 
-Phase 2 可以将 `family` 收敛为模型家族，例如：
+Phase 2 继续采用“family 收敛 + resolution 参数化”的方向。`family` 表示模型族，例如：
 
 - `seedance-2-fast`
 - `seedance-2-standard`
 
-`resolution` 从 `family` 名称和 `skuAttributes` 中剥离，迁移到 `controls.resolution`，由前端从 registry 渲染，由后端通过 `controls` 和 pricing matrix 共同校验。
+`resolution` 不再通过多个 SKU family 表达，而是作为运行 option 进入 `controls.resolution` / `finalOptions.resolution`。前端从 registry / pricing 渲染当前 scene 可用的 resolution，后端通过 `resolveFinalOptions()`、pricing 和 `validateModels()` 统一校验。
 
-考虑到当前没有真实用户和访问量，历史任务主要是开发者自己生成的测试记录，不需要为了旧任务展示增加复杂兼容代码。Phase 2 只保留一个原则：历史任务不重新计费，费用以已落库的 `cost_credits` 为准。旧任务如果缺少 `options.resolution`，不做批量迁移；查询展示至少不报错，可以优先从旧 `family` / `model` 名称做简单推断，无法推断时展示为 `unknown` 或 registry default，不把历史兼容作为主线需求。
+历史任务兼容只做展示兜底：不批量迁移，不重新计费，不强制从旧 `family` 推断 `resolution`。如果旧 task 找不到新的 registry entry，就展示原始 `task.model` / `task.family`，并标记为 `legacy` 或 `unknown`，保证页面不报错即可。历史费用仍以已落库的 `cost_credits` 为准。
 
-### 18.2 pricing 升级为按计费口径查价
+### 18.2 pricing 从 matrix 收敛为 `byResolution`
 
-当前阶段主要通过不同 SKU 维护不同的 `creditsPerSecond`。进入 Phase 2 后，Seedance 2.0 需要表达多种价格口径，价格不应只靠单一 `family` 或单一 `resolution` 判断。
+当前代码中 `pricing` 是 `pricing[scene] -> { mode, creditsPerSecond, defaultDuration }`，Seedance catalog 的内部 `inputBilling` 取值是 `no-video-input` / `video-input`。Phase 2 不推荐再扩成 `pricing.matrix + scenes + inputBilling + resolution + status` 的全局多条件匹配结构。
 
-推荐计费输入为：
+推荐结构是每个 family 下按 scene 查价，再按 resolution 命中叶子节点：
 
-- `scene`
-- `inputBilling`
-- `resolution`
-- `duration`
+```ts
+type VideoPricingAvailability =
+  | 'enabled'
+  | 'candidate'
+  | 'whitelist'
+  | 'disabled';
 
-其中：
+type VideoScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
 
-- `no-video-input` 价格口径覆盖 `text-to-video / image-to-video`。
-- `with-video-input` 价格口径覆盖 `video-to-video`。
-- `scene / inputBilling / resolution` 用于命中每秒积分。
-- `duration` 用于计算最终消耗，通常为 `creditsPerSecond * duration`，不必在第一版中做成 pricing matrix 的查价 key。
+type VideoInputBilling = 'no-video-input' | 'video-input';
 
-Phase 2 的 pricing 结构应支持按 `scene / inputBilling / resolution` 查到明确的 `creditsPerSecond`，再结合 `duration` 计算最终积分。如果未来出现时长阶梯价，再扩展 `duration` 查价维度，不要在当前没有需求时提前做复杂价格引擎。
+type VideoResolution = '480p' | '720p' | '1080p';
 
-#### 10 种价格口径
+type VideoResolutionPricing = {
+  creditsPerSecond: number;
+  availability: VideoPricingAvailability;
+};
 
-下表是 Phase 2 pricing matrix 的目标口径，不是 10 个简单模型规格。`no-video-input` 覆盖 `text-to-video / image-to-video`，`with-video-input` 覆盖 `video-to-video`。
+type VideoScenePricing = {
+  mode: 'perSecond';
+  defaultDuration: number;
+  byResolution: Partial<Record<VideoResolution, VideoResolutionPricing>>;
+};
 
-| 编号 | 模型家族 | 输入口径 | 覆盖 scene | 分辨率 | 每秒积分 | 开放状态 |
-| --- | --- | --- | --- | --- | ---: | --- |
-| 1 | Seedance 2 Fast | no-video-input | `text-to-video` / `image-to-video` | 480p | 12 | enabled |
-| 2 | Seedance 2 Fast | with-video-input | `video-to-video` | 480p | 7 | enabled |
-| 3 | Seedance 2 Fast | no-video-input | `text-to-video` / `image-to-video` | 720p | 24 | enabled |
-| 4 | Seedance 2 Fast | with-video-input | `video-to-video` | 720p | 15 | candidate |
-| 5 | Seedance 2 Standard | no-video-input | `text-to-video` / `image-to-video` | 480p | 14 | candidate |
-| 6 | Seedance 2 Standard | with-video-input | `video-to-video` | 480p | 9 | candidate |
-| 7 | Seedance 2 Standard | no-video-input | `text-to-video` / `image-to-video` | 720p | 30 | candidate |
-| 8 | Seedance 2 Standard | with-video-input | `video-to-video` | 720p | 18 | candidate |
-| 9 | Seedance 2 Standard | no-video-input | `text-to-video` / `image-to-video` | 1080p | 75 | whitelist |
-| 10 | Seedance 2 Standard | with-video-input | `video-to-video` | 1080p | 45 | whitelist |
+type VideoPricing = Partial<Record<VideoScene, VideoScenePricing>>;
+```
 
-价格开放状态可以先保持轻量：
+推荐结构示例：
 
-- 当前可用规格使用 `enabled: true`。
-- 候选规格使用 `enabled: false`，必要时增加 `visibility: 'candidate' | 'whitelist' | 'disabled'`。
-- 如果当前代码只需要区分可用和不可用，第一版可以先不引入完整状态枚举。
+```ts
+pricing: {
+  'text-to-video': {
+    mode: 'perSecond',
+    defaultDuration: 5,
+    byResolution: {
+      '480p': { creditsPerSecond: 12, availability: 'enabled' },
+      '720p': { creditsPerSecond: 24, availability: 'enabled' },
+    },
+  },
+  'image-to-video': {
+    mode: 'perSecond',
+    defaultDuration: 5,
+    byResolution: {
+      '480p': { creditsPerSecond: 12, availability: 'candidate' },
+      '720p': { creditsPerSecond: 24, availability: 'candidate' },
+    },
+  },
+  'video-to-video': {
+    mode: 'perSecond',
+    defaultDuration: 5,
+    byResolution: {
+      '480p': { creditsPerSecond: 7, availability: 'enabled' },
+      '720p': { creditsPerSecond: 15, availability: 'candidate' },
+    },
+  },
+}
+```
 
-Phase 2 必须单独设计 `ENABLE_DYNAMIC_VIDEO_PRICING=false` 的回滚策略。动态计费关闭时，服务端不得接受用户传入的 `duration`、`aspect_ratio`、`resolution` 控制参数，应回落到 Phase 1 默认规格或旧 enabled SKU 对应参数，避免高规格生成按旧固定价扣费。provider payload、`cost_credits` 和 `finalOptions` 必须来自同一份最终参数结果，不能分别计算。
+这个结构的重点不是性能，而是让查价路径唯一、类型更清楚、减少非法组合、前后端更容易保持一致，也让 `validateModels()` 更容易校验。运行时查价路径固定为：
 
-### 18.3 `image-to-video` 纳入设计，但不急于开放入口
+```ts
+pricing[scene].byResolution[finalOptions.resolution]
+```
 
-Phase 1 为了降低范围，`image-to-video` 入口仍保持隐藏。从定价口径看，`image-to-video` 已经属于 `no-video-input` 价格体系，Fast 480p 和 Fast 720p 的价格应与对应 no-video-input 口径一致。
+再用 `finalOptions.duration` 计算 `creditsPerSecond * duration`。如果未来出现时长阶梯价，再在 scene 或 resolution 叶子节点下扩展，不要在当前没有需求时提前做全局价格引擎。
 
-Phase 2 需要把 `image-to-video` 纳入 registry、pricing 和 controls 的设计中，避免后续开放入口时再补结构。
+### 18.3 `inputBilling` 由 scene 派生，不作为查价维度
 
-可以分批落地：
+`inputBilling` 不彻底删除，但不再作为用户输入、前端控件或 pricing 独立匹配维度。它是内部计费口径，可由 scene 派生：
 
-1. 先补 registry / pricing / controls 结构。
-2. 再补图片字段映射和后端参数校验。
-3. 再补图片 URL 安全校验。
-4. 最后做真实生成测试并开放入口。
+```ts
+const INPUT_BILLING_BY_SCENE = {
+  'text-to-video': 'no-video-input',
+  'image-to-video': 'no-video-input',
+  'video-to-video': 'video-input',
+} as const;
+```
 
-当前没有访问量时，不必把正式开放入口作为 Phase 2 第一批硬目标。第一批只要求价格和参数化设计不再遗漏 `image-to-video`。入口开放不能简化成一行 tab 开关，必须等 adapter 字段映射、输入资源 URL 安全和真实生成测试闭环后再开放。
+当前项目真实枚举是 `no-video-input` / `video-input`，不要在 registry 或 Phase 2 文档里引入其他输入口径命名。`inputBilling` 可以继续用于 `skuAttributes`、成本口径校验或 provider 成本对照，但不应和 `scene` 重复配置后再参与运行时查价。运行时扣费只依赖 `scene + resolution + duration`，其中 `scene` 已经足够派生内部输入口径。
 
-### 18.4 输入资源 URL 安全作为 Phase 2 子任务
+### 18.4 用 `availability` 表达 scene + resolution 可用性
 
-前期主要验证文生视频和基础视频输入链路，因此输入资源 URL 的深度安全校验没有作为主线实现。随着 `video-to-video` 和 `image-to-video` 继续推进，Phase 2 需要把输入资源安全列为明确子任务。
+原 matrix entry 上的 `status` 不再保留。`availability` 放在 `scene + resolution` 的叶子节点上，表达该 family 在某个场景和清晰度下是否对普通用户开放。
 
-最低安全边界包括：
+需要区分两个层级：
+
+- `ModelEntry.enabled` 表示这个模型 / family 是否参与 registry 和候选选择。
+- `availability` 表示某个 `scene + resolution` 是否对用户开放。
+- 两者不是同一层概念，不能互相替代。
+
+普通用户只能使用 `availability = 'enabled'` 的组合。`candidate / whitelist / disabled` 可以留在 registry 中作为候选、灰度或内部规划，但后端必须拒绝普通用户请求，不能只依赖前端隐藏。
+
+如果某个 scene 暂不开放，前端入口要隐藏或禁用，后端也要拒绝普通用户访问。不要把 `image-to-video` tab 是否显示只交给 `availability` 隐式决定；入口策略和后端权限都要明确。
+
+### 18.5 resolution controls 与 pricing 保持一致
+
+`controls.resolution` 可以表达模型家族支持的 resolution，但普通用户实际可见的 resolution options 应来自当前 scene 下 `availability = 'enabled'` 的 pricing，或者由 `validateModels()` 强制校验 `controls` 与 pricing 一致。
+
+约束如下：
+
+- 普通用户默认 `resolution` 必须是 `enabled`，不能是 `candidate / whitelist / disabled`。
+- 切换 scene 后，如果当前 `resolution` 在新 scene 下不合法，应回落到该 scene 的合法默认值。
+- 前端展示、余额预估、生成请求、后端扣费和 provider payload 必须使用同一份 `finalOptions`。
+- 不得仅按 `controls.resolution` 展示或放行，也不得让前端维护一套独立 resolution 白名单。
+
+### 18.6 `image-to-video` 纳入设计，但不急于开放入口
+
+Phase 1 为了降低范围，`image-to-video` 入口仍保持隐藏。从定价口径看，`image-to-video` 属于 `no-video-input`，Fast 480p 和 Fast 720p 的单价应与同 family、同 resolution 的 `text-to-video` 保持一致。
+
+Phase 2 需要把 `image-to-video` 纳入 registry、pricing 和 controls 的设计中，避免后续开放入口时再补结构。当前没有访问量时，不必把正式开放入口作为 Phase 2 第一批硬目标。入口开放不能简化成一行 tab 开关，必须等 adapter 字段映射、输入资源 URL 安全和真实生成测试闭环后再开放。
+
+### 18.7 `validateModels()` 补充规则
+
+Phase 2 的 `validateModels()` 不只校验 schema，还要校验开放组合和计费口径：
+
+- 对普通用户开放的 `family + scene`，至少要有一个 `availability = 'enabled'` 的 resolution。
+- 如果某个 scene 暂不开放，前端入口要隐藏，后端也要拒绝普通用户访问。
+- 同一 `family + resolution + no-video-input` 成本口径下，`text-to-video` 与 `image-to-video` 的单价应一致。
+- 如果新 pricing 结构不再存 `inputBilling`，不要校验“pricing 里的 inputBilling”；应校验 `skuAttributes` 或 scene 派生出的 `inputBilling` 与成本口径一致。
+- `controls.resolution.default` 必须指向当前 scene 下 `availability = 'enabled'` 的 resolution。
+- `controls.resolution.options` 不得包含 pricing 中完全不存在的 resolution；如果保留 `candidate / whitelist` 选项，普通用户过滤逻辑必须由后端测试覆盖。
+
+`calculateModelCredits()` 只使用 `resolveFinalOptions()` 归一化后的 `scene + resolution + duration`，不从用户原始输入直接计费。provider payload 与 `costCredits` 必须使用同一份 `finalOptions`，避免展示、扣费和实际调用不一致。
+
+### 18.8 输入资源 URL 安全作为 Phase 2B 验收项
+
+URL 安全不要从 Phase 2B 移除，可以从 registry / pricing 重构中拆成独立 commit，但仍应作为 Phase 2B 验收项。当前 `options.ts` 只做参数白名单和 `image_input` / `video_input` 的数组字符串校验，不足以覆盖资源 URL 风险。
+
+第一版建议优先只允许 HTTPS，并覆盖 `image_input` / `video_input`。最低安全边界包括：
 
 - 只允许 HTTPS URL。
-- 禁止 localhost、127.0.0.1、内网 IP 和云厂商 metadata 地址。
+- 禁止 localhost、127.0.0.1、`::1`、内网 IP、link-local 和云厂商 metadata IP。
+- 处理 DNS 解析、重定向绕过和最终落点校验。
 - 不信任前端传入的文件扩展名。
 - 限制允许的 MIME 类型。
 - 限制资源大小。
 - 设置探测或下载超时。
 - provider 拉取失败时返回明确错误。
 
-当前阶段可以先做最低版，不需要一次性完成复杂上传治理、文件归属校验、签名 URL 全链路审计和异步安全扫描。但只要开放用户可传入图片或视频 URL，就不能完全跳过 SSRF 和资源大小风险。
+当前阶段可以先做最低版，不需要一次性完成复杂上传治理、文件归属校验、签名 URL 全链路审计和异步安全扫描。但只要开放用户可传入图片或视频 URL，就不能跳过 SSRF、资源大小、MIME 和超时风险。
 
 URL 安全逻辑不要直接塞进 `options.ts`。`options.ts` 仍主要负责生成参数清洗和 controls 校验；HTTPS、内网地址、metadata 地址、MIME、大小和超时等资源安全检查应放在独立模块中，例如 `asset-url-security.ts`，再由生成入口或上传链路调用。
 
-### 18.5 Provider 成本一致性先写原则，不做复杂实现
+### 18.9 Provider 成本一致性先写原则，不做复杂实现
 
 当前主要依赖 Kie provider，多 provider 成本一致性还不是主要矛盾。Phase 2 只需要明确原则：
 
@@ -948,7 +1019,7 @@ URL 安全逻辑不要直接塞进 `options.ts`。`options.ts` 仍主要负责�
 
 当前没有多 provider 真实流量时，不需要做复杂的 `provider pricing`、跨 provider fallback 成本路由或自动利润计算。后续接入新 provider 前，再根据真实能力和成本决定是否拆 family、拆 route，或增加 provider 维度。
 
-### 18.6 pricing 页文案与动态计费事实对齐
+### 18.10 pricing 页文案与动态计费事实对齐
 
 视频生成页已经支持按模型、清晰度和时长动态展示预计积分。如果套餐页或 pricing 页仍使用固定按次表述，容易造成误解。
 
@@ -956,78 +1027,70 @@ Phase 2 不需要在套餐页堆满所有细分价格，但应避免继续使用
 
 > 积分可用于图片、视频等多种 AI 生成能力。视频生成会根据模型、清晰度、输入类型和时长动态扣费。生成前页面会展示预计消耗积分，实际扣费以任务记录为准。
 
-这部分不需要和 registry 重构绑在同一个 commit 中，但应作为 Phase 2 的收尾对齐项。
+这部分不需要和 registry 重构绑在同一个 commit 中，但应作为 Phase 2 的收尾对齐项，并同步检查中英文 i18n 文案。
 
-### 18.7 Phase 2 建议执行顺序
+### 18.11 Phase 2 建议执行顺序
 
-Phase 2 不拆成 5 个大阶段，而是拆成 2 个小阶段推进；实际开发按 5 个可回滚 commit 拆分。这样既保留推进效率，也避免把 registry、计费、前端控件、URL 安全和产品文案混在同一批。
+Phase 2 按 5 个可回滚 commit 拆分，避免把 registry、计费、前端控件、URL 安全和产品文案混在同一批。
 
-管理口径：
-
-- **Phase 2A：核心参数化与计费闭环**
-- **Phase 2B：安全与产品落地**
-
-执行口径：
-
-**Phase 2A：核心参数化与计费闭环**
-
-Commit 1：注册表重构
+Commit 1：Registry family 收敛 + pricing byResolution + availability
 
 - `family` 收敛为 `seedance-2-fast / seedance-2-standard`。
-- `resolution` 进入 `controls.resolution`。
-- 10 种价格口径进入 pricing matrix。
-- `validateModels()` 更新，校验 family、controls、pricing、状态和 scene 一致性。
+- `resolution` 进入 `controls.resolution` / `finalOptions.resolution`。
+- pricing 改为 `pricing[scene].byResolution[resolution]`。
+- availability 放在 resolution 叶子节点。
+- `validateModels()` 更新，校验 family、controls、pricing、availability、scene 和成本口径一致性。
 
-Commit 2：后端计费与解析适配
+Commit 2：后端 `resolveFinalOptions` / `calculateModelCredits` 适配 `resolution`
 
 - `resolveFinalOptions()` 支持 `resolution` controls。
-- `calculateModelCredits()` 按 `scene / inputBilling / resolution` 命中每秒积分，并结合 `duration` 计算总价。
-- `ENABLE_DYNAMIC_VIDEO_PRICING=false` 回滚策略落地。
-- 非法 `resolution`、pricing 缺失、`candidate / whitelist` 防误用逻辑落地。
-- 补充对应单元测试或服务端测试。
+- `calculateModelCredits()` 按归一化后的 `scene + resolution + duration` 计算总价。
+- `inputBilling` 由 scene 派生，仅用于内部成本口径校验。
+- 当 `ENABLE_DYNAMIC_VIDEO_PRICING=false`，或 `resolution` 控制参数尚未开放时，服务端必须忽略用户传入的 `resolution`，并回落到默认规格或旧 enabled SKU 对应参数，避免用户传入高规格参数后仍按旧固定价扣费。
+- 非法 `resolution`、pricing 缺失、`candidate / whitelist / disabled` 防误用逻辑落地。
+- 确保 provider payload 与 `costCredits` 使用同一份 `finalOptions`。
 
-Commit 3：前端 `resolution` 控件
+Commit 3：前端 video 生成表单增加 `resolution` 控件
 
-- `video.tsx` 从 registry 渲染 `resolution` 控件。
-- 价格随 `resolution + duration` 更新。
-- 生成请求携带 `resolution`。
+- 普通用户 resolution options 来自当前 scene 下 `availability = 'enabled'` 的 pricing。
+- 默认 resolution 必须是 enabled。
+- 切换 scene 后，当前 resolution 不合法时回落到合法默认值。
+- 价格随 `resolution + duration` 更新，生成请求携带 `resolution`。
 - `image-to-video` 仍保持入口受控，不在本 commit 中正式开放。
 
-**Phase 2B：安全与产品落地**
-
-Commit 4：输入资源 URL 安全
+Commit 4：URL 安全模块，覆盖 `image_input` / `video_input`
 
 - 新增独立资源 URL 安全模块，例如 `asset-url-security.ts`。
-- 只允许 HTTPS URL。
-- 禁止 localhost、127.0.0.1、内网 IP 和云厂商 metadata 地址。
-- 增加 MIME、大小和超时校验。
-- provider 拉取失败时返回明确错误。
+- 第一版优先只允许 HTTPS URL。
+- 覆盖 SSRF、localhost、127.0.0.1、内网 IP、metadata IP、重定向绕过、文件大小、MIME 和下载超时。
+- 生成入口或上传链路调用该模块，不能只做前端校验。
 
-Commit 5：pricing 页文案对齐
+Commit 5：pricing 页面和 i18n 文案对齐
 
 - 套餐页说明视频生成是动态扣费。
 - 避免继续使用固定按次扣费的误导表述。
+- 同步更新中英文 i18n 文案。
 - 保持简化展示，不在套餐页堆满所有细分价格表。
 
 Phase 2 的最后判断标准：
 
 - 新视频规格不再依赖带分辨率的 `family` 命名才能计费。
-- 前端展示、后端校验、任务落库和扣费使用同一套 registry / pricing 结果。
-- 不为开发期历史任务增加复杂兼容逻辑，历史费用仍以已落库的 `cost_credits` 为准。
+- 前端展示、后端校验、任务落库和扣费使用同一套 registry / pricing / finalOptions 结果。
+- 历史任务不批量迁移、不重新计费，找不到 registry 时展示原始 `task.model` / `task.family` 并标记 `legacy` 或 `unknown`。
 - `image-to-video` 的价格和参数结构已经补齐，即使入口暂不开放。
-- 用户输入资源 URL 至少经过 HTTPS、内网地址、MIME、大小和超时校验。
-- pricing 页不再暗示视频生成是固定按次扣费。
+- 输入资源 URL 安全作为 Phase 2B 验收项，至少覆盖 HTTPS、内网地址、metadata 地址、重定向、MIME、大小和超时校验。
+- pricing 页和 i18n 文案不再暗示视频生成是固定按次扣费。
 
 Phase 2 还应补充以下可测项：
 
 - `seedance-2-fast` / `seedance-2-standard` family 合并后 registry 校验通过。
-- `controls.resolution` 能按 scene 输出正确 options。
-- `no-video-input` 价格同时覆盖 `text-to-video / image-to-video`。
-- `with-video-input` 价格覆盖 `video-to-video`。
+- `pricing[scene].byResolution[resolution]` 能唯一命中价格。
+- `availability = 'enabled'` 是普通用户唯一可用状态。
+- `candidate / whitelist / disabled` 存在时，普通用户请求被后端拒绝。
+- `no-video-input` 由 `text-to-video / image-to-video` 派生，`video-input` 由 `video-to-video` 派生。
+- 同一 family + resolution + `no-video-input` 下，`text-to-video` 与 `image-to-video` 单价一致。
 - Fast 480p / 720p 的 `text-to-video` 价格分别为 12、24 credits/s。
 - Fast 480p `video-to-video` 价格为 7 credits/s。
-- `candidate / whitelist` 价格口径存在，但普通用户不可误用。
 - 非法 `resolution` 被拒绝。
 - pricing 不存在的 `resolution` 被拒绝。
-- `ENABLE_DYNAMIC_VIDEO_PRICING=false` 时，服务端忽略用户控制参数并回落默认规格或旧 enabled SKU 参数。
-- provider payload 使用的 `finalOptions` 与 `cost_credits` 计算使用的是同一份 `finalOptions`。
+- provider payload 使用的 `finalOptions` 与 `costCredits` 计算使用的是同一份 `finalOptions`。
