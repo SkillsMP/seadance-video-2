@@ -91,18 +91,24 @@ export function calculateModelCredits(
   }
 
   if (pricing.mode === 'perSecond') {
-    const resolutionPricing = pricing.byResolution
-      ? pricing.byResolution[resolveResolution(entry, scene, finalOptions)]
-      : undefined;
+    let creditsPerSecond = pricing.creditsPerSecond;
 
-    if (resolutionPricing && resolutionPricing.availability !== 'enabled') {
-      throw new Error(
-        `unavailable pricing resolution: ${entry.family}/${scene}`
-      );
+    if (pricing.byResolution) {
+      const resolution = resolveResolution(entry, scene, finalOptions);
+      const resolutionPricing = pricing.byResolution[resolution];
+
+      if (!resolutionPricing) {
+        throw new Error(`missing pricing resolution: ${entry.family}/${scene}`);
+      }
+
+      if (resolutionPricing.availability !== 'enabled') {
+        throw new Error(
+          `unavailable pricing resolution: ${entry.family}/${scene}`
+        );
+      }
+
+      creditsPerSecond = resolutionPricing.creditsPerSecond;
     }
-
-    const creditsPerSecond =
-      resolutionPricing?.creditsPerSecond ?? pricing.creditsPerSecond;
 
     if (!isFinitePositiveNumber(creditsPerSecond)) {
       throw new Error(`invalid per-second pricing: ${entry.family}/${scene}`);

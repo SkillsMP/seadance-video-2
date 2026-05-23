@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 import {
   calculateModelCredits,
   getGenerationCreditCost,
 } from '../src/config/ai/credit-costs';
+import {
+  assertGenerationPricingConsistency,
+  resolveGenerationPricingSnapshot,
+} from '../src/config/ai/generation-pricing';
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
 
 function createEntry(overrides: Partial<ModelEntry> = {}): ModelEntry {
@@ -137,6 +139,31 @@ assert.throws(
     ),
   /invalid per-second pricing/
 );
+assert.throws(
+  () =>
+    calculateModelCredits(
+      createEntry({
+        defaults: {
+          'text-to-video': {
+            duration: 5,
+            resolution: '720p',
+          },
+        },
+        pricing: {
+          'text-to-video': {
+            mode: 'perSecond',
+            defaultDuration: 5,
+            byResolution: {
+              '480p': { creditsPerSecond: 12, availability: 'enabled' },
+            },
+          },
+        },
+      }),
+      'text-to-video',
+      { duration: 5, resolution: '720p' }
+    ),
+  /missing pricing resolution/
+);
 
 assert.equal(
   calculateModelCredits(
@@ -186,6 +213,147 @@ assert.equal(
   ),
   70
 );
+assert.throws(
+  () =>
+    calculateModelCredits(
+      findEnabledModel('seedance-2-fast', 'video-to-video'),
+      'video-to-video',
+      { duration: 5, resolution: '720p' }
+    ),
+  /unavailable pricing resolution/
+);
+
+const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
+const lockedResolutionSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: textEntry,
+  options: { duration: 10, resolution: '720p' },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+
+assert.equal(lockedResolutionSnapshot.finalOptions.duration, 10);
+assert.equal(lockedResolutionSnapshot.finalOptions.resolution, '480p');
+assert.equal(lockedResolutionSnapshot.costCredits, 120);
+
+const staticPricingSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: textEntry,
+  options: {
+    duration: 10,
+    aspect_ratio: '9:16',
+    resolution: '720p',
+  },
+  useDynamicVideoPricing: false,
+  allowControlOptions: false,
+  allowResolutionControl: false,
+});
+
+assert.equal(staticPricingSnapshot.finalOptions.duration, 5);
+assert.equal(staticPricingSnapshot.finalOptions.aspect_ratio, '16:9');
+assert.equal(staticPricingSnapshot.finalOptions.resolution, '480p');
+assert.equal(staticPricingSnapshot.costCredits, 45);
+
+const openResolutionSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: textEntry,
+  options: { duration: 10, resolution: '720p' },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: true,
+});
+
+assert.equal(openResolutionSnapshot.finalOptions.resolution, '720p');
+assert.equal(openResolutionSnapshot.costCredits, 240);
+
+const sameFallbackEntry: ModelEntry = {
+  ...textEntry,
+  provider: 'fallback-provider',
+  value: 'fallback-model',
+};
+const sameFallbackSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: sameFallbackEntry,
+  options: { duration: 10, resolution: '720p' },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+
+assert.doesNotThrow(() =>
+  assertGenerationPricingConsistency(
+    lockedResolutionSnapshot,
+    sameFallbackSnapshot
+  )
+);
+
+const finalOptionsDriftEntry: ModelEntry = {
+  ...textEntry,
+  provider: 'fallback-provider',
+  value: 'fallback-model',
+  defaults: {
+    ...textEntry.defaults,
+    'text-to-video': {
+      ...textEntry.defaults?.['text-to-video'],
+      aspect_ratio: '9:16',
+    },
+  },
+};
+const finalOptionsDriftSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: finalOptionsDriftEntry,
+  options: { duration: 10, resolution: '720p' },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+
+assert.throws(
+  () =>
+    assertGenerationPricingConsistency(
+      lockedResolutionSnapshot,
+      finalOptionsDriftSnapshot
+    ),
+  /generation pricing drift/
+);
+
+const costDriftEntry: ModelEntry = {
+  ...textEntry,
+  provider: 'fallback-provider',
+  value: 'fallback-model',
+  pricing: {
+    ...textEntry.pricing,
+    'text-to-video': {
+      mode: 'perSecond',
+      defaultDuration: 5,
+      byResolution: {
+        '480p': { creditsPerSecond: 13, availability: 'enabled' },
+        '720p': { creditsPerSecond: 24, availability: 'enabled' },
+      },
+    },
+  },
+};
+const costDriftSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: costDriftEntry,
+  options: { duration: 10, resolution: '720p' },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+
+assert.throws(
+  () =>
+    assertGenerationPricingConsistency(lockedResolutionSnapshot, costDriftSnapshot),
+  /generation pricing drift/
+);
 
 assert.equal(
   getGenerationCreditCost({
@@ -203,11 +371,5 @@ assert.equal(
   }),
   45
 );
-
-const generateRoute = readFileSync(
-  join(process.cwd(), 'src/app/api/ai/generate/route.ts'),
-  'utf8'
-);
-assert.equal(generateRoute.includes('calculateModelCredits'), true);
 
 console.log('calculateModelCredits checks passed.');

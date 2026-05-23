@@ -1,10 +1,11 @@
 import { envConfigs } from '@/config';
+import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import {
-  calculateModelCredits,
-  getGenerationCreditCost,
-} from '@/config/ai/credit-costs';
+  assertGenerationPricingConsistency,
+  resolveGenerationPricingSnapshot,
+  type GenerationPricingSnapshot,
+} from '@/config/ai/generation-pricing';
 import { findModel, type ModelEntry } from '@/config/ai/models';
-import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -75,9 +76,11 @@ export async function POST(request: Request) {
       mediaType === AIMediaType.VIDEO;
     const allowControlOptions =
       mediaType !== AIMediaType.VIDEO || useDynamicVideoPricing;
+    const allowResolutionControl = false;
 
     let candidateEntries: ModelEntry[] = [];
     let costCredits: number;
+    let pricingSnapshot: GenerationPricingSnapshot | undefined;
 
     if (supportCandidatesFallback) {
       if (!family || !scene || !candidates?.length) {
@@ -113,27 +116,16 @@ export async function POST(request: Request) {
         throw new Error('invalid candidate');
       }
 
-      if (useDynamicVideoPricing) {
-        const pricingFinalOptions = resolveFinalOptions({
-          mediaType,
-          scene,
-          entry: firstEntry,
-          options,
-          allowControlOptions,
-        });
-
-        costCredits = calculateModelCredits(
-          firstEntry,
-          scene,
-          pricingFinalOptions
-        );
-      } else {
-        const entryCostCredits = firstEntry.credits[scene];
-        if (typeof entryCostCredits !== 'number') {
-          throw new Error(`invalid credits: ${family}/${scene}`);
-        }
-        costCredits = entryCostCredits;
-      }
+      pricingSnapshot = resolveGenerationPricingSnapshot({
+        mediaType,
+        scene,
+        entry: firstEntry,
+        options,
+        useDynamicVideoPricing,
+        allowControlOptions,
+        allowResolutionControl,
+      });
+      costCredits = pricingSnapshot.costCredits;
     } else {
       if (!provider || !model) {
         throw new Error('invalid params');
@@ -187,20 +179,27 @@ export async function POST(request: Request) {
     let result;
 
     if (supportCandidatesFallback) {
-      if (!scene) {
+      if (!scene || !pricingSnapshot) {
         throw new Error('invalid scene');
       }
 
       const candidateErrors: string[] = [];
 
       for (const entry of candidateEntries) {
-        const finalOptions = resolveFinalOptions({
+        const candidatePricingSnapshot = resolveGenerationPricingSnapshot({
           mediaType,
           scene,
           entry,
           options,
+          useDynamicVideoPricing,
           allowControlOptions,
+          allowResolutionControl,
         });
+        assertGenerationPricingConsistency(
+          pricingSnapshot,
+          candidatePricingSnapshot
+        );
+        const finalOptions = candidatePricingSnapshot.finalOptions;
 
         await moderateGenerationInput({
           userId: user.id,

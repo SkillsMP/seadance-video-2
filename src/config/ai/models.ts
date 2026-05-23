@@ -191,7 +191,7 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
     defaultResolution: '480p',
     inputBilling: 'video-input',
     credits: 45,
-    durationOptions: SEEDANCE_TEXT_DURATION_OPTIONS,
+    durationOptions: SEEDANCE_VIDEO_DURATION_OPTIONS,
     byResolution: {
       '480p': { creditsPerSecond: 9, availability: 'candidate' },
       '720p': { creditsPerSecond: 18, availability: 'candidate' },
@@ -827,6 +827,56 @@ function validateVideoPricingCostPaths(errors: string[]): void {
   }
 }
 
+function stableStringifyConfig(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringifyConfig).join(',')}]`;
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record)
+      .sort()
+      .map(
+        (key) => `${JSON.stringify(key)}:${stableStringifyConfig(record[key])}`
+      )
+      .join(',')}}`;
+  }
+
+  return JSON.stringify(value) ?? 'undefined';
+}
+
+function getFallbackConfigSignature(model: ModelEntry, scene: string): string {
+  return stableStringifyConfig({
+    controls: model.controls?.[scene],
+    defaults: model.defaults?.[scene],
+    enforced: model.enforced?.[scene],
+    pricing: model.pricing?.[scene],
+    skuAttributes: model.skuAttributes?.[scene],
+  });
+}
+
+function validateFallbackCandidateConfigConsistency(errors: string[]): void {
+  const signaturesByGroup = new Map<string, string>();
+
+  for (const model of MODELS) {
+    if (!model.enabled) {
+      continue;
+    }
+
+    for (const scene of model.scenes) {
+      const key = `${model.mediaType}/${model.family}/${scene}`;
+      const signature = getFallbackConfigSignature(model, scene);
+      const existingSignature = signaturesByGroup.get(key);
+
+      if (existingSignature && existingSignature !== signature) {
+        errors.push(`fallback candidate config drift: ${key}`);
+      } else {
+        signaturesByGroup.set(key, signature);
+      }
+    }
+  }
+}
+
 export function validateModels(): string[] {
   const errors: string[] = [];
   const enabledModels = MODELS.filter((m) => m.enabled);
@@ -877,6 +927,7 @@ export function validateModels(): string[] {
   }
 
   validateVideoPricingCostPaths(errors);
+  validateFallbackCandidateConfigConsistency(errors);
 
   return errors;
 }

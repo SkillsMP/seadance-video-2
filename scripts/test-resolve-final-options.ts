@@ -1,6 +1,4 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
 import { resolveFinalOptions } from '../src/config/ai/options';
@@ -40,6 +38,7 @@ const controlledOptions = resolveFinalOptions({
     generate_audio: true,
   },
   allowControlOptions: true,
+  allowResolutionControl: true,
 });
 
 assert.equal(controlledOptions.duration, 10);
@@ -47,6 +46,23 @@ assert.equal(controlledOptions.aspect_ratio, '9:16');
 assert.equal(controlledOptions.resolution, '720p');
 assert.equal(controlledOptions.generate_audio, false);
 assert.equal(controlledOptions.inputBilling, 'no-video-input');
+
+const resolutionLockedOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: textScene,
+  entry: textEntry,
+  options: {
+    duration: 10,
+    aspect_ratio: '9:16',
+    resolution: '720p',
+  },
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+
+assert.equal(resolutionLockedOptions.duration, 10);
+assert.equal(resolutionLockedOptions.aspect_ratio, '9:16');
+assert.equal(resolutionLockedOptions.resolution, '480p');
 
 const fallbackOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -89,11 +105,26 @@ const ignoredInvalidOptions = resolveFinalOptions({
 
 assert.equal(ignoredInvalidOptions.duration, 5);
 assert.equal(ignoredInvalidOptions.aspect_ratio, '16:9');
+assert.equal(ignoredInvalidOptions.resolution, '480p');
 
 const videoInputEntry = findEnabledModel('seedance-2-fast', 'video-to-video');
 assert.deepEqual(
   videoInputEntry.controls?.['video-to-video']?.resolution?.options,
   ['480p']
+);
+assert.throws(
+  () =>
+    resolveFinalOptions({
+      mediaType: 'video',
+      scene: 'video-to-video',
+      entry: videoInputEntry,
+      options: {
+        resolution: '720p',
+      },
+      allowControlOptions: true,
+      allowResolutionControl: true,
+    }),
+  /unsupported generation option: resolution/
 );
 const videoInputOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -111,11 +142,6 @@ assert.deepEqual(videoInputOptions.video_input, [
 ]);
 assert.equal(videoInputOptions.duration, 5);
 assert.equal(videoInputOptions.aspect_ratio, '16:9');
-
-const generateRoute = readFileSync(
-  join(process.cwd(), 'src/app/api/ai/generate/route.ts'),
-  'utf8'
-);
-assert.equal(generateRoute.includes('allowControlOptions'), true);
+assert.equal(videoInputOptions.resolution, '480p');
 
 console.log('resolveFinalOptions checks passed.');
