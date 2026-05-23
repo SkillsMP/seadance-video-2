@@ -1,4 +1,5 @@
 import { envConfigs } from '@/config';
+import { assertSafeAssetInputUrls } from '@/config/ai/asset-url-security';
 import { getGenerationCreditCost } from '@/config/ai/credit-costs';
 import {
   assertGenerationPricingConsistency,
@@ -129,6 +130,7 @@ export async function POST(request: Request) {
         allowControlOptions,
         allowResolutionControl,
       });
+      assertSafeAssetInputUrls(pricingSnapshot.finalOptions);
       costCredits = pricingSnapshot.costCredits;
     } else {
       if (!provider || !model) {
@@ -199,11 +201,12 @@ export async function POST(request: Request) {
           allowControlOptions,
           allowResolutionControl,
         });
+        const finalOptions = candidatePricingSnapshot.finalOptions;
+        assertSafeAssetInputUrls(finalOptions);
         assertGenerationPricingConsistency(
           pricingSnapshot,
           candidatePricingSnapshot
         );
-        const finalOptions = candidatePricingSnapshot.finalOptions;
 
         await moderateGenerationInput({
           userId: user.id,
@@ -250,6 +253,8 @@ export async function POST(request: Request) {
         throw new Error('All model candidates failed');
       }
     } else if (provider && model) {
+      assertSafeAssetInputUrls(options);
+
       await moderateGenerationInput({
         userId: user.id,
         mediaType,
