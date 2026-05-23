@@ -330,7 +330,7 @@ Kie adapter 只负责 provider 字段映射，不再偷偷补业务默认值。
 
 ## 9. image-to-video tab 策略
 
-本阶段不默认开放 `image-to-video`。
+本阶段不默认开放 `image-to-video`（注：此为 Phase 0/1 早期限制，在 Phase 2 Commit 5 中，image-to-video 将作为全量规格矩阵的一部分正式开放）。
 
 规则：
 

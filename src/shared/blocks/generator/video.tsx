@@ -738,9 +738,12 @@ export function VideoGenerator({
               </CardHeader>
               <CardContent className="space-y-6 pb-8">
                 <Tabs value={activeTab} onValueChange={handleTabChange}>
-                  <TabsList className="bg-primary/10 grid w-full grid-cols-2">
+                  <TabsList className="bg-primary/10 grid h-auto w-full grid-cols-1 gap-1 sm:h-10 sm:grid-cols-3">
                     <TabsTrigger value="text-to-video">
                       {t('tabs.text-to-video')}
+                    </TabsTrigger>
+                    <TabsTrigger value="image-to-video">
+                      {t('tabs.image-to-video')}
                     </TabsTrigger>
                     <TabsTrigger value="video-to-video">
                       {t('tabs.video-to-video')}

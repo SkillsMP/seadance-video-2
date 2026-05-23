@@ -24,6 +24,24 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
 
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
 const textScene = 'text-to-video';
+const imageEntry = findEnabledModel('seedance-2-fast', 'image-to-video');
+const standardTextEntry = findEnabledModel(
+  'seedance-2-standard',
+  'text-to-video'
+);
+const standardVideoInputEntry = findEnabledModel(
+  'seedance-2-standard',
+  'video-to-video'
+);
+
+assert.equal(
+  MODELS.some((model) =>
+    /seedance-2-(?:fast|standard)-\d{3,4}p(?:-|$)|seedance-2-(?:fast|standard).*video-input/.test(
+      model.family
+    )
+  ),
+  false
+);
 
 assert.deepEqual(
   resolveVideoGenerationFeatureFlags({
@@ -63,6 +81,18 @@ assert.deepEqual(textEntry.controls?.[textScene]?.resolution?.options, [
   '480p',
   '720p',
 ]);
+assert.deepEqual(imageEntry.controls?.['image-to-video']?.resolution?.options, [
+  '480p',
+  '720p',
+]);
+assert.deepEqual(
+  standardTextEntry.controls?.['text-to-video']?.resolution?.options,
+  ['480p', '720p', '1080p']
+);
+assert.deepEqual(
+  standardVideoInputEntry.controls?.['video-to-video']?.resolution?.options,
+  ['480p', '720p', '1080p']
+);
 
 const openControlEntries = getVideoControlEntries({
   entry: textEntry,
@@ -148,6 +178,26 @@ assert.equal(controlledOptions.resolution, '720p');
 assert.equal(controlledOptions.generate_audio, false);
 assert.equal(controlledOptions.inputBilling, 'no-video-input');
 
+const imageOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: imageEntry,
+  options: {
+    image_input: [' https://example.com/reference.png '],
+    duration: 6,
+    resolution: '720p',
+  },
+  allowControlOptions: true,
+  allowResolutionControl: true,
+});
+
+assert.deepEqual(imageOptions.image_input, [
+  'https://example.com/reference.png',
+]);
+assert.equal(imageOptions.duration, 6);
+assert.equal(imageOptions.resolution, '720p');
+assert.equal(imageOptions.inputBilling, 'no-video-input');
+
 const resolutionLockedOptions = resolveFinalOptions({
   mediaType: 'video',
   scene: textScene,
@@ -211,7 +261,7 @@ assert.equal(ignoredInvalidOptions.resolution, '480p');
 const videoInputEntry = findEnabledModel('seedance-2-fast', 'video-to-video');
 assert.deepEqual(
   videoInputEntry.controls?.['video-to-video']?.resolution?.options,
-  ['480p']
+  ['480p', '720p']
 );
 const videoInputControlEntries = getVideoControlEntries({
   entry: videoInputEntry,
@@ -226,9 +276,37 @@ assert.deepEqual(
   {
     duration: '10',
     aspect_ratio: '9:16',
+    resolution: '720p',
+  }
+);
+assert.deepEqual(
+  normalizeVideoControlValues({
+    currentValues: {
+      duration: '15',
+      aspect_ratio: '9:16',
+      resolution: '1080p',
+    },
+    controlEntries: videoInputControlEntries,
+  }),
+  {
+    duration: '5',
+    aspect_ratio: '9:16',
     resolution: '480p',
   }
 );
+const videoInputOpenOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'video-to-video',
+  entry: videoInputEntry,
+  options: {
+    resolution: '720p',
+    duration: 10,
+  },
+  allowControlOptions: true,
+  allowResolutionControl: true,
+});
+assert.equal(videoInputOpenOptions.resolution, '720p');
+assert.equal(videoInputOpenOptions.duration, 10);
 assert.throws(
   () =>
     resolveFinalOptions({
@@ -236,7 +314,7 @@ assert.throws(
       scene: 'video-to-video',
       entry: videoInputEntry,
       options: {
-        resolution: '720p',
+        resolution: '1080p',
       },
       allowControlOptions: true,
       allowResolutionControl: true,

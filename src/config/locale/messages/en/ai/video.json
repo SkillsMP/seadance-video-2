@@ -17,11 +17,11 @@
           },
           {
             "question": "How long can a generated clip be?",
-            "answer": "Clips usually land between 5 and 10 seconds, with the exact upper bound depending on the model you pick. A few models also let you trade duration for resolution if you need extra room."
+            "answer": "Clips usually land between 4 and 15 seconds, with the exact options depending on the model, input mode and resolution you pick."
           },
           {
             "question": "What resolutions and aspect ratios can I get?",
-            "answer": "Output capabilities vary by model, but you can typically choose between 720p and 1080p, and switch between 16:9 cinematic, 9:16 vertical or 1:1 social-friendly framing."
+            "answer": "Output capabilities vary by model, but Seedance 2.0 options include 480p, 720p and 1080p where available, plus common aspect ratios such as 16:9, 9:16 and 1:1."
           },
           {
             "question": "How long does a single render take?",

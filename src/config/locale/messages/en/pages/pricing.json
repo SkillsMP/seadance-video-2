@@ -9,7 +9,7 @@
       "pricing": {
         "id": "pricing",
         "title": "Image and Video Credit Plans",
-        "description": "Credits work across image and video generation. Higher-quality models use more credits.",
+        "description": "Credits work across image and video generation. Video cost is estimated by model, resolution and duration before you generate.",
         "groups": [
           {
             "name": "one-time",
@@ -34,7 +34,7 @@
             "features": [
               "400 credits",
               "Credits valid for 365 days",
-              "About 20 Pro images or 8 fast videos",
+              "Video cost varies by model, resolution and duration",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -62,7 +62,7 @@
             "features": [
               "1,200 credits",
               "Credits valid for 365 days",
-              "About 60 Pro images or 26 fast videos",
+              "Video cost varies by model, resolution and duration",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -90,7 +90,7 @@
             "features": [
               "3,600 credits",
               "Credits valid for 365 days",
-              "About 180 Pro images or 80 fast videos",
+              "Video cost varies by model, resolution and duration",
               "One-time purchase, no subscription"
             ],
             "interval": "one-time",
@@ -118,7 +118,7 @@
             "features": [
               "360 credits per month",
               "Credits valid for 30 days",
-              "About 18 Pro images or 8 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -146,7 +146,7 @@
             "features": [
               "1,200 credits per month",
               "Credits valid for 30 days",
-              "About 60 Pro images or 26 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -176,7 +176,7 @@
             "features": [
               "3,600 credits per month",
               "Credits valid for 30 days",
-              "About 180 Pro images or 80 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Cancel anytime"
             ],
             "interval": "month",
@@ -204,7 +204,7 @@
             "features": [
               "4,320 credits per year",
               "Credits valid for 365 days",
-              "About 216 Pro images or 96 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Pay 10 months, get 12 months",
               "Annual credits are granted upfront"
             ],
@@ -233,7 +233,7 @@
             "features": [
               "14,400 credits per year",
               "Credits valid for 365 days",
-              "About 720 Pro images or 320 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Pay 10 months, get 12 months",
               "Annual credits are granted upfront"
             ],
@@ -263,7 +263,7 @@
             "features": [
               "43,200 credits per year",
               "Credits valid for 365 days",
-              "About 2,160 Pro images or 960 fast videos",
+              "Video cost varies by model, resolution and duration",
               "Pay 10 months, get 12 months",
               "Annual credits are granted upfront"
             ],
@@ -297,7 +297,7 @@
           },
           {
             "question": "Can I use the same credits for images and videos?",
-            "answer": "Yes. Image and video generation share the same credit balance. Higher-quality models and advanced video settings use more credits."
+            "answer": "Yes. Image and video generation share the same credit balance. Video cost is shown in the generator and varies by model, resolution and duration."
           },
           {
             "question": "Can I cancel my subscription at any time?",
@@ -321,7 +321,7 @@
           },
           {
             "question": "Does 1 credit equal 1 generation?",
-            "answer": "No, 1 credit does not equal 1 generation. Advanced models and higher resolutions require more credits per use."
+            "answer": "No, 1 credit does not equal 1 generation. Advanced models, higher resolutions and longer videos require more credits; the generator shows the estimate before submission."
           }
         ]
       },

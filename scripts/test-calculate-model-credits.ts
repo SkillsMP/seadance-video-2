@@ -8,7 +8,11 @@ import {
   assertGenerationPricingConsistency,
   resolveGenerationPricingSnapshot,
 } from '../src/config/ai/generation-pricing';
-import { MODELS, type ModelEntry } from '../src/config/ai/models';
+import {
+  MODELS,
+  type ModelEntry,
+  type VideoResolution,
+} from '../src/config/ai/models';
 
 function createEntry(overrides: Partial<ModelEntry> = {}): ModelEntry {
   return {
@@ -213,15 +217,139 @@ assert.equal(
   ),
   70
 );
-assert.throws(
-  () =>
-    calculateModelCredits(
-      findEnabledModel('seedance-2-fast', 'video-to-video'),
-      'video-to-video',
-      { duration: 5, resolution: '720p' }
-    ),
-  /unavailable pricing resolution/
+assert.equal(
+  calculateModelCredits(
+    findEnabledModel('seedance-2-fast', 'video-to-video'),
+    'video-to-video',
+    { duration: 5, resolution: '720p' }
+  ),
+  75
 );
+
+const seedancePricingMatrix = [
+  {
+    family: 'seedance-2-fast',
+    scenes: ['text-to-video', 'image-to-video'],
+    inputBilling: 'no-video-input',
+    byResolution: {
+      '480p': 12,
+      '720p': 24,
+    },
+  },
+  {
+    family: 'seedance-2-fast',
+    scenes: ['video-to-video'],
+    inputBilling: 'video-input',
+    byResolution: {
+      '480p': 7,
+      '720p': 15,
+    },
+  },
+  {
+    family: 'seedance-2-standard',
+    scenes: ['text-to-video', 'image-to-video'],
+    inputBilling: 'no-video-input',
+    byResolution: {
+      '480p': 14,
+      '720p': 30,
+      '1080p': 75,
+    },
+  },
+  {
+    family: 'seedance-2-standard',
+    scenes: ['video-to-video'],
+    inputBilling: 'video-input',
+    byResolution: {
+      '480p': 9,
+      '720p': 18,
+      '1080p': 45,
+    },
+  },
+] as const;
+
+let openedSeedanceMatrixRows = 0;
+
+for (const row of seedancePricingMatrix) {
+  const resolutionEntries = Object.entries(row.byResolution);
+  openedSeedanceMatrixRows += resolutionEntries.length;
+
+  for (const scene of row.scenes) {
+    const entry = findEnabledModel(row.family, scene);
+    const resolutionControlOptions =
+      entry.controls?.[scene]?.resolution?.options ?? [];
+
+    assert.equal(entry.enabled, true);
+    assert.equal(entry.skuAttributes?.[scene]?.inputBilling, row.inputBilling);
+
+    for (const [resolution, creditsPerSecond] of resolutionEntries) {
+      const typedResolution = resolution as VideoResolution;
+      const resolutionPricing =
+        entry.pricing?.[scene]?.byResolution?.[typedResolution];
+
+      assert.equal(resolutionPricing?.availability, 'enabled');
+      assert.equal(resolutionPricing?.creditsPerSecond, creditsPerSecond);
+      assert.equal(resolutionControlOptions.includes(typedResolution), true);
+      assert.equal(
+        calculateModelCredits(entry, scene, {
+          duration: 5,
+          resolution: typedResolution,
+        }),
+        creditsPerSecond * 5
+      );
+
+      const snapshot = resolveGenerationPricingSnapshot({
+        mediaType: 'video',
+        scene,
+        entry,
+        options: {
+          duration: 5,
+          resolution: typedResolution,
+        },
+        useDynamicVideoPricing: true,
+        allowControlOptions: true,
+        allowResolutionControl: true,
+      });
+
+      assert.equal(snapshot.finalOptions.resolution, typedResolution);
+      assert.equal(snapshot.costCredits, creditsPerSecond * 5);
+    }
+  }
+}
+
+assert.equal(openedSeedanceMatrixRows, 10);
+assert.equal(
+  MODELS.some((model) =>
+    /seedance-2-(?:fast|standard)-\d{3,4}p(?:-|$)|seedance-2-(?:fast|standard).*video-input/.test(
+      model.family
+    )
+  ),
+  false
+);
+
+const imageToVideoEntry = findEnabledModel(
+  'seedance-2-fast',
+  'image-to-video'
+);
+const imageToVideoSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: imageToVideoEntry,
+  options: {
+    image_input: [' https://example.com/reference.png '],
+    duration: 6,
+    resolution: '720p',
+  },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: true,
+});
+
+assert.deepEqual(imageToVideoSnapshot.finalOptions.image_input, [
+  'https://example.com/reference.png',
+]);
+assert.equal(imageToVideoSnapshot.finalOptions.inputBilling, 'no-video-input');
+assert.equal(imageToVideoSnapshot.finalOptions.resolution, '720p');
+assert.equal(imageToVideoSnapshot.costCredits, 144);
 
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
 const lockedResolutionSnapshot = resolveGenerationPricingSnapshot({
