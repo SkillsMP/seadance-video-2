@@ -994,20 +994,21 @@ Phase 2 的 `validateModels()` 不只校验 schema，还要校验开放组合和
 
 URL 安全不要从 Phase 2B 移除，可以从 registry / pricing 重构中拆成独立 commit，但仍应作为 Phase 2B 验收项。当前 `options.ts` 只做参数白名单和 `image_input` / `video_input` 的数组字符串校验，不足以覆盖资源 URL 风险。
 
-第一版建议优先只允许 HTTPS，并覆盖 `image_input` / `video_input`。最低安全边界包括：
+第一版收敛为轻量、被动、集中式 URL 门禁，并覆盖 `image_input` / `video_input`。最低安全边界包括：
 
 - 只允许 HTTPS URL。
-- 禁止 localhost、127.0.0.1、`::1`、内网 IP、link-local 和云厂商 metadata IP。
-- 处理 DNS 解析、重定向绕过和最终落点校验。
-- 不信任前端传入的文件扩展名。
-- 限制允许的 MIME 类型。
-- 限制资源大小。
-- 设置探测或下载超时。
-- provider 拉取失败时返回明确错误。
+- 拒绝非法 URL、非 HTTPS scheme、带 username / password 的 URL。
+- 拒绝 localhost、127.0.0.1、0.0.0.0、`::1`、私有网段、link-local 和云厂商 metadata IP 等明显危险目标。
+- 校验基于最终 `finalOptions` 中的 `image_input` / `video_input`，不能只校验用户原始输入。
+- 在 provider 调用前失败返回明确错误，不进入 provider 调用，不创建任务。
+- 不主动下载用户资源，不默认发起 HEAD / GET 探测。
+- 不改 provider 主流程，不改前端上传逻辑。
 
-当前阶段可以先做最低版，不需要一次性完成复杂上传治理、文件归属校验、签名 URL 全链路审计和异步安全扫描。但只要开放用户可传入图片或视频 URL，就不能跳过 SSRF、资源大小、MIME 和超时风险。
+当前阶段可以先做轻量门禁，不需要一次性完成复杂上传治理、文件归属校验、签名 URL 全链路审计和异步安全扫描。第一版 URL 安全不做完整远程资源治理。如果当前服务端并不主动下载用户资源，不应为了校验 MIME、大小或重定向而新增远程请求，避免安全模块本身成为新的 SSRF 入口。
 
-URL 安全逻辑不要直接塞进 `options.ts`。`options.ts` 仍主要负责生成参数清洗和 controls 校验；HTTPS、内网地址、metadata 地址、MIME、大小和超时等资源安全检查应放在独立模块中，例如 `asset-url-security.ts`，再由生成入口或上传链路调用。
+URL 安全逻辑不要直接塞进 `options.ts`。`options.ts` 仍主要负责生成参数清洗和 controls 校验；HTTPS、明显危险 host / IP 字面量等资源 URL 门禁应放在独立模块中，例如 `asset-url-security.ts`，再由生成入口在 provider 调用前基于 `finalOptions` 调用。
+
+DNS 解析后的 IP 校验、重定向最终落点校验、MIME、Content-Length、文件大小、下载超时、远程资源代理下载、签名 URL 和对象存储归属校验，作为后续增强项处理。后续如引入服务端拉取、代理下载或对象存储中转，再单独增加这些主动探测和下载链路控制。
 
 ### 18.9 Provider 成本一致性先写原则，不做复杂实现
 
@@ -1069,27 +1070,38 @@ Commit 3：前端 video 生成表单增加 `resolution` 控件
 - 价格随 `resolution + duration` 更新，生成请求携带 `resolution`。
 - `image-to-video` 仍保持入口受控，不在本 commit 中正式开放。
 
-Commit 4：URL 安全模块，覆盖 `image_input` / `video_input`
+Commit 4：轻量 URL 安全门禁，覆盖 `image_input` / `video_input`
 
 - 新增独立资源 URL 安全模块，例如 `asset-url-security.ts`。
-- 第一版优先只允许 HTTPS URL。
-- 覆盖 SSRF、localhost、127.0.0.1、内网 IP、metadata IP、重定向绕过、文件大小、MIME 和下载超时。
-- 生成入口或上传链路调用该模块，不能只做前端校验。
+- 第一版只做被动 URL 校验，不主动下载用户资源，不默认发起 HEAD / GET 探测。
+- 默认只允许 HTTPS URL。
+- 拒绝非法 URL、非 HTTPS scheme、带 username / password 的 URL。
+- 拒绝 localhost、127.0.0.1、0.0.0.0、`::1`、私有网段、link-local 和 metadata 地址等明显危险目标。
+- 校验应基于最终 `finalOptions` 中的 `image_input` / `video_input`，并在 provider 调用前执行。
+- 校验失败时返回明确错误，不进入 provider 调用，不创建任务。
+- DNS 解析、重定向最终落点、MIME、Content-Length、文件大小和下载超时作为后续增强项，不和第一版门禁混在一个 commit。
 
-Commit 5：pricing 页面和 i18n 文案对齐
+Commit 5：开放 Seedance 2 全量规格矩阵 + pricing/i18n 文案对齐
 
-- 套餐页说明视频生成是动态扣费。
-- 避免继续使用固定按次扣费的误导表述。
-- 同步更新中英文 i18n 文案。
-- 保持简化展示，不在套餐页堆满所有细分价格表。
+- Commit 5 不只是文案收尾，核心目标是让生成器实际可选择 Seedance 2 扣费矩阵中的 10 行规格；pricing 页面展示只是同步事项，不是核心目标。
+- 10 行矩阵对应的普通用户规格必须正式开放：对应 `entry.enabled` 为 `true`，对应 `pricing[scene].byResolution[resolution].availability` 为 `enabled`，不再停留在 `candidate / disabled / whitelist` 或预埋不可选状态。
+- controls 仍然只暴露 `availability = 'enabled'` 的规格，不为了展示规格破坏 enabled-only 规则。
+- 继续保持 `seedance-2-fast / seedance-2-standard` 的 family 收敛设计，不退回 `seedance-2-fast-480p`、`seedance-2-fast-720p` 这类旧 SKU family；规格差异继续通过 `scene + resolution + duration` controls 表达。
+- `image-to-video` 不再只是预埋入口，生成器应展示 `image-to-video` tab，并复用现有 `image_input`、`ImageUploader` 和 provider payload 链路；不重写上传组件，不改变 `image_input` 数据结构。
+- 用户应能通过 `family / scene / resolution / duration` 选择到 10 行矩阵对应规格；前端价格预估、`handleGenerate` 提交参数、后端 `finalOptions / costCredits` 必须保持一致。
+- 不破坏 Commit 2 的 fallback drift 防护，也不破坏 Commit 4 的 URL 安全门禁。
+- 脚本级测试需要验证 10 行规格都已开放，覆盖 Fast / Standard、`text-to-video / image-to-video / video-to-video`、`480p / 720p / 1080p` 的可选项矩阵，并验证 `calculateModelCredits()` 对 10 行规格按正确 credits/s 计费。
+- 测试还应验证 `image-to-video` 有可用 entry，并能构造 `image_input` options；不要只做源码字符串 includes 检查。
+- 套餐页和 pricing 页说明视频生成是动态扣费，避免继续使用固定按次扣费的误导表述；同步更新中英文 i18n 文案，并保持简化展示，不在套餐页重复实现计费逻辑或堆满所有细分价格表。
 
 Phase 2 的最后判断标准：
 
 - 新视频规格不再依赖带分辨率的 `family` 命名才能计费。
+- Seedance 2 扣费矩阵中的 10 行普通用户规格已在生成器中可选，并且对应 `entry.enabled` 和 `availability` 均为 enabled。
 - 前端展示、后端校验、任务落库和扣费使用同一套 registry / pricing / finalOptions 结果。
 - 历史任务不批量迁移、不重新计费，找不到 registry 时展示原始 `task.model` / `task.family` 并标记 `legacy` 或 `unknown`。
-- `image-to-video` 的价格和参数结构已经补齐，即使入口暂不开放。
-- 输入资源 URL 安全作为 Phase 2B 验收项，至少覆盖 HTTPS、内网地址、metadata 地址、重定向、MIME、大小和超时校验。
+- `image-to-video` 的价格、参数结构和前端入口已经开放，提交时仍复用现有 `image_input` 链路。
+- 输入资源 URL 安全作为 Phase 2B 验收项，第一版至少覆盖 HTTPS、非法 URL、账号密码 URL、localhost、内网地址、link-local 和 metadata 地址等轻量门禁；重定向、MIME、大小和超时校验作为后续增强项。
 - pricing 页和 i18n 文案不再暗示视频生成是固定按次扣费。
 
 Phase 2 还应补充以下可测项：
@@ -1100,8 +1112,9 @@ Phase 2 还应补充以下可测项：
 - `candidate / whitelist / disabled` 存在时，普通用户请求被后端拒绝。
 - `no-video-input` 由 `text-to-video / image-to-video` 派生，`video-input` 由 `video-to-video` 派生。
 - 同一 family + resolution + `no-video-input` 下，`text-to-video` 与 `image-to-video` 单价一致。
-- Fast 480p / 720p 的 `text-to-video` 价格分别为 12、24 credits/s。
-- Fast 480p `video-to-video` 价格为 7 credits/s。
+- 10 行扣费矩阵全部可选、可计费：Fast `no-video-input` 480p / 720p 分别为 12、24 credits/s；Fast `video-input` 480p / 720p 分别为 7、15 credits/s；Standard `no-video-input` 480p / 720p / 1080p 分别为 14、30、75 credits/s；Standard `video-input` 480p / 720p / 1080p 分别为 9、18、45 credits/s。
+- `image-to-video` 有可用 family / resolution / duration，并能构造带 `image_input` 的 final options。
+- 切换 family / scene 后，如果当前 `resolution` 或 `duration` 不合法，应回落到合法默认值。
 - 非法 `resolution` 被拒绝。
 - pricing 不存在的 `resolution` 被拒绝。
 - provider payload 使用的 `finalOptions` 与 `costCredits` 计算使用的是同一份 `finalOptions`。

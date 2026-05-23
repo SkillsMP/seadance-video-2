@@ -78,6 +78,13 @@ const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 
 type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
 export type VideoResolution = '480p' | '720p' | '1080p';
+/**
+ * 视频定价可用性状态：
+ * - enabled: 普通用户可选，生成器 controls 会展示
+ * - candidate: 候选/预埋规格，价格先写好，但普通用户暂不可选
+ * - whitelist: 灰度/内部可用，普通用户不可选
+ * - disabled: 禁用
+ */
 export type VideoPricingAvailability =
   | 'enabled'
   | 'candidate'
