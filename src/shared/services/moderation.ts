@@ -1,11 +1,10 @@
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
-  checkImageUrl,
-  checkText,
-  checkVideoUrlSync,
-  ModerationResult,
-  SightengineConfig,
-} from '@/extensions/moderation/sightengine';
+  createModerationProvider,
+  type ModerationProvider,
+  type ModerationResult,
+  type SightengineConfig,
+} from '@/extensions/moderation';
 import { getAllConfigs } from '@/shared/models/config';
 
 export const CONTENT_SAFETY_MESSAGE =
@@ -104,6 +103,8 @@ export async function moderateGenerationInput({
     return;
   }
 
+  const provider = createModerationProvider(sightengineConfig);
+
   const text = extractModerationText(prompt, options);
   if (text) {
     await runModerationCheck({
@@ -111,8 +112,9 @@ export async function moderateGenerationInput({
       mediaType,
       scene,
       failClosed,
+      providerName: provider.name,
       checkType: 'text',
-      check: () => checkText(text, sightengineConfig),
+      check: () => getProviderCheck(provider, 'checkText')(text),
     });
   }
 
@@ -123,8 +125,9 @@ export async function moderateGenerationInput({
       mediaType,
       scene,
       failClosed,
+      providerName: provider.name,
       checkType: 'image',
-      check: () => checkImageUrl(imageUrl, sightengineConfig),
+      check: () => getProviderCheck(provider, 'checkImageUrl')(imageUrl),
     });
   }
 
@@ -177,19 +180,23 @@ export async function moderateGenerationOutput({
     return;
   }
 
+  const provider = createModerationProvider(sightengineConfig);
+
   for (const outputUrl of outputUrls) {
     await runModerationCheck({
       userId,
       mediaType,
       scene: scene ?? undefined,
       failClosed,
+      providerName: provider.name,
       checkType:
         mediaType === AIMediaType.VIDEO ? 'output_video' : 'output_image',
       violationMessage: GENERATED_CONTENT_SAFETY_MESSAGE,
       check: () =>
-        mediaType === AIMediaType.VIDEO
-          ? checkVideoUrlSync(outputUrl, sightengineConfig)
-          : checkImageUrl(outputUrl, sightengineConfig),
+        getProviderCheck(
+          provider,
+          mediaType === AIMediaType.VIDEO ? 'checkVideoUrl' : 'checkImageUrl'
+        )(outputUrl),
     });
   }
 
@@ -310,6 +317,7 @@ async function runModerationCheck({
   mediaType,
   scene,
   failClosed,
+  providerName,
   checkType,
   check,
   violationMessage = CONTENT_SAFETY_MESSAGE,
@@ -318,6 +326,7 @@ async function runModerationCheck({
   mediaType?: string;
   scene?: string;
   failClosed: boolean;
+  providerName: string;
   checkType: 'text' | 'image' | 'output_image' | 'output_video';
   violationMessage?: string;
   check: () => Promise<ModerationResult>;
@@ -345,7 +354,7 @@ async function runModerationCheck({
       mediaType,
       scene,
       checkType,
-      provider: 'sightengine',
+      provider: providerName,
       error: error instanceof Error ? error.message : String(error),
     });
 
@@ -353,6 +362,20 @@ async function runModerationCheck({
       throw new ContentPolicyViolationError(violationMessage);
     }
   }
+}
+
+function getProviderCheck(
+  provider: ModerationProvider,
+  checkName: 'checkText' | 'checkImageUrl' | 'checkVideoUrl'
+): (value: string) => Promise<ModerationResult> {
+  const check = provider[checkName];
+  if (!check) {
+    throw new Error(
+      `Moderation provider ${provider.name} does not support ${checkName}`
+    );
+  }
+
+  return check;
 }
 
 function extractModerationText(prompt?: string, options?: any): string {

@@ -1,11 +1,4 @@
-export type ModerationDecision = 'allow' | 'block';
-
-export interface ModerationResult {
-  decision: ModerationDecision;
-  provider: 'sightengine';
-  categories: string[];
-  raw?: unknown;
-}
+import type { ModerationProvider, ModerationResult } from './types';
 
 export interface SightengineConfig {
   apiUser: string;
@@ -125,7 +118,7 @@ export async function checkImageUrl(
   return normalizeImageResult(raw);
 }
 
-export async function checkVideoUrlSync(
+export async function checkVideoUrl(
   url: string,
   config: SightengineConfig
 ): Promise<ModerationResult> {
@@ -145,6 +138,17 @@ export async function checkVideoUrlSync(
   );
 
   return normalizeVideoResult(raw);
+}
+
+export function createSightengineModerationProvider(
+  config: SightengineConfig
+): ModerationProvider {
+  return {
+    name: 'sightengine',
+    checkText: (text) => checkText(text, config),
+    checkImageUrl: (url) => checkImageUrl(url, config),
+    checkVideoUrl: (url) => checkVideoUrl(url, config),
+  };
 }
 
 async function fetchJsonWithTimeout(
