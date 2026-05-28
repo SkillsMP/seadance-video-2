@@ -36,6 +36,11 @@ interface GenerateRequest {
   model?: string;
 }
 
+interface GenerateCandidatePlan {
+  entry: ModelEntry;
+  finalOptions: unknown;
+}
+
 export async function POST(request: Request) {
   try {
     const requestBody = (await request.json()) as GenerateRequest;
@@ -192,33 +197,46 @@ export async function POST(request: Request) {
         throw new Error('invalid scene');
       }
 
+      const candidatePlans: GenerateCandidatePlan[] = candidateEntries.map(
+        (entry) => {
+          const candidatePricingSnapshot = resolveGenerationPricingSnapshot({
+            mediaType,
+            scene,
+            entry,
+            options,
+            useDynamicVideoPricing,
+            allowControlOptions,
+            allowResolutionControl,
+          });
+          const finalOptions = candidatePricingSnapshot.finalOptions;
+          assertSafeAssetInputUrls(finalOptions);
+          assertGenerationPricingConsistency(
+            pricingSnapshot,
+            candidatePricingSnapshot
+          );
+
+          return {
+            entry,
+            finalOptions,
+          };
+        }
+      );
+      const firstCandidatePlan = candidatePlans[0];
+      if (!firstCandidatePlan) {
+        throw new Error('invalid candidate');
+      }
+
+      await moderateGenerationInput({
+        userId: user.id,
+        mediaType,
+        scene,
+        prompt: requestPrompt,
+        options: firstCandidatePlan.finalOptions,
+      });
+
       const candidateErrors: string[] = [];
 
-      for (const entry of candidateEntries) {
-        const candidatePricingSnapshot = resolveGenerationPricingSnapshot({
-          mediaType,
-          scene,
-          entry,
-          options,
-          useDynamicVideoPricing,
-          allowControlOptions,
-          allowResolutionControl,
-        });
-        const finalOptions = candidatePricingSnapshot.finalOptions;
-        assertSafeAssetInputUrls(finalOptions);
-        assertGenerationPricingConsistency(
-          pricingSnapshot,
-          candidatePricingSnapshot
-        );
-
-        await moderateGenerationInput({
-          userId: user.id,
-          mediaType,
-          scene,
-          prompt: requestPrompt,
-          options: finalOptions,
-        });
-
+      for (const { entry, finalOptions } of candidatePlans) {
         try {
           result = await createProviderTask(
             entry.provider,
