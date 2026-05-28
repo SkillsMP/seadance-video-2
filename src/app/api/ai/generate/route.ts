@@ -15,7 +15,10 @@ import { createAITask, NewAITask } from '@/shared/models/ai_task';
 import { getRemainingCredits } from '@/shared/models/credit';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
-import { moderateGenerationInput } from '@/shared/services/moderation';
+import {
+  applyGenerationOutputModeration,
+  moderateGenerationInput,
+} from '@/shared/services/moderation';
 
 interface GenerateCandidate {
   provider: string;
@@ -274,8 +277,25 @@ export async function POST(request: Request) {
       throw new Error('ai generate failed');
     }
 
+    const aiTaskId = getUuid();
+    const moderatedResult = await applyGenerationOutputModeration({
+      taskId: aiTaskId,
+      userId: user.id,
+      mediaType,
+      scene,
+      taskStatus: result.taskStatus,
+      taskInfo: result.taskInfo,
+      taskResult: result.taskResult,
+    });
+    result = {
+      ...result,
+      taskStatus: moderatedResult.status,
+      taskInfo: moderatedResult.taskInfo,
+      taskResult: moderatedResult.taskResult,
+    };
+
     const newAITask: NewAITask = {
-      id: getUuid(),
+      id: aiTaskId,
       userId: user.id,
       mediaType,
       provider: finalProvider,

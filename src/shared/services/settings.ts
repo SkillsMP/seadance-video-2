@@ -879,6 +879,16 @@ export async function getSettings() {
       tip: 'Maximum time to wait for moderation checks',
     },
     {
+      name: 'sightengine_video_timeout_ms',
+      title: 'Sightengine Video Timeout MS',
+      type: 'number',
+      value: '15000',
+      placeholder: '15000',
+      group: 'sightengine',
+      tab: 'ai',
+      tip: 'Maximum time to wait for short video moderation checks',
+    },
+    {
       name: 'sightengine_fail_closed',
       title: 'Sightengine Fail Closed',
       type: 'switch',

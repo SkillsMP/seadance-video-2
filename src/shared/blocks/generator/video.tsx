@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CreditCard,
   Download,
@@ -79,6 +79,8 @@ type VideoGeneratorTab = 'text-to-video' | 'image-to-video' | 'video-to-video';
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
+const GENERATED_CONTENT_SAFETY_MESSAGE =
+  'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
 
 const MODEL_OPTIONS = MODELS.filter(
   (model) => model.mediaType === AIMediaType.VIDEO && model.enabled
@@ -199,6 +201,7 @@ export function VideoGenerator({
   const [downloadingVideoId, setDownloadingVideoId] = useState<string | null>(
     null
   );
+  const queryingTaskRef = useRef<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
   const [dynamicVideoPricingEnabled, setDynamicVideoPricingEnabled] =
@@ -280,11 +283,7 @@ export function VideoGenerator({
         controlEntries: selectedControlEntries,
         selectedControlValues,
       }),
-    [
-      dynamicVideoPricingEnabled,
-      selectedControlEntries,
-      selectedControlValues,
-    ]
+    [dynamicVideoPricingEnabled, selectedControlEntries, selectedControlValues]
   );
   const costCredits = useMemo(() => {
     if (dynamicVideoPricingEnabled && selectedEntry) {
@@ -388,6 +387,8 @@ export function VideoGenerator({
         return 'Generating your video...';
       case AITaskStatus.SUCCESS:
         return 'Video generation completed';
+      case AITaskStatus.MODERATION_BLOCKED:
+        return 'Generated video blocked';
       case AITaskStatus.FAILED:
         return 'Generation failed';
       default:
@@ -426,6 +427,12 @@ export function VideoGenerator({
 
   const pollTaskStatus = useCallback(
     async (id: string) => {
+      if (queryingTaskRef.current === id) {
+        return false;
+      }
+
+      queryingTaskRef.current = id;
+
       try {
         if (
           generationStartTime &&
@@ -504,6 +511,13 @@ export function VideoGenerator({
           return true;
         }
 
+        if (currentStatus === AITaskStatus.MODERATION_BLOCKED) {
+          setGeneratedVideos([]);
+          toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+          resetTaskState();
+          return true;
+        }
+
         if (currentStatus === AITaskStatus.FAILED) {
           const errorMessage =
             parsedResult?.errorMessage || 'Generate video failed';
@@ -525,6 +539,10 @@ export function VideoGenerator({
         fetchUserCredits();
 
         return true;
+      } finally {
+        if (queryingTaskRef.current === id) {
+          queryingTaskRef.current = null;
+        }
       }
     },
     [generationStartTime, resetTaskState, fetchUserCredits]
@@ -656,6 +674,14 @@ export function VideoGenerator({
       const newTaskId = data?.id;
       if (!newTaskId) {
         throw new Error('Task id missing in response');
+      }
+
+      if (data.status === AITaskStatus.MODERATION_BLOCKED) {
+        setGeneratedVideos([]);
+        toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+        resetTaskState();
+        await fetchUserCredits();
+        return;
       }
 
       if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {

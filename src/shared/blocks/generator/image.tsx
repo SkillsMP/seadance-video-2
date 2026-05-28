@@ -92,6 +92,8 @@ const DEFAULT_PROMPT =
   'Canon camera, 85mm fixed lens, creating a gradual change of f/1.8, f/2.8, f/10, f/14 aperture effects, a gentle and beautiful lady as the model, background is the city blue hour after sunset';
 const DEFAULT_PREVIEW_IMAGE =
   'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg';
+const GENERATED_CONTENT_SAFETY_MESSAGE =
+  'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
 
 /** AI 模型配置列表 */
 // 数组中元素的存放顺序即为调用优先级
@@ -224,6 +226,7 @@ export function ImageGenerator({
   // 加载状态
   const [isMounted, setIsMounted] = useState(false);
   const savedTaskIdsRef = useRef<Set<string>>(new Set()); // 防止重复保存
+  const queryingTaskRef = useRef<string | null>(null);
   const queryFailCountRef = useRef(0);
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
@@ -409,6 +412,8 @@ export function ImageGenerator({
         return 'Generating your image...';
       case AITaskStatus.SUCCESS:
         return 'Image generation completed';
+      case AITaskStatus.MODERATION_BLOCKED:
+        return 'Generated image blocked';
       case AITaskStatus.FAILED:
         return 'Generation failed';
       default:
@@ -543,6 +548,12 @@ export function ImageGenerator({
    */
   const pollTaskStatus = useCallback(
     async (id: string) => {
+      if (queryingTaskRef.current === id) {
+        return false;
+      }
+
+      queryingTaskRef.current = id;
+
       try {
         // Check if already saved to prevent duplicate processing
         if (savedTaskIdsRef.current.has(id)) {
@@ -633,6 +644,13 @@ export function ImageGenerator({
           return true;
         }
 
+        if (currentStatus === AITaskStatus.MODERATION_BLOCKED) {
+          setGeneratedImages([]);
+          toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+          resetTaskState();
+          return true;
+        }
+
         if (currentStatus === AITaskStatus.FAILED) {
           const errorMessage =
             parsedResult?.errorMessage || 'Generate image failed';
@@ -665,6 +683,10 @@ export function ImageGenerator({
         fetchUserCredits();
 
         return true;
+      } finally {
+        if (queryingTaskRef.current === id) {
+          queryingTaskRef.current = null;
+        }
       }
     },
     [generationStartTime, resetTaskState, fetchUserCredits, saveShowcase]
@@ -809,6 +831,14 @@ export function ImageGenerator({
       const newTaskId = data?.id;
       if (!newTaskId) {
         throw new Error('Task id missing in response');
+      }
+
+      if (data.status === AITaskStatus.MODERATION_BLOCKED) {
+        setGeneratedImages([]);
+        toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+        resetTaskState();
+        await fetchUserCredits();
+        return;
       }
 
       if (data.status === AITaskStatus.SUCCESS && data.taskInfo) {

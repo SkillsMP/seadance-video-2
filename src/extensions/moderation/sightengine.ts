@@ -15,6 +15,8 @@ export interface SightengineConfig {
 
 const TEXT_ENDPOINT = 'https://api.sightengine.com/1.0/text/check.json';
 const IMAGE_ENDPOINT = 'https://api.sightengine.com/1.0/check.json';
+const VIDEO_SYNC_ENDPOINT =
+  'https://api.sightengine.com/1.0/video/check-sync.json';
 
 const TEXT_MODELS = ['general', 'self-harm'];
 const TEXT_CATEGORIES = [
@@ -43,6 +45,20 @@ const IMAGE_RESULT_ROOTS = [
   'violence',
   'offensive',
   'text-content',
+];
+const VIDEO_MODELS = [
+  'nudity-2.1',
+  'gore-2.0',
+  'weapon',
+  'violence',
+  'offensive',
+];
+const VIDEO_RESULT_ROOTS = [
+  'nudity',
+  'gore',
+  'weapon',
+  'violence',
+  'offensive',
 ];
 
 const SCORE_THRESHOLD = 0.75;
@@ -107,6 +123,28 @@ export async function checkImageUrl(
   );
 
   return normalizeImageResult(raw);
+}
+
+export async function checkVideoUrlSync(
+  url: string,
+  config: SightengineConfig
+): Promise<ModerationResult> {
+  const body = new FormData();
+  body.append('stream_url', url);
+  body.append('models', VIDEO_MODELS.join(','));
+  body.append('api_user', config.apiUser);
+  body.append('api_secret', config.apiSecret);
+
+  const raw = await fetchJsonWithTimeout(
+    VIDEO_SYNC_ENDPOINT,
+    {
+      method: 'POST',
+      body,
+    },
+    config.timeoutMs
+  );
+
+  return normalizeVideoResult(raw);
 }
 
 async function fetchJsonWithTimeout(
@@ -182,6 +220,47 @@ function normalizeImageResult(raw: unknown): ModerationResult {
 
   for (const root of IMAGE_RESULT_ROOTS) {
     collectRiskCategories(data[root], [root], categories);
+  }
+
+  return {
+    decision: categories.size > 0 ? 'block' : 'allow',
+    provider: 'sightengine',
+    categories: Array.from(categories),
+    raw,
+  };
+}
+
+function normalizeVideoResult(raw: unknown): ModerationResult {
+  const categories = new Set<string>();
+  const data = asRecord(raw);
+  if (!data) {
+    throw new Error('Sightengine moderation failed');
+  }
+
+  const videoData = asRecord(data.data);
+  const frames = videoData?.frames;
+  let hasModerationData = false;
+
+  if (Array.isArray(frames)) {
+    hasModerationData = frames.length > 0;
+    frames.forEach((frame) => {
+      const frameData = asRecord(frame);
+      for (const root of VIDEO_RESULT_ROOTS) {
+        collectRiskCategories(frameData?.[root], [root], categories);
+      }
+    });
+  } else {
+    for (const root of VIDEO_RESULT_ROOTS) {
+      const result = videoData?.[root] ?? data[root];
+      if (result !== undefined) {
+        hasModerationData = true;
+      }
+      collectRiskCategories(result, [root], categories);
+    }
+  }
+
+  if (!hasModerationData) {
+    throw new Error('Sightengine moderation failed');
   }
 
   return {

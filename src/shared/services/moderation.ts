@@ -1,6 +1,8 @@
+import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
   checkImageUrl,
   checkText,
+  checkVideoUrlSync,
   ModerationResult,
   SightengineConfig,
 } from '@/extensions/moderation/sightengine';
@@ -8,6 +10,11 @@ import { getAllConfigs } from '@/shared/models/config';
 
 export const CONTENT_SAFETY_MESSAGE =
   'This request violates our content safety policy. Please revise it and try again.';
+export const GENERATED_CONTENT_SAFETY_MESSAGE =
+  'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
+export const CONTENT_POLICY_VIOLATION_CODE = 'CONTENT_POLICY_VIOLATION';
+export const GENERATED_OUTPUT_MISSING_MESSAGE =
+  'The provider returned no generated output URLs.';
 
 interface ModerateGenerationInputParams {
   userId: string;
@@ -15,6 +22,34 @@ interface ModerateGenerationInputParams {
   scene?: string;
   prompt?: string;
   options?: any;
+}
+
+interface ModerateGenerationOutputParams {
+  taskId?: string;
+  userId: string;
+  mediaType?: string;
+  scene?: string | null;
+  outputUrls: string[];
+}
+
+interface ExtractGenerationOutputUrlsParams {
+  mediaType?: string;
+  taskInfo?: any;
+}
+
+interface ApplyGenerationOutputModerationParams
+  extends ExtractGenerationOutputUrlsParams {
+  taskId?: string;
+  userId: string;
+  scene?: string | null;
+  taskStatus: AITaskStatus;
+  taskResult?: any;
+}
+
+interface ApplyGenerationOutputModerationResult {
+  status: AITaskStatus;
+  taskInfo?: any;
+  taskResult?: any;
 }
 
 const TEXT_OPTION_FIELDS = [
@@ -28,8 +63,8 @@ const TEXT_OPTION_FIELDS = [
 let hasWarnedMissingSightengineConfig = false;
 
 export class ContentPolicyViolationError extends Error {
-  constructor() {
-    super(CONTENT_SAFETY_MESSAGE);
+  constructor(message = CONTENT_SAFETY_MESSAGE) {
+    super(message);
     this.name = 'ContentPolicyViolationError';
   }
 }
@@ -51,7 +86,7 @@ export async function moderateGenerationInput({
   const sightengineConfig: SightengineConfig = {
     apiUser: configs.sightengine_api_user ?? '',
     apiSecret: configs.sightengine_api_secret ?? '',
-    timeoutMs: parseTimeoutMs(configs.sightengine_timeout_ms),
+    timeoutMs: parseTimeoutMs(configs.sightengine_timeout_ms, 3500),
   };
 
   if (!sightengineConfig.apiUser || !sightengineConfig.apiSecret) {
@@ -100,6 +135,176 @@ export async function moderateGenerationInput({
   });
 }
 
+export async function moderateGenerationOutput({
+  taskId,
+  userId,
+  mediaType,
+  scene,
+  outputUrls,
+}: ModerateGenerationOutputParams) {
+  if (mediaType !== AIMediaType.IMAGE && mediaType !== AIMediaType.VIDEO) {
+    return;
+  }
+
+  const configs = await getAllConfigs();
+
+  if (configs.sightengine_moderation_enabled !== 'true') {
+    return;
+  }
+
+  const failClosed = configs.sightengine_fail_closed !== 'false';
+  const sightengineConfig: SightengineConfig = {
+    apiUser: configs.sightengine_api_user ?? '',
+    apiSecret: configs.sightengine_api_secret ?? '',
+    timeoutMs:
+      mediaType === AIMediaType.VIDEO
+        ? parseTimeoutMs(configs.sightengine_video_timeout_ms, 15000)
+        : parseTimeoutMs(configs.sightengine_timeout_ms, 3500),
+  };
+
+  if (!sightengineConfig.apiUser || !sightengineConfig.apiSecret) {
+    if (!hasWarnedMissingSightengineConfig) {
+      console.warn('generation moderation config missing', {
+        provider: 'sightengine',
+        failClosed,
+      });
+      hasWarnedMissingSightengineConfig = true;
+    }
+
+    if (failClosed) {
+      throw new ContentPolicyViolationError(GENERATED_CONTENT_SAFETY_MESSAGE);
+    }
+    return;
+  }
+
+  for (const outputUrl of outputUrls) {
+    await runModerationCheck({
+      userId,
+      mediaType,
+      scene: scene ?? undefined,
+      failClosed,
+      checkType:
+        mediaType === AIMediaType.VIDEO ? 'output_video' : 'output_image',
+      violationMessage: GENERATED_CONTENT_SAFETY_MESSAGE,
+      check: () =>
+        mediaType === AIMediaType.VIDEO
+          ? checkVideoUrlSync(outputUrl, sightengineConfig)
+          : checkImageUrl(outputUrl, sightengineConfig),
+    });
+  }
+
+  console.log('generation output moderation allowed', {
+    taskId,
+    userId,
+    mediaType,
+    scene,
+  });
+}
+
+function extractGenerationOutputUrls({
+  mediaType,
+  taskInfo,
+}: ExtractGenerationOutputUrlsParams): string[] {
+  const config = getOutputUrlConfig(mediaType);
+  if (!config) {
+    return [];
+  }
+
+  return normalizeHttpUrls(
+    getArrayField(taskInfo, config.collectionKey).map(
+      (item) => asRecord(item)?.[config.taskInfoUrlKey]
+    )
+  );
+}
+
+export async function applyGenerationOutputModeration({
+  taskId,
+  userId,
+  mediaType,
+  scene,
+  taskStatus,
+  taskInfo,
+  taskResult,
+}: ApplyGenerationOutputModerationParams): Promise<ApplyGenerationOutputModerationResult> {
+  const originalResult = {
+    status: taskStatus,
+    taskInfo,
+    taskResult,
+  };
+
+  if (
+    taskStatus !== AITaskStatus.SUCCESS ||
+    (mediaType !== AIMediaType.IMAGE && mediaType !== AIMediaType.VIDEO)
+  ) {
+    return originalResult;
+  }
+
+  const outputUrls = extractGenerationOutputUrls({
+    mediaType,
+    taskInfo,
+  });
+
+  if (outputUrls.length === 0) {
+    return createOutputMissingTaskPayload();
+  }
+
+  try {
+    await moderateGenerationOutput({
+      taskId,
+      userId,
+      mediaType,
+      scene,
+      outputUrls,
+    });
+  } catch (error) {
+    if (!(error instanceof ContentPolicyViolationError)) {
+      throw error;
+    }
+
+    return createModerationBlockedTaskPayload();
+  }
+
+  return originalResult;
+}
+
+function createModerationBlockedTaskPayload() {
+  return createSafeTaskPayload(
+    AITaskStatus.MODERATION_BLOCKED,
+    CONTENT_POLICY_VIOLATION_CODE,
+    GENERATED_CONTENT_SAFETY_MESSAGE
+  );
+}
+
+function createOutputMissingTaskPayload() {
+  return createSafeTaskPayload(
+    AITaskStatus.FAILED,
+    'GENERATED_OUTPUT_MISSING',
+    GENERATED_OUTPUT_MISSING_MESSAGE
+  );
+}
+
+function createSafeTaskPayload(
+  status: AITaskStatus,
+  errorCode: string,
+  errorMessage: string
+) {
+  const taskInfo = {
+    status,
+    errorCode,
+    errorMessage,
+    createTime: new Date(),
+  };
+
+  return {
+    status,
+    taskInfo,
+    taskResult: {
+      errorCode,
+      errorMessage,
+    },
+  };
+}
+
 async function runModerationCheck({
   userId,
   mediaType,
@@ -107,12 +312,14 @@ async function runModerationCheck({
   failClosed,
   checkType,
   check,
+  violationMessage = CONTENT_SAFETY_MESSAGE,
 }: {
   userId: string;
   mediaType?: string;
   scene?: string;
   failClosed: boolean;
-  checkType: 'text' | 'image';
+  checkType: 'text' | 'image' | 'output_image' | 'output_video';
+  violationMessage?: string;
   check: () => Promise<ModerationResult>;
 }) {
   try {
@@ -126,7 +333,7 @@ async function runModerationCheck({
         provider: result.provider,
         categories: result.categories,
       });
-      throw new ContentPolicyViolationError();
+      throw new ContentPolicyViolationError(violationMessage);
     }
   } catch (error) {
     if (error instanceof ContentPolicyViolationError) {
@@ -143,7 +350,7 @@ async function runModerationCheck({
     });
 
     if (failClosed) {
-      throw new ContentPolicyViolationError();
+      throw new ContentPolicyViolationError(violationMessage);
     }
   }
 }
@@ -193,11 +400,63 @@ function extractImageInputUrls(options?: any): string[] {
   });
 }
 
-function parseTimeoutMs(value?: string): number {
+function parseTimeoutMs(value?: string, fallback = 3500): number {
   const timeoutMs = Number.parseInt(value ?? '', 10);
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
-    return 3500;
+    return fallback;
   }
 
   return timeoutMs;
+}
+
+function getOutputUrlConfig(mediaType?: string) {
+  if (mediaType === AIMediaType.IMAGE) {
+    return {
+      collectionKey: 'images',
+      taskInfoUrlKey: 'imageUrl',
+    };
+  }
+
+  if (mediaType === AIMediaType.VIDEO) {
+    return {
+      collectionKey: 'videos',
+      taskInfoUrlKey: 'videoUrl',
+    };
+  }
+
+  return undefined;
+}
+
+function getArrayField(value: unknown, key: string): unknown[] {
+  const field = asRecord(value)?.[key];
+  return Array.isArray(field) ? field : [];
+}
+
+function normalizeHttpUrls(values: unknown[]): string[] {
+  const urls = new Set<string>();
+
+  values.forEach((value) => {
+    if (typeof value !== 'string' || !value.trim()) {
+      return;
+    }
+
+    try {
+      const parsedUrl = new URL(value.trim());
+      if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+        urls.add(parsedUrl.toString());
+      }
+    } catch {
+      // Invalid provider fields are handled by the route as missing output.
+    }
+  });
+
+  return Array.from(urls);
+}
+
+function asRecord(value: unknown): Record<string, any> | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return undefined;
+  }
+
+  return value as Record<string, any>;
 }

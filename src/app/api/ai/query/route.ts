@@ -1,3 +1,4 @@
+import { AITaskStatus } from '@/extensions/ai';
 import { respData, respErr } from '@/shared/lib/resp';
 import {
   findAITaskById,
@@ -6,6 +7,14 @@ import {
 } from '@/shared/models/ai_task';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
+import { applyGenerationOutputModeration } from '@/shared/services/moderation';
+
+const TERMINAL_TASK_STATUSES = new Set<string>([
+  AITaskStatus.SUCCESS,
+  AITaskStatus.FAILED,
+  AITaskStatus.CANCELED,
+  AITaskStatus.MODERATION_BLOCKED,
+]);
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +37,10 @@ export async function POST(req: Request) {
       return respErr('no permission');
     }
 
+    if (TERMINAL_TASK_STATUSES.has(task.status)) {
+      return respData(task);
+    }
+
     const aiService = await getAIService();
     const aiProvider = aiService.getProvider(task.provider);
     if (!aiProvider) {
@@ -44,14 +57,32 @@ export async function POST(req: Request) {
       return respErr('query ai task failed');
     }
 
+    const moderatedResult = await applyGenerationOutputModeration({
+      taskId: task.id,
+      userId: task.userId,
+      mediaType: task.mediaType,
+      scene: task.scene,
+      taskStatus: result.taskStatus,
+      taskInfo: result.taskInfo,
+      taskResult: result.taskResult,
+    });
+
     // update ai task
     const updateAITask: UpdateAITask = {
-      status: result.taskStatus,
-      taskInfo: result.taskInfo ? JSON.stringify(result.taskInfo) : null,
-      taskResult: result.taskResult ? JSON.stringify(result.taskResult) : null,
+      status: moderatedResult.status,
+      taskInfo: moderatedResult.taskInfo
+        ? JSON.stringify(moderatedResult.taskInfo)
+        : null,
+      taskResult: moderatedResult.taskResult
+        ? JSON.stringify(moderatedResult.taskResult)
+        : null,
       creditId: task.creditId, // credit consumption record id
     };
-    if (updateAITask.taskInfo !== task.taskInfo) {
+    if (
+      updateAITask.status !== task.status ||
+      updateAITask.taskInfo !== task.taskInfo ||
+      updateAITask.taskResult !== task.taskResult
+    ) {
       await updateAITaskById(task.id, updateAITask);
     }
 
