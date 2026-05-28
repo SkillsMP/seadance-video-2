@@ -24,6 +24,8 @@ const generateRoute = readSource('src/app/api/ai/generate/route.ts');
 const queryRoute = readSource('src/app/api/ai/query/route.ts');
 const aiTaskModel = readSource('src/shared/models/ai_task.ts');
 const moderationService = readSource('src/shared/services/moderation.ts');
+const moderationTypes = readSource('src/extensions/moderation/types.ts');
+const moderationFactory = readSource('src/extensions/moderation/index.ts');
 
 assertBefore(
   generateRoute,
@@ -93,6 +95,59 @@ assert.match(
   moderationService,
   /taskResult:\s*\{\s*errorCode,\s*errorMessage,\s*\}/,
   'safe task payload must not include provider output URLs'
+);
+
+assert.match(
+  moderationTypes,
+  /ModerationProviderName = 'sightengine' \| 'wavespeed'/,
+  'moderation provider type must include Wavespeed'
+);
+assert.match(
+  moderationFactory,
+  /config\.provider === 'wavespeed'[\s\S]*createWavespeedModerationProvider/,
+  'moderation factory must create Wavespeed only for the Wavespeed provider'
+);
+assert.match(
+  moderationService,
+  /checkType: 'config'[\s\S]*providerContext\.createProvider\(\)/,
+  'provider creation and config validation must run through moderation error handling'
+);
+
+assert.match(
+  moderationService,
+  /if\s*\(\s*providerName\s*===\s*'sightengine'\s*\)[\s\S]*?provider:\s*'sightengine'/,
+  'when MODERATION_PROVIDER is sightengine, Wavespeed provider must not be created or called'
+);
+
+assert.match(
+  moderationService,
+  /if\s*\(\s*providerName\s*===\s*'wavespeed'\s*\)[\s\S]*?provider:\s*'wavespeed'/,
+  'when MODERATION_PROVIDER is wavespeed, Sightengine provider must not be created or called'
+);
+
+assert.doesNotMatch(
+  moderationService,
+  /wavespeed[\s\S]{0,100}fallback[\s\S]{0,100}sightengine|sightengine[\s\S]{0,100}fallback[\s\S]{0,100}wavespeed/,
+  'Wavespeed and Sightengine must not do automatic fallback or simultaneous moderation'
+);
+
+const wavespeedSource = readSource('src/extensions/moderation/wavespeed.ts');
+assert.equal(
+  wavespeedSource.includes('checkVideoUrl'),
+  false,
+  'Wavespeed provider must not implement checkVideoUrl'
+);
+
+assert.match(
+  moderationService,
+  /AITaskStatus\.MODERATION_BLOCKED/,
+  'Wavespeed block must map to MODERATION_BLOCKED task status'
+);
+
+assert.doesNotMatch(
+  moderationService,
+  /createModerationBlockedTaskPayload[\s\S]{0,300}raw/,
+  'moderation blocked payload must not contain raw provider output or categories'
 );
 
 console.log('ai moderation route contract checks passed.');

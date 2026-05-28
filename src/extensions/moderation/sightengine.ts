@@ -143,6 +143,8 @@ export async function checkVideoUrl(
 export function createSightengineModerationProvider(
   config: SightengineConfig
 ): ModerationProvider {
+  assertConfig(config);
+
   return {
     name: 'sightengine',
     checkText: (text) => checkText(text, config),
@@ -330,6 +332,15 @@ function assertSuccessResponse(value: unknown) {
   const data = asRecord(value);
   if (!data || data.status !== 'success') {
     throw new Error('Sightengine moderation failed');
+  }
+}
+
+function assertConfig(config: SightengineConfig) {
+  if (!config.apiUser || !config.apiSecret) {
+    throw new Error('Sightengine moderation config missing');
+  }
+  if (!Number.isFinite(config.timeoutMs) || config.timeoutMs <= 0) {
+    throw new Error('Sightengine moderation timeout invalid');
   }
 }
 

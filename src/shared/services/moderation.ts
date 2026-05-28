@@ -1,9 +1,11 @@
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
   createModerationProvider,
+  type CreateModerationProviderConfig,
   type ModerationProvider,
   type ModerationResult,
   type SightengineConfig,
+  type WavespeedConfig,
 } from '@/extensions/moderation';
 import { getAllConfigs } from '@/shared/models/config';
 
@@ -59,7 +61,15 @@ const TEXT_OPTION_FIELDS = [
   'negativePrompt',
 ];
 
-let hasWarnedMissingSightengineConfig = false;
+const DEFAULT_WAVESPEED_TEXT_MODEL =
+  'wavespeed-ai/molmo2/text-content-moderator';
+const DEFAULT_WAVESPEED_IMAGE_MODEL =
+  'wavespeed-ai/molmo2/image-content-moderator';
+
+interface ModerationProviderContext {
+  providerName: string;
+  createProvider: () => ModerationProvider;
+}
 
 export class ContentPolicyViolationError extends Error {
   constructor(message = CONTENT_SAFETY_MESSAGE) {
@@ -77,33 +87,22 @@ export async function moderateGenerationInput({
 }: ModerateGenerationInputParams) {
   const configs = await getAllConfigs();
 
-  if (configs.sightengine_moderation_enabled !== 'true') {
+  if (!isModerationEnabled(configs)) {
     return;
   }
 
-  const failClosed = configs.sightengine_fail_closed !== 'false';
-  const sightengineConfig: SightengineConfig = {
-    apiUser: configs.sightengine_api_user ?? '',
-    apiSecret: configs.sightengine_api_secret ?? '',
-    timeoutMs: parseTimeoutMs(configs.sightengine_timeout_ms, 3500),
-  };
-
-  if (!sightengineConfig.apiUser || !sightengineConfig.apiSecret) {
-    if (!hasWarnedMissingSightengineConfig) {
-      console.warn('generation moderation config missing', {
-        provider: 'sightengine',
-        failClosed,
-      });
-      hasWarnedMissingSightengineConfig = true;
-    }
-
-    if (failClosed) {
-      throw new ContentPolicyViolationError();
-    }
+  const failClosed = isModerationFailClosed(configs);
+  const providerContext = createModerationProviderContext(configs);
+  const provider = await createReadyProvider({
+    userId,
+    mediaType,
+    scene,
+    failClosed,
+    providerContext,
+  });
+  if (!provider) {
     return;
   }
-
-  const provider = createModerationProvider(sightengineConfig);
 
   const text = extractModerationText(prompt, options);
   if (text) {
@@ -151,36 +150,23 @@ export async function moderateGenerationOutput({
 
   const configs = await getAllConfigs();
 
-  if (configs.sightengine_moderation_enabled !== 'true') {
+  if (!isModerationEnabled(configs)) {
     return;
   }
 
-  const failClosed = configs.sightengine_fail_closed !== 'false';
-  const sightengineConfig: SightengineConfig = {
-    apiUser: configs.sightengine_api_user ?? '',
-    apiSecret: configs.sightengine_api_secret ?? '',
-    timeoutMs:
-      mediaType === AIMediaType.VIDEO
-        ? parseTimeoutMs(configs.sightengine_video_timeout_ms, 15000)
-        : parseTimeoutMs(configs.sightengine_timeout_ms, 3500),
-  };
-
-  if (!sightengineConfig.apiUser || !sightengineConfig.apiSecret) {
-    if (!hasWarnedMissingSightengineConfig) {
-      console.warn('generation moderation config missing', {
-        provider: 'sightengine',
-        failClosed,
-      });
-      hasWarnedMissingSightengineConfig = true;
-    }
-
-    if (failClosed) {
-      throw new ContentPolicyViolationError(GENERATED_CONTENT_SAFETY_MESSAGE);
-    }
+  const failClosed = isModerationFailClosed(configs);
+  const providerContext = createModerationProviderContext(configs, mediaType);
+  const provider = await createReadyProvider({
+    userId,
+    mediaType,
+    scene: scene ?? undefined,
+    failClosed,
+    providerContext,
+    violationMessage: GENERATED_CONTENT_SAFETY_MESSAGE,
+  });
+  if (!provider) {
     return;
   }
-
-  const provider = createModerationProvider(sightengineConfig);
 
   for (const outputUrl of outputUrls) {
     await runModerationCheck({
@@ -312,6 +298,44 @@ function createSafeTaskPayload(
   };
 }
 
+async function createReadyProvider({
+  userId,
+  mediaType,
+  scene,
+  failClosed,
+  providerContext,
+  violationMessage = CONTENT_SAFETY_MESSAGE,
+}: {
+  userId: string;
+  mediaType?: string;
+  scene?: string;
+  failClosed: boolean;
+  providerContext: ModerationProviderContext;
+  violationMessage?: string;
+}): Promise<ModerationProvider | undefined> {
+  let provider: ModerationProvider | undefined;
+
+  await runModerationCheck({
+    userId,
+    mediaType,
+    scene,
+    failClosed,
+    providerName: providerContext.providerName,
+    checkType: 'config',
+    violationMessage,
+    check: async () => {
+      provider = providerContext.createProvider();
+      return {
+        decision: 'allow',
+        provider: provider.name,
+        categories: [],
+      };
+    },
+  });
+
+  return provider;
+}
+
 async function runModerationCheck({
   userId,
   mediaType,
@@ -327,7 +351,7 @@ async function runModerationCheck({
   scene?: string;
   failClosed: boolean;
   providerName: string;
-  checkType: 'text' | 'image' | 'output_image' | 'output_video';
+  checkType: 'config' | 'text' | 'image' | 'output_image' | 'output_video';
   violationMessage?: string;
   check: () => Promise<ModerationResult>;
 }) {
@@ -376,6 +400,93 @@ function getProviderCheck(
   }
 
   return check;
+}
+
+function isModerationEnabled(configs: Record<string, string>): boolean {
+  if (hasConfigValue(configs.moderation_enabled)) {
+    return configs.moderation_enabled === 'true';
+  }
+
+  return configs.sightengine_moderation_enabled === 'true';
+}
+
+function isModerationFailClosed(configs: Record<string, string>): boolean {
+  if (hasConfigValue(configs.moderation_fail_closed)) {
+    return configs.moderation_fail_closed !== 'false';
+  }
+
+  return configs.sightengine_fail_closed !== 'false';
+}
+
+function createModerationProviderContext(
+  configs: Record<string, string>,
+  mediaType?: string
+): ModerationProviderContext {
+  const providerName = configs.moderation_provider?.trim() || 'sightengine';
+
+  if (providerName === 'sightengine') {
+    const providerConfig: CreateModerationProviderConfig = {
+      provider: 'sightengine',
+      sightengine: createSightengineConfig(configs, mediaType),
+    };
+
+    return {
+      providerName,
+      createProvider: () => createModerationProvider(providerConfig),
+    };
+  }
+
+  if (providerName === 'wavespeed') {
+    const providerConfig: CreateModerationProviderConfig = {
+      provider: 'wavespeed',
+      wavespeed: createWavespeedConfig(configs),
+    };
+
+    return {
+      providerName,
+      createProvider: () => createModerationProvider(providerConfig),
+    };
+  }
+
+  return {
+    providerName,
+    createProvider: () => {
+      throw new Error(`Unsupported moderation provider: ${providerName}`);
+    },
+  };
+}
+
+function createSightengineConfig(
+  configs: Record<string, string>,
+  mediaType?: string
+): SightengineConfig {
+  return {
+    apiUser: configs.sightengine_api_user ?? '',
+    apiSecret: configs.sightengine_api_secret ?? '',
+    timeoutMs:
+      mediaType === AIMediaType.VIDEO
+        ? parseTimeoutMs(configs.sightengine_video_timeout_ms, 15000)
+        : parseTimeoutMs(configs.sightengine_timeout_ms, 3500),
+  };
+}
+
+function createWavespeedConfig(configs: Record<string, string>): WavespeedConfig {
+  return {
+    apiKey: configs.wavespeed_api_key ?? '',
+    textModel:
+      configs.wavespeed_text_model?.trim() || DEFAULT_WAVESPEED_TEXT_MODEL,
+    imageModel:
+      configs.wavespeed_image_model?.trim() || DEFAULT_WAVESPEED_IMAGE_MODEL,
+    requestTimeoutMs: parseTimeoutMs(
+      configs.wavespeed_request_timeout_ms,
+      30000
+    ),
+    pollIntervalMs: parseTimeoutMs(configs.wavespeed_poll_interval_ms, 1000),
+  };
+}
+
+function hasConfigValue(value?: string): boolean {
+  return value !== undefined && value !== '';
 }
 
 function extractModerationText(prompt?: string, options?: any): string {

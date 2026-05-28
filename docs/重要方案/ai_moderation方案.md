@@ -756,6 +756,13 @@ This generated result violates our content safety policy and cannot be displayed
 
 14B 在 14A 跑通后再做。这个阶段才新增通用配置和 Wavespeed adapter，但只接文本和图片，不接视频，不做自动 fallback。
 
+14B 轻量设计目标：
+
+- 让业务层仍然只调用 `ModerationProvider.checkText()` / `checkImageUrl()`，不感知 Wavespeed 的 prediction 协议。
+- 只补一条新的 provider 分支：`moderation_provider=wavespeed`。
+- 文本和图片使用 Molmo2 默认模型，优先解析结构化 JSON boolean 输出。
+- 如果 Wavespeed 返回普通 `content-moderator/*` 风格输出，也只在 adapter 内做保守兼容，不把解析细节泄漏到业务层。
+
 14B 执行范围：
 
 1. 新增 `moderation_enabled / moderation_provider / moderation_fail_closed` 通用配置。
@@ -766,17 +773,107 @@ This generated result violates our content safety policy and cannot be displayed
 6. Wavespeed 默认使用 Molmo2 text/image content moderator。
 7. Wavespeed adapter 即使开启 `enable_sync_mode`，也必须兼容 prediction id + polling。
 
+14B 建议配置：
+
+```env
+MODERATION_ENABLED="true"
+MODERATION_PROVIDER="wavespeed"
+MODERATION_FAIL_CLOSED="true"
+
+WAVESPEED_API_KEY=""
+WAVESPEED_TEXT_MODEL="wavespeed-ai/molmo2/text-content-moderator"
+WAVESPEED_IMAGE_MODEL="wavespeed-ai/molmo2/image-content-moderator"
+WAVESPEED_REQUEST_TIMEOUT_MS="30000"
+WAVESPEED_POLL_INTERVAL_MS="1000"
+```
+
+配置读取规则：
+
+- `MODERATION_ENABLED / MODERATION_PROVIDER / MODERATION_FAIL_CLOSED` 放进 `settings.ts` 的通用审核分组。
+- `WAVESPEED_API_KEY / WAVESPEED_TEXT_MODEL / WAVESPEED_IMAGE_MODEL / WAVESPEED_REQUEST_TIMEOUT_MS / WAVESPEED_POLL_INTERVAL_MS` 放进 Wavespeed 分组。
+- `MODERATION_PROVIDER` 只允许 `sightengine | wavespeed`；非法值按配置错误处理，并交给统一 fail closed。
+- 14B 不新增 `WAVESPEED_VIDEO_MODEL` 的运行依赖；即使 `.env` 提前配置，也不在 14B 调用视频模型。
+- 旧的 `sightengine_moderation_enabled / sightengine_fail_closed` 只作为通用配置缺失时的过渡 fallback，不反向覆盖通用配置。
+
+14B adapter 结构：
+
+```ts
+export function createWavespeedModerationProvider(options: {
+  apiKey: string;
+  textModel: string;
+  imageModel: string;
+  requestTimeoutMs: number;
+  pollIntervalMs: number;
+}): ModerationProvider;
+```
+
+`wavespeed.ts` 内部建议拆 4 个小函数：
+
+- `submitPrediction(model, payload)`：POST `https://api.wavespeed.ai/api/v3/${model}`，使用 `Authorization: Bearer ${WAVESPEED_API_KEY}`。
+- `pollPrediction(requestId)`：GET `https://api.wavespeed.ai/api/v3/predictions/${requestId}/result`，直到 `completed`、失败状态或超时。
+- `resolvePredictionOutput(response)`：兼容同步返回和轮询返回，只返回 `data.outputs[0]` 或抛出结构异常。
+- `normalizeWavespeedOutput(output)`：把供应商输出归一成项目内的 `ModerationResult`。
+
+14B 请求参数：
+
+```ts
+// checkText(text)
+{
+  text,
+  enable_sync_mode: true,
+}
+
+// checkImageUrl(imageUrl, text?)
+{
+  image: imageUrl,
+  text, // 可选，有 prompt 或业务上下文时才传
+  enable_sync_mode: true,
+}
+```
+
+`enable_sync_mode: true` 只是降低文本 / 图片的轮询概率，不是协议保证。adapter 必须同时支持：
+
+- 直接返回 `data.outputs[0]`。
+- 返回 prediction id，需要继续 polling。
+- 返回 completed 但 `outputs[0]` 缺失，按供应商结构异常处理。
+
+14B 归一化规则：
+
+- `outputs[0]` 是对象：收集值为 `true` 的风险类别，任一 true 即 `block`，全部 false 即 `allow`。
+- `outputs[0]` 是字符串：先尝试 `JSON.parse()`；解析后仍按对象规则处理。
+- `outputs[0]` 是 URL 或不可解析字符串：14B 不再二次下载内容解析，按结构异常处理。
+- 如果真实 API smoke test 发现 `outputs[0]` 固定返回 JSON 文件 URL，则另起 14B 补丁实现受限 JSON 下载解析；下载结果仍只在服务端归一化，不记录原始响应，也不暴露给前端。
+- 可识别类别只进入服务端内部 `categories`，例如 `harassment / hate / sexual / sexual/minors / violence`。
+- 不把 Wavespeed 原始输出、原始类别、score、request id 返回给前端。
+
+14B 视频边界：
+
+- 14B 不实现 `checkVideoUrl` 的 Wavespeed 能力。
+- 如果 `MODERATION_PROVIDER=wavespeed` 且业务路径触发视频输出审核，adapter 应明确返回“不支持视频审核”的 provider error，由业务层按 `MODERATION_FAIL_CLOSED` 处理。
+- 不因为视频未接入就 fallback 到 Sightengine；否则 14B 会变成隐式多 provider 审核。
+- provider 创建、配置校验、能力检查都应落入统一 moderation provider error 处理路径，避免 `createModerationProvider()` 异常绕过 fail closed / fail open。
+
 14B 验收标准：
 
 - `MODERATION_PROVIDER=sightengine` 时，行为和 14A 完全一致。
+- `MODERATION_PROVIDER=sightengine` 时，不应创建或调用 Wavespeed provider。
 - `MODERATION_PROVIDER=wavespeed` 时，只启用 Wavespeed 文本 / 图片审核。
 - Wavespeed 不和 Sightengine 同时审核，也不做 Sightengine -> Wavespeed 自动 fallback。
 - Wavespeed block 后沿用相同的 `ContentPolicyViolationError` 和 `moderation_blocked` 语义。
 - Wavespeed 原始 category、score、raw response 不返回给前端。
+- `MODERATION_PROVIDER=wavespeed` 且视频审核被触发时，不静默 allow，应按 fail closed 或 fail open 配置得到明确结果。
+- Wavespeed API key 缺失、模型缺失、HTTP 非 2xx、prediction 失败、输出结构异常，都进入统一供应商异常路径。
 
 ### 14C Wavespeed video
 
 14C 最后做。视频比文本 / 图片更容易出现 polling、超时、失败状态和输出解析问题，不要和 14B 同轮落地。
+
+14C 轻量设计目标：
+
+- 只在 14B 的 Wavespeed adapter 上补 `checkVideoUrl()`，不改业务层审核编排。
+- 视频模型只用于输出 URL 复检，不做输入 prompt 文本审核替代。
+- polling、超时、失败状态和输出结构解析全部封装在 `wavespeed.ts` 内部。
+- 视频审核结果仍然只输出项目统一的 `allow/block/error` 语义。
 
 14C 执行范围：
 
@@ -784,11 +881,70 @@ This generated result violates our content safety policy and cannot be displayed
 2. adapter 内部处理 prediction polling、超时、失败、取消状态。
 3. 视频缺少可用审核能力时，继续遵守统一 fail closed 策略。
 
+14C 建议新增配置：
+
+```env
+WAVESPEED_VIDEO_MODEL="wavespeed-ai/molmo2/video-content-moderator"
+WAVESPEED_VIDEO_TIMEOUT_MS="120000"
+WAVESPEED_VIDEO_POLL_INTERVAL_MS="2000"
+```
+
+配置读取规则：
+
+- `WAVESPEED_VIDEO_MODEL` 为空时，`checkVideoUrl()` 返回 provider error，不放行。
+- `WAVESPEED_VIDEO_TIMEOUT_MS` 单独设置，不复用 text/image 的短超时。
+- `WAVESPEED_VIDEO_POLL_INTERVAL_MS` 可以默认回退到 `WAVESPEED_POLL_INTERVAL_MS`，但建议视频单独配置，避免过度频繁轮询。
+
+14C 请求参数：
+
+```ts
+// checkVideoUrl(videoUrl, text?)
+{
+  video: videoUrl,
+  text, // 可选，有生成 prompt 或业务上下文时才传
+}
+```
+
+Molmo2 video 页面没有把 `enable_sync_mode` 作为主要输入项展示，14C 不依赖同步模式。实现时直接按异步 prediction 流程处理：
+
+1. POST `https://api.wavespeed.ai/api/v3/${WAVESPEED_VIDEO_MODEL}`。
+2. 读取返回中的 prediction id。
+3. GET `https://api.wavespeed.ai/api/v3/predictions/{request_id}/result` 轮询。
+4. `status=completed` 后解析 `data.outputs[0]`。
+5. `failed / canceled / timeout / missing output / malformed output` 都交给统一 fail closed 策略。
+
+14C 状态处理：
+
+| Wavespeed 状态 | 项目处理 |
+|---|---|
+| `completed` 且输出可解析 | 按风险类别归一成 `allow` 或 `block` |
+| `completed` 但无 `outputs[0]` | provider error |
+| `failed` / `canceled` | provider error |
+| 长时间 `queued` / `processing` | 超时后 provider error |
+| 未知状态 | provider error，并记录脱敏日志 |
+
+14C 归一化规则与 14B 一致：
+
+- 任一 boolean 风险类别为 `true`，视频 block。
+- 全部已知风险类别为 `false`，视频 allow。
+- 输出不是对象，也不是可解析 JSON 字符串，按结构异常处理。
+- `sexual/minors` 必须和其他类别一样保留在内部 categories 中，但不返回前端。
+
+14C 与任务状态的关系：
+
+- `/api/ai/generate` 同步成功返回视频 URL 时，必须先完成 `checkVideoUrl()`；allow 后才返回 URL。
+- `/api/ai/query` 轮询到视频任务成功时，必须先完成 `checkVideoUrl()`；allow 后才落库并返回成功结果。
+- block 时写入 `moderation_blocked`，`taskInfo/taskResult` 只能保存脱敏错误信息，不能保存原始视频 URL 或 Wavespeed 原始 response。
+- 终态短路继续生效：已经是 `moderation_blocked` 的任务再次 query，不重复请求 Wavespeed。
+
 14C 验收标准：
 
 - `MODERATION_PROVIDER=wavespeed` 且视频审核开启时，视频输出 allow 后才返回 URL。
 - Wavespeed video block 后进入 `moderation_blocked`，不暴露原始 output URL。
 - Wavespeed video 未启用时，不影响 Sightengine 视频审核。
+- Wavespeed video 超时、失败、取消、输出结构异常时，按 `MODERATION_FAIL_CLOSED` 得到一致行为。
+- 同一视频任务进入终态后，再次 query 不重复调用 Wavespeed video moderator。
+- 14C 不新增多 provider fallback，也不改变 14B 的 text/image 行为。
 
 第三阶段不处理这些事项：
 
