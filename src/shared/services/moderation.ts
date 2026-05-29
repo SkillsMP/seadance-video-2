@@ -65,6 +65,8 @@ const DEFAULT_WAVESPEED_TEXT_MODEL =
   'wavespeed-ai/molmo2/text-content-moderator';
 const DEFAULT_WAVESPEED_IMAGE_MODEL =
   'wavespeed-ai/molmo2/image-content-moderator';
+const DEFAULT_WAVESPEED_VIDEO_MODEL =
+  'wavespeed-ai/molmo2/video-content-moderator';
 
 interface ModerationProviderContext {
   providerName: string;
@@ -422,7 +424,7 @@ function createModerationProviderContext(
   configs: Record<string, string>,
   mediaType?: string
 ): ModerationProviderContext {
-  const providerName = configs.moderation_provider?.trim() || 'sightengine';
+  const providerName = resolveModerationProviderName(configs, mediaType);
 
   if (providerName === 'sightengine') {
     const providerConfig: CreateModerationProviderConfig = {
@@ -477,12 +479,34 @@ function createWavespeedConfig(configs: Record<string, string>): WavespeedConfig
       configs.wavespeed_text_model?.trim() || DEFAULT_WAVESPEED_TEXT_MODEL,
     imageModel:
       configs.wavespeed_image_model?.trim() || DEFAULT_WAVESPEED_IMAGE_MODEL,
+    videoModel:
+      configs.wavespeed_video_model?.trim() || DEFAULT_WAVESPEED_VIDEO_MODEL,
     requestTimeoutMs: parseTimeoutMs(
       configs.wavespeed_request_timeout_ms,
       30000
     ),
     pollIntervalMs: parseTimeoutMs(configs.wavespeed_poll_interval_ms, 1000),
+    videoTimeoutMs: parseTimeoutMs(configs.wavespeed_video_timeout_ms, 120000),
+    videoPollIntervalMs: parseTimeoutMs(
+      configs.wavespeed_video_poll_interval_ms,
+      parseTimeoutMs(configs.wavespeed_poll_interval_ms, 2000)
+    ),
   };
+}
+
+function resolveModerationProviderName(
+  configs: Record<string, string>,
+  mediaType?: string
+): string {
+  const defaultProviderName =
+    configs.moderation_provider?.trim() || 'sightengine';
+  if (mediaType !== AIMediaType.VIDEO) {
+    return defaultProviderName;
+  }
+
+  return (
+    configs.moderation_output_video_provider?.trim() || defaultProviderName
+  );
 }
 
 function hasConfigValue(value?: string): boolean {

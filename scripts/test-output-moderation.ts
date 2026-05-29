@@ -11,6 +11,7 @@ const WAVESPEED_BLOCKED_URL_PARTS = [
   'wavespeed.ai/api',
   'wavespeed.ai',
 ];
+const SIGHTENGINE_BLOCKED_URL_PARTS = ['api.sightengine.com'];
 
 function toFetchUrl(input: unknown): string {
   if (typeof input === 'string') {
@@ -32,6 +33,10 @@ function isWavespeedUrl(url: string): boolean {
   return WAVESPEED_BLOCKED_URL_PARTS.some((part) => url.includes(part));
 }
 
+function isSightengineUrl(url: string): boolean {
+  return SIGHTENGINE_BLOCKED_URL_PARTS.some((part) => url.includes(part));
+}
+
 function assertWavespeedTestAuth(init?: RequestInit): void {
   assert.equal(
     new Headers(init?.headers).get('authorization'),
@@ -50,11 +55,17 @@ function createWavespeedResult(block: boolean) {
   };
 }
 
+function createSightengineResult() {
+  return {
+    status: 'success',
+  };
+}
+
 const originalFetch = globalThis.fetch;
 const guardedFetch: typeof fetch = async (input, init) => {
   const url = toFetchUrl(input);
-  if (isWavespeedUrl(url)) {
-    throw new Error(`Unexpected Wavespeed network request: ${url}`);
+  if (isWavespeedUrl(url) || isSightengineUrl(url)) {
+    throw new Error(`Unexpected moderation network request: ${url}`);
   }
 
   return originalFetch(input, init);
@@ -183,17 +194,24 @@ async function main() {
 
     process.env.MODERATION_ENABLED = 'true';
     process.env.MODERATION_PROVIDER = 'wavespeed';
+    delete process.env.MODERATION_OUTPUT_VIDEO_PROVIDER;
     process.env.MODERATION_FAIL_CLOSED = 'true';
     process.env.WAVESPEED_API_KEY = 'test-key';
     process.env.WAVESPEED_TEXT_MODEL =
       'wavespeed-ai/molmo2/text-content-moderator';
     process.env.WAVESPEED_IMAGE_MODEL =
       'wavespeed-ai/molmo2/image-content-moderator';
+    process.env.WAVESPEED_VIDEO_MODEL =
+      'wavespeed-ai/molmo2/video-content-moderator';
     process.env.WAVESPEED_REQUEST_TIMEOUT_MS = '30000';
     process.env.WAVESPEED_POLL_INTERVAL_MS = '1000';
+    process.env.WAVESPEED_VIDEO_TIMEOUT_MS = '30000';
+    process.env.WAVESPEED_VIDEO_POLL_INTERVAL_MS = '1000';
 
     let wavespeedSubmitMockHits = 0;
     let wavespeedResultMockHits = 0;
+    let wavespeedVideoSubmitMockHits = 0;
+    let wavespeedImageSubmitMockHits = 0;
 
     globalThis.fetch = async (input, init) => {
       const url = toFetchUrl(input);
@@ -207,6 +225,16 @@ async function main() {
         wavespeedResultMockHits += 1;
 
         const isBlock = url.includes('/predictions/pred_block/');
+        const isError = url.includes('/predictions/pred_error/');
+        if (isError) {
+          return new Response(
+            JSON.stringify({
+              id: 'pred_error',
+              status: 'failed',
+            }),
+            { status: 200 }
+          );
+        }
 
         return new Response(
           JSON.stringify({
@@ -230,10 +258,23 @@ async function main() {
           typeof init.body === 'string'
             ? (JSON.parse(init.body) as Record<string, unknown>)
             : {};
+        if (typeof body.image === 'string') {
+          wavespeedImageSubmitMockHits += 1;
+        }
+        if (typeof body.video === 'string') {
+          wavespeedVideoSubmitMockHits += 1;
+        }
         const isBlock =
           (typeof body.text === 'string' && body.text.includes('unsafe')) ||
-          (typeof body.image === 'string' && body.image.includes('unsafe'));
-        const predictionId = isBlock ? 'pred_block' : 'pred_allow';
+          (typeof body.image === 'string' && body.image.includes('unsafe')) ||
+          (typeof body.video === 'string' && body.video.includes('unsafe'));
+        const isError =
+          typeof body.video === 'string' && body.video.includes('error');
+        const predictionId = isError
+          ? 'pred_error'
+          : isBlock
+            ? 'pred_block'
+            : 'pred_allow';
 
         return new Response(
           JSON.stringify({
@@ -299,14 +340,39 @@ async function main() {
       await assert.rejects(
         () =>
           moderateGenerationOutput({
-            taskId: 'task-wavespeed-video-14b',
+            taskId: 'task-wavespeed-video-block',
             userId: 'user-1',
             mediaType: AIMediaType.VIDEO,
             scene: 'text-to-video',
-            outputUrls: ['https://example.com/generated-video.mp4'],
+            outputUrls: ['https://example.com/unsafe-video.mp4'],
           }),
         ContentPolicyViolationError,
-        '14B Wavespeed provider must not silently allow video moderation'
+        'wavespeed video block path should reject with ContentPolicyViolationError'
+      );
+
+      await assert.doesNotReject(
+        () =>
+          moderateGenerationOutput({
+            taskId: 'task-wavespeed-video-allow',
+            userId: 'user-1',
+            mediaType: AIMediaType.VIDEO,
+            scene: 'text-to-video',
+            outputUrls: ['https://example.com/safe-video.mp4'],
+          }),
+        'wavespeed video allow path should pass'
+      );
+
+      await assert.rejects(
+        () =>
+          moderateGenerationOutput({
+            taskId: 'task-wavespeed-video-error',
+            userId: 'user-1',
+            mediaType: AIMediaType.VIDEO,
+            scene: 'text-to-video',
+            outputUrls: ['https://example.com/error-video.mp4'],
+          }),
+        ContentPolicyViolationError,
+        'wavespeed video provider error should fail closed'
       );
 
       const blockResult = await applyGenerationOutputModeration({
@@ -332,6 +398,25 @@ async function main() {
         blockResult.taskResult?.errorCode === 'CONTENT_POLICY_VIOLATION',
         'errorCode should be correct'
       );
+      const videoBlockResult = await applyGenerationOutputModeration({
+        taskId: 'task-wavespeed-video-block-url-check',
+        userId: 'user-1',
+        mediaType: AIMediaType.VIDEO,
+        scene: 'text-to-video',
+        taskStatus: AITaskStatus.SUCCESS,
+        taskInfo: {
+          videos: [{ videoUrl: 'https://example.com/unsafe-video.mp4' }],
+        },
+        taskResult: { output: 'https://example.com/unsafe-video.mp4' },
+      });
+
+      assert.equal(videoBlockResult.status, AITaskStatus.MODERATION_BLOCKED);
+      const videoBlockResultStr = JSON.stringify(videoBlockResult);
+      assert.equal(
+        videoBlockResultStr.includes('unsafe-video.mp4'),
+        false,
+        'Should not leak original video output URL'
+      );
       assert.ok(
         wavespeedSubmitMockHits > 0,
         'Wavespeed submit endpoint must be covered by mock fetch'
@@ -339,6 +424,154 @@ async function main() {
       assert.ok(
         wavespeedResultMockHits > 0,
         'Wavespeed result polling endpoint must be covered by mock fetch'
+      );
+      assert.ok(
+        wavespeedVideoSubmitMockHits > 0,
+        'Wavespeed video submit endpoint must be covered by mock fetch'
+      );
+      assert.ok(
+        wavespeedImageSubmitMockHits > 0,
+        'Wavespeed image submit endpoint must be covered by mock fetch'
+      );
+    } finally {
+      globalThis.fetch = guardedFetch;
+    }
+
+    process.env.MODERATION_PROVIDER = 'sightengine';
+    process.env.MODERATION_OUTPUT_VIDEO_PROVIDER = 'wavespeed';
+    process.env.SIGHTENGINE_API_USER = 'test-user';
+    process.env.SIGHTENGINE_API_SECRET = 'test-secret';
+
+    let sightengineMockHits = 0;
+    let routedWavespeedSubmitHits = 0;
+    let routedWavespeedResultHits = 0;
+
+    globalThis.fetch = async (input, init) => {
+      const url = toFetchUrl(input);
+
+      if (isSightengineUrl(url)) {
+        sightengineMockHits += 1;
+        return new Response(JSON.stringify(createSightengineResult()), {
+          status: 200,
+        });
+      }
+
+      if (
+        url.includes('/predictions/') &&
+        url.endsWith('/result') &&
+        init?.method === 'GET'
+      ) {
+        assertWavespeedTestAuth(init);
+        routedWavespeedResultHits += 1;
+        return new Response(
+          JSON.stringify({
+            id: 'pred_routed_video',
+            status: 'completed',
+            outputs: [createWavespeedResult(false)],
+          }),
+          { status: 200 }
+        );
+      }
+
+      if (
+        url.startsWith('https://api.wavespeed.ai/api/v3/') &&
+        !url.includes('/predictions/') &&
+        init?.method === 'POST'
+      ) {
+        assertWavespeedTestAuth(init);
+        routedWavespeedSubmitHits += 1;
+
+        const body =
+          typeof init.body === 'string'
+            ? (JSON.parse(init.body) as Record<string, unknown>)
+            : {};
+        assert.equal(
+          typeof body.video,
+          'string',
+          'only output video moderation should use Wavespeed in routed test'
+        );
+        assert.equal(
+          body.image,
+          undefined,
+          'output image moderation must not use Wavespeed in routed test'
+        );
+        assert.equal(
+          body.text,
+          undefined,
+          'input text moderation must not use Wavespeed in routed test'
+        );
+
+        return new Response(
+          JSON.stringify({
+            id: 'pred_routed_video',
+            status: 'created',
+          }),
+          { status: 200 }
+        );
+      }
+
+      return guardedFetch(input, init);
+    };
+
+    try {
+      await assert.doesNotReject(
+        () =>
+          moderateGenerationInput({
+            userId: 'user-1',
+            mediaType: AIMediaType.IMAGE,
+            scene: 'image-to-image',
+            prompt: 'safe routed prompt',
+            options: {
+              image_input: 'https://example.com/input-image.png',
+            },
+          }),
+        'input moderation should keep using the default provider'
+      );
+
+      await assert.doesNotReject(
+        () =>
+          moderateGenerationOutput({
+            taskId: 'task-routed-image-output',
+            userId: 'user-1',
+            mediaType: AIMediaType.IMAGE,
+            scene: 'text-to-image',
+            outputUrls: ['https://example.com/routed-image.png'],
+          }),
+        'output image moderation should keep using the default provider'
+      );
+
+      const sightengineHitsBeforeVideo = sightengineMockHits;
+
+      await assert.doesNotReject(
+        () =>
+          moderateGenerationOutput({
+            taskId: 'task-routed-video-output',
+            userId: 'user-1',
+            mediaType: AIMediaType.VIDEO,
+            scene: 'text-to-video',
+            outputUrls: ['https://example.com/routed-video.mp4'],
+          }),
+        'output video moderation should use the configured video provider'
+      );
+
+      assert.ok(
+        sightengineMockHits >= 3,
+        'input text, input image, and output image should use Sightengine'
+      );
+      assert.equal(
+        sightengineMockHits,
+        sightengineHitsBeforeVideo,
+        'output video should not call Sightengine when routed to Wavespeed'
+      );
+      assert.equal(
+        routedWavespeedSubmitHits,
+        1,
+        'only output video should submit to Wavespeed'
+      );
+      assert.equal(
+        routedWavespeedResultHits,
+        1,
+        'output video should poll Wavespeed once in routed test'
       );
     } finally {
       globalThis.fetch = guardedFetch;

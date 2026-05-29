@@ -134,8 +134,18 @@ assert.doesNotMatch(
 const wavespeedSource = readSource('src/extensions/moderation/wavespeed.ts');
 assert.equal(
   wavespeedSource.includes('checkVideoUrl'),
-  false,
-  'Wavespeed provider must not implement checkVideoUrl'
+  true,
+  'Wavespeed provider must implement checkVideoUrl'
+);
+assert.match(
+  moderationService,
+  /moderation_output_video_provider/,
+  'output video moderation provider override must be supported'
+);
+assert.match(
+  moderationService,
+  /mediaType\s*!==\s*AIMediaType\.VIDEO[\s\S]*defaultProviderName[\s\S]*moderation_output_video_provider/,
+  'output video provider override must only apply to video output moderation'
 );
 
 assert.match(

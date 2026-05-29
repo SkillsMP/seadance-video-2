@@ -4,8 +4,11 @@ export interface WavespeedConfig {
   apiKey: string;
   textModel: string;
   imageModel: string;
+  videoModel: string;
   requestTimeoutMs: number;
   pollIntervalMs: number;
+  videoTimeoutMs: number;
+  videoPollIntervalMs: number;
 }
 
 const API_BASE_URL = 'https://api.wavespeed.ai/api/v3';
@@ -56,6 +59,23 @@ export async function checkImageUrl(
   );
 }
 
+export async function checkVideoUrl(
+  url: string,
+  config: WavespeedConfig,
+  text?: string
+): Promise<ModerationResult> {
+  assertVideoConfig(config);
+
+  return runVideoPrediction(
+    config.videoModel,
+    {
+      video: url,
+      ...(text ? { text } : {}),
+    },
+    config
+  );
+}
+
 export function createWavespeedModerationProvider(
   config: WavespeedConfig
 ): ModerationProvider {
@@ -65,6 +85,7 @@ export function createWavespeedModerationProvider(
     name: 'wavespeed',
     checkText: (text) => checkText(text, config),
     checkImageUrl: (url, text) => checkImageUrl(url, config, text),
+    checkVideoUrl: (url, text) => checkVideoUrl(url, config, text),
   };
 }
 
@@ -86,6 +107,27 @@ async function runPrediction(
   }
 
   const completed = await pollPrediction(requestId, config, deadline);
+  const output = resolvePredictionOutput(completed);
+  if (output === undefined) {
+    throw new Error('Wavespeed moderation output missing');
+  }
+
+  return normalizeWavespeedOutput(output);
+}
+
+async function runVideoPrediction(
+  model: string,
+  payload: Record<string, unknown>,
+  config: WavespeedConfig
+): Promise<ModerationResult> {
+  const deadline = Date.now() + config.videoTimeoutMs;
+  const submitted = await submitPrediction(model, payload, config, deadline);
+  const requestId = resolvePredictionId(submitted);
+  if (!requestId) {
+    throw new Error('Wavespeed moderation prediction id missing');
+  }
+
+  const completed = await pollVideoPrediction(requestId, config, deadline);
   const output = resolvePredictionOutput(completed);
   if (output === undefined) {
     throw new Error('Wavespeed moderation output missing');
@@ -148,6 +190,49 @@ async function pollPrediction(
     }
 
     await sleep(Math.min(config.pollIntervalMs, remainingMs(deadline)));
+  }
+
+  throw new Error('Wavespeed moderation prediction timed out');
+}
+
+async function pollVideoPrediction(
+  requestId: string,
+  config: WavespeedConfig,
+  deadline: number
+): Promise<unknown> {
+  while (Date.now() < deadline) {
+    const raw = await fetchJsonWithTimeout(
+      `${API_BASE_URL}/predictions/${requestId}/result`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${config.apiKey}`,
+        },
+      },
+      remainingMs(deadline)
+    );
+
+    const status = resolvePredictionStatus(raw);
+    if (status === 'completed') {
+      const output = resolvePredictionOutput(raw);
+      if (output === undefined) {
+        throw new Error('Wavespeed moderation output missing');
+      }
+
+      return raw;
+    }
+    if (status && FAILED_STATUSES.has(status)) {
+      throw new Error(`Wavespeed moderation prediction ${status}`);
+    }
+    if (status && IN_PROGRESS_STATUSES.has(status)) {
+      await sleep(Math.min(config.videoPollIntervalMs, remainingMs(deadline)));
+      continue;
+    }
+    if (!status) {
+      throw new Error('Wavespeed moderation prediction status missing');
+    }
+
+    throw new Error(`Wavespeed moderation prediction status: ${status}`);
   }
 
   throw new Error('Wavespeed moderation prediction timed out');
@@ -290,6 +375,21 @@ function assertConfig(config: WavespeedConfig) {
   }
   if (!Number.isFinite(config.pollIntervalMs) || config.pollIntervalMs <= 0) {
     throw new Error('Wavespeed moderation poll interval invalid');
+  }
+}
+
+function assertVideoConfig(config: WavespeedConfig) {
+  if (!config.videoModel) {
+    throw new Error('Wavespeed moderation video model missing');
+  }
+  if (!Number.isFinite(config.videoTimeoutMs) || config.videoTimeoutMs <= 0) {
+    throw new Error('Wavespeed moderation video timeout invalid');
+  }
+  if (
+    !Number.isFinite(config.videoPollIntervalMs) ||
+    config.videoPollIntervalMs <= 0
+  ) {
+    throw new Error('Wavespeed moderation video poll interval invalid');
   }
 }
 
