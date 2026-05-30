@@ -94,6 +94,8 @@ const DEFAULT_PREVIEW_IMAGE =
   'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg';
 const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
+const AUTO_SAVE_SHOWCASE =
+  process.env.NEXT_PUBLIC_AUTO_SAVE_SHOWCASE === 'true';
 
 /** AI 模型配置列表 */
 // 数组中元素的存放顺序即为调用优先级
@@ -633,10 +635,14 @@ export function ImageGenerator({
             setGeneratedImages(images);
 
             // Save showcase only once - check before saving
-            if (images.length > 0 && !savedTaskIdsRef.current.has(task.id)) {
+            if (
+              AUTO_SAVE_SHOWCASE &&
+              images.length > 0 &&
+              !savedTaskIdsRef.current.has(task.id)
+            ) {
               await saveShowcase(images[0].url, task.id);
-              toast.success('Image generated successfully');
             }
+            toast.success('Image generated successfully');
           }
 
           setProgress(100);
@@ -859,10 +865,14 @@ export function ImageGenerator({
           await fetchUserCredits();
 
           // Save showcase - this handles immediate success case
-          if (images.length > 0 && !savedTaskIdsRef.current.has(newTaskId)) {
+          if (
+            AUTO_SAVE_SHOWCASE &&
+            images.length > 0 &&
+            !savedTaskIdsRef.current.has(newTaskId)
+          ) {
             await saveShowcase(images[0].url, newTaskId);
-            toast.success('Image generated successfully');
           }
+          toast.success('Image generated successfully');
           return;
         }
       }
