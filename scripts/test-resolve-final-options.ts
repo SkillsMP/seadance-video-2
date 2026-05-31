@@ -74,8 +74,14 @@ assert.deepEqual(
   }
 );
 
-assert.deepEqual(textEntry.enforced?.[textScene], {
-  generate_audio: false,
+assert.equal(textEntry.defaults?.[textScene]?.generate_audio, false);
+assert.deepEqual(textEntry.controls?.[textScene]?.generate_audio, {
+  type: 'boolean',
+  default: false,
+  options: [false, true],
+  label: 'Generate Audio',
+  ui: 'switch',
+  order: 40,
 });
 assert.deepEqual(textEntry.controls?.[textScene]?.resolution?.options, [
   '480p',
@@ -101,7 +107,7 @@ const openControlEntries = getVideoControlEntries({
 });
 assert.deepEqual(
   openControlEntries.map(([name]) => name),
-  ['duration', 'aspect_ratio', 'resolution']
+  ['duration', 'aspect_ratio', 'resolution', 'generate_audio']
 );
 const openControlValues = normalizeVideoControlValues({
   currentValues: {
@@ -115,6 +121,7 @@ assert.deepEqual(openControlValues, {
   duration: '10',
   aspect_ratio: '9:16',
   resolution: '720p',
+  generate_audio: 'false',
 });
 assert.deepEqual(
   buildVideoGenerationOptions({
@@ -126,6 +133,7 @@ assert.deepEqual(
     duration: 10,
     aspect_ratio: '9:16',
     resolution: '720p',
+    generate_audio: false,
   }
 );
 
@@ -136,7 +144,7 @@ const lockedControlEntries = getVideoControlEntries({
 });
 assert.deepEqual(
   lockedControlEntries.map(([name]) => name),
-  ['duration', 'aspect_ratio']
+  ['duration', 'aspect_ratio', 'generate_audio']
 );
 assert.deepEqual(
   buildVideoGenerationOptions({
@@ -147,6 +155,7 @@ assert.deepEqual(
   {
     duration: 10,
     aspect_ratio: '9:16',
+    generate_audio: false,
   }
 );
 assert.deepEqual(
@@ -175,7 +184,7 @@ const controlledOptions = resolveFinalOptions({
 assert.equal(controlledOptions.duration, 10);
 assert.equal(controlledOptions.aspect_ratio, '9:16');
 assert.equal(controlledOptions.resolution, '720p');
-assert.equal(controlledOptions.generate_audio, false);
+assert.equal(controlledOptions.generate_audio, true);
 assert.equal(controlledOptions.inputBilling, 'no-video-input');
 
 const imageOptions = resolveFinalOptions({
@@ -257,6 +266,7 @@ const ignoredInvalidOptions = resolveFinalOptions({
 assert.equal(ignoredInvalidOptions.duration, 5);
 assert.equal(ignoredInvalidOptions.aspect_ratio, '16:9');
 assert.equal(ignoredInvalidOptions.resolution, '480p');
+assert.equal(ignoredInvalidOptions.generate_audio, false);
 
 const videoInputEntry = findEnabledModel('seedance-2-fast', 'video-to-video');
 assert.deepEqual(
@@ -277,6 +287,7 @@ assert.deepEqual(
     duration: '10',
     aspect_ratio: '9:16',
     resolution: '720p',
+    generate_audio: 'false',
   }
 );
 assert.deepEqual(
@@ -292,6 +303,7 @@ assert.deepEqual(
     duration: '5',
     aspect_ratio: '9:16',
     resolution: '480p',
+    generate_audio: 'false',
   }
 );
 const videoInputOpenOptions = resolveFinalOptions({
@@ -307,6 +319,7 @@ const videoInputOpenOptions = resolveFinalOptions({
 });
 assert.equal(videoInputOpenOptions.resolution, '720p');
 assert.equal(videoInputOpenOptions.duration, 10);
+assert.equal(videoInputOpenOptions.generate_audio, false);
 assert.throws(
   () =>
     resolveFinalOptions({
@@ -338,5 +351,6 @@ assert.deepEqual(videoInputOptions.video_input, [
 assert.equal(videoInputOptions.duration, 5);
 assert.equal(videoInputOptions.aspect_ratio, '16:9');
 assert.equal(videoInputOptions.resolution, '480p');
+assert.equal(videoInputOptions.generate_audio, false);
 
 console.log('resolveFinalOptions checks passed.');

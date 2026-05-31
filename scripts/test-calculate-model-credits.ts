@@ -326,10 +326,7 @@ assert.equal(
   false
 );
 
-const imageToVideoEntry = findEnabledModel(
-  'seedance-2-fast',
-  'image-to-video'
-);
+const imageToVideoEntry = findEnabledModel('seedance-2-fast', 'image-to-video');
 const imageToVideoSnapshot = resolveGenerationPricingSnapshot({
   mediaType: 'video',
   scene: 'image-to-video',
@@ -397,6 +394,19 @@ const openResolutionSnapshot = resolveGenerationPricingSnapshot({
 
 assert.equal(openResolutionSnapshot.finalOptions.resolution, '720p');
 assert.equal(openResolutionSnapshot.costCredits, 240);
+
+const audioEnabledSnapshot = resolveGenerationPricingSnapshot({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: textEntry,
+  options: { duration: 10, resolution: '720p', generate_audio: true },
+  useDynamicVideoPricing: true,
+  allowControlOptions: true,
+  allowResolutionControl: true,
+});
+
+assert.equal(audioEnabledSnapshot.finalOptions.generate_audio, true);
+assert.equal(audioEnabledSnapshot.costCredits, 240);
 
 const sameFallbackEntry: ModelEntry = {
   ...textEntry,
@@ -479,7 +489,10 @@ const costDriftSnapshot = resolveGenerationPricingSnapshot({
 
 assert.throws(
   () =>
-    assertGenerationPricingConsistency(lockedResolutionSnapshot, costDriftSnapshot),
+    assertGenerationPricingConsistency(
+      lockedResolutionSnapshot,
+      costDriftSnapshot
+    ),
   /generation pricing drift/
 );
 

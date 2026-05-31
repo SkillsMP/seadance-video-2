@@ -19,6 +19,13 @@ export interface ControlOption<T extends ControlValue = ControlValue> {
   type: 'string' | 'number' | 'boolean';
   default: T;
   options: T[];
+  /**
+   * Optional UI metadata for generator controls.
+   * Keep billing out of controls. Pricing decides whether a control affects cost.
+   */
+  label?: string;
+  ui?: 'select' | 'switch';
+  order?: number;
 }
 
 export type SceneControls = Record<string, ControlOption>;
@@ -237,6 +244,14 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
       default: SEEDANCE_DEFAULT_ASPECT_RATIO,
       options: SEEDANCE_ASPECT_RATIO_OPTIONS,
     },
+    generate_audio: {
+      type: 'boolean',
+      default: false,
+      options: [false, true],
+      label: 'Generate Audio',
+      ui: 'switch',
+      order: 40,
+    },
   };
   const enabledResolutionOptions = getEnabledResolutionOptions(
     item.byResolution
@@ -269,6 +284,7 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
         duration: SEEDANCE_DEFAULT_DURATION,
         aspect_ratio: SEEDANCE_DEFAULT_ASPECT_RATIO,
         resolution: item.defaultResolution,
+        generate_audio: false,
       },
     },
     controls: {
@@ -279,11 +295,6 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
         mode: 'perSecond',
         defaultDuration: SEEDANCE_DEFAULT_DURATION,
         byResolution: item.byResolution,
-      },
-    },
-    enforced: {
-      [scene]: {
-        generate_audio: false,
       },
     },
   };
@@ -369,6 +380,12 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
 
 function isControlType(value: unknown): value is ControlOption['type'] {
   return value === 'string' || value === 'number' || value === 'boolean';
+}
+
+function isControlUI(
+  value: unknown
+): value is NonNullable<ControlOption['ui']> {
+  return value === 'select' || value === 'switch';
 }
 
 function valueMatchesType(
@@ -458,6 +475,30 @@ function validateControls(model: ModelEntry, errors: string[]): void {
           `control type is invalid: ${modelRef(model)}/${scene}/${name}`
         );
         continue;
+      }
+
+      if (
+        control.label !== undefined &&
+        (typeof control.label !== 'string' || !control.label.trim())
+      ) {
+        errors.push(
+          `control label is invalid: ${modelRef(model)}/${scene}/${name}`
+        );
+      }
+
+      if (control.ui !== undefined && !isControlUI(control.ui)) {
+        errors.push(
+          `control ui is invalid: ${modelRef(model)}/${scene}/${name}`
+        );
+      }
+
+      if (
+        control.order !== undefined &&
+        (typeof control.order !== 'number' || !Number.isFinite(control.order))
+      ) {
+        errors.push(
+          `control order is invalid: ${modelRef(model)}/${scene}/${name}`
+        );
       }
 
       if (!('default' in control)) {

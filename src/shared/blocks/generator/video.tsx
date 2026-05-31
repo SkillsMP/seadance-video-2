@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/components/ui/select';
+import { Switch } from '@/shared/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
@@ -853,35 +854,55 @@ export function VideoGenerator({
                         return (
                           <div key={name} className="space-y-2">
                             <Label htmlFor={`video-control-${name}`}>
-                              {getControlLabel(name)}
+                              {getControlLabel(name, control)}
                             </Label>
-                            <Select
-                              value={selectedValue}
-                              onValueChange={(value) =>
-                                handleControlChange(name, value)
-                              }
-                              disabled={
-                                isLoadingProviders || !hasAvailableFamilies
-                              }
-                            >
-                              <SelectTrigger
-                                id={`video-control-${name}`}
-                                className="w-full"
+                            {control.ui === 'switch' ||
+                            control.type === 'boolean' ? (
+                              <div className="flex h-10 items-center">
+                                <Switch
+                                  id={`video-control-${name}`}
+                                  checked={selectedValue === 'true'}
+                                  onCheckedChange={(checked) =>
+                                    handleControlChange(name, String(checked))
+                                  }
+                                  disabled={
+                                    isLoadingProviders || !hasAvailableFamilies
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <Select
+                                value={selectedValue}
+                                onValueChange={(value) =>
+                                  handleControlChange(name, value)
+                                }
+                                disabled={
+                                  isLoadingProviders || !hasAvailableFamilies
+                                }
                               >
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {control.options.map((option) => {
-                                  const value = String(option);
+                                <SelectTrigger
+                                  id={`video-control-${name}`}
+                                  className="w-full"
+                                >
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {control.options.map((option) => {
+                                    const value = String(option);
 
-                                  return (
-                                    <SelectItem key={value} value={value}>
-                                      {formatControlOption(name, option)}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
+                                    return (
+                                      <SelectItem key={value} value={value}>
+                                        {formatControlOption(
+                                          name,
+                                          option,
+                                          control
+                                        )}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
+                            )}
                           </div>
                         );
                       })}
