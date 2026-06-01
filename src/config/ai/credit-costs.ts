@@ -2,6 +2,7 @@
 // 明确它是派生层，不是配置源。短期保持，但未来考虑清理。收窄它的职责。
 import {
   MODELS,
+  type ImageResolution,
   type ModelEntry,
   type ScenePricing,
   type VideoResolution,
@@ -75,6 +76,22 @@ function resolveResolution(
   return resolution;
 }
 
+function resolveImageResolution(
+  finalOptions: FinalGenerationOptions
+): ImageResolution {
+  const resolution = finalOptions.resolution;
+
+  if (resolution === undefined) {
+    throw new Error('missing pricing image resolution');
+  }
+
+  if (resolution !== '1K' && resolution !== '2K' && resolution !== '4K') {
+    throw new Error('invalid pricing image resolution');
+  }
+
+  return resolution;
+}
+
 export function calculateModelCredits(
   entry: ModelEntry,
   scene: string,
@@ -85,6 +102,31 @@ export function calculateModelCredits(
   if (pricing.mode === 'fixed') {
     if (!isFinitePositiveNumber(pricing.credits)) {
       throw new Error(`invalid fixed pricing: ${entry.family}/${scene}`);
+    }
+
+    if (pricing.byImageResolution) {
+      const resolution = resolveImageResolution(finalOptions);
+      const resolutionPricing = pricing.byImageResolution[resolution];
+
+      if (!resolutionPricing) {
+        throw new Error(
+          `missing pricing image resolution: ${entry.family}/${scene}`
+        );
+      }
+
+      if (resolutionPricing.availability !== 'enabled') {
+        throw new Error(
+          `unavailable pricing image resolution: ${entry.family}/${scene}`
+        );
+      }
+
+      if (!isFinitePositiveNumber(resolutionPricing.credits)) {
+        throw new Error(
+          `invalid fixed image resolution pricing: ${entry.family}/${scene}`
+        );
+      }
+
+      return resolutionPricing.credits;
     }
 
     return pricing.credits;

@@ -35,6 +35,7 @@ export interface ScenePricing {
   credits?: number;
   creditsPerSecond?: number;
   defaultDuration?: number;
+  byImageResolution?: Partial<Record<ImageResolution, ImageResolutionPricing>>;
   byResolution?: Partial<Record<VideoResolution, VideoResolutionPricing>>;
 }
 
@@ -84,6 +85,7 @@ const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 
 type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
+export type ImageResolution = '1K' | '2K' | '4K';
 export type VideoResolution = '480p' | '720p' | '1080p';
 /**
  * 视频定价可用性状态：
@@ -92,15 +94,22 @@ export type VideoResolution = '480p' | '720p' | '1080p';
  * - whitelist: 灰度/内部可用，普通用户不可选
  * - disabled: 禁用
  */
-export type VideoPricingAvailability =
+export type PricingAvailability =
   | 'enabled'
   | 'candidate'
   | 'whitelist'
   | 'disabled';
 
+export type VideoPricingAvailability = PricingAvailability;
+
+export interface ImageResolutionPricing {
+  credits: number;
+  availability: PricingAvailability;
+}
+
 export interface VideoResolutionPricing {
   creditsPerSecond: number;
-  availability: VideoPricingAvailability;
+  availability: PricingAvailability;
 }
 
 type SeedanceResolution = VideoResolution;
@@ -310,6 +319,26 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image', 'image-to-image'],
     enabled: true,
     credits: { 'text-to-image': 20, 'image-to-image': 20 },
+    pricing: {
+      'text-to-image': {
+        mode: 'fixed',
+        credits: 20,
+        byImageResolution: {
+          '1K': { credits: 20, availability: 'enabled' },
+          '2K': { credits: 20, availability: 'enabled' },
+          '4K': { credits: 30, availability: 'enabled' },
+        },
+      },
+      'image-to-image': {
+        mode: 'fixed',
+        credits: 20,
+        byImageResolution: {
+          '1K': { credits: 20, availability: 'enabled' },
+          '2K': { credits: 20, availability: 'enabled' },
+          '4K': { credits: 30, availability: 'enabled' },
+        },
+      },
+    },
   },
   {
     mediaType: 'image',
@@ -320,6 +349,22 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image', 'image-to-image'],
     enabled: true,
     credits: { 'text-to-image': 15, 'image-to-image': 15 },
+    pricing: {
+      'text-to-image': {
+        mode: 'fixed',
+        credits: 15,
+        byImageResolution: {
+          '2K': { credits: 15, availability: 'enabled' },
+        },
+      },
+      'image-to-image': {
+        mode: 'fixed',
+        credits: 15,
+        byImageResolution: {
+          '2K': { credits: 15, availability: 'enabled' },
+        },
+      },
+    },
   },
   {
     mediaType: 'image',
@@ -330,6 +375,12 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image'],
     enabled: true,
     credits: { 'text-to-image': 5 },
+    pricing: {
+      'text-to-image': {
+        mode: 'fixed',
+        credits: 5,
+      },
+    },
   },
   {
     mediaType: 'image',
@@ -340,6 +391,12 @@ export const MODELS: ModelEntry[] = [
     scenes: ['image-to-image'],
     enabled: true,
     credits: { 'image-to-image': 5 },
+    pricing: {
+      'image-to-image': {
+        mode: 'fixed',
+        credits: 5,
+      },
+    },
   },
   ...SEEDANCE_CATALOG.map(createSeedanceEntry),
 ];
@@ -594,9 +651,9 @@ function isPositiveNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0;
 }
 
-function isVideoPricingAvailability(
+function isPricingAvailability(
   value: unknown
-): value is VideoPricingAvailability {
+): value is PricingAvailability {
   return (
     value === 'enabled' ||
     value === 'candidate' ||
@@ -629,10 +686,11 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
       continue;
     }
 
+    const byImageResolution = pricing.byImageResolution;
     const byResolution = pricing.byResolution;
 
     if (pricing.mode === 'fixed') {
-      if (!isNonNegativeNumber(pricing.credits)) {
+      if (!isPositiveNumber(pricing.credits)) {
         errors.push(
           `pricing fixed credits is invalid: ${modelRef(model)}/${scene}`
         );
@@ -642,9 +700,50 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
           `pricing byResolution is only valid for perSecond: ${modelRef(model)}/${scene}`
         );
       }
+      if (byImageResolution !== undefined) {
+        if (!isPlainRecord(byImageResolution)) {
+          errors.push(
+            `pricing byImageResolution must be an object: ${modelRef(model)}/${scene}`
+          );
+        } else {
+          for (const [resolution, resolutionPricing] of Object.entries(
+            byImageResolution
+          )) {
+            if (!['1K', '2K', '4K'].includes(resolution)) {
+              errors.push(
+                `pricing image resolution is invalid: ${modelRef(model)}/${scene}/${resolution}`
+              );
+            }
+
+            if (!isPlainRecord(resolutionPricing)) {
+              errors.push(
+                `pricing image resolution value must be an object: ${modelRef(model)}/${scene}/${resolution}`
+              );
+              continue;
+            }
+
+            if (!isPositiveNumber(resolutionPricing.credits)) {
+              errors.push(
+                `pricing image resolution credits is invalid: ${modelRef(model)}/${scene}/${resolution}`
+              );
+            }
+
+            if (!isPricingAvailability(resolutionPricing.availability)) {
+              errors.push(
+                `pricing image resolution availability is invalid: ${modelRef(model)}/${scene}/${resolution}`
+              );
+            }
+          }
+        }
+      }
     } else if (pricing.mode === 'perSecond') {
+      if (byImageResolution !== undefined) {
+        errors.push(
+          `pricing byImageResolution is only valid for fixed: ${modelRef(model)}/${scene}`
+        );
+      }
       if (byResolution === undefined) {
-        if (!isNonNegativeNumber(pricing.creditsPerSecond)) {
+        if (!isPositiveNumber(pricing.creditsPerSecond)) {
           errors.push(
             `pricing creditsPerSecond is invalid: ${modelRef(model)}/${scene}`
           );
@@ -676,7 +775,7 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
             );
           }
 
-          if (!isVideoPricingAvailability(resolutionPricing.availability)) {
+          if (!isPricingAvailability(resolutionPricing.availability)) {
             errors.push(
               `pricing availability is invalid: ${modelRef(model)}/${scene}/${resolution}`
             );
@@ -837,6 +936,90 @@ function validateVideoResolutionControls(
   }
 }
 
+function validateImageResolutionControls(
+  model: ModelEntry,
+  errors: string[]
+): void {
+  if (model.mediaType !== 'image' || !model.enabled || !model.controls) {
+    return;
+  }
+
+  for (const [scene, controls] of Object.entries(model.controls)) {
+    const resolutionControl = controls?.resolution;
+    if (!resolutionControl) {
+      continue;
+    }
+
+    const byImageResolution = model.pricing?.[scene]?.byImageResolution;
+    if (!byImageResolution) {
+      errors.push(
+        `image resolution control missing pricing: ${modelRef(model)}/${scene}`
+      );
+      continue;
+    }
+
+    if (resolutionControl.type !== 'string') {
+      errors.push(
+        `image resolution control must be string: ${modelRef(model)}/${scene}`
+      );
+      continue;
+    }
+
+    for (const option of resolutionControl.options) {
+      if (typeof option !== 'string') {
+        errors.push(
+          `image resolution control option is invalid: ${modelRef(
+            model
+          )}/${scene}/${String(option)}`
+        );
+        continue;
+      }
+
+      const optionPricing = byImageResolution[option as ImageResolution];
+      if (!optionPricing) {
+        errors.push(
+          `image resolution control option missing pricing: ${modelRef(
+            model
+          )}/${scene}/${option}`
+        );
+        continue;
+      }
+
+      if (optionPricing.availability !== 'enabled') {
+        errors.push(
+          `image resolution control option is not enabled: ${modelRef(
+            model
+          )}/${scene}/${option}`
+        );
+      }
+    }
+
+    const defaultResolution = resolutionControl.default;
+    if (typeof defaultResolution !== 'string') {
+      continue;
+    }
+
+    const defaultPricing =
+      byImageResolution[defaultResolution as ImageResolution];
+    if (!defaultPricing) {
+      errors.push(
+        `image resolution control default missing pricing: ${modelRef(
+          model
+        )}/${scene}/${defaultResolution}`
+      );
+      continue;
+    }
+
+    if (defaultPricing.availability !== 'enabled') {
+      errors.push(
+        `image resolution control default is not enabled: ${modelRef(
+          model
+        )}/${scene}/${defaultResolution}`
+      );
+    }
+  }
+}
+
 function validateVideoPricingCostPaths(errors: string[]): void {
   const costsByPath = new Map<string, number>();
 
@@ -972,6 +1155,7 @@ export function validateModels(): string[] {
     validatePricing(m, errors);
     validateVideoModelMetadata(m, errors);
     validateVideoResolutionControls(m, errors);
+    validateImageResolutionControls(m, errors);
   }
 
   validateVideoPricingCostPaths(errors);

@@ -10,6 +10,7 @@ import {
 } from '../src/config/ai/generation-pricing';
 import {
   MODELS,
+  type ImageResolution,
   type ModelEntry,
   type VideoResolution,
 } from '../src/config/ai/models';
@@ -50,6 +51,74 @@ const fixedEntry = createEntry({
   },
 });
 assert.equal(calculateModelCredits(fixedEntry, 'text-to-video', {}), 42);
+
+const fixedImageResolutionEntry = createEntry({
+  mediaType: 'image',
+  scenes: ['text-to-image'],
+  credits: { 'text-to-image': 20 },
+  pricing: {
+    'text-to-image': {
+      mode: 'fixed',
+      credits: 20,
+      byImageResolution: {
+        '1K': { credits: 20, availability: 'enabled' },
+        '2K': { credits: 20, availability: 'enabled' },
+        '4K': { credits: 30, availability: 'candidate' },
+      },
+    },
+  },
+});
+assert.equal(
+  calculateModelCredits(fixedImageResolutionEntry, 'text-to-image', {
+    resolution: '1K',
+  }),
+  20
+);
+assert.throws(
+  () =>
+    calculateModelCredits(
+      fixedImageResolutionEntry,
+      'text-to-image',
+      {}
+    ),
+  /missing pricing image resolution/
+);
+assert.throws(
+  () =>
+    calculateModelCredits(fixedImageResolutionEntry, 'text-to-image', {
+      resolution: '3K',
+    }),
+  /invalid pricing image resolution/
+);
+assert.throws(
+  () =>
+    calculateModelCredits(fixedImageResolutionEntry, 'text-to-image', {
+      resolution: '4K',
+    }),
+  /unavailable pricing image resolution/
+);
+assert.throws(
+  () =>
+    calculateModelCredits(
+      createEntry({
+        mediaType: 'image',
+        scenes: ['text-to-image'],
+        credits: { 'text-to-image': 20 },
+        pricing: {
+          'text-to-image': {
+            mode: 'fixed',
+            credits: 20,
+            byImageResolution: {
+              '1K': { credits: 0, availability: 'enabled' },
+            },
+          },
+        },
+      }),
+      'text-to-image',
+      { resolution: '1K' }
+    ),
+  /invalid fixed image resolution pricing/
+);
 
 const perSecondEntry = createEntry({
   pricing: {
@@ -324,6 +393,79 @@ assert.equal(
     )
   ),
   false
+);
+
+const imageResolutionPricingMatrix = [
+  {
+    family: 'nano-banana-pro',
+    scenes: ['text-to-image', 'image-to-image'],
+    byImageResolution: {
+      '1K': 20,
+      '2K': 20,
+      '4K': 30,
+    },
+  },
+  {
+    family: 'nano-banana-2',
+    scenes: ['text-to-image', 'image-to-image'],
+    byImageResolution: {
+      '2K': 15,
+    },
+  },
+] as const;
+
+for (const row of imageResolutionPricingMatrix) {
+  for (const scene of row.scenes) {
+    const entry = findEnabledModel(row.family, scene);
+    const resolutionPricing = entry.pricing?.[scene]?.byImageResolution ?? {};
+
+    assert.deepEqual(
+      Object.keys(resolutionPricing).sort(),
+      Object.keys(row.byImageResolution).sort()
+    );
+
+    for (const [resolution, credits] of Object.entries(
+      row.byImageResolution
+    )) {
+      const typedResolution = resolution as ImageResolution;
+      const optionPricing = resolutionPricing[typedResolution];
+
+      assert.equal(optionPricing?.availability, 'enabled');
+      assert.equal(optionPricing?.credits, credits);
+      assert.equal(
+        calculateModelCredits(entry, scene, {
+          resolution: typedResolution,
+        }),
+        credits
+      );
+    }
+  }
+}
+
+const legacyNanoBananaEntry = findEnabledModel(
+  'nano-banana',
+  'text-to-image'
+);
+assert.equal(
+  calculateModelCredits(legacyNanoBananaEntry, 'text-to-image', {}),
+  5
+);
+assert.equal(
+  legacyNanoBananaEntry.pricing?.['text-to-image']?.byImageResolution,
+  undefined
+);
+
+const legacyNanoBananaEditEntry = findEnabledModel(
+  'nano-banana',
+  'image-to-image'
+);
+assert.equal(
+  calculateModelCredits(legacyNanoBananaEditEntry, 'image-to-image', {}),
+  5
+);
+assert.equal(
+  legacyNanoBananaEditEntry.pricing?.['image-to-image']?.byImageResolution,
+  undefined
 );
 
 const imageToVideoEntry = findEnabledModel('seedance-2-fast', 'image-to-video');
