@@ -83,12 +83,52 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 ];
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
+const KIE_NANO_BANANA_OUTPUT_FORMATS = ['png'] as const;
+const KIE_IMAGE_RESOLUTIONS = ['1K', '2K', '4K'] as const;
+const NANO_BANANA_2_PRICED_RESOLUTIONS = ['2K'] as const;
+const NANO_BANANA_PRO_ASPECT_RATIOS = [
+  '1:1',
+  '2:3',
+  '3:2',
+  '3:4',
+  '4:3',
+  '4:5',
+  '5:4',
+  '9:16',
+  '16:9',
+  '21:9',
+  'auto',
+] as const;
+const NANO_BANANA_2_ASPECT_RATIOS = [
+  '1:1',
+  '1:4',
+  '1:8',
+  '2:3',
+  '3:2',
+  '3:4',
+  '4:1',
+  '4:3',
+  '4:5',
+  '5:4',
+  '8:1',
+  '9:16',
+  '16:9',
+  '21:9',
+  'auto',
+] as const;
+const NANO_BANANA_LEGACY_ASPECT_RATIOS = [
+  '1:1',
+  '16:9',
+  '9:16',
+  '4:3',
+  '3:4',
+] as const;
 
 type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
 export type ImageResolution = '1K' | '2K' | '4K';
 export type VideoResolution = '480p' | '720p' | '1080p';
 /**
- * 视频定价可用性状态：
+ * 定价可用性状态：
  * - enabled: 普通用户可选，生成器 controls 会展示
  * - candidate: 候选/预埋规格，价格先写好，但普通用户暂不可选
  * - whitelist: 灰度/内部可用，普通用户不可选
@@ -309,6 +349,93 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
   };
 }
 
+function createImageControls({
+  aspectRatios,
+  defaultAspectRatio,
+  resolutionOptions,
+  defaultResolution,
+  outputFormats,
+}: {
+  aspectRatios: readonly string[];
+  defaultAspectRatio: string;
+  resolutionOptions?: readonly string[];
+  defaultResolution?: string;
+  outputFormats?: readonly string[];
+}): SceneControls {
+  const controls: SceneControls = {
+    aspect_ratio: {
+      type: 'string',
+      default: defaultAspectRatio,
+      options: [...aspectRatios],
+      label: 'Aspect ratio',
+      ui: 'select',
+      order: 10,
+    },
+  };
+
+  if (resolutionOptions?.length) {
+    controls.resolution = {
+      type: 'string',
+      default: defaultResolution ?? resolutionOptions[0]!,
+      options: [...resolutionOptions],
+      label: 'Resolution',
+      ui: 'select',
+      order: 20,
+    };
+  }
+
+  if (outputFormats?.length) {
+    controls.output_format = {
+      type: 'string',
+      default: outputFormats[0]!,
+      options: [...outputFormats],
+      label: 'Output format',
+      ui: 'select',
+      order: 30,
+    };
+  }
+
+  return controls;
+}
+
+function createControlDefaults(
+  controls: SceneControls
+): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(controls).map(([name, control]) => [
+      name,
+      control.default,
+    ])
+  );
+}
+
+const NANO_BANANA_PRO_IMAGE_CONTROLS = createImageControls({
+  aspectRatios: NANO_BANANA_PRO_ASPECT_RATIOS,
+  defaultAspectRatio: '1:1',
+  resolutionOptions: KIE_IMAGE_RESOLUTIONS,
+  defaultResolution: '2K',
+  outputFormats: KIE_NANO_BANANA_OUTPUT_FORMATS,
+});
+const NANO_BANANA_PRO_IMAGE_DEFAULTS = createControlDefaults(
+  NANO_BANANA_PRO_IMAGE_CONTROLS
+);
+const NANO_BANANA_2_IMAGE_CONTROLS = createImageControls({
+  aspectRatios: NANO_BANANA_2_ASPECT_RATIOS,
+  defaultAspectRatio: '1:1',
+  resolutionOptions: NANO_BANANA_2_PRICED_RESOLUTIONS,
+  outputFormats: KIE_NANO_BANANA_OUTPUT_FORMATS,
+});
+const NANO_BANANA_2_IMAGE_DEFAULTS = createControlDefaults(
+  NANO_BANANA_2_IMAGE_CONTROLS
+);
+const NANO_BANANA_LEGACY_IMAGE_CONTROLS = createImageControls({
+  aspectRatios: NANO_BANANA_LEGACY_ASPECT_RATIOS,
+  defaultAspectRatio: '1:1',
+});
+const NANO_BANANA_LEGACY_IMAGE_DEFAULTS = createControlDefaults(
+  NANO_BANANA_LEGACY_IMAGE_CONTROLS
+);
+
 export const MODELS: ModelEntry[] = [
   {
     mediaType: 'image',
@@ -319,6 +446,14 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image', 'image-to-image'],
     enabled: true,
     credits: { 'text-to-image': 20, 'image-to-image': 20 },
+    defaults: {
+      'text-to-image': { ...NANO_BANANA_PRO_IMAGE_DEFAULTS },
+      'image-to-image': { ...NANO_BANANA_PRO_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'text-to-image': NANO_BANANA_PRO_IMAGE_CONTROLS,
+      'image-to-image': NANO_BANANA_PRO_IMAGE_CONTROLS,
+    },
     pricing: {
       'text-to-image': {
         mode: 'fixed',
@@ -349,6 +484,14 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image', 'image-to-image'],
     enabled: true,
     credits: { 'text-to-image': 15, 'image-to-image': 15 },
+    defaults: {
+      'text-to-image': { ...NANO_BANANA_2_IMAGE_DEFAULTS },
+      'image-to-image': { ...NANO_BANANA_2_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'text-to-image': NANO_BANANA_2_IMAGE_CONTROLS,
+      'image-to-image': NANO_BANANA_2_IMAGE_CONTROLS,
+    },
     pricing: {
       'text-to-image': {
         mode: 'fixed',
@@ -375,6 +518,12 @@ export const MODELS: ModelEntry[] = [
     scenes: ['text-to-image'],
     enabled: true,
     credits: { 'text-to-image': 5 },
+    defaults: {
+      'text-to-image': { ...NANO_BANANA_LEGACY_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'text-to-image': NANO_BANANA_LEGACY_IMAGE_CONTROLS,
+    },
     pricing: {
       'text-to-image': {
         mode: 'fixed',
@@ -391,6 +540,12 @@ export const MODELS: ModelEntry[] = [
     scenes: ['image-to-image'],
     enabled: true,
     credits: { 'image-to-image': 5 },
+    defaults: {
+      'image-to-image': { ...NANO_BANANA_LEGACY_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'image-to-image': NANO_BANANA_LEGACY_IMAGE_CONTROLS,
+    },
     pricing: {
       'image-to-image': {
         mode: 'fixed',
@@ -688,6 +843,18 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
 
     const byImageResolution = pricing.byImageResolution;
     const byResolution = pricing.byResolution;
+
+    if (byImageResolution !== undefined && model.mediaType !== 'image') {
+      errors.push(
+        `pricing byImageResolution is only valid for image: ${modelRef(model)}/${scene}`
+      );
+    }
+
+    if (byResolution !== undefined && model.mediaType !== 'video') {
+      errors.push(
+        `pricing byResolution is only valid for video: ${modelRef(model)}/${scene}`
+      );
+    }
 
     if (pricing.mode === 'fixed') {
       if (!isPositiveNumber(pricing.credits)) {

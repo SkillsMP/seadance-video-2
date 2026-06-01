@@ -4,22 +4,24 @@ import {
   type ModelEntry,
 } from '@/config/ai/models';
 
-const VIDEO_CONTROL_ORDER: Record<string, number> = {
+const GENERATION_CONTROL_ORDER: Record<string, number> = {
   duration: 10,
   aspect_ratio: 20,
   resolution: 30,
+  output_format: 35,
   generate_audio: 40,
 };
 
-export type VideoControlEntry = readonly [string, ControlOption];
+export type GenerationControlEntry = readonly [string, ControlOption];
 
-function compareVideoControls(
-  [leftName, leftControl]: VideoControlEntry,
-  [rightName, rightControl]: VideoControlEntry
+function compareGenerationControls(
+  [leftName, leftControl]: GenerationControlEntry,
+  [rightName, rightControl]: GenerationControlEntry
 ): number {
-  const leftOrder = leftControl.order ?? VIDEO_CONTROL_ORDER[leftName] ?? 999;
+  const leftOrder =
+    leftControl.order ?? GENERATION_CONTROL_ORDER[leftName] ?? 999;
   const rightOrder =
-    rightControl.order ?? VIDEO_CONTROL_ORDER[rightName] ?? 999;
+    rightControl.order ?? GENERATION_CONTROL_ORDER[rightName] ?? 999;
 
   if (leftOrder !== rightOrder) {
     return leftOrder - rightOrder;
@@ -28,20 +30,20 @@ function compareVideoControls(
   return leftName.localeCompare(rightName);
 }
 
-export function getVideoControlEntries({
+export function getGenerationControlEntries({
   entry,
   scene,
-  allowResolutionControl,
+  allowResolutionControl = true,
 }: {
   entry?: ModelEntry;
   scene: string;
-  allowResolutionControl: boolean;
-}): VideoControlEntry[] {
+  allowResolutionControl?: boolean;
+}): GenerationControlEntry[] {
   const controls = entry?.controls?.[scene] ?? {};
 
-  return (Object.entries(controls) as VideoControlEntry[])
+  return (Object.entries(controls) as GenerationControlEntry[])
     .filter(([name]) => allowResolutionControl || name !== 'resolution')
-    .sort(compareVideoControls);
+    .sort(compareGenerationControls);
 }
 
 function fallbackLabel(name: string): string {
@@ -55,6 +57,10 @@ function fallbackLabel(name: string): string {
 
   if (name === 'resolution') {
     return 'Resolution';
+  }
+
+  if (name === 'output_format') {
+    return 'Output format';
   }
 
   if (name === 'generate_audio') {
@@ -125,12 +131,12 @@ export function areControlValuesEqual(
   return leftKeys.every((key) => left[key] === right[key]);
 }
 
-export function normalizeVideoControlValues({
+export function normalizeGenerationControlValues({
   currentValues,
   controlEntries,
 }: {
   currentValues: Record<string, string>;
-  controlEntries: VideoControlEntry[];
+  controlEntries: GenerationControlEntry[];
 }): Record<string, string> {
   const nextValues: Record<string, string> = {};
 
@@ -145,18 +151,18 @@ export function normalizeVideoControlValues({
   return nextValues;
 }
 
-export function buildVideoGenerationOptions({
-  dynamicVideoPricingEnabled,
+export function buildGenerationOptions({
+  enabled = true,
   controlEntries,
   selectedControlValues,
 }: {
-  dynamicVideoPricingEnabled: boolean;
-  controlEntries: VideoControlEntry[];
+  enabled?: boolean;
+  controlEntries: GenerationControlEntry[];
   selectedControlValues: Record<string, string>;
 }): Record<string, unknown> {
   const generationOptions: Record<string, unknown> = {};
 
-  if (!dynamicVideoPricingEnabled) {
+  if (!enabled) {
     return generationOptions;
   }
 

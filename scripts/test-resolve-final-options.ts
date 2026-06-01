@@ -4,10 +4,10 @@ import { MODELS, type ModelEntry } from '../src/config/ai/models';
 import { resolveFinalOptions } from '../src/config/ai/options';
 import { resolveVideoGenerationFeatureFlags } from '../src/config/ai/video-feature-flags';
 import {
-  buildVideoGenerationOptions,
-  getVideoControlEntries,
-  normalizeVideoControlValues,
-} from '../src/shared/blocks/generator/video-controls';
+  buildGenerationOptions,
+  getGenerationControlEntries,
+  normalizeGenerationControlValues,
+} from '../src/shared/blocks/generator/generation-controls';
 
 function findEnabledModel(family: string, scene: string): ModelEntry {
   const entry = MODELS.find(
@@ -25,6 +25,18 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
 const textScene = 'text-to-video';
 const imageEntry = findEnabledModel('seedance-2-fast', 'image-to-video');
+const nanoBananaProTextEntry = findEnabledModel(
+  'nano-banana-pro',
+  'text-to-image'
+);
+const nanoBanana2TextEntry = findEnabledModel(
+  'nano-banana-2',
+  'text-to-image'
+);
+const legacyNanoBananaTextEntry = findEnabledModel(
+  'nano-banana',
+  'text-to-image'
+);
 const standardTextEntry = findEnabledModel(
   'seedance-2-standard',
   'text-to-video'
@@ -100,7 +112,7 @@ assert.deepEqual(
   ['480p', '720p', '1080p']
 );
 
-const openControlEntries = getVideoControlEntries({
+const openControlEntries = getGenerationControlEntries({
   entry: textEntry,
   scene: textScene,
   allowResolutionControl: true,
@@ -109,7 +121,7 @@ assert.deepEqual(
   openControlEntries.map(([name]) => name),
   ['duration', 'aspect_ratio', 'resolution', 'generate_audio']
 );
-const openControlValues = normalizeVideoControlValues({
+const openControlValues = normalizeGenerationControlValues({
   currentValues: {
     duration: '10',
     aspect_ratio: '9:16',
@@ -124,8 +136,8 @@ assert.deepEqual(openControlValues, {
   generate_audio: 'false',
 });
 assert.deepEqual(
-  buildVideoGenerationOptions({
-    dynamicVideoPricingEnabled: true,
+  buildGenerationOptions({
+    enabled: true,
     controlEntries: openControlEntries,
     selectedControlValues: openControlValues,
   }),
@@ -137,7 +149,7 @@ assert.deepEqual(
   }
 );
 
-const lockedControlEntries = getVideoControlEntries({
+const lockedControlEntries = getGenerationControlEntries({
   entry: textEntry,
   scene: textScene,
   allowResolutionControl: false,
@@ -147,8 +159,8 @@ assert.deepEqual(
   ['duration', 'aspect_ratio', 'generate_audio']
 );
 assert.deepEqual(
-  buildVideoGenerationOptions({
-    dynamicVideoPricingEnabled: true,
+  buildGenerationOptions({
+    enabled: true,
     controlEntries: lockedControlEntries,
     selectedControlValues: openControlValues,
   }),
@@ -159,8 +171,8 @@ assert.deepEqual(
   }
 );
 assert.deepEqual(
-  buildVideoGenerationOptions({
-    dynamicVideoPricingEnabled: false,
+  buildGenerationOptions({
+    enabled: false,
     controlEntries: openControlEntries,
     selectedControlValues: openControlValues,
   }),
@@ -273,13 +285,13 @@ assert.deepEqual(
   videoInputEntry.controls?.['video-to-video']?.resolution?.options,
   ['480p', '720p']
 );
-const videoInputControlEntries = getVideoControlEntries({
+const videoInputControlEntries = getGenerationControlEntries({
   entry: videoInputEntry,
   scene: 'video-to-video',
   allowResolutionControl: true,
 });
 assert.deepEqual(
-  normalizeVideoControlValues({
+  normalizeGenerationControlValues({
     currentValues: openControlValues,
     controlEntries: videoInputControlEntries,
   }),
@@ -291,7 +303,7 @@ assert.deepEqual(
   }
 );
 assert.deepEqual(
-  normalizeVideoControlValues({
+  normalizeGenerationControlValues({
     currentValues: {
       duration: '15',
       aspect_ratio: '9:16',
@@ -352,5 +364,86 @@ assert.equal(videoInputOptions.duration, 5);
 assert.equal(videoInputOptions.aspect_ratio, '16:9');
 assert.equal(videoInputOptions.resolution, '480p');
 assert.equal(videoInputOptions.generate_audio, false);
+
+const nanoBananaProControlEntries = getGenerationControlEntries({
+  entry: nanoBananaProTextEntry,
+  scene: 'text-to-image',
+});
+assert.deepEqual(
+  nanoBananaProControlEntries.map(([name]) => name),
+  ['aspect_ratio', 'resolution', 'output_format']
+);
+assert.deepEqual(nanoBananaProTextEntry.defaults?.['text-to-image'], {
+  aspect_ratio: '1:1',
+  resolution: '2K',
+  output_format: 'png',
+});
+assert.deepEqual(
+  buildGenerationOptions({
+    controlEntries: nanoBananaProControlEntries,
+    selectedControlValues: {
+      aspect_ratio: '16:9',
+      resolution: '4K',
+      output_format: 'png',
+    },
+  }),
+  {
+    aspect_ratio: '16:9',
+    resolution: '4K',
+    output_format: 'png',
+  }
+);
+
+const nanoBananaProImageOptions = resolveFinalOptions({
+  mediaType: 'image',
+  scene: 'text-to-image',
+  entry: nanoBananaProTextEntry,
+  options: {
+    aspect_ratio: '16:9',
+    resolution: '4K',
+    output_format: 'png',
+    unknown_option: 'ignored',
+  },
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+assert.equal(nanoBananaProImageOptions.aspect_ratio, '16:9');
+assert.equal(nanoBananaProImageOptions.resolution, '4K');
+assert.equal(nanoBananaProImageOptions.output_format, 'png');
+assert.equal('unknown_option' in nanoBananaProImageOptions, false);
+
+assert.deepEqual(
+  nanoBanana2TextEntry.controls?.['text-to-image']?.resolution?.options,
+  ['2K']
+);
+assert.deepEqual(nanoBanana2TextEntry.defaults?.['text-to-image'], {
+  aspect_ratio: '1:1',
+  resolution: '2K',
+  output_format: 'png',
+});
+
+assert.equal(
+  legacyNanoBananaTextEntry.controls?.['text-to-image']?.resolution,
+  undefined
+);
+assert.equal(
+  legacyNanoBananaTextEntry.controls?.['text-to-image']?.output_format,
+  undefined
+);
+const legacyNanoBananaOptions = resolveFinalOptions({
+  mediaType: 'image',
+  scene: 'text-to-image',
+  entry: legacyNanoBananaTextEntry,
+  options: {
+    aspect_ratio: '16:9',
+    resolution: '4K',
+    output_format: 'png',
+  },
+  allowControlOptions: true,
+  allowResolutionControl: false,
+});
+assert.equal(legacyNanoBananaOptions.aspect_ratio, '16:9');
+assert.equal('resolution' in legacyNanoBananaOptions, false);
+assert.equal('output_format' in legacyNanoBananaOptions, false);
 
 console.log('resolveFinalOptions checks passed.');

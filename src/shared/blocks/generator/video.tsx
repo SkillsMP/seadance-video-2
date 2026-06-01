@@ -44,13 +44,13 @@ import { useAppContext } from '@/shared/contexts/app';
 
 import {
   areControlValuesEqual,
-  buildVideoGenerationOptions,
+  buildGenerationOptions,
   formatControlOption,
   getControlDefaultValue,
   getControlLabel,
-  getVideoControlEntries,
-  normalizeVideoControlValues,
-} from './video-controls';
+  getGenerationControlEntries,
+  normalizeGenerationControlValues,
+} from './generation-controls';
 
 interface VideoGeneratorProps {
   maxSizeMB?: number;
@@ -270,7 +270,7 @@ export function VideoGenerator({
   const selectedEntry = selectedCandidates[0];
   const selectedControlEntries = useMemo(
     () =>
-      getVideoControlEntries({
+      getGenerationControlEntries({
         entry: selectedEntry,
         scene: activeTab,
         allowResolutionControl: videoResolutionControlEnabled,
@@ -279,8 +279,8 @@ export function VideoGenerator({
   );
   const selectedGenerationOptions = useMemo(
     () =>
-      buildVideoGenerationOptions({
-        dynamicVideoPricingEnabled,
+      buildGenerationOptions({
+        enabled: dynamicVideoPricingEnabled,
         controlEntries: selectedControlEntries,
         selectedControlValues,
       }),
@@ -353,7 +353,7 @@ export function VideoGenerator({
 
   useEffect(() => {
     setSelectedControlValues((currentValues) => {
-      const nextValues = normalizeVideoControlValues({
+      const nextValues = normalizeGenerationControlValues({
         currentValues,
         controlEntries: selectedControlEntries,
       });

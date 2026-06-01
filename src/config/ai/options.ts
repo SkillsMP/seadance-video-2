@@ -97,7 +97,11 @@ export function sanitizeGenerationOptions({
       continue;
     }
 
-    if (name === 'resolution' && !allowResolutionControl) {
+    if (
+      entry.mediaType === 'video' &&
+      name === 'resolution' &&
+      !allowResolutionControl
+    ) {
       continue;
     }
 

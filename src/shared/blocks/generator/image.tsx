@@ -19,8 +19,12 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
-import { getGenerationCreditCost } from '@/config/ai/credit-costs';
+import {
+  calculateModelCredits,
+  getGenerationCreditCost,
+} from '@/config/ai/credit-costs';
 import { MODELS } from '@/config/ai/models';
+import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import {
   ImageUploader,
@@ -47,6 +51,16 @@ import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
 import { cn } from '@/shared/lib/utils';
+
+import {
+  areControlValuesEqual,
+  buildGenerationOptions,
+  formatControlOption,
+  getControlDefaultValue,
+  getControlLabel,
+  getGenerationControlEntries,
+  normalizeGenerationControlValues,
+} from './generation-controls';
 
 // ============ 接口定义 ============
 
@@ -200,6 +214,9 @@ export function ImageGenerator({
 
   // 生成配置
   const [selectedFamily, setSelectedFamily] = useState('');
+  const [selectedControlValues, setSelectedControlValues] = useState<
+    Record<string, string>
+  >({});
   // Set default values only when no promptKey is provided
   const [prompt, setPrompt] = useState(promptKey ? '' : DEFAULT_PROMPT);
   const [previewImage, setPreviewImage] = useState<string>(
@@ -318,15 +335,6 @@ export function ImageGenerator({
 
   // ============ 计算属性 ============
 
-  const costCredits = useMemo(
-    () =>
-      getGenerationCreditCost({
-        mediaType: AIMediaType.IMAGE,
-        scene: activeTab,
-        family: selectedFamily,
-      }),
-    [activeTab, selectedFamily]
-  );
   const promptLength = prompt.trim().length;
   const remainingCredits = user?.credits?.remainingCredits ?? 0;
   const isPromptTooLong = promptLength > MAX_PROMPT_LENGTH;
@@ -351,6 +359,43 @@ export function ImageGenerator({
       ),
     [availableModelOptions, selectedFamily]
   );
+  const selectedEntry = selectedCandidates[0];
+  const selectedControlEntries = useMemo(
+    () =>
+      getGenerationControlEntries({
+        entry: selectedEntry,
+        scene: activeTab,
+      }),
+    [activeTab, selectedEntry]
+  );
+  const selectedGenerationOptions = useMemo(
+    () =>
+      buildGenerationOptions({
+        controlEntries: selectedControlEntries,
+        selectedControlValues,
+      }),
+    [selectedControlEntries, selectedControlValues]
+  );
+  const costCredits = useMemo(() => {
+    if (selectedEntry?.pricing?.[activeTab]) {
+      const finalOptions = resolveFinalOptions({
+        mediaType: AIMediaType.IMAGE,
+        scene: activeTab,
+        entry: selectedEntry,
+        options: selectedGenerationOptions,
+        allowControlOptions: true,
+        allowResolutionControl: true,
+      });
+
+      return calculateModelCredits(selectedEntry, activeTab, finalOptions);
+    }
+
+    return getGenerationCreditCost({
+      mediaType: AIMediaType.IMAGE,
+      scene: activeTab,
+      family: selectedFamily,
+    });
+  }, [activeTab, selectedEntry, selectedFamily, selectedGenerationOptions]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
     !isLoadingProviders &&
@@ -389,6 +434,19 @@ export function ImageGenerator({
     }
   }, [availableFamilyOptions, selectedFamily]);
 
+  useEffect(() => {
+    setSelectedControlValues((currentValues) => {
+      const nextValues = normalizeGenerationControlValues({
+        currentValues: {},
+        controlEntries: selectedControlEntries,
+      });
+
+      return areControlValuesEqual(currentValues, nextValues)
+        ? currentValues
+        : nextValues;
+    });
+  }, [selectedControlEntries]);
+
   // ============ 事件处理函数 ============
 
   /**
@@ -397,6 +455,13 @@ export function ImageGenerator({
   const handleTabChange = (value: string) => {
     const tab = value as ImageGeneratorTab;
     setActiveTab(tab);
+  };
+
+  const handleControlChange = (name: string, value: string) => {
+    setSelectedControlValues((currentValues) => ({
+      ...currentValues,
+      [name]: value,
+    }));
   };
 
   /**
@@ -801,7 +866,7 @@ export function ImageGenerator({
     setGenerationStartTime(Date.now());
 
     try {
-      const options: any = {};
+      const options: any = { ...selectedGenerationOptions };
 
       if (!isTextToImageMode) {
         options.image_input = referenceImageUrls;
@@ -814,7 +879,7 @@ export function ImageGenerator({
         },
         body: JSON.stringify({
           mediaType: AIMediaType.IMAGE,
-          scene: isTextToImageMode ? 'text-to-image' : 'image-to-image',
+          scene: activeTab,
           family: selectedFamily,
           candidates: selectedCandidates.map((candidate) => ({
             provider: candidate.provider,
@@ -1002,6 +1067,55 @@ export function ImageGenerator({
                         {t('form.some_images_failed_to_upload')}
                       </p>
                     )}
+                  </div>
+                )}
+
+                {selectedControlEntries.length > 0 && (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {selectedControlEntries.map(([name, control]) => {
+                      const selectedValue =
+                        selectedControlValues[name] ??
+                        getControlDefaultValue(control);
+
+                      return (
+                        <div key={name} className="space-y-2">
+                          <Label htmlFor={`image-control-${name}`}>
+                            {getControlLabel(name, control)}
+                          </Label>
+                          <Select
+                            value={selectedValue}
+                            onValueChange={(value) =>
+                              handleControlChange(name, value)
+                            }
+                            disabled={
+                              isLoadingProviders || !hasAvailableFamilies
+                            }
+                          >
+                            <SelectTrigger
+                              id={`image-control-${name}`}
+                              className="w-full"
+                            >
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {control.options.map((option) => {
+                                const value = String(option);
+
+                                return (
+                                  <SelectItem key={value} value={value}>
+                                    {formatControlOption(
+                                      name,
+                                      option,
+                                      control
+                                    )}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
