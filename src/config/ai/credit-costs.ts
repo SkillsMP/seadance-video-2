@@ -1,7 +1,4 @@
-// 以后删，以后等 music 也纳入 MODELS + candidates，并且没有旧 provider/model 路径后，再考虑把 getGenerationCreditCost() 移到 models.ts 或 src/config/ai/pricing.ts，然后删掉 credit-costs.ts
-// 明确它是派生层，不是配置源。短期保持，但未来考虑清理。收窄它的职责。
 import {
-  MODELS,
   type ImageResolution,
   type ModelEntry,
   type ScenePricing,
@@ -21,8 +18,6 @@ export type GenerationScene =
 export interface GenerationCreditCostInput {
   mediaType: GenerationMediaType | string;
   scene?: GenerationScene | string;
-  family?: string;
-  model?: string;
 }
 
 export type FinalGenerationOptions = Record<string, unknown>;
@@ -173,41 +168,23 @@ const DEFAULT_SCENE_CREDIT_COSTS: Record<
   string,
   Partial<Record<string, number>>
 > = {
-  image: {
-    'text-to-image': 15,
-    'image-to-image': 20,
-  },
-  video: {
-    'text-to-video': 45,
-    'image-to-video': 60,
-    'video-to-video': 90,
-  },
   music: {
     'text-to-music': 10,
   },
 };
 
-const FAMILY_CREDIT_COST_OVERRIDES = MODELS.reduce<
-  Record<string, Partial<Record<string, number>>>
->((costs, model) => {
-  if (!model.enabled) {
-    return costs;
-  }
-
-  const familyCosts = (costs[model.family] ??= {});
-
-  for (const scene of model.scenes) {
-    familyCosts[scene] = model.credits[scene];
-  }
-
-  return costs;
-}, {});
-
+/**
+ * Legacy static credit fallback for non image/video generation paths.
+ * Image and video pricing must use resolveGenerationPricingSnapshot().
+ */
 export function getGenerationCreditCost({
   mediaType,
   scene,
-  family,
 }: GenerationCreditCostInput): number {
+  if (mediaType === 'image' || mediaType === 'video') {
+    throw new Error('legacy credit cost is unavailable for image/video');
+  }
+
   const mediaCosts = DEFAULT_SCENE_CREDIT_COSTS[mediaType];
 
   if (!mediaCosts) {
@@ -218,14 +195,6 @@ export function getGenerationCreditCost({
 
   if (!normalizedScene) {
     throw new Error('invalid scene');
-  }
-
-  if (family) {
-    const familyCost = FAMILY_CREDIT_COST_OVERRIDES[family]?.[normalizedScene];
-
-    if (typeof familyCost === 'number') {
-      return familyCost;
-    }
   }
 
   const cost = mediaCosts[normalizedScene];

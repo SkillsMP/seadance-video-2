@@ -128,16 +128,12 @@ export async function POST(request: Request) {
       assertSafeAssetInputUrls(pricingSnapshot.finalOptions);
       costCredits = pricingSnapshot.costCredits;
     } else {
+      // Legacy non image/video path; music keeps fixed pricing for now.
       if (!provider || !model) {
         throw new Error('invalid params');
       }
 
-      costCredits = getGenerationCreditCost({
-        mediaType,
-        scene,
-        family,
-        model,
-      });
+      costCredits = getGenerationCreditCost({ mediaType, scene });
     }
 
     const remainingCredits = await getRemainingCredits(user.id);

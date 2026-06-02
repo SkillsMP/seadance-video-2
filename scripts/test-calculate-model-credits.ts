@@ -595,6 +595,22 @@ assert.throws(
   /generation pricing drift/
 );
 
+assert.throws(
+  () =>
+    getGenerationCreditCost({
+      mediaType: 'image',
+      scene: 'text-to-image',
+    }),
+  /legacy credit cost is unavailable for image\/video/
+);
+assert.throws(
+  () =>
+    getGenerationCreditCost({
+      mediaType: 'video',
+      scene: 'text-to-video',
+    }),
+  /legacy credit cost is unavailable for image\/video/
+);
 assert.equal(
   getGenerationCreditCost({
     mediaType: 'music',
