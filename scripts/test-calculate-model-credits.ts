@@ -374,9 +374,6 @@ for (const row of seedancePricingMatrix) {
           duration: 5,
           resolution: typedResolution,
         },
-        useDynamicVideoPricing: true,
-        allowControlOptions: true,
-        allowResolutionControl: true,
       });
 
       assert.equal(snapshot.finalOptions.resolution, typedResolution);
@@ -478,9 +475,6 @@ const imageToVideoSnapshot = resolveGenerationPricingSnapshot({
     duration: 6,
     resolution: '720p',
   },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: true,
 });
 
 assert.deepEqual(imageToVideoSnapshot.finalOptions.image_input, [
@@ -491,47 +485,22 @@ assert.equal(imageToVideoSnapshot.finalOptions.resolution, '720p');
 assert.equal(imageToVideoSnapshot.costCredits, 144);
 
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
-const lockedResolutionSnapshot = resolveGenerationPricingSnapshot({
+const textVideoSnapshot = resolveGenerationPricingSnapshot({
   mediaType: 'video',
   scene: 'text-to-video',
   entry: textEntry,
   options: { duration: 10, resolution: '720p' },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: false,
 });
 
-assert.equal(lockedResolutionSnapshot.finalOptions.duration, 10);
-assert.equal(lockedResolutionSnapshot.finalOptions.resolution, '480p');
-assert.equal(lockedResolutionSnapshot.costCredits, 120);
-
-const staticPricingSnapshot = resolveGenerationPricingSnapshot({
-  mediaType: 'video',
-  scene: 'text-to-video',
-  entry: textEntry,
-  options: {
-    duration: 10,
-    aspect_ratio: '9:16',
-    resolution: '720p',
-  },
-  useDynamicVideoPricing: false,
-  allowControlOptions: false,
-  allowResolutionControl: false,
-});
-
-assert.equal(staticPricingSnapshot.finalOptions.duration, 5);
-assert.equal(staticPricingSnapshot.finalOptions.aspect_ratio, '16:9');
-assert.equal(staticPricingSnapshot.finalOptions.resolution, '480p');
-assert.equal(staticPricingSnapshot.costCredits, 45);
+assert.equal(textVideoSnapshot.finalOptions.duration, 10);
+assert.equal(textVideoSnapshot.finalOptions.resolution, '720p');
+assert.equal(textVideoSnapshot.costCredits, 240);
 
 const openResolutionSnapshot = resolveGenerationPricingSnapshot({
   mediaType: 'video',
   scene: 'text-to-video',
   entry: textEntry,
   options: { duration: 10, resolution: '720p' },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: true,
 });
 
 assert.equal(openResolutionSnapshot.finalOptions.resolution, '720p');
@@ -542,9 +511,6 @@ const audioEnabledSnapshot = resolveGenerationPricingSnapshot({
   scene: 'text-to-video',
   entry: textEntry,
   options: { duration: 10, resolution: '720p', generate_audio: true },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: true,
 });
 
 assert.equal(audioEnabledSnapshot.finalOptions.generate_audio, true);
@@ -560,14 +526,11 @@ const sameFallbackSnapshot = resolveGenerationPricingSnapshot({
   scene: 'text-to-video',
   entry: sameFallbackEntry,
   options: { duration: 10, resolution: '720p' },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: false,
 });
 
 assert.doesNotThrow(() =>
   assertGenerationPricingConsistency(
-    lockedResolutionSnapshot,
+    textVideoSnapshot,
     sameFallbackSnapshot
   )
 );
@@ -589,15 +552,12 @@ const finalOptionsDriftSnapshot = resolveGenerationPricingSnapshot({
   scene: 'text-to-video',
   entry: finalOptionsDriftEntry,
   options: { duration: 10, resolution: '720p' },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: false,
 });
 
 assert.throws(
   () =>
     assertGenerationPricingConsistency(
-      lockedResolutionSnapshot,
+      textVideoSnapshot,
       finalOptionsDriftSnapshot
     ),
   /generation pricing drift/
@@ -614,7 +574,7 @@ const costDriftEntry: ModelEntry = {
       defaultDuration: 5,
       byResolution: {
         '480p': { creditsPerSecond: 13, availability: 'enabled' },
-        '720p': { creditsPerSecond: 24, availability: 'enabled' },
+        '720p': { creditsPerSecond: 25, availability: 'enabled' },
       },
     },
   },
@@ -624,15 +584,12 @@ const costDriftSnapshot = resolveGenerationPricingSnapshot({
   scene: 'text-to-video',
   entry: costDriftEntry,
   options: { duration: 10, resolution: '720p' },
-  useDynamicVideoPricing: true,
-  allowControlOptions: true,
-  allowResolutionControl: false,
 });
 
 assert.throws(
   () =>
     assertGenerationPricingConsistency(
-      lockedResolutionSnapshot,
+      textVideoSnapshot,
       costDriftSnapshot
     ),
   /generation pricing drift/
@@ -640,19 +597,16 @@ assert.throws(
 
 assert.equal(
   getGenerationCreditCost({
-    mediaType: 'video',
-    scene: 'text-to-video',
-    family: 'seedance-2-fast',
+    mediaType: 'music',
+    scene: 'text-to-music',
   }),
-  45
+  10
 );
 assert.equal(
   getGenerationCreditCost({
-    mediaType: 'video',
-    scene: 'video-to-video',
-    family: 'seedance-2-fast',
+    mediaType: 'music',
   }),
-  45
+  10
 );
 
 console.log('calculateModelCredits checks passed.');

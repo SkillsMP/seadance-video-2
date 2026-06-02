@@ -8,7 +8,6 @@ interface ResolveOptionsInput {
   entry: ModelEntry;
   options?: unknown;
   allowControlOptions?: boolean;
-  allowResolutionControl?: boolean;
 }
 
 interface ResolveAutoOptionsInput {
@@ -72,7 +71,6 @@ export function sanitizeGenerationOptions({
   entry,
   options,
   allowControlOptions = true,
-  allowResolutionControl = false,
 }: ResolveOptionsInput): GenerationOptions {
   if (options === undefined || options === null) {
     return {};
@@ -94,14 +92,6 @@ export function sanitizeGenerationOptions({
 
     if (sceneInputOptions.has(name)) {
       sanitizedOptions[name] = sanitizeAssetInput(name, value);
-      continue;
-    }
-
-    if (
-      entry.mediaType === 'video' &&
-      name === 'resolution' &&
-      !allowResolutionControl
-    ) {
       continue;
     }
 
@@ -144,7 +134,6 @@ export function resolveFinalOptions({
   entry,
   options,
   allowControlOptions = true,
-  allowResolutionControl = false,
 }: ResolveOptionsInput): GenerationOptions {
   if (entry.mediaType !== mediaType) {
     throw new Error(
@@ -163,7 +152,6 @@ export function resolveFinalOptions({
     entry,
     options,
     allowControlOptions,
-    allowResolutionControl,
   });
   const baseOptions = {
     ...defaults,

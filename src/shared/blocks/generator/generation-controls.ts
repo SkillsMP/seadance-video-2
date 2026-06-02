@@ -33,16 +33,13 @@ function compareGenerationControls(
 export function getGenerationControlEntries({
   entry,
   scene,
-  allowResolutionControl = true,
 }: {
   entry?: ModelEntry;
   scene: string;
-  allowResolutionControl?: boolean;
 }): GenerationControlEntry[] {
   const controls = entry?.controls?.[scene] ?? {};
 
   return (Object.entries(controls) as GenerationControlEntry[])
-    .filter(([name]) => allowResolutionControl || name !== 'resolution')
     .sort(compareGenerationControls);
 }
 
@@ -152,19 +149,13 @@ export function normalizeGenerationControlValues({
 }
 
 export function buildGenerationOptions({
-  enabled = true,
   controlEntries,
   selectedControlValues,
 }: {
-  enabled?: boolean;
   controlEntries: GenerationControlEntry[];
   selectedControlValues: Record<string, string>;
 }): Record<string, unknown> {
   const generationOptions: Record<string, unknown> = {};
-
-  if (!enabled) {
-    return generationOptions;
-  }
 
   for (const [name, control] of controlEntries) {
     const selectedValue =

@@ -13,10 +13,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
-import {
-  calculateModelCredits,
-  getGenerationCreditCost,
-} from '@/config/ai/credit-costs';
+import { calculateModelCredits } from '@/config/ai/credit-costs';
 import { MODELS } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
@@ -205,10 +202,6 @@ export function VideoGenerator({
   const queryingTaskRef = useRef<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
-  const [dynamicVideoPricingEnabled, setDynamicVideoPricingEnabled] =
-    useState(false);
-  const [videoResolutionControlEnabled, setVideoResolutionControlEnabled] =
-    useState(false);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
 
   const { user, isCheckSign, setIsShowSignModal, fetchUserCredits } =
@@ -222,19 +215,11 @@ export function VideoGenerator({
       .then((data) => {
         if (data.code === 0 && data.data?.providers !== undefined) {
           setAvailableProviders(data.data.providers || []);
-          setDynamicVideoPricingEnabled(
-            data.data.dynamicVideoPricingEnabled === true
-          );
-          setVideoResolutionControlEnabled(
-            data.data.videoResolutionControlEnabled === true
-          );
         }
       })
       .catch((error) => {
         console.error('Failed to fetch AI providers:', error);
         setAvailableProviders([]);
-        setDynamicVideoPricingEnabled(false);
-        setVideoResolutionControlEnabled(false);
       })
       .finally(() => {
         setIsLoadingProviders(false);
@@ -273,46 +258,31 @@ export function VideoGenerator({
       getGenerationControlEntries({
         entry: selectedEntry,
         scene: activeTab,
-        allowResolutionControl: videoResolutionControlEnabled,
       }),
-    [activeTab, selectedEntry, videoResolutionControlEnabled]
+    [activeTab, selectedEntry]
   );
   const selectedGenerationOptions = useMemo(
     () =>
       buildGenerationOptions({
-        enabled: dynamicVideoPricingEnabled,
         controlEntries: selectedControlEntries,
         selectedControlValues,
       }),
-    [dynamicVideoPricingEnabled, selectedControlEntries, selectedControlValues]
+    [selectedControlEntries, selectedControlValues]
   );
   const costCredits = useMemo(() => {
-    if (dynamicVideoPricingEnabled && selectedEntry) {
-      const finalOptions = resolveFinalOptions({
-        mediaType: AIMediaType.VIDEO,
-        scene: activeTab,
-        entry: selectedEntry,
-        options: selectedGenerationOptions,
-        allowControlOptions: true,
-        allowResolutionControl: videoResolutionControlEnabled,
-      });
-
-      return calculateModelCredits(selectedEntry, activeTab, finalOptions);
+    if (!selectedEntry) {
+      return 0;
     }
 
-    return getGenerationCreditCost({
+    const finalOptions = resolveFinalOptions({
       mediaType: AIMediaType.VIDEO,
       scene: activeTab,
-      family: selectedFamily,
+      entry: selectedEntry,
+      options: selectedGenerationOptions,
     });
-  }, [
-    activeTab,
-    dynamicVideoPricingEnabled,
-    selectedEntry,
-    selectedFamily,
-    selectedGenerationOptions,
-    videoResolutionControlEnabled,
-  ]);
+
+    return calculateModelCredits(selectedEntry, activeTab, finalOptions);
+  }, [activeTab, selectedEntry, selectedGenerationOptions]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
     !isLoadingProviders &&
@@ -843,13 +813,12 @@ export function VideoGenerator({
                   </div>
                 )}
 
-                {dynamicVideoPricingEnabled &&
-                  selectedControlEntries.length > 0 && (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      {selectedControlEntries.map(([name, control]) => {
-                        const selectedValue =
-                          selectedControlValues[name] ??
-                          getControlDefaultValue(control);
+                {selectedControlEntries.length > 0 && (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {selectedControlEntries.map(([name, control]) => {
+                      const selectedValue =
+                        selectedControlValues[name] ??
+                        getControlDefaultValue(control);
 
                         return (
                           <div key={name} className="space-y-2">

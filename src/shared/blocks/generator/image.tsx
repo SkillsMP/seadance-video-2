@@ -19,10 +19,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
-import {
-  calculateModelCredits,
-  getGenerationCreditCost,
-} from '@/config/ai/credit-costs';
+import { calculateModelCredits } from '@/config/ai/credit-costs';
 import { MODELS } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
@@ -377,25 +374,19 @@ export function ImageGenerator({
     [selectedControlEntries, selectedControlValues]
   );
   const costCredits = useMemo(() => {
-    if (selectedEntry?.pricing?.[activeTab]) {
-      const finalOptions = resolveFinalOptions({
-        mediaType: AIMediaType.IMAGE,
-        scene: activeTab,
-        entry: selectedEntry,
-        options: selectedGenerationOptions,
-        allowControlOptions: true,
-        allowResolutionControl: true,
-      });
-
-      return calculateModelCredits(selectedEntry, activeTab, finalOptions);
+    if (!selectedEntry) {
+      return 0;
     }
 
-    return getGenerationCreditCost({
+    const finalOptions = resolveFinalOptions({
       mediaType: AIMediaType.IMAGE,
       scene: activeTab,
-      family: selectedFamily,
+      entry: selectedEntry,
+      options: selectedGenerationOptions,
     });
-  }, [activeTab, selectedEntry, selectedFamily, selectedGenerationOptions]);
+
+    return calculateModelCredits(selectedEntry, activeTab, finalOptions);
+  }, [activeTab, selectedEntry, selectedGenerationOptions]);
   const hasAvailableFamilies = availableFamilyOptions.length > 0;
   const canGenerateForModelSelection =
     !isLoadingProviders &&

@@ -7,7 +7,6 @@ import {
   type GenerationPricingSnapshot,
 } from '@/config/ai/generation-pricing';
 import { findModel, type ModelEntry } from '@/config/ai/models';
-import { getVideoGenerationFeatureFlags } from '@/config/ai/video-feature-flags';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -81,15 +80,6 @@ export async function POST(request: Request) {
 
     const supportCandidatesFallback =
       mediaType === AIMediaType.IMAGE || mediaType === AIMediaType.VIDEO;
-    const videoFeatureFlags = getVideoGenerationFeatureFlags();
-    const useDynamicVideoPricing =
-      mediaType === AIMediaType.VIDEO &&
-      videoFeatureFlags.dynamicVideoPricingEnabled;
-    const allowControlOptions =
-      mediaType !== AIMediaType.VIDEO || useDynamicVideoPricing;
-    const allowResolutionControl =
-      mediaType === AIMediaType.VIDEO &&
-      videoFeatureFlags.videoResolutionControlEnabled;
 
     let candidateEntries: ModelEntry[] = [];
     let costCredits: number;
@@ -134,9 +124,6 @@ export async function POST(request: Request) {
         scene,
         entry: firstEntry,
         options,
-        useDynamicVideoPricing,
-        allowControlOptions,
-        allowResolutionControl,
       });
       assertSafeAssetInputUrls(pricingSnapshot.finalOptions);
       costCredits = pricingSnapshot.costCredits;
@@ -204,9 +191,6 @@ export async function POST(request: Request) {
             scene,
             entry,
             options,
-            useDynamicVideoPricing,
-            allowControlOptions,
-            allowResolutionControl,
           });
           const finalOptions = candidatePricingSnapshot.finalOptions;
           assertSafeAssetInputUrls(finalOptions);

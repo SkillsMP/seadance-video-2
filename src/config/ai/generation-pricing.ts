@@ -10,9 +10,6 @@ interface ResolveGenerationPricingSnapshotInput {
   scene: string;
   entry: ModelEntry;
   options?: unknown;
-  useDynamicVideoPricing: boolean;
-  allowControlOptions: boolean;
-  allowResolutionControl: boolean;
 }
 
 export interface GenerationPricingSnapshot {
@@ -36,36 +33,19 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value) ?? 'undefined';
 }
 
-function getStaticCredits(entry: ModelEntry, scene: string): number {
-  const costCredits = entry.credits[scene];
-
-  if (typeof costCredits !== 'number') {
-    throw new Error(`invalid credits: ${entry.family}/${scene}`);
-  }
-
-  return costCredits;
-}
-
 export function resolveGenerationPricingSnapshot({
   mediaType,
   scene,
   entry,
   options,
-  useDynamicVideoPricing,
-  allowControlOptions,
-  allowResolutionControl,
 }: ResolveGenerationPricingSnapshotInput): GenerationPricingSnapshot {
   const finalOptions = resolveFinalOptions({
     mediaType,
     scene,
     entry,
     options,
-    allowControlOptions,
-    allowResolutionControl,
   });
-  const costCredits = useDynamicVideoPricing
-    ? calculateModelCredits(entry, scene, finalOptions)
-    : getStaticCredits(entry, scene);
+  const costCredits = calculateModelCredits(entry, scene, finalOptions);
 
   return {
     finalOptions,

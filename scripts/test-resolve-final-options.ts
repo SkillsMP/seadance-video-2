@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
 import { resolveFinalOptions } from '../src/config/ai/options';
-import { resolveVideoGenerationFeatureFlags } from '../src/config/ai/video-feature-flags';
 import {
   buildGenerationOptions,
   getGenerationControlEntries,
@@ -55,37 +54,6 @@ assert.equal(
   false
 );
 
-assert.deepEqual(
-  resolveVideoGenerationFeatureFlags({
-    ENABLE_DYNAMIC_VIDEO_PRICING: 'true',
-    ENABLE_VIDEO_RESOLUTION_CONTROL: 'false',
-  }),
-  {
-    dynamicVideoPricingEnabled: true,
-    videoResolutionControlEnabled: false,
-  }
-);
-assert.deepEqual(
-  resolveVideoGenerationFeatureFlags({
-    ENABLE_DYNAMIC_VIDEO_PRICING: 'true',
-    ENABLE_VIDEO_RESOLUTION_CONTROL: 'true',
-  }),
-  {
-    dynamicVideoPricingEnabled: true,
-    videoResolutionControlEnabled: true,
-  }
-);
-assert.deepEqual(
-  resolveVideoGenerationFeatureFlags({
-    ENABLE_DYNAMIC_VIDEO_PRICING: 'false',
-    ENABLE_VIDEO_RESOLUTION_CONTROL: 'true',
-  }),
-  {
-    dynamicVideoPricingEnabled: false,
-    videoResolutionControlEnabled: false,
-  }
-);
-
 assert.equal(textEntry.defaults?.[textScene]?.generate_audio, false);
 assert.deepEqual(textEntry.controls?.[textScene]?.generate_audio, {
   type: 'boolean',
@@ -115,7 +83,6 @@ assert.deepEqual(
 const openControlEntries = getGenerationControlEntries({
   entry: textEntry,
   scene: textScene,
-  allowResolutionControl: true,
 });
 assert.deepEqual(
   openControlEntries.map(([name]) => name),
@@ -137,7 +104,6 @@ assert.deepEqual(openControlValues, {
 });
 assert.deepEqual(
   buildGenerationOptions({
-    enabled: true,
     controlEntries: openControlEntries,
     selectedControlValues: openControlValues,
   }),
@@ -147,36 +113,6 @@ assert.deepEqual(
     resolution: '720p',
     generate_audio: false,
   }
-);
-
-const lockedControlEntries = getGenerationControlEntries({
-  entry: textEntry,
-  scene: textScene,
-  allowResolutionControl: false,
-});
-assert.deepEqual(
-  lockedControlEntries.map(([name]) => name),
-  ['duration', 'aspect_ratio', 'generate_audio']
-);
-assert.deepEqual(
-  buildGenerationOptions({
-    enabled: true,
-    controlEntries: lockedControlEntries,
-    selectedControlValues: openControlValues,
-  }),
-  {
-    duration: 10,
-    aspect_ratio: '9:16',
-    generate_audio: false,
-  }
-);
-assert.deepEqual(
-  buildGenerationOptions({
-    enabled: false,
-    controlEntries: openControlEntries,
-    selectedControlValues: openControlValues,
-  }),
-  {}
 );
 
 const controlledOptions = resolveFinalOptions({
@@ -190,7 +126,6 @@ const controlledOptions = resolveFinalOptions({
     generate_audio: true,
   },
   allowControlOptions: true,
-  allowResolutionControl: true,
 });
 
 assert.equal(controlledOptions.duration, 10);
@@ -209,7 +144,6 @@ const imageOptions = resolveFinalOptions({
     resolution: '720p',
   },
   allowControlOptions: true,
-  allowResolutionControl: true,
 });
 
 assert.deepEqual(imageOptions.image_input, [
@@ -218,23 +152,6 @@ assert.deepEqual(imageOptions.image_input, [
 assert.equal(imageOptions.duration, 6);
 assert.equal(imageOptions.resolution, '720p');
 assert.equal(imageOptions.inputBilling, 'no-video-input');
-
-const resolutionLockedOptions = resolveFinalOptions({
-  mediaType: 'video',
-  scene: textScene,
-  entry: textEntry,
-  options: {
-    duration: 10,
-    aspect_ratio: '9:16',
-    resolution: '720p',
-  },
-  allowControlOptions: true,
-  allowResolutionControl: false,
-});
-
-assert.equal(resolutionLockedOptions.duration, 10);
-assert.equal(resolutionLockedOptions.aspect_ratio, '9:16');
-assert.equal(resolutionLockedOptions.resolution, '480p');
 
 const fallbackOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -288,7 +205,6 @@ assert.deepEqual(
 const videoInputControlEntries = getGenerationControlEntries({
   entry: videoInputEntry,
   scene: 'video-to-video',
-  allowResolutionControl: true,
 });
 assert.deepEqual(
   normalizeGenerationControlValues({
@@ -327,7 +243,6 @@ const videoInputOpenOptions = resolveFinalOptions({
     duration: 10,
   },
   allowControlOptions: true,
-  allowResolutionControl: true,
 });
 assert.equal(videoInputOpenOptions.resolution, '720p');
 assert.equal(videoInputOpenOptions.duration, 10);
@@ -342,7 +257,6 @@ assert.throws(
         resolution: '1080p',
       },
       allowControlOptions: true,
-      allowResolutionControl: true,
     }),
   /unsupported generation option: resolution/
 );
@@ -405,7 +319,6 @@ const nanoBananaProImageOptions = resolveFinalOptions({
     unknown_option: 'ignored',
   },
   allowControlOptions: true,
-  allowResolutionControl: false,
 });
 assert.equal(nanoBananaProImageOptions.aspect_ratio, '16:9');
 assert.equal(nanoBananaProImageOptions.resolution, '4K');
@@ -440,7 +353,6 @@ const legacyNanoBananaOptions = resolveFinalOptions({
     output_format: 'png',
   },
   allowControlOptions: true,
-  allowResolutionControl: false,
 });
 assert.equal(legacyNanoBananaOptions.aspect_ratio, '16:9');
 assert.equal('resolution' in legacyNanoBananaOptions, false);
