@@ -428,7 +428,7 @@ export function ImageGenerator({
   useEffect(() => {
     setSelectedControlValues((currentValues) => {
       const nextValues = normalizeGenerationControlValues({
-        currentValues: {},
+        currentValues,
         controlEntries: selectedControlEntries,
       });
 
