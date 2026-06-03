@@ -14,6 +14,7 @@ const TERMINAL_TASK_STATUSES = new Set<string>([
   AITaskStatus.FAILED,
   AITaskStatus.CANCELED,
   AITaskStatus.MODERATION_BLOCKED,
+  AITaskStatus.MODERATION_FAILED,
 ]);
 
 export async function POST(req: Request) {

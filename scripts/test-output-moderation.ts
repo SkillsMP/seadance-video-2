@@ -81,8 +81,10 @@ async function main() {
     const {
       applyGenerationOutputModeration,
       ContentPolicyViolationError,
+      ModerationServiceUnavailableError,
       moderateGenerationInput,
       moderateGenerationOutput,
+      GENERATED_CONTENT_MODERATION_FAILED_MESSAGE,
       GENERATED_OUTPUT_MISSING_MESSAGE,
     } = await import('../src/shared/services/moderation');
 
@@ -371,8 +373,8 @@ async function main() {
             scene: 'text-to-video',
             outputUrls: ['https://example.com/error-video.mp4'],
           }),
-        ContentPolicyViolationError,
-        'wavespeed video provider error should fail closed'
+        ModerationServiceUnavailableError,
+        'wavespeed video provider error should not be reported as content policy violation'
       );
 
       const blockResult = await applyGenerationOutputModeration({
@@ -432,6 +434,35 @@ async function main() {
       assert.ok(
         wavespeedImageSubmitMockHits > 0,
         'Wavespeed image submit endpoint must be covered by mock fetch'
+      );
+
+      const providerErrorResult = await applyGenerationOutputModeration({
+        taskId: 'task-wavespeed-video-error-url-check',
+        userId: 'user-1',
+        mediaType: AIMediaType.VIDEO,
+        scene: 'text-to-video',
+        taskStatus: AITaskStatus.SUCCESS,
+        taskInfo: {
+          videos: [{ videoUrl: 'https://example.com/error-video.mp4' }],
+        },
+        taskResult: { output: 'https://example.com/error-video.mp4' },
+      });
+
+      assert.equal(providerErrorResult.status, AITaskStatus.MODERATION_FAILED);
+      const providerErrorResultStr = JSON.stringify(providerErrorResult);
+      assert.equal(
+        providerErrorResultStr.includes('error-video.mp4'),
+        false,
+        'Provider error payload should not leak original video output URL'
+      );
+      assert.equal(
+        providerErrorResult.taskResult?.errorCode,
+        'MODERATION_SERVICE_UNAVAILABLE',
+        'provider errors should use moderation service unavailable code'
+      );
+      assert.equal(
+        providerErrorResult.taskInfo?.errorMessage,
+        GENERATED_CONTENT_MODERATION_FAILED_MESSAGE
       );
     } finally {
       globalThis.fetch = guardedFetch;
@@ -574,6 +605,130 @@ async function main() {
         'output video should poll Wavespeed once in routed test'
       );
     } finally {
+      globalThis.fetch = guardedFetch;
+    }
+
+    process.env.MODERATION_PROVIDER = 'sightengine';
+    delete process.env.MODERATION_OUTPUT_VIDEO_PROVIDER;
+    process.env.MODERATION_FAIL_CLOSED = 'false';
+    process.env.SIGHTENGINE_API_USER = 'test-user';
+    process.env.SIGHTENGINE_API_SECRET = 'test-secret';
+
+    let sightengine400Hits = 0;
+    const sightengine400Warnings: unknown[][] = [];
+    const originalWarn = console.warn;
+    console.warn = (message?: unknown, ...optionalParams: unknown[]) => {
+      sightengine400Warnings.push([message, ...optionalParams]);
+      originalWarn(message, ...optionalParams);
+    };
+
+    globalThis.fetch = async (input, init) => {
+      const url = toFetchUrl(input);
+
+      if (isSightengineUrl(url)) {
+        sightengine400Hits += 1;
+        return new Response(
+          JSON.stringify({
+            status: 'failure',
+            error: {
+              message: 'Bad media URL',
+              url: 'https://signed.example.com/private-output.png?token=secret',
+              api_secret: 'must-not-leak',
+            },
+          }),
+          { status: 400 }
+        );
+      }
+
+      return guardedFetch(input, init);
+    };
+
+    try {
+      await assert.rejects(
+        () =>
+          moderateGenerationOutput({
+            taskId: 'task-sightengine-400-output',
+            userId: 'user-1',
+            mediaType: AIMediaType.IMAGE,
+            scene: 'text-to-image',
+            outputUrls: ['https://example.com/sightengine-400-image.png'],
+          }),
+        ModerationServiceUnavailableError,
+        'Sightengine 400 should be a moderation service error'
+      );
+
+      const sightengine400Result = await applyGenerationOutputModeration({
+        taskId: 'task-sightengine-400-result',
+        userId: 'user-1',
+        mediaType: AIMediaType.IMAGE,
+        scene: 'text-to-image',
+        taskStatus: AITaskStatus.SUCCESS,
+        taskInfo: {
+          images: [
+            { imageUrl: 'https://example.com/sightengine-400-image.png' },
+          ],
+        },
+        taskResult: { output: 'https://example.com/sightengine-400-image.png' },
+      });
+
+      assert.equal(sightengine400Result.status, AITaskStatus.MODERATION_FAILED);
+      assert.equal(
+        sightengine400Result.taskResult?.errorCode,
+        'MODERATION_SERVICE_UNAVAILABLE'
+      );
+      assert.equal(
+        sightengine400Result.taskInfo?.errorMessage,
+        GENERATED_CONTENT_MODERATION_FAILED_MESSAGE
+      );
+      assert.equal(
+        JSON.stringify(sightengine400Result).includes(
+          'sightengine-400-image.png'
+        ),
+        false,
+        'Sightengine 400 payload should not leak original output URL'
+      );
+      assert.equal(
+        sightengine400Hits,
+        2,
+        'Sightengine 400 paths should be covered by mock fetch'
+      );
+
+      const sightengineRequestLog = sightengine400Warnings.find(
+        ([message]) => message === 'Sightengine moderation request failed'
+      )?.[1] as Record<string, any> | undefined;
+      assert.ok(
+        sightengineRequestLog,
+        'Sightengine HTTP failure should emit a request diagnostic log'
+      );
+      assert.equal(sightengineRequestLog.status, 400);
+      assert.equal(sightengineRequestLog.requestMode, 'GET');
+      assert.equal(sightengineRequestLog.endpointType, 'image');
+      assert.match(sightengineRequestLog.body, /Bad media URL/);
+      assert.equal(
+        sightengineRequestLog.body.includes('token=secret'),
+        false,
+        'request diagnostic log must not leak signed URL query tokens'
+      );
+      assert.equal(
+        sightengineRequestLog.body.includes('must-not-leak'),
+        false,
+        'request diagnostic log must not leak API secrets'
+      );
+
+      const moderationCheckLog = sightengine400Warnings.find(
+        ([message, data]) =>
+          message === 'generation moderation check failed' &&
+          (data as Record<string, any> | undefined)?.checkType ===
+            'output_image'
+      )?.[1] as Record<string, any> | undefined;
+      assert.ok(
+        moderationCheckLog,
+        'Sightengine HTTP failure should emit a moderation check log with provider and checkType'
+      );
+      assert.equal(moderationCheckLog.provider, 'sightengine');
+      assert.equal(moderationCheckLog.checkType, 'output_image');
+    } finally {
+      console.warn = originalWarn;
       globalThis.fetch = guardedFetch;
     }
 

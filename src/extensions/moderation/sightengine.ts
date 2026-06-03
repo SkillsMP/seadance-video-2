@@ -6,6 +6,12 @@ export interface SightengineConfig {
   timeoutMs: number;
 }
 
+interface FetchJsonMetadata {
+  endpointType: 'text' | 'image' | 'video';
+  requestMode: 'GET' | 'POST';
+  sourceUrl?: string;
+}
+
 const TEXT_ENDPOINT = 'https://api.sightengine.com/1.0/text/check.json';
 const IMAGE_ENDPOINT = 'https://api.sightengine.com/1.0/check.json';
 const VIDEO_SYNC_ENDPOINT =
@@ -91,7 +97,11 @@ export async function checkText(
       method: 'POST',
       body,
     },
-    config.timeoutMs
+    config.timeoutMs,
+    {
+      endpointType: 'text',
+      requestMode: 'POST',
+    }
   );
 
   return normalizeTextResult(raw);
@@ -112,7 +122,12 @@ export async function checkImageUrl(
     {
       method: 'GET',
     },
-    config.timeoutMs
+    config.timeoutMs,
+    {
+      endpointType: 'image',
+      requestMode: 'GET',
+      sourceUrl: url,
+    }
   );
 
   return normalizeImageResult(raw);
@@ -134,7 +149,12 @@ export async function checkVideoUrl(
       method: 'POST',
       body,
     },
-    config.timeoutMs
+    config.timeoutMs,
+    {
+      endpointType: 'video',
+      requestMode: 'POST',
+      sourceUrl: url,
+    }
   );
 
   return normalizeVideoResult(raw);
@@ -156,7 +176,8 @@ export function createSightengineModerationProvider(
 async function fetchJsonWithTimeout(
   url: string,
   init: RequestInit,
-  timeoutMs: number
+  timeoutMs: number,
+  metadata: FetchJsonMetadata
 ): Promise<unknown> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -167,8 +188,15 @@ async function fetchJsonWithTimeout(
       signal: controller.signal,
     });
 
-    const json = (await response.json().catch(() => null)) as unknown;
+    const responseBody = await response.text().catch(() => '');
+    const json = parseJson(responseBody);
     if (!response.ok) {
+      logSightengineRequestFailure({
+        status: response.status,
+        metadata,
+        responseBody,
+        reason: 'http_error',
+      });
       throw new Error(`Sightengine request failed: ${response.status}`);
     }
 
@@ -177,6 +205,80 @@ async function fetchJsonWithTimeout(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function parseJson(value: string): unknown {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function logSightengineRequestFailure({
+  status,
+  metadata,
+  responseBody,
+  reason,
+}: {
+  status: number;
+  metadata: FetchJsonMetadata;
+  responseBody: string;
+  reason: string;
+}) {
+  console.warn('Sightengine moderation request failed', {
+    status,
+    endpointType: metadata.endpointType,
+    requestMode: metadata.requestMode,
+    sourceUrl: describeUrlForLog(metadata.sourceUrl),
+    body: summarizeResponseBody(responseBody),
+    reason,
+  });
+}
+
+function summarizeResponseBody(value: string): string {
+  return sanitizeForLog(value).slice(0, 500);
+}
+
+function sanitizeForLog(value: string): string {
+  return value
+    .replace(/https?:\\?\/\\?\/[^\s"'<>]+/gi, '[url]')
+    .replace(
+      /(api_(?:user|secret)["']?\s*[:=]\s*["']?)[^"',&\s}]+/gi,
+      '$1[redacted]'
+    );
+}
+
+function describeUrlForLog(url?: string) {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    return {
+      protocol: parsedUrl.protocol,
+      host: parsedUrl.host,
+      pathHash: hashString(parsedUrl.pathname),
+      pathLength: parsedUrl.pathname.length,
+    };
+  } catch {
+    return { invalid: true };
+  }
+}
+
+function hashString(value: string): string {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
 function normalizeTextResult(raw: unknown): ModerationResult {

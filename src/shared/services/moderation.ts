@@ -14,6 +14,12 @@ export const CONTENT_SAFETY_MESSAGE =
 export const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
 export const CONTENT_POLICY_VIOLATION_CODE = 'CONTENT_POLICY_VIOLATION';
+export const MODERATION_SERVICE_UNAVAILABLE_CODE =
+  'MODERATION_SERVICE_UNAVAILABLE';
+export const MODERATION_SERVICE_UNAVAILABLE_MESSAGE =
+  'Content moderation is temporarily unavailable. Please try again later.';
+export const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
+  'Content moderation is temporarily unavailable. The generated result cannot be verified or displayed.';
 export const GENERATED_OUTPUT_MISSING_MESSAGE =
   'The provider returned no generated output URLs.';
 
@@ -77,6 +83,13 @@ export class ContentPolicyViolationError extends Error {
   constructor(message = CONTENT_SAFETY_MESSAGE) {
     super(message);
     this.name = 'ContentPolicyViolationError';
+  }
+}
+
+export class ModerationServiceUnavailableError extends Error {
+  constructor(message = MODERATION_SERVICE_UNAVAILABLE_MESSAGE) {
+    super(message);
+    this.name = 'ModerationServiceUnavailableError';
   }
 }
 
@@ -156,7 +169,7 @@ export async function moderateGenerationOutput({
     return;
   }
 
-  const failClosed = isModerationFailClosed(configs);
+  const failClosed = true;
   const providerContext = createModerationProviderContext(configs, mediaType);
   const provider = await createReadyProvider({
     userId,
@@ -165,6 +178,7 @@ export async function moderateGenerationOutput({
     failClosed,
     providerContext,
     violationMessage: GENERATED_CONTENT_SAFETY_MESSAGE,
+    unavailableMessage: GENERATED_CONTENT_MODERATION_FAILED_MESSAGE,
   });
   if (!provider) {
     return;
@@ -180,6 +194,7 @@ export async function moderateGenerationOutput({
       checkType:
         mediaType === AIMediaType.VIDEO ? 'output_video' : 'output_image',
       violationMessage: GENERATED_CONTENT_SAFETY_MESSAGE,
+      unavailableMessage: GENERATED_CONTENT_MODERATION_FAILED_MESSAGE,
       check: () =>
         getProviderCheck(
           provider,
@@ -252,11 +267,15 @@ export async function applyGenerationOutputModeration({
       outputUrls,
     });
   } catch (error) {
-    if (!(error instanceof ContentPolicyViolationError)) {
-      throw error;
+    if (error instanceof ContentPolicyViolationError) {
+      return createModerationBlockedTaskPayload();
     }
 
-    return createModerationBlockedTaskPayload();
+    if (error instanceof ModerationServiceUnavailableError) {
+      return createModerationFailedTaskPayload();
+    }
+
+    throw error;
   }
 
   return originalResult;
@@ -267,6 +286,14 @@ function createModerationBlockedTaskPayload() {
     AITaskStatus.MODERATION_BLOCKED,
     CONTENT_POLICY_VIOLATION_CODE,
     GENERATED_CONTENT_SAFETY_MESSAGE
+  );
+}
+
+function createModerationFailedTaskPayload() {
+  return createSafeTaskPayload(
+    AITaskStatus.MODERATION_FAILED,
+    MODERATION_SERVICE_UNAVAILABLE_CODE,
+    GENERATED_CONTENT_MODERATION_FAILED_MESSAGE
   );
 }
 
@@ -307,6 +334,7 @@ async function createReadyProvider({
   failClosed,
   providerContext,
   violationMessage = CONTENT_SAFETY_MESSAGE,
+  unavailableMessage = MODERATION_SERVICE_UNAVAILABLE_MESSAGE,
 }: {
   userId: string;
   mediaType?: string;
@@ -314,6 +342,7 @@ async function createReadyProvider({
   failClosed: boolean;
   providerContext: ModerationProviderContext;
   violationMessage?: string;
+  unavailableMessage?: string;
 }): Promise<ModerationProvider | undefined> {
   let provider: ModerationProvider | undefined;
 
@@ -325,6 +354,7 @@ async function createReadyProvider({
     providerName: providerContext.providerName,
     checkType: 'config',
     violationMessage,
+    unavailableMessage,
     check: async () => {
       provider = providerContext.createProvider();
       return {
@@ -347,6 +377,7 @@ async function runModerationCheck({
   checkType,
   check,
   violationMessage = CONTENT_SAFETY_MESSAGE,
+  unavailableMessage = MODERATION_SERVICE_UNAVAILABLE_MESSAGE,
 }: {
   userId: string;
   mediaType?: string;
@@ -355,6 +386,7 @@ async function runModerationCheck({
   providerName: string;
   checkType: 'config' | 'text' | 'image' | 'output_image' | 'output_video';
   violationMessage?: string;
+  unavailableMessage?: string;
   check: () => Promise<ModerationResult>;
 }) {
   try {
@@ -385,7 +417,7 @@ async function runModerationCheck({
     });
 
     if (failClosed) {
-      throw new ContentPolicyViolationError(violationMessage);
+      throw new ModerationServiceUnavailableError(unavailableMessage);
     }
   }
 }

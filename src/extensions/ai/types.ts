@@ -70,6 +70,7 @@ export enum AITaskStatus {
   FAILED = 'failed',
   CANCELED = 'canceled',
   MODERATION_BLOCKED = 'moderation_blocked',
+  MODERATION_FAILED = 'moderation_failed',
 }
 
 /**

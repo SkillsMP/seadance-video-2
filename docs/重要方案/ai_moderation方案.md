@@ -725,6 +725,75 @@ This generated result violates our content safety policy and cannot be displayed
 - `moderation_blocked` 不会误走 provider failed 的自动退款逻辑。
 - 同一终态任务再次轮询时，不会重复请求 provider，也不会重复调用审核服务。
 
+### 13.1 小型专项修复：输出审核异常不要误报内容违规
+
+当前有一类独立问题不属于 pricing、candidates 或 provider fallback：生成已经成功，`/api/ai/query` 轮询到输出后进入 `output_image` 审核，但 Sightengine 请求本身返回 400。此时系统不应把“审核服务请求失败”展示成“生成内容违规”。
+
+专项目标只有三个：
+
+1. 区分真实内容违规和审核服务异常。
+2. fail closed 仍然生效：未完成审核的输出不能展示。
+3. 增加足够诊断信息定位 Sightengine 400，但不泄露 API key、secret、完整 output URL 或原始图片内容。
+
+最小设计：
+
+- `ContentPolicyViolationError` 只表示审核结果明确 `decision=block`。
+- 新增一个窄语义错误，例如 `ModerationServiceUnavailableError`，只表示 provider 请求失败、超时、配置异常或响应结构异常。
+- `runModerationCheck()` 保持业务编排职责：真实 block 抛 `ContentPolicyViolationError`；provider error 在 `fail closed` 时抛 `ModerationServiceUnavailableError`，在 `fail open` 时只记录日志并放行。
+- 输入审核继续遵守全局 fail open / fail closed 配置；输出审核涉及已生成内容是否展示，本专项按 fail closed 处理。即使全局配置允许 fail open，只要 moderation 已启用且输出类型需要审核，输出审核 provider 异常也不得放行未验证结果，应进入 `moderation_failed`。
+- `applyGenerationOutputModeration()` 分别映射：`ContentPolicyViolationError -> moderation_blocked`；`ModerationServiceUnavailableError -> moderation_failed`。
+- `moderation_failed` 是一个很窄的终态，只用于“结果无法完成审核”。它不是 `failed`，避免触发 provider failed 的自动退款逻辑；也不是 `moderating`，不引入异步队列或人工审核流程。
+- 前端遇到 `moderation_failed` 时清空生成结果，提示“审核服务暂时不可用，生成结果无法验证，暂不能展示”，不要使用内容违规文案。
+
+历史任务刷新页旁路也必须收口：
+
+- `src/app/[locale]/(landing)/activity/ai-tasks/[id]/refresh/page.tsx` 会从「我的任务 / activity」入口直接 query provider 并更新任务，是 `/api/ai/query` 之外的同类状态刷新入口。
+- 该页面不能在 provider 返回 `success` 后直接 `updateAITaskById()` 写入 `taskInfo/taskResult`，否则图片 / 视频 output URL 会绕过输出审核落库。
+- 最小修复是复用 `applyGenerationOutputModeration()`：provider query 后先传入 `taskId / userId / mediaType / scene / taskStatus / taskInfo / taskResult` 完成输出审核，再用审核后的 `status / taskInfo / taskResult` 更新任务。
+- refresh 页面不要复制输出 URL 抽取、block 映射、fail closed、脱敏 payload 等逻辑；这些职责继续集中在 `shared/services/moderation.ts`，页面只负责刷新编排。
+- `moderation_blocked` 和 `moderation_failed` 都应作为 refresh 入口的终态：再次从 activity 刷新时不重复请求 provider，也不重复调用审核服务。
+- 这是 13.1 闭环的一部分，不引入新 API、不新增表、不改变 candidates fallback、pricing 或 provider fallback 策略。
+
+Sightengine adapter 的最小诊断日志：
+
+- HTTP 非 2xx 时读取 response body，截断到较小长度后进入日志。
+- 日志只包含 `status`、`endpointType`、`requestMode`、脱敏后的 body 摘要和错误原因。
+- 图片 URL 只记录 `protocol / host / path hash` 这类定位信息，不记录完整签名 URL。
+- `api_user / api_secret` 绝不进入日志，也不要把完整 Sightengine 请求 URL 打出来。
+
+建议错误码：
+
+```text
+CONTENT_POLICY_VIOLATION
+MODERATION_SERVICE_UNAVAILABLE
+```
+
+建议任务状态：
+
+```text
+moderation_blocked
+moderation_failed
+```
+
+专项验收：
+
+- 安全图片输出审核 allow 后，仍然正常进入 `success` 并展示。
+- Sightengine 明确返回 block 时，仍然进入 `moderation_blocked`，不暴露原始 output URL。
+- 人为模拟 Sightengine 400 时，任务进入 `moderation_failed`，前端不展示图片，也不显示内容违规文案。
+- `moderation_failed` 是 query 终态，再次轮询不重复请求 provider，也不重复调用审核服务。
+- `moderation_failed` 不触发 `updateAITaskById()` 里的 provider failed 自动退款逻辑。
+- 从 `activity/ai-tasks/[id]/refresh` 刷新 pending / processing 图片或视频任务时，provider success 也必须先经过 `applyGenerationOutputModeration()`；allow 才写入 success 输出，block / provider error 分别写入 `moderation_blocked` / `moderation_failed`。
+
+本专项不处理这些事项：
+
+- 不改 image/video pricing。
+- 不改 candidates fallback 策略。
+- 不新增多 provider fallback。
+- 不新增审核日志表。
+- 不做人工审核后台。
+- 不放行未审核输出。
+- 不改变真实违规的阻断语义。
+
 ## 14. 第三阶段：工厂 + 适配器与 Wavespeed
 
 第三阶段不是当前返修的一部分。它承接第 7 节的 Wavespeed 判断，也依赖第 13 节的主链路返修先完成。只有在 Sightengine 输入审核、输出审核、`moderation_blocked`、query 终态短路和 candidate fallback 单次审核都稳定后，再进入这一阶段。

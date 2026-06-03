@@ -22,6 +22,11 @@ function assertBefore(
 
 const generateRoute = readSource('src/app/api/ai/generate/route.ts');
 const queryRoute = readSource('src/app/api/ai/query/route.ts');
+const refreshPage = readSource(
+  'src/app/[locale]/(landing)/activity/ai-tasks/[id]/refresh/page.tsx'
+);
+const imageGenerator = readSource('src/shared/blocks/generator/image.tsx');
+const videoGenerator = readSource('src/shared/blocks/generator/video.tsx');
 const aiTaskModel = readSource('src/shared/models/ai_task.ts');
 const moderationService = readSource('src/shared/services/moderation.ts');
 const moderationTypes = readSource('src/extensions/moderation/types.ts');
@@ -50,6 +55,7 @@ for (const status of [
   'AITaskStatus.FAILED',
   'AITaskStatus.CANCELED',
   'AITaskStatus.MODERATION_BLOCKED',
+  'AITaskStatus.MODERATION_FAILED',
 ]) {
   assert.match(
     terminalStatusesBlock,
@@ -70,6 +76,47 @@ assertBefore(
   'query route must short-circuit terminal tasks before output moderation'
 );
 
+for (const status of [
+  'AITaskStatus.SUCCESS',
+  'AITaskStatus.FAILED',
+  'AITaskStatus.CANCELED',
+  'AITaskStatus.MODERATION_BLOCKED',
+  'AITaskStatus.MODERATION_FAILED',
+]) {
+  assert.match(
+    refreshPage,
+    new RegExp(status.replace('.', '\\.')),
+    `refresh page terminal statuses must include ${status}`
+  );
+}
+assertBefore(
+  refreshPage,
+  'if (TERMINAL_TASK_STATUSES.has(task.status))',
+  'const aiService = await getAIService()',
+  'refresh page must short-circuit terminal tasks before requesting provider'
+);
+assertBefore(
+  refreshPage,
+  'await applyGenerationOutputModeration({',
+  'await updateAITaskById(task.id, updateAITask)',
+  'refresh page must moderate provider success output before persisting task data'
+);
+assert.match(
+  refreshPage,
+  /task\.userId !== user\.id/,
+  'refresh page must enforce task ownership before provider query'
+);
+assert.match(
+  refreshPage,
+  /mediaType: task\.mediaType,[\s\S]*model: task\.model/,
+  'refresh page provider query must pass mediaType and model context'
+);
+assert.doesNotMatch(
+  refreshPage,
+  /status:\s*result\.taskStatus/,
+  'refresh page must persist moderated status, not raw provider status'
+);
+
 assert.match(
   aiTaskModel,
   /updateAITask\.status === AITaskStatus\.FAILED && updateAITask\.creditId/,
@@ -77,8 +124,8 @@ assert.match(
 );
 assert.doesNotMatch(
   aiTaskModel,
-  /MODERATION_BLOCKED[\s\S]{0,200}credit|credit[\s\S]{0,200}MODERATION_BLOCKED/,
-  'moderation_blocked must not be coupled to automatic refund logic'
+  /MODERATION_(?:BLOCKED|FAILED)[\s\S]{0,200}credit|credit[\s\S]{0,200}MODERATION_(?:BLOCKED|FAILED)/,
+  'moderation terminal statuses must not be coupled to automatic refund logic'
 );
 
 assert.match(
@@ -88,8 +135,23 @@ assert.match(
 );
 assert.match(
   moderationService,
-  /if \(\s*!\(error instanceof ContentPolicyViolationError\)\s*\)[\s\S]*?throw error;[\s\S]*?return createModerationBlockedTaskPayload\(\);/,
+  /error instanceof ContentPolicyViolationError[\s\S]*?return createModerationBlockedTaskPayload\(\);[\s\S]*?error instanceof ModerationServiceUnavailableError[\s\S]*?return createModerationFailedTaskPayload\(\);/,
   'content policy violations must not return original provider output'
+);
+assert.match(
+  moderationService,
+  /function createModerationFailedTaskPayload\(\)[\s\S]*?createSafeTaskPayload\(\s*AITaskStatus\.MODERATION_FAILED,\s*MODERATION_SERVICE_UNAVAILABLE_CODE,\s*GENERATED_CONTENT_MODERATION_FAILED_MESSAGE\s*\)/,
+  'moderation provider errors must use a sanitized moderation_failed payload'
+);
+assert.match(
+  moderationService,
+  /const failClosed = true;[\s\S]*?createModerationProviderContext\(configs, mediaType\)/,
+  'output moderation must fail closed even when global moderation fail-open is configured'
+);
+assert.match(
+  moderationService,
+  /throw new ModerationServiceUnavailableError\(unavailableMessage\)/,
+  'provider errors must not be converted into content policy violations'
 );
 assert.match(
   moderationService,
@@ -159,5 +221,41 @@ assert.doesNotMatch(
   /createModerationBlockedTaskPayload[\s\S]{0,300}raw/,
   'moderation blocked payload must not contain raw provider output or categories'
 );
+
+function assertFrontendModerationCopy(source: string, label: string): void {
+  assert.match(
+    source,
+    /const GENERATED_CONTENT_SAFETY_MESSAGE =\s*'This generated result violates our content safety policy and cannot be displayed\. Please revise your prompt and try again\.'/,
+    `${label} must keep content policy violation copy distinct`
+  );
+  assert.match(
+    source,
+    /const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =\s*'Content moderation is temporarily unavailable\. The generated result cannot be verified or displayed\.'/,
+    `${label} must keep moderation service unavailable copy distinct`
+  );
+  assert.match(
+    source,
+    /currentStatus === AITaskStatus\.MODERATION_BLOCKED[\s\S]{0,180}toast\.error\(GENERATED_CONTENT_SAFETY_MESSAGE\)/,
+    `${label} polling blocked status must show content policy copy`
+  );
+  assert.match(
+    source,
+    /currentStatus === AITaskStatus\.MODERATION_FAILED[\s\S]{0,180}toast\.error\(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE\)/,
+    `${label} polling failed status must show unavailable copy`
+  );
+  assert.match(
+    source,
+    /data\.status === AITaskStatus\.MODERATION_BLOCKED[\s\S]{0,180}toast\.error\(GENERATED_CONTENT_SAFETY_MESSAGE\)/,
+    `${label} immediate blocked status must show content policy copy`
+  );
+  assert.match(
+    source,
+    /data\.status === AITaskStatus\.MODERATION_FAILED[\s\S]{0,180}toast\.error\(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE\)/,
+    `${label} immediate failed status must show unavailable copy`
+  );
+}
+
+assertFrontendModerationCopy(imageGenerator, 'image generator');
+assertFrontendModerationCopy(videoGenerator, 'video generator');
 
 console.log('ai moderation route contract checks passed.');

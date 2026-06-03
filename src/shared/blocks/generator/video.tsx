@@ -79,6 +79,8 @@ const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
 const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
+const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
+  'Content moderation is temporarily unavailable. The generated result cannot be verified or displayed.';
 
 const MODEL_OPTIONS = MODELS.filter(
   (model) => model.mediaType === AIMediaType.VIDEO && model.enabled
@@ -360,6 +362,8 @@ export function VideoGenerator({
         return 'Video generation completed';
       case AITaskStatus.MODERATION_BLOCKED:
         return 'Generated video blocked';
+      case AITaskStatus.MODERATION_FAILED:
+        return 'Video moderation failed';
       case AITaskStatus.FAILED:
         return 'Generation failed';
       default:
@@ -485,6 +489,13 @@ export function VideoGenerator({
         if (currentStatus === AITaskStatus.MODERATION_BLOCKED) {
           setGeneratedVideos([]);
           toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+          resetTaskState();
+          return true;
+        }
+
+        if (currentStatus === AITaskStatus.MODERATION_FAILED) {
+          setGeneratedVideos([]);
+          toast.error(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE);
           resetTaskState();
           return true;
         }
@@ -650,6 +661,14 @@ export function VideoGenerator({
       if (data.status === AITaskStatus.MODERATION_BLOCKED) {
         setGeneratedVideos([]);
         toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+        resetTaskState();
+        await fetchUserCredits();
+        return;
+      }
+
+      if (data.status === AITaskStatus.MODERATION_FAILED) {
+        setGeneratedVideos([]);
+        toast.error(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE);
         resetTaskState();
         await fetchUserCredits();
         return;

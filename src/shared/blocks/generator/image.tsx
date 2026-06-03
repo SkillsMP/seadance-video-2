@@ -105,6 +105,8 @@ const DEFAULT_PREVIEW_IMAGE =
   'https://img-template-nano-banana.16781678.xyz/uploads/2025-12-07/1.jpeg';
 const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
+const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
+  'Content moderation is temporarily unavailable. The generated result cannot be verified or displayed.';
 const AUTO_SAVE_SHOWCASE =
   process.env.NEXT_PUBLIC_AUTO_SAVE_SHOWCASE === 'true';
 
@@ -472,6 +474,8 @@ export function ImageGenerator({
         return 'Image generation completed';
       case AITaskStatus.MODERATION_BLOCKED:
         return 'Generated image blocked';
+      case AITaskStatus.MODERATION_FAILED:
+        return 'Image moderation failed';
       case AITaskStatus.FAILED:
         return 'Generation failed';
       default:
@@ -713,6 +717,13 @@ export function ImageGenerator({
           return true;
         }
 
+        if (currentStatus === AITaskStatus.MODERATION_FAILED) {
+          setGeneratedImages([]);
+          toast.error(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE);
+          resetTaskState();
+          return true;
+        }
+
         if (currentStatus === AITaskStatus.FAILED) {
           const errorMessage =
             parsedResult?.errorMessage || 'Generate image failed';
@@ -898,6 +909,14 @@ export function ImageGenerator({
       if (data.status === AITaskStatus.MODERATION_BLOCKED) {
         setGeneratedImages([]);
         toast.error(GENERATED_CONTENT_SAFETY_MESSAGE);
+        resetTaskState();
+        await fetchUserCredits();
+        return;
+      }
+
+      if (data.status === AITaskStatus.MODERATION_FAILED) {
+        setGeneratedImages([]);
+        toast.error(GENERATED_CONTENT_MODERATION_FAILED_MESSAGE);
         resetTaskState();
         await fetchUserCredits();
         return;
