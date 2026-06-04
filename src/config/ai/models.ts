@@ -83,7 +83,7 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 ];
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
-const KIE_NANO_BANANA_OUTPUT_FORMATS = ['png'] as const;
+const KIE_NANO_BANANA_OUTPUT_FORMATS = ['png', 'jpg'] as const;
 const KIE_IMAGE_RESOLUTIONS = ['1K', '2K', '4K'] as const;
 const NANO_BANANA_2_PRICED_RESOLUTIONS = ['2K'] as const;
 const NANO_BANANA_PRO_ASPECT_RATIOS = [

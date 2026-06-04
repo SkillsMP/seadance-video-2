@@ -287,6 +287,10 @@ assert.deepEqual(
   nanoBananaProControlEntries.map(([name]) => name),
   ['aspect_ratio', 'resolution', 'output_format']
 );
+assert.deepEqual(
+  nanoBananaProTextEntry.controls?.['text-to-image']?.output_format?.options,
+  ['png', 'jpg']
+);
 assert.deepEqual(nanoBananaProTextEntry.defaults?.['text-to-image'], {
   aspect_ratio: '1:1',
   resolution: '2K',
@@ -298,13 +302,13 @@ assert.deepEqual(
     selectedControlValues: {
       aspect_ratio: '16:9',
       resolution: '4K',
-      output_format: 'png',
+      output_format: 'jpg',
     },
   }),
   {
     aspect_ratio: '16:9',
     resolution: '4K',
-    output_format: 'png',
+    output_format: 'jpg',
   }
 );
 
@@ -315,19 +319,23 @@ const nanoBananaProImageOptions = resolveFinalOptions({
   options: {
     aspect_ratio: '16:9',
     resolution: '4K',
-    output_format: 'png',
+    output_format: 'jpg',
     unknown_option: 'ignored',
   },
   allowControlOptions: true,
 });
 assert.equal(nanoBananaProImageOptions.aspect_ratio, '16:9');
 assert.equal(nanoBananaProImageOptions.resolution, '4K');
-assert.equal(nanoBananaProImageOptions.output_format, 'png');
+assert.equal(nanoBananaProImageOptions.output_format, 'jpg');
 assert.equal('unknown_option' in nanoBananaProImageOptions, false);
 
 assert.deepEqual(
   nanoBanana2TextEntry.controls?.['text-to-image']?.resolution?.options,
   ['2K']
+);
+assert.deepEqual(
+  nanoBanana2TextEntry.controls?.['text-to-image']?.output_format?.options,
+  ['png', 'jpg']
 );
 assert.deepEqual(nanoBanana2TextEntry.defaults?.['text-to-image'], {
   aspect_ratio: '1:1',

@@ -34,6 +34,127 @@ const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
   'bytedance/seedance-2-fast': 'duration',
 };
 
+// KIE 图片自定义存储格式 helper 开始
+/**
+ * KIE 图片任务会根据 `output_format` 返回 PNG 或 JPG。
+ * 这组 helper 负责让自定义存储的元数据保持一致：优先读 provider payload，
+ * 其次从结果 URL 的扩展名推断，最后回退到 PNG。
+ */
+type KieImageStorageFormat = {
+  ext: 'png' | 'jpg';
+  contentType: 'image/png' | 'image/jpeg';
+};
+
+const KIE_DEFAULT_IMAGE_STORAGE_FORMAT: KieImageStorageFormat = {
+  ext: 'png',
+  contentType: 'image/png',
+};
+
+const KIE_IMAGE_STORAGE_FORMATS: Record<string, KieImageStorageFormat> = {
+  png: KIE_DEFAULT_IMAGE_STORAGE_FORMAT,
+  jpg: {
+    ext: 'jpg',
+    contentType: 'image/jpeg',
+  },
+  jpeg: {
+    ext: 'jpg',
+    contentType: 'image/jpeg',
+  },
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function normalizeKieImageStorageFormat(
+  value: unknown
+): KieImageStorageFormat | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const normalized = value.trim().toLowerCase().replace(/^\./, '');
+  return KIE_IMAGE_STORAGE_FORMATS[normalized];
+}
+
+function parseJsonRecord(value: unknown): Record<string, unknown> | undefined {
+  if (isRecord(value)) {
+    return value;
+  }
+
+  if (typeof value !== 'string' || !value.trim()) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return isRecord(parsed) ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function extractKieImageStorageFormatFromPayload(
+  value: unknown
+): KieImageStorageFormat | undefined {
+  const record = parseJsonRecord(value);
+  if (!record) {
+    return undefined;
+  }
+
+  const directFormat = normalizeKieImageStorageFormat(
+    record.output_format ?? record.outputFormat
+  );
+  if (directFormat) {
+    return directFormat;
+  }
+
+  const inputFormat = extractKieImageStorageFormatFromPayload(record.input);
+  if (inputFormat) {
+    return inputFormat;
+  }
+
+  for (const field of ['paramJson', 'requestJson', 'inputJson'] as const) {
+    const nestedFormat = extractKieImageStorageFormatFromPayload(record[field]);
+    if (nestedFormat) {
+      return nestedFormat;
+    }
+  }
+
+  return undefined;
+}
+
+function getUrlExtension(url: string): string | undefined {
+  try {
+    const pathname = new URL(url).pathname;
+    return pathname.split('/').pop()?.split('.').pop()?.toLowerCase();
+  } catch {
+    return url
+      .split(/[?#]/)[0]
+      ?.split('/')
+      .pop()
+      ?.split('.')
+      .pop()
+      ?.toLowerCase();
+  }
+}
+
+function getKieImageStorageFormat({
+  imageUrl,
+  providerData,
+}: {
+  imageUrl: string;
+  providerData: unknown;
+}): KieImageStorageFormat {
+  return (
+    extractKieImageStorageFormatFromPayload(providerData) ??
+    normalizeKieImageStorageFormat(getUrlExtension(imageUrl)) ??
+    KIE_DEFAULT_IMAGE_STORAGE_FORMAT
+  );
+}
+
+// KIE 图片自定义存储格式 helper 结束
+
 /**
  * Kie provider
  * @docs https://kie.ai/
@@ -369,10 +490,14 @@ export class KieProvider implements AIProvider {
       const filesToSave: AIFile[] = [];
       images.forEach((image, index) => {
         if (image.imageUrl) {
+          const storageFormat = getKieImageStorageFormat({
+            imageUrl: image.imageUrl,
+            providerData: data,
+          });
           filesToSave.push({
             url: image.imageUrl,
-            contentType: 'image/png',
-            key: `kie/image/${getUuid()}.png`,
+            contentType: storageFormat.contentType,
+            key: `kie/image/${getUuid()}.${storageFormat.ext}`,
             index: index,
             type: 'image',
           });

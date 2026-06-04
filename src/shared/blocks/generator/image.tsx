@@ -107,6 +107,8 @@ const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
 const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
   'Content moderation is temporarily unavailable. The generated result cannot be verified or displayed.';
+const FOUR_K_PNG_WARNING =
+  '4K PNG files can be very large and may fail output moderation. JPG is recommended for 4K images.';
 const AUTO_SAVE_SHOWCASE =
   process.env.NEXT_PUBLIC_AUTO_SAVE_SHOWCASE === 'true';
 
@@ -194,6 +196,59 @@ function extractImageUrls(result: any): string[] {
 }
 
 // ============ 主组件 ============
+
+function getImageExtensionFromContentType(
+  contentType?: string
+): string | undefined {
+  const type = contentType?.split(';')[0]?.trim().toLowerCase();
+
+  if (type === 'image/png') {
+    return 'png';
+  }
+
+  if (type === 'image/jpeg' || type === 'image/jpg') {
+    return 'jpg';
+  }
+
+  if (type === 'image/webp') {
+    return 'webp';
+  }
+
+  if (type === 'image/gif') {
+    return 'gif';
+  }
+
+  return undefined;
+}
+
+function getImageExtensionFromUrl(url?: string): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const pathname = new URL(url).pathname;
+    const ext = pathname.split('/').pop()?.split('.').pop()?.toLowerCase();
+    return ext && ['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(ext)
+      ? ext.replace('jpeg', 'jpg')
+      : undefined;
+  } catch {
+    const ext = url.split(/[?#]/)[0]?.split('/').pop()?.split('.').pop();
+    const normalized = ext?.toLowerCase();
+    return normalized &&
+      ['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(normalized)
+      ? normalized.replace('jpeg', 'jpg')
+      : undefined;
+  }
+}
+
+function getDownloadedImageExtension(blob: Blob, url?: string): string {
+  return (
+    getImageExtensionFromContentType(blob.type) ??
+    getImageExtensionFromUrl(url) ??
+    'png'
+  );
+}
 
 export function ImageGenerator({
   allowMultipleImages = true,
@@ -409,6 +464,9 @@ export function ImageGenerator({
 
     return '';
   }, [isLoadingProviders, availableProviders.length, hasAvailableFamilies]);
+  const showFourKPngWarning =
+    selectedControlValues.resolution === '4K' &&
+    selectedControlValues.output_format === 'png';
 
   useEffect(() => {
     if (availableFamilyOptions.length === 0) {
@@ -983,9 +1041,10 @@ export function ImageGenerator({
 
       const blob = await resp.blob();
       const blobUrl = URL.createObjectURL(blob);
+      const extension = getDownloadedImageExtension(blob, image.url);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = `${image.id}.png`;
+      link.download = `${image.id}.${extension}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1130,6 +1189,12 @@ export function ImageGenerator({
                 )}
 
                 {/* 提示词输入框 */}
+                {showFourKPngWarning && (
+                  <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                    {FOUR_K_PNG_WARNING}
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="image-prompt">{t('form.prompt')}</Label>
                   <Textarea
