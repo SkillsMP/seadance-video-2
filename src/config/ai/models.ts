@@ -68,7 +68,7 @@ export interface ModelEntry {
   defaults?: SceneParameterMap;
   /** User-controllable option schema reserved for future UI/server validation. */
   controls?: SceneControlsMap;
-  /** Pricing metadata reserved for future dynamic billing. Not used for current charging. */
+  /** Pricing metadata used by image/video generation credit calculation. */
   pricing?: ScenePricingMap;
   /** 服务端强控参数字典。指定场景下，后端发起生成请求时强制覆盖/注入的 API 参数（例如分辨率、宽高比、时长限制等） */
   enforced?: SceneParameterMap;

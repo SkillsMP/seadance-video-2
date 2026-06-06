@@ -305,7 +305,7 @@
           },
           {
             "question": "Is there a free trial?",
-            "answer": "New accounts receive a small number of free credits for basic image generation. Video generation requires paid credits."
+            "answer": "Free trial credits are not enabled by default. If trial credits are offered in the future, they will be limited to basic image generation."
           },
           {
             "question": "What payment methods are accepted?",
