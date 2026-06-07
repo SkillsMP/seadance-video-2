@@ -83,8 +83,20 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 ];
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
-const KIE_NANO_BANANA_OUTPUT_FORMATS = ['png', 'jpg'] as const;
+const KIE_IMAGE_OUTPUT_FORMATS = ['png', 'jpg'] as const;
 const KIE_IMAGE_RESOLUTIONS = ['1K', '2K', '4K'] as const;
+const GPT_IMAGE_2_TEXT_TO_IMAGE_MODEL_VALUE = 'gpt-image-2-text-to-image';
+const GPT_IMAGE_2_IMAGE_TO_IMAGE_MODEL_VALUE = 'gpt-image-2-image-to-image';
+const GPT_IMAGE_2_ASPECT_RATIOS = [
+  '16:9',
+  '9:16',
+  '4:3',
+  '3:4',
+  '3:2',
+  '2:3',
+  '1:1',
+  'auto',
+] as const;
 const NANO_BANANA_2_PRICED_RESOLUTIONS = ['2K'] as const;
 const NANO_BANANA_PRO_ASPECT_RATIOS = [
   '1:1',
@@ -414,16 +426,35 @@ const NANO_BANANA_PRO_IMAGE_CONTROLS = createImageControls({
   defaultAspectRatio: '1:1',
   resolutionOptions: KIE_IMAGE_RESOLUTIONS,
   defaultResolution: '2K',
-  outputFormats: KIE_NANO_BANANA_OUTPUT_FORMATS,
+  outputFormats: KIE_IMAGE_OUTPUT_FORMATS,
 });
 const NANO_BANANA_PRO_IMAGE_DEFAULTS = createControlDefaults(
   NANO_BANANA_PRO_IMAGE_CONTROLS
 );
+const GPT_IMAGE_2_IMAGE_CONTROLS = createImageControls({
+  aspectRatios: GPT_IMAGE_2_ASPECT_RATIOS,
+  defaultAspectRatio: '16:9',
+  resolutionOptions: KIE_IMAGE_RESOLUTIONS,
+  defaultResolution: '2K',
+  outputFormats: KIE_IMAGE_OUTPUT_FORMATS,
+});
+const GPT_IMAGE_2_IMAGE_DEFAULTS = createControlDefaults(
+  GPT_IMAGE_2_IMAGE_CONTROLS
+);
+const GPT_IMAGE_2_IMAGE_PRICING = {
+  mode: 'fixed',
+  credits: 10,
+  byImageResolution: {
+    '1K': { credits: 10, availability: 'enabled' },
+    '2K': { credits: 10, availability: 'enabled' },
+    '4K': { credits: 15, availability: 'enabled' },
+  },
+} satisfies ScenePricing;
 const NANO_BANANA_2_IMAGE_CONTROLS = createImageControls({
   aspectRatios: NANO_BANANA_2_ASPECT_RATIOS,
   defaultAspectRatio: '1:1',
   resolutionOptions: NANO_BANANA_2_PRICED_RESOLUTIONS,
-  outputFormats: KIE_NANO_BANANA_OUTPUT_FORMATS,
+  outputFormats: KIE_IMAGE_OUTPUT_FORMATS,
 });
 const NANO_BANANA_2_IMAGE_DEFAULTS = createControlDefaults(
   NANO_BANANA_2_IMAGE_CONTROLS
@@ -507,6 +538,44 @@ export const MODELS: ModelEntry[] = [
           '2K': { credits: 15, availability: 'enabled' },
         },
       },
+    },
+  },
+  {
+    mediaType: 'image',
+    family: 'gpt-image-2',
+    value: GPT_IMAGE_2_TEXT_TO_IMAGE_MODEL_VALUE,
+    label: 'GPT Image 2',
+    provider: 'kie',
+    scenes: ['text-to-image'],
+    enabled: true,
+    credits: { 'text-to-image': 10 },
+    defaults: {
+      'text-to-image': { ...GPT_IMAGE_2_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'text-to-image': GPT_IMAGE_2_IMAGE_CONTROLS,
+    },
+    pricing: {
+      'text-to-image': GPT_IMAGE_2_IMAGE_PRICING,
+    },
+  },
+  {
+    mediaType: 'image',
+    family: 'gpt-image-2',
+    value: GPT_IMAGE_2_IMAGE_TO_IMAGE_MODEL_VALUE,
+    label: 'GPT Image 2',
+    provider: 'kie',
+    scenes: ['image-to-image'],
+    enabled: true,
+    credits: { 'image-to-image': 10 },
+    defaults: {
+      'image-to-image': { ...GPT_IMAGE_2_IMAGE_DEFAULTS },
+    },
+    controls: {
+      'image-to-image': GPT_IMAGE_2_IMAGE_CONTROLS,
+    },
+    pricing: {
+      'image-to-image': GPT_IMAGE_2_IMAGE_PRICING,
     },
   },
   {

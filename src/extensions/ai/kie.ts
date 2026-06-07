@@ -25,9 +25,25 @@ export interface KieConfigs extends AIConfigs {
   customStorage?: boolean; // use custom storage to save files
 }
 
-const KIE_IMAGE_FIELD: Record<string, 'image_input' | 'image_urls'> = {
+type KieImageInputField = 'image_input' | 'image_urls' | 'input_urls';
+type GptImage2Resolution = '1K' | '2K' | '4K';
+
+const GPT_IMAGE_2_TEXT_TO_IMAGE_MODEL_VALUE = 'gpt-image-2-text-to-image';
+const GPT_IMAGE_2_IMAGE_TO_IMAGE_MODEL_VALUE = 'gpt-image-2-image-to-image';
+const GPT_IMAGE_2_MODELS = new Set([
+  GPT_IMAGE_2_TEXT_TO_IMAGE_MODEL_VALUE,
+  GPT_IMAGE_2_IMAGE_TO_IMAGE_MODEL_VALUE,
+]);
+const GPT_IMAGE_2_RESOLUTIONS = new Set<GptImage2Resolution>([
+  '1K',
+  '2K',
+  '4K',
+]);
+
+const KIE_IMAGE_FIELD: Record<string, KieImageInputField> = {
   'google/nano-banana': 'image_input',
   'google/nano-banana-edit': 'image_urls',
+  [GPT_IMAGE_2_IMAGE_TO_IMAGE_MODEL_VALUE]: 'input_urls',
 };
 
 const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
@@ -64,6 +80,53 @@ const KIE_IMAGE_STORAGE_FORMATS: Record<string, KieImageStorageFormat> = {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isGptImage2Model(model: string): boolean {
+  return GPT_IMAGE_2_MODELS.has(model);
+}
+
+function isGptImage2Resolution(
+  value: unknown
+): value is GptImage2Resolution {
+  return (
+    typeof value === 'string' &&
+    GPT_IMAGE_2_RESOLUTIONS.has(value as GptImage2Resolution)
+  );
+}
+
+function validateGptImage2Options(model: string, options: unknown): void {
+  if (!isGptImage2Model(model)) {
+    return;
+  }
+
+  const input = isRecord(options) ? options : {};
+  const resolution = input.resolution;
+  const aspectRatio =
+    typeof input.aspect_ratio === 'string'
+      ? input.aspect_ratio.trim()
+      : undefined;
+
+  if (!isGptImage2Resolution(resolution)) {
+    throw new Error(
+      'KIE GPT Image 2 requires resolution to be one of 1K, 2K, or 4K.'
+    );
+  }
+
+  if (
+    resolution !== '1K' &&
+    (!aspectRatio || aspectRatio === 'auto')
+  ) {
+    throw new Error(
+      'KIE GPT Image 2 requires a non-auto aspect_ratio for 2K and 4K resolution.'
+    );
+  }
+
+  if (resolution === '4K' && aspectRatio === '1:1') {
+    throw new Error(
+      'KIE GPT Image 2 does not support aspect_ratio=1:1 with 4K resolution.'
+    );
+  }
 }
 
 function normalizeKieImageStorageFormat(
@@ -273,6 +336,8 @@ export class KieProvider implements AIProvider {
     if (!params.prompt) {
       throw new Error('prompt is required');
     }
+
+    validateGptImage2Options(params.model, params.options);
 
     // build request params
     let payload: any = {
