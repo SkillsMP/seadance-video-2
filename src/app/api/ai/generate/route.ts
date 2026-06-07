@@ -40,6 +40,120 @@ interface GenerateCandidatePlan {
   finalOptions: unknown;
 }
 
+type CandidateErrorType =
+  | 'provider_network_timeout'
+  | 'provider_network_reset'
+  | 'provider_dns_error'
+  | 'provider_connection_refused'
+  | 'provider_payload_error'
+  | 'provider_auth_error'
+  | 'provider_forbidden'
+  | 'provider_rate_limited'
+  | 'provider_balance_error'
+  | 'provider_unknown_error';
+
+interface CandidateErrorInfo {
+  provider: string;
+  model: string;
+  family: string;
+  scene: string;
+  mediaType: string;
+  type: CandidateErrorType;
+  message: string;
+  causeCode?: string;
+}
+
+function getErrorCauseCode(error: unknown): string | undefined {
+  if (!(error instanceof Error)) {
+    return undefined;
+  }
+
+  const cause = (error as Error & { cause?: unknown }).cause;
+  if (cause && typeof cause === 'object' && 'code' in cause) {
+    const code = (cause as { code?: unknown }).code;
+    return typeof code === 'string' ? code : undefined;
+  }
+
+  const code = (error as Error & { code?: unknown }).code;
+  return typeof code === 'string' ? code : undefined;
+}
+
+function classifyCandidateError(error: unknown): CandidateErrorType {
+  const message = error instanceof Error ? error.message : String(error);
+  const lowerMessage = message.toLowerCase();
+  const causeCode = getErrorCauseCode(error);
+
+  if (
+    causeCode === 'UND_ERR_CONNECT_TIMEOUT' ||
+    causeCode === 'UND_ERR_HEADERS_TIMEOUT' ||
+    causeCode === 'UND_ERR_BODY_TIMEOUT' ||
+    causeCode === 'ETIMEDOUT'
+  ) {
+    return 'provider_network_timeout';
+  }
+
+  if (causeCode === 'ECONNRESET') {
+    return 'provider_network_reset';
+  }
+
+  if (causeCode === 'ENOTFOUND' || causeCode === 'EAI_AGAIN') {
+    return 'provider_dns_error';
+  }
+
+  if (causeCode === 'ECONNREFUSED') {
+    return 'provider_connection_refused';
+  }
+
+  if (/\b400\b/.test(message)) {
+    return 'provider_payload_error';
+  }
+
+  if (/\b401\b/.test(message)) {
+    return 'provider_auth_error';
+  }
+
+  if (/\b403\b/.test(message)) {
+    return 'provider_forbidden';
+  }
+
+  if (/\b429\b/.test(message)) {
+    return 'provider_rate_limited';
+  }
+
+  if (lowerMessage.includes('insufficient') || lowerMessage.includes('balance')) {
+    return 'provider_balance_error';
+  }
+
+  return 'provider_unknown_error';
+}
+
+function getUserMessageFromCandidateErrors(
+  errors: CandidateErrorInfo[]
+): string {
+  const firstType = errors[0]?.type;
+  if (!firstType || errors.some((error) => error.type !== firstType)) {
+    return 'All AI model candidates failed. Please retry later.';
+  }
+
+  switch (firstType) {
+    case 'provider_network_timeout':
+    case 'provider_network_reset':
+    case 'provider_dns_error':
+    case 'provider_connection_refused':
+      return 'AI provider connection failed. Please retry later or check server network settings.';
+    case 'provider_auth_error':
+      return 'AI provider API key is invalid or unavailable.';
+    case 'provider_payload_error':
+      return 'AI provider rejected the request. Please check model options or uploaded image format.';
+    case 'provider_rate_limited':
+      return 'AI provider is rate limited. Please retry later.';
+    case 'provider_balance_error':
+      return 'AI provider balance may be insufficient. Please check provider account.';
+    default:
+      return 'All AI model candidates failed. Please retry later.';
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const requestBody = (await request.json()) as GenerateRequest;
@@ -214,7 +328,7 @@ export async function POST(request: Request) {
         options: firstCandidatePlan.finalOptions,
       });
 
-      const candidateErrors: string[] = [];
+      const candidateErrors: CandidateErrorInfo[] = [];
 
       for (const { entry, finalOptions } of candidatePlans) {
         try {
@@ -237,21 +351,28 @@ export async function POST(request: Request) {
           }
 
           break;
-        } catch (error: any) {
-          candidateErrors.push(
-            `${entry.provider}/${entry.value}/${scene}: ${error.message}`
-          );
+        } catch (error: unknown) {
+          candidateErrors.push({
+            provider: entry.provider,
+            model: entry.value,
+            family: entry.family,
+            scene,
+            mediaType,
+            type: classifyCandidateError(error),
+            message: error instanceof Error ? error.message : String(error),
+            causeCode: getErrorCauseCode(error),
+          });
         }
       }
 
       if (!result || !finalProvider || !finalModel) {
-        console.error('All model candidates failed:', {
+        console.error('All model candidates failed', {
           mediaType,
           scene,
           family,
-          errors: candidateErrors,
+          candidateErrors,
         });
-        throw new Error('All model candidates failed');
+        throw new Error(getUserMessageFromCandidateErrors(candidateErrors));
       }
     } else if (provider && model) {
       assertSafeAssetInputUrls(options);

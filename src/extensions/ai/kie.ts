@@ -50,6 +50,56 @@ const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
   'bytedance/seedance-2-fast': 'duration',
 };
 
+const KIE_ERROR_BODY_SNIPPET_LENGTH = 2048;
+
+async function fetchKie(
+  apiUrl: string,
+  init: RequestInit,
+  context: {
+    model?: string;
+    taskId?: string;
+    inputKeys?: string[];
+  }
+): Promise<Response> {
+  let resp: Response;
+
+  try {
+    resp = await fetch(apiUrl, init);
+  } catch (error) {
+    console.error('KIE fetch failed', {
+      apiUrl,
+      model: context.model,
+      taskId: context.taskId,
+      inputKeys: context.inputKeys,
+      name: error instanceof Error ? error.name : undefined,
+      message: error instanceof Error ? error.message : String(error),
+      cause:
+        error instanceof Error
+          ? (error as Error & { cause?: unknown }).cause
+          : undefined,
+    });
+
+    throw error;
+  }
+
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => '');
+    console.error('KIE request failed', {
+      apiUrl,
+      model: context.model,
+      taskId: context.taskId,
+      inputKeys: context.inputKeys,
+      status: resp.status,
+      statusText: resp.statusText,
+      bodySnippet: body.slice(0, KIE_ERROR_BODY_SNIPPET_LENGTH),
+    });
+
+    throw new Error(`KIE request failed: ${resp.status} ${resp.statusText}`);
+  }
+
+  return resp;
+}
+
 // KIE 图片自定义存储格式 helper 开始
 /**
  * KIE 图片任务会根据 `output_format` 返回 PNG 或 JPG。
@@ -291,14 +341,18 @@ export class KieProvider implements AIProvider {
     //   audioWeight: 0.65,
     // };
 
-    const resp = await fetch(apiUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      },
+      {
+        model: params.model,
+        inputKeys: Object.keys(payload),
+      }
+    );
 
     const { code, msg, data } = await resp.json();
 
@@ -365,14 +419,18 @@ export class KieProvider implements AIProvider {
       }
     }
 
-    const resp = await fetch(apiUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      },
+      {
+        model: params.model,
+        inputKeys: Object.keys(payload.input || {}),
+      }
+    );
 
     const { code, msg, data } = await resp.json();
 
@@ -450,16 +508,18 @@ export class KieProvider implements AIProvider {
       }
     }
 
-    console.log('kie input', apiUrl, payload);
-
-    const resp = await fetch(apiUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload),
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      },
+      {
+        model: params.model,
+        inputKeys: Object.keys(payload.input || {}),
+      }
+    );
 
     const { code, msg, data } = await resp.json();
 
@@ -511,13 +571,14 @@ export class KieProvider implements AIProvider {
       Authorization: `Bearer ${this.configs.apiKey}`,
     };
 
-    const resp = await fetch(apiUrl, {
-      method: 'GET',
-      headers,
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'GET',
+        headers,
+      },
+      { taskId }
+    );
 
     const { code, msg, data } = await resp.json();
 
@@ -605,13 +666,14 @@ export class KieProvider implements AIProvider {
       Authorization: `Bearer ${this.configs.apiKey}`,
     };
 
-    const resp = await fetch(apiUrl, {
-      method: 'GET',
-      headers,
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'GET',
+        headers,
+      },
+      { taskId }
+    );
 
     const { code, msg, data } = await resp.json();
 
@@ -710,13 +772,14 @@ export class KieProvider implements AIProvider {
       Authorization: `Bearer ${this.configs.apiKey}`,
     };
 
-    const resp = await fetch(apiUrl, {
-      method: 'GET',
-      headers,
-    });
-    if (!resp.ok) {
-      throw new Error(`request failed with status: ${resp.status}`);
-    }
+    const resp = await fetchKie(
+      apiUrl,
+      {
+        method: 'GET',
+        headers,
+      },
+      { taskId }
+    );
 
     const { code, msg, data } = await resp.json();
 
