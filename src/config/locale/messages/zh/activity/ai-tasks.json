@@ -25,7 +25,29 @@
     "buttons": {
       "view": "查看任务",
       "refresh": "刷新任务",
-      "download": "下载"
+      "download": "下载",
+      "copy_prompt": "复制提示词"
+    },
+    "messages": {
+      "prompt_copied": "提示词已复制"
+    },
+    "errors": {
+      "failed": "生成失败，请重试。",
+      "canceled": "该任务已取消。",
+      "moderation_blocked": "该结果未通过内容安全审核，暂不能展示。",
+      "moderation_failed": "该结果暂时无法完成安全验证，暂不能展示。",
+      "safety_blocked": "该请求或结果未通过内容安全审核。",
+      "timeout": "生成超时，请重试。",
+      "no_result": "服务未返回可用结果，请重试。"
+    },
+    "result_labels": {
+      "failed": "失败",
+      "canceled": "已取消",
+      "moderation_blocked": "已拦截",
+      "moderation_failed": "不可展示",
+      "safety_blocked": "已拦截",
+      "timeout": "超时",
+      "no_result": "无结果"
     },
     "empty_message": "无任务"
   }

@@ -1,36 +1,21 @@
 import { getTranslations } from 'next-intl/server';
 
 import { AITaskStatus } from '@/extensions/ai';
-import { AudioPlayer, Empty, LazyImage } from '@/shared/blocks/common';
+import { Empty } from '@/shared/blocks/common';
 import { TableCard } from '@/shared/blocks/table';
 import { AITask, getAITasks, getAITasksCount } from '@/shared/models/ai_task';
 import { getUserInfo } from '@/shared/models/user';
 import { Button, Tab } from '@/shared/types/blocks/common';
 import { type Table } from '@/shared/types/blocks/table';
 
-function DownloadLink({ href, title }: { href: string; title: string }) {
-  const isRemote = /^https?:\/\//.test(href);
-  const downloadHref = isRemote
-    ? `/api/proxy/file?url=${encodeURIComponent(href)}`
-    : href;
+import { PromptEllipsis } from './_components/prompt-ellipsis';
+import { TaskResultCell } from './_components/task-result-cell';
 
-  let filename = '';
-  try {
-    const url = new URL(href, 'http://x');
-    filename = decodeURIComponent(url.pathname.split('/').pop() || '');
-  } catch {
-    // ignore invalid href
-  }
+const taskTypeTabs = ['all', 'image', 'video'] as const;
+type TaskTypeTab = (typeof taskTypeTabs)[number];
 
-  return (
-    <a
-      href={downloadHref}
-      download={filename || true}
-      className="text-primary text-sm font-medium hover:underline"
-    >
-      {title}
-    </a>
-  );
+function isTaskTypeTab(type?: string): type is TaskTypeTab {
+  return Boolean(type && taskTypeTabs.includes(type as TaskTypeTab));
 }
 
 export default async function AiTasksPage({
@@ -41,6 +26,8 @@ export default async function AiTasksPage({
   const { page: pageNum, pageSize, type } = await searchParams;
   const page = pageNum || 1;
   const limit = pageSize || 20;
+  const selectedType = isTaskTypeTab(type) ? type : 'all';
+  const mediaType = selectedType === 'all' ? undefined : selectedType;
 
   const user = await getUserInfo();
   if (!user) {
@@ -48,17 +35,49 @@ export default async function AiTasksPage({
   }
 
   const t = await getTranslations('activity.ai-tasks');
+  const getMessage = (key: string, fallback: string) =>
+    t.has(key) ? t(key) : fallback;
+  const errorMessages = {
+    'list.errors.failed': getMessage(
+      'list.errors.failed',
+      'Generation failed. Please try again.'
+    ),
+    'list.errors.canceled': getMessage(
+      'list.errors.canceled',
+      'This task was canceled.'
+    ),
+    'list.errors.moderation_blocked': getMessage(
+      'list.errors.moderation_blocked',
+      'This result cannot be shown because it did not pass safety review.'
+    ),
+    'list.errors.moderation_failed': getMessage(
+      'list.errors.moderation_failed',
+      'This result cannot be verified right now and cannot be shown.'
+    ),
+    'list.errors.safety_blocked': getMessage(
+      'list.errors.safety_blocked',
+      'This request or result could not pass safety review.'
+    ),
+    'list.errors.timeout': getMessage(
+      'list.errors.timeout',
+      'The generation timed out. Please try again.'
+    ),
+    'list.errors.no_result': getMessage(
+      'list.errors.no_result',
+      'The provider returned no usable result. Please try again.'
+    ),
+  };
 
   const aiTasks = await getAITasks({
     userId: user.id,
-    mediaType: type,
+    mediaType,
     page,
     limit,
   });
 
   const total = await getAITasksCount({
     userId: user.id,
-    mediaType: type,
+    mediaType,
   });
 
   const table: Table = {
@@ -67,81 +86,34 @@ export default async function AiTasksPage({
       {
         name: 'prompt',
         title: t('fields.prompt'),
-        type: 'copy',
-        className: 'min-w-64 max-w-[360px] whitespace-normal break-words',
+        className: 'min-w-56 max-w-[320px]',
+        callback: (item: AITask) => (
+          <PromptEllipsis
+            prompt={item.prompt}
+            copyLabel={t('list.buttons.copy_prompt')}
+            copiedLabel={t('list.messages.prompt_copied')}
+          />
+        ),
+      },
+      {
+        name: 'result',
+        title: t('fields.result'),
+        callback: (item: AITask) => (
+          <TaskResultCell
+            taskInfo={item.taskInfo}
+            taskResult={item.taskResult}
+            mediaType={item.mediaType}
+            status={item.status}
+            downloadLabel={t('list.buttons.download')}
+            errorMessages={errorMessages}
+          />
+        ),
       },
       { name: 'mediaType', title: t('fields.media_type'), type: 'label' },
       { name: 'model', title: t('fields.model'), type: 'label' },
       // { name: 'options', title: t('fields.options'), type: 'copy' },
       { name: 'status', title: t('fields.status'), type: 'label' },
       { name: 'costCredits', title: t('fields.cost_credits'), type: 'label' },
-      {
-        name: 'result',
-        title: t('fields.result'),
-        callback: (item: AITask) => {
-          if (item.taskInfo) {
-            const taskInfo = JSON.parse(item.taskInfo);
-            if (taskInfo.errorMessage) {
-              return (
-                <div className="text-red-500">
-                  Failed: {taskInfo.errorMessage}
-                </div>
-              );
-            } else if (taskInfo.songs && taskInfo.songs.length > 0) {
-              const songs: any[] = taskInfo.songs.filter(
-                (song: any) => song.audioUrl
-              );
-              if (songs.length > 0) {
-                return (
-                  <div className="flex flex-col gap-2">
-                    {songs.map((song: any) => (
-                      <div key={song.id} className="flex flex-col gap-2">
-                        <AudioPlayer
-                          src={song.audioUrl}
-                          title={song.title}
-                          className="w-80"
-                        />
-                        <DownloadLink
-                          href={song.audioUrl}
-                          title={t('list.buttons.download')}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                );
-              }
-            } else if (taskInfo.images && taskInfo.images.length > 0) {
-              const images: any[] = taskInfo.images.filter(
-                (image: any) => image.imageUrl
-              );
-
-              if (images.length > 0) {
-                return (
-                  <div className="flex flex-col gap-3">
-                    {images.map((image: any, index: number) => (
-                      <div key={index} className="flex flex-col gap-2">
-                        <LazyImage
-                          src={image.imageUrl}
-                          alt="Generated image"
-                          className="h-auto max-h-32 w-auto max-w-[240px] object-contain"
-                        />
-                        <DownloadLink
-                          href={image.imageUrl}
-                          title={t('list.buttons.download')}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                );
-              }
-            } else {
-              return '-';
-            }
-          }
-
-          return '-';
-        },
-      },
       { name: 'createdAt', title: t('fields.created_at'), type: 'time' },
       {
         name: 'action',
@@ -174,44 +146,15 @@ export default async function AiTasksPage({
     },
   };
 
-  const tabs: Tab[] = [
-    {
-      name: 'all',
-      title: t('list.tabs.all'),
-      url: '/activity/ai-tasks',
-      is_active: !type || type === 'all',
-    },
-    {
-      name: 'music',
-      title: t('list.tabs.music'),
-      url: '/activity/ai-tasks?type=music',
-      is_active: type === 'music',
-    },
-    {
-      name: 'image',
-      title: t('list.tabs.image'),
-      url: '/activity/ai-tasks?type=image',
-      is_active: type === 'image',
-    },
-    {
-      name: 'video',
-      title: t('list.tabs.video'),
-      url: '/activity/ai-tasks?type=video',
-      is_active: type === 'video',
-    },
-    {
-      name: 'audio',
-      title: t('list.tabs.audio'),
-      url: '/activity/ai-tasks?type=audio',
-      is_active: type === 'audio',
-    },
-    {
-      name: 'text',
-      title: t('list.tabs.text'),
-      url: '/activity/ai-tasks?type=text',
-      is_active: type === 'text',
-    },
-  ];
+  const tabs: Tab[] = taskTypeTabs.map((taskType) => ({
+    name: taskType,
+    title: t(`list.tabs.${taskType}`),
+    url:
+      taskType === 'all'
+        ? '/activity/ai-tasks'
+        : `/activity/ai-tasks?type=${taskType}`,
+    is_active: selectedType === taskType,
+  }));
 
   return (
     <div className="space-y-8">

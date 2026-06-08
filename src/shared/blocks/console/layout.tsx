@@ -20,6 +20,7 @@ export function ConsoleLayout({
   nav,
   topNav,
   className,
+  hideSidebar = false,
   children,
 }: {
   title?: string;
@@ -27,6 +28,7 @@ export function ConsoleLayout({
   nav?: Nav;
   topNav?: Nav;
   className?: string;
+  hideSidebar?: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -89,19 +91,21 @@ export function ConsoleLayout({
         <div className="container">
           <div className="flex items-center gap-4 py-8">
             {/* Mobile Menu Trigger */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="md:hidden">
-                  <SmartIcon name="Menu" size={20} />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 px-4">
-                <SheetHeader className="mb-4 px-0">
-                  <SheetTitle>{title || 'Menu'}</SheetTitle>
-                </SheetHeader>
-                {renderNavItems()}
-              </SheetContent>
-            </Sheet>
+            {!hideSidebar && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" className="md:hidden">
+                    <SmartIcon name="Menu" size={20} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-64 px-4">
+                  <SheetHeader className="mb-4 px-0">
+                    <SheetTitle>{title || 'Menu'}</SheetTitle>
+                  </SheetHeader>
+                  {renderNavItems()}
+                </SheetContent>
+              </Sheet>
+            )}
 
             <h1 className="text-foreground text-2xl font-semibold md:text-3xl">
               {title}
@@ -114,9 +118,10 @@ export function ConsoleLayout({
       <div className="container">
         <div className="flex flex-wrap gap-8 py-8">
           {/* Left Sidebar (Desktop) */}
-          <div className="hidden w-64 flex-shrink-0 md:block">
-            {/* Search Box */}
-            {/* <div className="relative mb-6">
+          {!hideSidebar && (
+            <div className="hidden w-64 flex-shrink-0 md:block">
+              {/* Search Box */}
+              {/* <div className="relative mb-6">
               <SmartIcon
                 name="Search"
                 size={16}
@@ -131,9 +136,10 @@ export function ConsoleLayout({
               />
             </div> */}
 
-            {/* Navigation Menu */}
-            {renderNavItems()}
-          </div>
+              {/* Navigation Menu */}
+              {renderNavItems()}
+            </div>
+          )}
 
           {/* Right Content Area */}
           <div className="min-w-0 flex-1">{children}</div>

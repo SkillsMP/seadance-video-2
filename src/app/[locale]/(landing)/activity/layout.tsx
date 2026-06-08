@@ -24,6 +24,7 @@ export default async function ActivityLayout({
       nav={nav}
       topNav={topNav}
       className="py-16 md:py-20"
+      hideSidebar
     >
       {children}
     </ConsoleLayout>

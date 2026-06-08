@@ -25,7 +25,29 @@
     "buttons": {
       "view": "View Task",
       "refresh": "Refresh Task",
-      "download": "Download"
+      "download": "Download",
+      "copy_prompt": "Copy prompt"
+    },
+    "messages": {
+      "prompt_copied": "Prompt copied"
+    },
+    "errors": {
+      "failed": "Generation failed. Please try again.",
+      "canceled": "This task was canceled.",
+      "moderation_blocked": "This result cannot be shown because it did not pass safety review.",
+      "moderation_failed": "This result cannot be verified right now and cannot be shown.",
+      "safety_blocked": "This request or result could not pass safety review.",
+      "timeout": "The generation timed out. Please try again.",
+      "no_result": "The provider returned no usable result. Please try again."
+    },
+    "result_labels": {
+      "failed": "Failed",
+      "canceled": "Canceled",
+      "moderation_blocked": "Blocked",
+      "moderation_failed": "Unavailable",
+      "safety_blocked": "Blocked",
+      "timeout": "Timeout",
+      "no_result": "No result"
     },
     "empty_message": "No tasks found"
   }
