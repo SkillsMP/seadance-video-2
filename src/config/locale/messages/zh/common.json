@@ -25,6 +25,7 @@
     "cancel_title": "取消",
     "sign_out_title": "登出",
     "billing_title": "账单",
+    "ai_tasks_title": "AI \u4efb\u52a1",
     "name_title": "姓名",
     "name_placeholder": "请输入您的姓名",
     "email_verification_hint": "请输入可正常接收邮件的邮箱。注册后需完成邮箱验证才能正常使用。",

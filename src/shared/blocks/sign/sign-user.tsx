@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { Coins, LayoutDashboard, Loader2, LogOut, User } from 'lucide-react';
+import {
+  Coins,
+  CreditCard,
+  LayoutDashboard,
+  ListChecks,
+  Loader2,
+  LogOut,
+  User,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
@@ -195,6 +203,22 @@ export function SignUser({
                 <DropdownMenuSeparator />
               </>
             )}
+
+            <DropdownMenuItem asChild>
+              <Link className="w-full cursor-pointer" href="/activity/ai-tasks">
+                <ListChecks />
+                {t('ai_tasks_title')}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem asChild>
+              <Link className="w-full cursor-pointer" href="/settings/billing">
+                <CreditCard />
+                {t('billing_title')}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
 
             {userNav?.items?.map((item: NavItem, idx: number) => (
               <Fragment key={idx}>
