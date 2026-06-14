@@ -40,8 +40,8 @@
           {
             "title": "Explore Banana Prompts Library",
             "icon": "BookOpenText",
-            "url": "https://en.wikipedia.org/wiki/Generative_artificial_intelligence",
-            "target": "_blank",
+            "url": "/prompts",
+            "target": "_self",
             "variant": "outline"
           }
         ],

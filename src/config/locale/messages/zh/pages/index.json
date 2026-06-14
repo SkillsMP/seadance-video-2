@@ -38,10 +38,10 @@
             "variant": "default"
           },
           {
-            "title": "了解更多",
+            "title": "浏览提示词库",
             "icon": "BookOpenText",
-            "url": "https://gemini.google/overview/image-generation/",
-            "target": "_blank",
+            "url": "/prompts",
+            "target": "_self",
             "variant": "outline"
           }
         ],
