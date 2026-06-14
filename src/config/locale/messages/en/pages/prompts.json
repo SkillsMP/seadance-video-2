@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "title": "Nano Banana Pro Prompts Library",
+    "description": "Browse curated Banana Pro prompts, copy them, and jump straight into image generation.",
+    "keywords": "Nano Banana Pro prompts, banana prompts, AI image prompt library"
+  },
+  "prompt-library": {
+    "id": "prompts",
+    "eyebrow": "NANO BANANA PRO PROMPTS LIBRARY",
+    "title": "Explore Curated Prompts",
+    "description": "Search, copy, and use production-ready prompts in Banana Pro.",
+    "searchPlaceholder": "Search prompts, styles, or use cases...",
+    "randomCopyLabel": "Random Copy",
+    "copyLabel": "Copy Prompt",
+    "copiedLabel": "Copied",
+    "shareLabel": "Share",
+    "tryItLabel": "Try It",
+    "loadMoreLabel": "Load More Prompts",
+    "emptyTitle": "No prompts found",
+    "emptyDescription": "Try another keyword.",
+    "copyUnavailableLabel": "Prompt is not available for copying.",
+    "shareCopiedLabel": "Generator link copied.",
+    "shareUnavailableLabel": "Unable to share this prompt link.",
+    "totalLabel": "{count} prompts",
+    "visibleLabel": "Showing {visible} of {total}",
+    "promptPreviewLabel": "Prompt",
+    "noImageLabel": "No image preview",
+    "breadcrumbHome": "Home",
+    "breadcrumbCurrent": "Prompts",
+    "dataLimit": 60,
+    "initialVisibleCount": 24,
+    "visibleStep": 24
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "title": "Nano Banana Pro 提示词库",
+    "description": "浏览精选 Banana Pro 提示词，一键复制，并直接进入图片生成器。",
+    "keywords": "Nano Banana Pro 提示词, banana prompts, AI 图片提示词库"
+  },
+  "prompt-library": {
+    "id": "prompts",
+    "eyebrow": "NANO BANANA PRO 提示词库",
+    "title": "探索精选提示词",
+    "description": "搜索、复制并直接使用适合生产场景的 Banana Pro 提示词。",
+    "searchPlaceholder": "搜索提示词、风格或使用场景...",
+    "randomCopyLabel": "随机复制",
+    "copyLabel": "复制提示词",
+    "copiedLabel": "已复制",
+    "shareLabel": "分享",
+    "tryItLabel": "试用",
+    "loadMoreLabel": "加载更多提示词",
+    "emptyTitle": "没有找到提示词",
+    "emptyDescription": "换个关键词再试试。",
+    "copyUnavailableLabel": "这条提示词暂不可复制。",
+    "shareCopiedLabel": "生成器链接已复制。",
+    "shareUnavailableLabel": "暂时无法分享这条提示词链接。",
+    "totalLabel": "{count} 条提示词",
+    "visibleLabel": "已显示 {visible} / {total}",
+    "promptPreviewLabel": "提示词",
+    "noImageLabel": "暂无图片预览",
+    "breadcrumbHome": "首页",
+    "breadcrumbCurrent": "提示词库",
+    "dataLimit": 60,
+    "initialVisibleCount": 24,
+    "visibleStep": 24
+  }
+}

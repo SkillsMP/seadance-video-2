@@ -48,6 +48,7 @@ export const localeMessagesPaths = [
   'pages/index',
   'pages/pricing',
   'pages/showcases',
+  'pages/prompts',
   'pages/blog',
   'pages/updates',
   'pages/create',

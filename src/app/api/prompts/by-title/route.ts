@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+
 import { db } from '@/core/db';
 import { prompt } from '@/config/db/schema';
+import { PromptStatus } from '@/shared/models/prompt';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,14 +20,16 @@ export async function GET(request: NextRequest) {
     const result = await db()
       .select()
       .from(prompt)
-      .where(eq(prompt.promptTitle, title))
+      .where(
+        and(
+          eq(prompt.promptTitle, title),
+          eq(prompt.status, PromptStatus.PUBLISHED)
+        )
+      )
       .limit(1);
 
     if (!result || result.length === 0) {
-      return NextResponse.json(
-        { error: 'Prompt not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Prompt not found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -35,7 +39,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Get prompt by title error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to get prompt' },
+      {
+        error: error instanceof Error ? error.message : 'Failed to get prompt',
+      },
       { status: 500 }
     );
   }
