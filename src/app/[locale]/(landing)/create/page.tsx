@@ -30,11 +30,6 @@ export default async function CreatePage({
   // build page sections
   const page: DynamicPage = {
     sections: {
-      "features": {
-        "block": "custom-features",
-        title: t.raw('page.title'),
-        description: t.raw('page.description'),
-      },
       generator: {
         component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} promptKey={promptKey} />,
       },

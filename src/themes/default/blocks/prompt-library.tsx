@@ -221,7 +221,7 @@ export function PromptLibrary({ section, items }: PromptLibraryProps) {
 
         {visibleItems.length > 0 ? (
           <>
-            <div className="mt-10 columns-1 gap-5 md:columns-2 xl:columns-3">
+            <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {visibleItems.map((item) => {
                 const promptText = getPromptText(item);
                 const date = getPromptDate(item);
@@ -230,7 +230,7 @@ export function PromptLibrary({ section, items }: PromptLibraryProps) {
                 return (
                   <article
                     key={item.id}
-                    className="border-border bg-card text-card-foreground group mb-5 flex break-inside-avoid flex-col overflow-hidden rounded-lg border shadow-xs"
+                    className="border-border bg-card text-card-foreground group flex flex-col overflow-hidden rounded-lg border shadow-xs"
                   >
                     <div className="bg-muted relative aspect-[4/3] overflow-hidden">
                       {hasImage ? (

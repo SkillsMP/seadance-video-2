@@ -26,11 +26,16 @@ export default async function PromptsPage({
 
   const t = await getTranslations('pages.prompts');
   const section = t.raw('prompt-library');
-  const prompts = await getPrompts({
-    page: 1,
-    limit: section.dataLimit || 60,
-    status: PromptStatus.PUBLISHED,
-  });
+  let prompts: Awaited<ReturnType<typeof getPrompts>> = [];
+  try {
+    prompts = await getPrompts({
+      page: 1,
+      limit: section.dataLimit || 60,
+      status: PromptStatus.PUBLISHED,
+    });
+  } catch (error) {
+    console.error('Failed to load prompt library:', error);
+  }
   const promptItems = prompts.map((item) => ({
     ...item,
     createdAt: item.createdAt.toISOString(),

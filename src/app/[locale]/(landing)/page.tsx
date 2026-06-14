@@ -27,7 +27,12 @@ export default async function LandingPage({
     sections: {
       ...rawPage.sections,
       generator: {
-        component: <ImageGenerator srOnlyTitle={t.raw('generator.title')} />,
+        component: (
+          <ImageGenerator
+            className="py-8 md:py-10"
+            srOnlyTitle={t.raw('generator.title')}
+          />
+        ),
       },
     },
   };
