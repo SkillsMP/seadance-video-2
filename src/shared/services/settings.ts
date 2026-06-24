@@ -298,7 +298,7 @@ export async function getSettings() {
     {
       name: 'app_name',
       title: 'App Name',
-      placeholder: 'Nano Banana Pro',
+      placeholder: 'Seadance Video',
       type: 'text',
       group: 'appinfo',
       tab: 'general',
@@ -307,7 +307,7 @@ export async function getSettings() {
       name: 'app_description',
       title: 'App Description',
       placeholder:
-        'Nano Banana Pro is a NextJS boilerplate for building AI SaaS startups. ',
+        'Seedance 2.5 release updates and Seedance 2.0 AI video generation.',
       type: 'textarea',
       group: 'appinfo',
       tab: 'general',
@@ -722,7 +722,7 @@ export async function getSettings() {
       name: 'resend_sender_email',
       title: 'Resend Sender Email',
       type: 'text',
-      placeholder: 'Nano Banana Pro Two <no-reply@mail.shipany.site>',
+      placeholder: 'Seadance Video <noreply@seadance.video>',
       group: 'resend',
       tab: 'email',
     },

@@ -1,21 +1,16 @@
 {
-  "name": "shipany-template-nano-banana",
+  "name": "seadance-video-shipany2",
   "version": "1.8.2",
   "private": true,
-  "author": "ShipAny.ai",
-  "homepage": "https://shipany.ai",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shipanyai/shipany-template-two"
-  },
+  "author": "Seadance Video",
+  "homepage": "https://seadance.video",
   "keywords": [
-    "shipany",
-    "shipany-two",
-    "shipany-template-two",
-    "ai-saas-boilerplate",
-    "ai-saas-template",
-    "ai-saas-framework",
-    "ai-saas-development"
+    "seedance 2.5",
+    "seedance 2.0",
+    "seadance video",
+    "ai video generator",
+    "text to video",
+    "image to video"
   ],
   "scripts": {
     "dev": "next dev --turbopack",

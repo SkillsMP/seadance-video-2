@@ -1,10 +1,10 @@
 {
   "header": {
     "brand": {
-      "title": "Nano Banana Pro",
+      "title": "Seadance Video",
       "logo": {
-        "src": "/logo.png",
-        "alt": "Nano Banana Pro"
+        "src": "/seadance-logo.svg",
+        "alt": "Seadance Video"
       },
       "url": "/admin"
     },

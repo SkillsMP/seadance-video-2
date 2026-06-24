@@ -1,21 +1,21 @@
 {
   "metadata": {
     "title": "Blog",
-    "description": "Read about our latest product features, solutions, and updates."
+    "description": "Read Seedance 2.5 release news, AI video guides, and Seadance Video updates."
   },
   "blog": {
     "id": "blog",
-    "sr_only_title": "Nano Banana Pro Blog",
+    "sr_only_title": "Seadance Video Blog",
     "title": "Blog",
-    "description": "Read about our latest product features, solutions, and updates."
+    "description": "Read Seedance 2.5 release news, AI video guides, and Seadance Video updates."
   },
   "page": {
-    "title": "Nano Banana Pro Blog",
+    "title": "Seadance Video Blog",
     "sections": {
       "blog": {
         "id": "blog",
         "title": "Blog",
-        "description": "Read about our latest product features, solutions, and updates."
+        "description": "Read Seedance 2.5 release news, AI video guides, and Seadance Video updates."
       }
     }
   },

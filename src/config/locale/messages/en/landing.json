@@ -2,10 +2,10 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "Banana Pro",
+      "title": "Seadance Video",
       "logo": {
-        "src": "/logo.png",
-        "alt": "Banana Pro"
+        "src": "/seadance-logo.svg",
+        "alt": "Seadance Video logo"
       },
       "url": "/"
     },
@@ -17,14 +17,14 @@
           "icon": "Sparkles"
         },
         {
+          "title": "Showcase",
+          "url": "/#showcases",
+          "icon": "Clapperboard"
+        },
+        {
           "title": "Pricing",
           "url": "/pricing",
           "icon": "CreditCard"
-        },
-        {
-          "title": "AI Video Generator",
-          "url": "/ai-video-generator",
-          "icon": "Video"
         },
         {
           "title": "AI Tasks",
@@ -42,16 +42,16 @@
     },
     "show_sign": true,
     "show_theme": true,
-    "show_locale": true
+    "show_locale": false
   },
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "Banana Pro",
-      "description": "Banana Pro is the professional interface for Nano Banana 2, providing the world's most advanced AI image generation experience.",
+      "title": "Seadance Video",
+      "description": "Seedance 2.5 release updates and cinematic AI video creation with the currently supported Seedance 2.0 workflow.",
       "logo": {
-        "src": "/logo.png",
-        "alt": "Banana Pro"
+        "src": "/seadance-logo.svg",
+        "alt": "Seadance Video logo"
       },
       "url": "/"
     },
@@ -61,13 +61,18 @@
           "title": "Product",
           "children": [
             {
+              "title": "Video Generator",
+              "url": "/#generator",
+              "target": "_self"
+            },
+            {
               "title": "Features",
               "url": "/#features",
               "target": "_self"
             },
             {
-              "title": "FAQ",
-              "url": "/#faq",
+              "title": "Pricing",
+              "url": "/pricing",
               "target": "_self"
             }
           ]
@@ -76,9 +81,14 @@
           "title": "Resources",
           "children": [
             {
-              "title": "Gemini Overview",
-              "url": "https://gemini.google/overview/image-generation/",
-              "target": "_blank"
+              "title": "Seedance 2.5 FAQ",
+              "url": "/#faq",
+              "target": "_self"
+            },
+            {
+              "title": "Creative Showcase",
+              "url": "/#showcases",
+              "target": "_self"
             }
           ]
         }
@@ -89,7 +99,7 @@
         {
           "title": "Email",
           "icon": "Mail",
-          "url": "mailto:support@bananapro.org",
+          "url": "mailto:support@seadance.video",
           "target": "_self"
         }
       ]
@@ -107,6 +117,6 @@
       ]
     },
     "show_theme": true,
-    "show_locale": true
+    "show_locale": false
   }
 }

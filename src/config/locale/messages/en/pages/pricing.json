@@ -1,15 +1,15 @@
 {
   "metadata": {
-    "title": "AI Image and Video Credits Pricing",
-    "description": "Buy credits or choose a subscription for image and video generation."
+    "title": "Seadance Video Pricing | Seedance AI Video Credits",
+    "description": "Buy credits or choose a subscription for Seedance AI video generation."
   },
   "page": {
-    "title": "AI Credits Pricing",
+    "title": "Seadance Video Pricing",
     "sections": {
       "pricing": {
         "id": "pricing",
-        "title": "Image and Video Credit Plans",
-        "description": "Credits work across image and video generation. Video cost is estimated by model, resolution and duration before you generate.",
+        "title": "Seedance Video Credit Plans",
+        "description": "Video cost is estimated by model, generation mode, resolution, and duration before you generate.",
         "groups": [
           {
             "name": "one-time",
@@ -141,7 +141,7 @@
           },
           {
             "title": "Pro Monthly",
-            "description": "Best for regular image and video generation.",
+            "description": "Best for regular Seedance video generation.",
             "features_title": "Includes",
             "features": [
               "1,200 credits per month",
@@ -296,8 +296,8 @@
             "answer": "Credit packs are one-time purchases valid for 365 days. Subscriptions renew on a monthly or annual cycle and grant fresh credits based on the selected plan."
           },
           {
-            "question": "Can I use the same credits for images and videos?",
-            "answer": "Yes. Image and video generation share the same credit balance. Video cost is shown in the generator and varies by model, resolution and duration."
+            "question": "How much does a video generation cost?",
+            "answer": "The credit cost is shown in the generator and varies by model, generation mode, resolution, and duration."
           },
           {
             "question": "Can I cancel my subscription at any time?",
@@ -305,7 +305,7 @@
           },
           {
             "question": "Is there a free trial?",
-            "answer": "Free trial credits are not enabled by default. If trial credits are offered in the future, they will be limited to basic image generation."
+            "answer": "Free trial credits are not enabled by default. If trial credits are offered in the future, their availability and limits will be shown before generation."
           },
           {
             "question": "What payment methods are accepted?",
@@ -327,8 +327,8 @@
       },
       "cta": {
         "id": "cta",
-        "title": "Start Generating with AI Credits",
-        "description": "Choose a plan that fits your needs and start generating images and videos.",
+        "title": "Start Generating Seedance Videos",
+        "description": "Choose a plan that fits your workflow and start generating videos.",
         "buttons": [
           {
             "title": "View Plans",

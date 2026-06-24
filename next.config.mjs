@@ -14,7 +14,10 @@ const withNextIntl = createNextIntlPlugin({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: (process.env.VERCEL || process.platform === 'win32') ? undefined : 'standalone',
+  output:
+    process.env.VERCEL || process.platform === 'win32'
+      ? undefined
+      : 'standalone',
   reactStrictMode: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   images: {
@@ -29,7 +32,48 @@ const nextConfig = {
     ],
   },
   async redirects() {
-    return [];
+    return [
+      {
+        source: '/posts',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/showcase',
+        destination: '/#showcases',
+        permanent: true,
+      },
+      {
+        source: '/showcases',
+        destination: '/#showcases',
+        permanent: true,
+      },
+      {
+        source: '/prompts',
+        destination: '/#generator',
+        permanent: false,
+      },
+      {
+        source: '/create',
+        destination: '/#generator',
+        permanent: false,
+      },
+      {
+        source: '/hairstyles',
+        destination: '/#generator',
+        permanent: false,
+      },
+      {
+        source: '/ai-image-generator',
+        destination: '/#generator',
+        permanent: false,
+      },
+      {
+        source: '/docs/:path*',
+        destination: '/',
+        permanent: false,
+      },
+    ];
   },
   async headers() {
     return [

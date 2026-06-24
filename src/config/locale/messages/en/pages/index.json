@@ -1,11 +1,11 @@
 {
   "generator": {
-    "title": "Nano Banana Pro AI Image Generator"
+    "title": "Seedance 2.0 AI Video Generator"
   },
   "metadata": {
-    "title": "Nano Banana Pro: Free AI Image Generator – Gemini 3 Powered",
-    "description": "Nano Banana Pro is the #1 free online AI image generator built on Google Gemini 3. Create 4K photorealistic art, fix rejected visa photos, generate vector logos & master banana prompts. Try free.",
-    "keywords": "Nano Banana Pro, banana prompts, AI image generator, Gemini 3"
+    "title": "Seedance 2.5 Announced | Seedance 2.0 AI Video Generator",
+    "description": "Follow ByteDance Seedance 2.5 release and early access updates, then create cinematic videos with the currently available Seedance 2.0 text-to-video and image-to-video workflow.",
+    "keywords": "Seedance 2.5, ByteDance Seedance 2.5, Doubao Seedance 2.5, Seedance 2.5 release date, Seedance 2.5 early access, 30 second AI video, 50 multimodal references, Seedance 2.0, Jimeng AI, Dreamina, AI video generator, text to video, image to video"
   },
   "page": {
     "show_sections": [
@@ -14,93 +14,71 @@
       "introduce",
       "benefits",
       "features",
+      "showcases",
       "faq",
       "cta"
     ],
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Nano Banana Pro: Free AI Image Generator for Creators & Pros",
-        "highlight_text": "Nano Banana Pro",
-        "description": "Nano Banana Pro is your free online AI image generator powered by Google Gemini 3 — delivering 4K photorealistic generation, flawless text rendering, and character consistency that rivals studio-quality output. Stop paying for stock photos. Whether you need Amazon product photography, a professional LinkedIn headshot, a precision vector logo, or the best banana prompts for creative workflows, our Nano Banana 2 engine handles it with zero-shot reasoning and real-world knowledge grounding. Trusted by 1M+ creators, e-commerce sellers, and enterprise teams on Vertex AI. Inspired by the Gemini 3 Pro architecture, built for every creator intent — from TikTok thumbnail maker to enterprise branding asset bundle.",
+        "title": "Explore the Next Generation of AI Video with Seedance 2.5",
+        "highlight_text": "Seedance 2.5",
+        "description": "Seedance 2.5 was announced by ByteDance on June 23, 2026, with enterprise preview access and broader availability expected in early July. Follow the release while creating videos today with our currently supported Seedance 2.0 workflow.",
         "announcement": {
-          "badge": "New",
-          "title": "🚀 Gemini 3 Nano Banana 2 API is Now Live – Try Free",
-          "url": "/#features"
+          "title": "Seedance 2.5 announced — view release status",
+          "url": "/#faq"
         },
-        "tip": "🎁 Get studio-quality 4K images free — no login required. Powered by Nano Banana 2 & Gemini 3.",
+        "tip": "Seedance 2.5 is not yet available in this generator. Current generation uses Seedance 2.0.",
         "buttons": [
           {
-            "title": "Start Creating for Free",
-            "icon": "Zap",
+            "title": "Create with Seedance 2.0",
+            "icon": "Video",
             "url": "/#generator",
             "target": "_self",
             "variant": "default"
           },
           {
-            "title": "Explore Banana Prompts Library",
+            "title": "Read Seedance 2.5 FAQ",
             "icon": "BookOpenText",
-            "url": "/prompts",
+            "url": "/#faq",
             "target": "_self",
             "variant": "outline"
           }
         ],
-        "show_avatars": true,
-        "avatars_tip": "Trusted by 1M+ Artists, Etsy Sellers & Marketing Agencies Worldwide",
-        "show_award": false,
-
-        "image_invert": {
-          "src": "",
-          "alt": ""
-        },
-        "background_image": {
-          "src": "",
-          "alt": ""
-        }
+        "show_avatars": false,
+        "show_award": false
       },
       "generator": {},
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "Industrial-Grade AI Creative Tools — Built for Every Workflow",
-        "label": "Master Nano Banana Pro",
-        "description": "Nano Banana Pro delivers the technical interface for Nano Banana 2, empowering creators, Shopify sellers, and enterprise teams with unprecedented control over machine learning parameters, conversational image editing, and high-res photorealistic generation. Works for every platform — from Instagram Reels to Vertex AI enterprise pipelines.",
+        "title": "Meet Seedance 2.5",
+        "label": "Next-Generation Model",
+        "description": "Seedance 2.5 is ByteDance's newly announced AI video model, focused on richer multimodal control, longer-form generation, and more production-ready visual storytelling. The model is not yet connected to this site; Seedance 2.0 remains the active generation option.",
+        "image": {
+          "src": "/imgs/seadance/showcase_1.jpg",
+          "alt": "Cinematic AI video workflow inspired by Seedance 2.5"
+        },
         "items": [
           {
-            "title": "Smart Aspect Ratio Control & Native Outpainting",
-            "description": "Instantly optimize your images for TikTok thumbnails, Instagram Reel backgrounds, Amazon product photography, and LinkedIn profile banners. Our semantic understanding and outpainting algorithms intelligently extend scene backgrounds, preventing awkward cropping and preserving subject-locked identity across every social platform ratio. Ideal for e-commerce ad creatives and pitch deck visuals.",
-            "icon": "RiAspectLine",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-intro-1/960/640.webp",
-              "alt": "Nano Banana Pro aspect ratio optimizer and AI outpainting tool for TikTok and Amazon product photography layouts"
-            }
+            "title": "Longer Video Generation",
+            "description": "The announced model targets longer clips, including up to 30-second generation workflows.",
+            "icon": "Timer"
           },
           {
-            "title": "Precision Inpainting & Cinematic Lighting Control",
-            "description": "Fix rejected visa photos, correct blurry AI artifacts, adjust cinematic lighting, and modify camera angles with pixel-level precision — all with natural language. Our inpainting engine preserves scene context while delivering hyper-realistic skin textures, authentic bokeh effects, and studio-quality headshot editing. Meets official biometric standards for US, EU, and Asian visa requirements.",
-            "icon": "RiFocus2Line",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-intro-2/960/640.webp",
-              "alt": "Nano Banana Pro AI inpainting and cinematic lighting control used to fix rejected visa passport photo with neural precision"
-            }
+            "title": "Multimodal References",
+            "description": "Use text, images, audio, and video references to guide style, characters, camera language, and scene continuity.",
+            "icon": "Layers"
           },
           {
-            "title": "Flawless Text Rendering & Vector Logo Engine",
-            "description": "Nano Banana Pro solves the #1 pain point of AI image generators: broken, distorted text. Our Gemini 3-powered typography engine generates crisp, readable text inside images for startup branding, book covers, eCommerce banners, and minimalist vector-style logos (SVG-compatible). Perfect for Etsy listing images, marketing poster design, and Discord sticker packs.",
-            "icon": "RiText",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-intro-3/960/640.webp",
-              "alt": "Nano Banana Pro AI logo maker with flawless text rendering for vector-style SVG branding and Etsy listing images"
-            }
+            "title": "Cinematic Prompt Understanding",
+            "description": "Direct camera movement, lighting, pacing, and visual narrative using filmmaking language.",
+            "icon": "Clapperboard"
           },
           {
-            "title": "AI Biometric Headshot & Professional Profile Editor",
-            "description": "Create production-ready LinkedIn headshots, fix rejected passport photos, or generate a complete personal branding asset bundle in seconds. Our neural upscaling and background replacement tools meet official biometric standards while delivering photorealistic 4K portraits. Inspired by the same SynthID watermarking standard used by Google DeepMind — providing content authenticity and digital provenance.",
-            "icon": "RiUserSmileLine",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-intro-4/960/640.webp",
-              "alt": "Nano Banana Pro AI biometric headshot generator for LinkedIn professional profiles and official visa document photos"
-            }
+            "title": "Consistent Visual Identity",
+            "description": "Maintain characters, objects, environments, and style across complex shots and transitions.",
+            "icon": "ScanLine"
           }
         ],
         "className": "bg-muted"
@@ -108,128 +86,167 @@
       "benefits": {
         "block": "features-accordion",
         "id": "benefits",
-        "title": "Why 1M+ Professionals Choose Nano Banana Pro Over Midjourney & Flux",
-        "label": "Core Benefits",
-        "description": "Nano Banana 2 combines world-class Google Gemini 3 intelligence with industrial-speed latent diffusion models, enabling high-efficiency creative workflows for solo creators, Shopify sellers, and enterprise teams on Vertex AI — all at zero cost to start.",
+        "title": "What Seedance 2.5 Means for Creators",
+        "description": "Prepare reusable video workflows now with Seedance 2.0 and adapt them when Seedance 2.5 becomes publicly available.",
         "items": [
           {
-            "title": "State-of-the-Art Gemini 3 Reasoning & Semantic Understanding",
-            "description": "Built on Google Gemini 3 Pro's multi-modal architecture for unmatched semantic understanding, complex banana prompt following, and real-world knowledge grounding. Unlike Midjourney or DALL-E, Gemini 3 natively understands spatial relationships, artistic metaphors, and multi-turn conversational editing — delivering instruction-following accuracy that production teams demand. Referenced by IEEE standards for ethical AI and responsible generative systems.",
-            "icon": "RiBrainLine",
+            "title": "Social Video and Advertising",
+            "description": "Turn concepts, products, and campaign scripts into short-form video for TikTok, Reels, YouTube Shorts, and paid advertising.",
+            "icon": "Megaphone",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-benefits-1/960/640.webp",
-              "alt": "Gemini 3 Pro neural reasoning engine powering Nano Banana Pro semantic AI art synthesis and conversational image generation"
+              "src": "/imgs/seadance/feature_1.jpg",
+              "alt": "Social media AI video workflow"
             }
           },
           {
-            "title": "Low-Latency GPU Rendering — From Prompt to 4K in Seconds",
-            "description": "Our edge AI infrastructure and distributed GPU clusters guarantee real-time inference with minimal latency — from text prompt to 4K photorealistic image in under 10 seconds. Supports batch processing, custom LoRA weight fine-tuning, and automated branding pipelines for rapid generation at e-commerce scale. Works for Shopify product shots, marketing infographics, and keyframe generation for video storyboards.",
-            "icon": "RiTimerFlashLine",
+            "title": "Storyboarding and Previsualization",
+            "description": "Validate scripts, camera moves, scene composition, and visual direction before committing to production.",
+            "icon": "PanelsTopLeft",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-benefits-2/960/640.webp",
-              "alt": "Nano Banana Pro high-performance GPU cluster enabling low-latency 4K AI image generation from text prompt in seconds"
+              "src": "/imgs/seadance/feature_2.jpg",
+              "alt": "AI video storyboarding and previsualization"
             }
           },
           {
-            "title": "Full Commercial Rights, SynthID Watermarking & REST API Access",
-            "description": "Every image generated on Nano Banana Pro ships with full commercial usage rights — no royalties, no attribution required. Built for Etsy storefront sellers, game developers, and SaaS platforms needing a scalable image generation API. Integrate our low-latency REST API into your enterprise workflow on Vertex AI, with custom fine-tuning options and EXIF metadata for content authenticity verification. SynthID digital watermarking ensures provenance tracking aligned with IEEE ethical AI guidelines.",
-            "icon": "RiPencilRulerLine",
+            "title": "Character and Scene Continuity",
+            "description": "Build prompts and references around repeatable identities, environments, and visual styles for multi-shot storytelling.",
+            "icon": "ScanFace",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-en-benefits-3/960/640.webp",
-              "alt": "Nano Banana Pro commercial usage rights, SynthID watermark, and REST API documentation for enterprise Vertex AI developers"
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "Consistent character and scene generation"
             }
           }
         ]
       },
       "features": {
         "id": "features",
-        "title": "Advanced AI Creative Toolset for Every Creator Intent",
-        "description": "The most complete neural image generation platform for digital marketers, Shopify sellers, indie game developers, and visual storytellers — all powered by Nano Banana 2 and designed around the SGE survival strategy.",
+        "title": "Seedance AI Video Capabilities",
+        "description": "Explore the next generation of multimodal video while using the available Seedance 2.0 models for practical generation today.",
         "items": [
           {
-            "title": "Lossless 4K Neural Upscaling",
-            "description": "Enhance any low-res image to studio-quality 4K resolution using advanced denoising filters, pixel-perfect detail recovery, and computer vision sharpening — ideal for print-on-demand assets and high-res marketing materials.",
-            "icon": "RiCrop2Line"
+            "title": "Text to Video",
+            "description": "Describe a scene, action, camera movement, and visual style to generate a video from text.",
+            "icon": "TextCursorInput"
           },
           {
-            "title": "SynthID Digital Watermarking",
-            "description": "Protect your AI-generated art with Google's SynthID technology for proven content authenticity and digital provenance tracking — meeting the latest fair use guidelines from IEEE and global ethical AI boards.",
-            "icon": "RiSunCloudyLine"
+            "title": "Image to Video",
+            "description": "Animate a reference frame while preserving its subject, composition, and visual identity.",
+            "icon": "ImagePlay"
           },
           {
-            "title": "Vector Branding Engine for Startups",
-            "description": "Automated design systems for startup branding identity — including logo vectorization, SVG output, style-to-brand consistency, and instant brand identity bundle creation for pitch decks and mobile UI assets.",
-            "icon": "RiTextDirectionLtr"
+            "title": "Video to Video",
+            "description": "Use an existing clip as a motion and structure reference for a new generated result.",
+            "icon": "RefreshCw"
           },
           {
-            "title": "Hyper-Realistic Skin Textures & Portrait LoRA",
-            "description": "Proprietary LoRA weighted layers deliver authentic, photorealistic human portraits and professional headshots — consistent across multi-turn edits and e-learning visual creation for fashion lookbooks and real estate staging.",
-            "icon": "RiUserStarLine"
+            "title": "Multiple Aspect Ratios",
+            "description": "Create landscape, portrait, square, and additional layouts for film, social, and advertising workflows.",
+            "icon": "Ratio"
           },
           {
-            "title": "Multi-Image Latent Blending (10-Reference Fusion)",
-            "description": "Seamlessly merge up to 10 reference images into a single coherent visual using latent space morphing — perfect for character consistency AI, architecture visualization tools, and UI/UX mockup generation from multiple brand assets.",
-            "icon": "RiOverlapLine"
+            "title": "Resolution Controls",
+            "description": "Choose supported output resolutions based on the selected Seedance 2.0 model and generation mode.",
+            "icon": "MonitorUp"
           },
           {
-            "title": "Deep Semantic Reasoning & Meta-Prompting",
-            "description": "Advanced NLP and meta-prompting processing understands complex spatial relationships, artistic metaphors, and scene preservation constraints — enabling search-grounded image workflows optimized for 2026 SGE semantic search signals.",
-            "icon": "RiFlashlightLine"
+            "title": "Task History",
+            "description": "Track generation progress and revisit completed AI video tasks from your account.",
+            "icon": "ListChecks"
+          }
+        ]
+      },
+      "showcases": {
+        "block": "showcases",
+        "id": "showcases",
+        "title": "Seedance Creative Workflows",
+        "description": "Examples of the video concepts and production workflows that creators can explore with the Seedance model family.",
+        "items": [
+          {
+            "title": "Sci-Fi Short Films",
+            "description": "Develop cinematic environments, visual effects concepts, and narrative shots from detailed prompts.",
+            "url": "/#generator",
+            "image": {
+              "src": "/imgs/seadance/showcase_1.jpg",
+              "alt": "Sci-fi AI video concept"
+            }
+          },
+          {
+            "title": "Music Visuals",
+            "description": "Create surreal motion, atmospheric sequences, and visual concepts for music content.",
+            "url": "/#generator",
+            "image": {
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "AI-generated music video concept"
+            }
+          },
+          {
+            "title": "Documentary B-Roll",
+            "description": "Visualize historical, scientific, and abstract subjects when suitable footage is unavailable.",
+            "url": "/#generator",
+            "image": {
+              "src": "/imgs/seadance/showcase_3.jpg",
+              "alt": "Documentary AI video B-roll"
+            }
+          },
+          {
+            "title": "Fashion and Product Films",
+            "description": "Prototype campaign shots, product motion, and stylized environments without a full physical production.",
+            "url": "/#generator",
+            "image": {
+              "src": "/imgs/seadance/showcase_4.jpg",
+              "alt": "Fashion and product AI video concept"
+            }
           }
         ]
       },
       "faq": {
         "id": "faq",
-        "title": "Nano Banana Pro — Expert Answers to Your Top Questions",
-        "description": "Your complete guide to optimizing Nano Banana 2 for professional 4K output, commercial licensing, API integration, and banana prompts mastery. Aligned with IEEE deep learning standards and Google Gemini 3 documentation via Google AI Studio.",
+        "title": "Seedance 2.5 Questions",
+        "description": "Release, early access, capability, and current generator information.",
         "items": [
           {
-            "question": "How do I fix a rejected visa or passport photo using Nano Banana Pro?",
-            "answer": "Our AI Biometric Headshot tool is purpose-built to resolve the most common rejection reasons for US, EU, and Asian visa applications. It automatically neutralizes background shadows, corrects lighting to meet official biometric standards, and uses neural upscaling to ensure your photo passes biometric facial scans at border control. Unlike generic editors, Nano Banana Pro uses conversational inpainting — simply describe the fix in plain language. See biometric photo standards on <a href=\"https://en.wikipedia.org/wiki/Biometric_passport\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Wikipedia</a>."
+            "question": "Is Seedance 2.5 available on this site now?",
+            "answer": "No. ByteDance announced Seedance 2.5 on June 23, 2026, and it is currently in enterprise preview. Broader public availability is expected in early July. This site's generator continues to use the available Seedance 2.0 models until official Seedance 2.5 access is supported."
           },
           {
-            "question": "Can Nano Banana Pro generate high-quality text inside logos and marketing images?",
-            "answer": "Yes — and this is Nano Banana Pro's biggest competitive advantage over Midjourney and Flux. The Gemini 3-powered typography engine uses real-world knowledge grounding and semantic reasoning to render crisp, readable text inside images, eliminating the distortion that plagues other AI generators. Generate vector-style SVG logos, book covers, eCommerce banners, and Etsy listing images with zero-shot typographic accuracy. It's the premier AI logo maker for modern startup branding and print-on-demand assets."
+            "question": "What can I generate today?",
+            "answer": "The current generator supports text-to-video, image-to-video, and video-to-video workflows through the models configured by the site administrator. Seedance 2.0 options support common aspect ratios, durations, and resolutions up to 1080p where available."
           },
           {
-            "question": "What are the best banana prompts to use for getting professional results?",
-            "answer": "The highest-performing banana prompts follow a structured formula: [Subject + Reference Style] + [Lighting Condition] + [Camera Angle] + [Technical Spec]. Example: 'Professional LinkedIn headshot, cinematic lighting, shallow depth-of-field bokeh, 4K photorealistic skin texture, neutral background, studio-quality.' For product photography, add: 'Amazon product listing, white seamless background, hyper-detailed surface texture, correct aspect ratio 1:1.' Our Banana Prompts Library (coming soon at /prompts) collects 500+ expert-curated prompts with one-click copy."
+            "question": "What is new in Seedance 2.5?",
+            "answer": "The announcement focuses on longer video generation, richer multimodal reference inputs, stronger visual consistency, and more controllable cinematic storytelling. Final limits and API details should be confirmed from official documentation after public release."
           },
           {
-            "question": "What commercial usage rights come with Nano Banana Pro images?",
-            "answer": "Every image generated on Nano Banana Pro comes with full commercial rights — no royalties, no attribution. Whether you're an Etsy storefront seller, Shopify product photographer, indie game developer, or enterprise marketing team, you own all generated assets entirely. We also embed EXIF metadata and Google SynthID digital watermarking for content authenticity verification, ensuring your neural art meets provenance tracking requirements for professional design workflows."
+            "question": "Does Seedance 2.5 support 30-second video?",
+            "answer": "Up to 30-second generation is part of the announced Seedance 2.5 capability set. It is not currently available through this site's Seedance 2.0 generator."
           },
           {
-            "question": "How does Nano Banana Pro ensure content authenticity and avoid deepfake misuse?",
-            "answer": "We integrate Google's SynthID watermarking technology at the pixel-level generation layer, embedding an invisible but verifiable signature into every output. This meets IEEE ethical AI guidelines for responsible generative systems and enables downstream verification in publishing and legal contexts. We also maintain a human-in-the-loop review layer and adhere to Google DeepMind fair use guidelines for content authenticity and digital provenance tracking. Learn more about <a href=\"https://en.wikipedia.org/wiki/Artificial_intelligence_ethics\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Generative AI ethics on Wikipedia</a>."
+            "question": "How are generation credits calculated?",
+            "answer": "Credit cost depends on the selected model, generation mode, duration, and resolution. The generator shows the estimated cost before you submit a task."
           },
           {
-            "question": "Can I integrate Nano Banana Pro into my app or SaaS product via API?",
-            "answer": "Yes. Our low-latency REST API is built for enterprise-scale integration on Vertex AI infrastructure. Developers can access GPU clusters for real-time inference, run batch processing pipelines, and apply custom LoRA weight fine-tuning to build specialized AI creative tools — from automated Shopify product shot generators to AI avatar maker systems. API pricing is usage-based with a free trial tier. Visit <a href=\"https://ai.google.dev\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Google AI Studio</a> for Gemini 3 API documentation."
-          },
-          {
-            "question": "How does Nano Banana Pro compare to Midjourney, Flux, and DALL-E in 2026?",
-            "answer": "Nano Banana Pro is uniquely built on the Gemini 3 Pro multi-modal reasoning core — giving it a decisive edge in three areas: (1) Flawless text rendering inside images, where Midjourney and DALL-E consistently fail; (2) Character consistency across multi-turn editing sessions without losing subject identity; (3) Real-world knowledge grounding for search-grounded image generation aligned with 2026 SGE signals. For Amazon product photography, UI/UX mockups, and enterprise branding workflows, Nano Banana Pro delivers production-ready assets faster and at a lower cost than any Midjourney alternative."
+            "question": "Can generated videos be used commercially?",
+            "answer": "Commercial use depends on your plan, the selected provider's model terms, and applicable law. Review the Terms of Service and the provider policy before publishing paid or client work."
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "Your Next 4K Masterpiece Starts Here — Free.",
-        "description": "Join 1M+ creators using Nano Banana Pro to generate photorealistic AI images, master banana prompts, and build production-ready visual assets powered by Google Gemini 3. No credit card. No login required.",
+        "title": "Prepare for Seedance 2.5",
+        "description": "Follow release updates and start building your cinematic AI video workflow today with the currently supported Seedance 2.0 generator.",
         "buttons": [
           {
-            "title": "Start Creating for Free",
+            "title": "Generate a Video",
             "url": "/#generator",
             "target": "_self",
-            "icon": "Zap"
+            "icon": "Video"
           },
           {
-            "title": "Join the Creator Community",
-            "url": "https://discord.com",
-            "target": "_blank",
+            "title": "View Pricing",
+            "url": "/pricing",
+            "target": "_self",
             "variant": "outline",
-            "icon": "Mail"
+            "icon": "CreditCard"
           }
         ],
         "className": "bg-muted"

@@ -2,10 +2,10 @@
   "sidebar": {
     "header": {
       "brand": {
-        "title": "Nano Banana Pro Chat",
+        "title": "Seadance Video Chat",
         "logo": {
-          "src": "/logo.png",
-          "alt": "Nano Banana Pro Chat"
+          "src": "/seadance-logo.svg",
+          "alt": "Seadance Video Chat"
         },
         "url": "/chat"
       },

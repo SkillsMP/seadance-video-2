@@ -106,7 +106,7 @@ export function Hero({
           {section.buttons && (
             <motion.div
               {...createFadeInVariant(0.45)}
-              className="flex items-center justify-center gap-4"
+              className="flex flex-wrap items-center justify-center gap-4"
             >
               {section.buttons.map((button, idx) => (
                 <Button

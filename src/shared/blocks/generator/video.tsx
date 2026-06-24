@@ -50,6 +50,7 @@ import {
 } from './generation-controls';
 
 interface VideoGeneratorProps {
+  className?: string;
   maxSizeMB?: number;
   srOnlyTitle?: string;
 }
@@ -172,6 +173,7 @@ function extractVideoUrls(result: any): string[] {
 }
 
 export function VideoGenerator({
+  className,
   maxSizeMB = 50,
   srOnlyTitle,
 }: VideoGeneratorProps) {
@@ -741,7 +743,7 @@ export function VideoGenerator({
   };
 
   return (
-    <section className="py-16 md:py-24">
+    <section className={className || 'py-16 md:py-24'}>
       <div className="container">
         <div className="mx-auto max-w-6xl">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">

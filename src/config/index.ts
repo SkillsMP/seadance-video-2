@@ -21,10 +21,10 @@ export type ConfigMap = Record<string, string>;
 
 export const envConfigs: ConfigMap = {
   app_url: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
-  app_name: process.env.NEXT_PUBLIC_APP_NAME ?? 'Nano Banana Pro',
+  app_name: process.env.NEXT_PUBLIC_APP_NAME ?? 'Seadance Video',
   app_description: process.env.NEXT_PUBLIC_APP_DESCRIPTION ?? '',
-  app_logo: process.env.NEXT_PUBLIC_APP_LOGO ?? '/logo.png',
-  app_favicon: process.env.NEXT_PUBLIC_APP_FAVICON ?? '/favicon.ico',
+  app_logo: process.env.NEXT_PUBLIC_APP_LOGO ?? '/seadance-logo.svg',
+  app_favicon: process.env.NEXT_PUBLIC_APP_FAVICON ?? '/favicon.svg',
   app_preview_image:
     process.env.NEXT_PUBLIC_APP_PREVIEW_IMAGE ?? '/preview.png',
   theme: process.env.NEXT_PUBLIC_THEME ?? 'default',

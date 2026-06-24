@@ -1,46 +1,46 @@
 {
   "metadata": {
-    "title": "AI Video Generator – Multi-Model Studio for Text, Image and Clip Inputs",
-    "description": "Banana Pro brings Veo 3, Seedance 2.0, Kling and Wan Pro into a single AI video studio. Turn a written scene, a still photo or an existing clip into a polished short video in just a few minutes."
+    "title": "Seedance 2.0 AI Video Generator | Seadance Video",
+    "description": "Create video from text, images, or an existing clip with the currently supported Seedance 2.0 workflow. Follow Seedance 2.5 release updates on Seadance Video."
   },
   "page": {
-    "title": "Multi-Model AI Video Generator",
-    "description": "Animate any idea you can describe, photograph or record. Pick a generation mode, drop in your prompt or reference, and our orchestrator routes the job to the strongest video model for the task — no editing software required.",
+    "title": "Seedance AI Video Generator",
+    "description": "Create a video from a written scene, reference image, or existing clip. Seedance 2.0 is currently available; Seedance 2.5 will be added only after official access is supported.",
     "sections": {
       "faq": {
         "id": "faq",
-        "title": "AI Video Generator – Things People Often Ask",
+        "title": "Seedance Video Generator Questions",
         "items": [
           {
             "question": "Which generation modes are available?",
-            "answer": "Three modes ship out of the box. Text-to-Video composes a clip from a written scene, Image-to-Video animates a still you upload, and Video-to-Video remixes an existing clip when you paste its URL."
+            "answer": "Text-to-Video composes a clip from a written scene, Image-to-Video animates a still image, and Video-to-Video remixes an existing clip from its URL."
+          },
+          {
+            "question": "Which Seedance version is available?",
+            "answer": "The generator currently uses Seedance 2.0 models configured by the site administrator. Seedance 2.5 is not yet available through this site."
           },
           {
             "question": "How long can a generated clip be?",
-            "answer": "Clips usually land between 4 and 15 seconds, with the exact options depending on the model, input mode and resolution you pick."
+            "answer": "Available duration options depend on the selected model, input mode, and resolution."
           },
           {
-            "question": "What resolutions and aspect ratios can I get?",
-            "answer": "Output capabilities vary by model, but Seedance 2.0 options include 480p, 720p and 1080p where available, plus common aspect ratios such as 16:9, 9:16 and 1:1."
-          },
-          {
-            "question": "How long does a single render take?",
-            "answer": "Most generations finish in 1–5 minutes. Heavier models, longer durations and busy traffic can push that higher; the page shows live progress so you don't have to refresh."
+            "question": "What resolutions and aspect ratios are supported?",
+            "answer": "Seedance 2.0 options include 480p, 720p, and 1080p where available, plus common aspect ratios such as 16:9, 9:16, 1:1, 4:3, and 3:4."
           },
           {
             "question": "How are credits charged?",
-            "answer": "Credit cost depends on the chosen mode, model and output length. The estimate is shown on the generator before you confirm, and only successful renders are billed."
+            "answer": "Credit cost depends on the generation mode, model, duration, and resolution. The estimate is shown before you submit the task."
           },
           {
-            "question": "Are the videos safe to use commercially?",
-            "answer": "Yes, within the limits of our Terms of Service and the underlying model's own usage policy. Always re-check the policy of the specific model you used before shipping a paid campaign."
+            "question": "Can I use generated videos commercially?",
+            "answer": "Commercial use depends on your plan, the selected provider's model policy, and applicable law. Review the Terms of Service before publishing paid work."
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "From Idea to Motion in a Few Clicks",
-        "description": "Skip the editing timeline. Type a scene, upload a frame or paste a clip URL — and let the studio do the heavy lifting.",
+        "title": "Turn an Idea into Motion",
+        "description": "Type a scene, upload a frame, or paste a clip URL and generate with the currently available Seedance 2.0 workflow.",
         "buttons": [
           {
             "title": "Generate a Video Now",
@@ -54,8 +54,8 @@
     }
   },
   "generator": {
-    "title": "Video Generator",
-    "description": "Compose video from text, image or another clip — orchestrated across a curated set of frontier models.",
+    "title": "Seedance 2.0 Video Generator",
+    "description": "Generate video from text, an image, or another clip with the Seedance models currently configured for this site.",
     "tabs": {
       "text-to-video": "Text to Video",
       "image-to-video": "Image to Video",
@@ -67,13 +67,13 @@
       "select_provider": "Select Provider",
       "select_model": "Select Model",
       "prompt": "Prompt",
-      "prompt_placeholder": "Describe the video content, such as scene, action, style, etc.",
+      "prompt_placeholder": "Describe the scene, action, camera movement, lighting, and visual style.",
       "reference_image": "Reference Image",
       "reference_image_placeholder": "Upload a reference image for video generation",
       "reference_video": "Reference Video URL",
       "reference_video_placeholder": "Enter the URL of the reference video",
-      "some_images_failed_to_upload": "Image failed to upload, please delete and re-upload",
-      "prompt_too_long": "Prompt is too long, please delete some content"
+      "some_images_failed_to_upload": "Image upload failed. Delete it and upload again.",
+      "prompt_too_long": "The prompt is too long. Remove some content."
     },
     "generate": "Generate Video",
     "checking_account": "Checking Account...",
@@ -86,7 +86,7 @@
     "progress": "Progress",
     "generated_videos": "Video Preview",
     "ready_to_generate": "Ready to Generate",
-    "ready_for_generating": "Ready for Generating",
+    "ready_for_generating": "Ready for Generation",
     "no_videos_generated": "No Videos Generated"
   }
 }

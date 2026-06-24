@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
-import { ImageGenerator } from '@/shared/blocks/generator';
+import { VideoGenerator } from '@/shared/blocks/generator';
 import { getMetadata } from '@/shared/lib/seo';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
@@ -28,7 +28,7 @@ export default async function LandingPage({
       ...rawPage.sections,
       generator: {
         component: (
-          <ImageGenerator
+          <VideoGenerator
             className="py-8 md:py-10"
             srOnlyTitle={t.raw('generator.title')}
           />
