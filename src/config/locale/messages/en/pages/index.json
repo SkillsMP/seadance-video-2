@@ -23,7 +23,7 @@
         "id": "hero",
         "title": "Explore the Next Generation of AI Video with Seedance 2.5",
         "highlight_text": "Seedance 2.5",
-        "description": "Seedance 2.5 was announced by ByteDance on June 23, 2026, with enterprise preview access and broader availability expected in early July. Follow the release while creating videos today with our currently supported Seedance 2.0 workflow.",
+        "description": "Seedance 2.5 was announced by ByteDance on June 23, 2026, and remains in enterprise preview. BytePlus currently lists broader availability as \"Coming soon.\" Follow the release while creating videos today with our currently supported Seedance 2.0 workflow.",
         "announcement": {
           "title": "Seedance 2.5 announced — view release status",
           "url": "/#faq"
@@ -206,7 +206,7 @@
         "items": [
           {
             "question": "Is Seedance 2.5 available on this site now?",
-            "answer": "No. ByteDance announced Seedance 2.5 on June 23, 2026, and it is currently in enterprise preview. Broader public availability is expected in early July. This site's generator continues to use the available Seedance 2.0 models until official Seedance 2.5 access is supported."
+            "answer": "No. ByteDance announced Seedance 2.5 on June 23, 2026, and it remains in enterprise preview. BytePlus currently lists broader availability as \"Coming soon.\" This site's generator continues to use the available Seedance 2.0 models until official Seedance 2.5 access is supported."
           },
           {
             "question": "What can I generate today?",
