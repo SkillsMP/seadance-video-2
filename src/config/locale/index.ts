@@ -52,6 +52,7 @@ export const localeMessagesPaths = [
   'pages/updates',
   'pages/create',
   'pages/hairstyles',
+  'pages/seedance-2-0',
   'admin/prompts',
   'admin/showcases',
 ];

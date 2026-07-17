@@ -12,6 +12,11 @@
     "nav": {
       "items": [
         {
+          "title": "Seedance 2.0",
+          "url": "/seedance-2-0",
+          "icon": "Video"
+        },
+        {
           "title": "核心功能",
           "url": "/#features",
           "icon": "Sparkles"

@@ -1,0 +1,251 @@
+{
+  "generator": {
+    "title": "Seedance 2.0 Video Generator"
+  },
+  "metadata": {
+    "title": "Seedance 2.0 AI Video Generator – Create Videos Online",
+    "description": "Create Seedance 2.0 videos online from text, images, or a reference clip. Choose available settings, review the credit estimate, and generate in your browser.",
+    "keywords": "Seedance 2.0 AI Video Generator, Seedance 2.0, Seedance 2.0 Free, Try Seedance 2.0 Online, Seedance 2.0 Video, How to Use Seedance 2.0, Seedance 2.0 Access, Seedance 2.0 Pricing, Seedance 2.0 Prompt, Text to Video, Image to Video"
+  },
+  "page": {
+    "title": "Seedance 2.0 AI Video Generator",
+    "sections": {
+      "hero": {
+        "id": "hero",
+        "title": "Seedance 2.0 AI Video Generator",
+        "highlight_text": "Seedance 2.0",
+        "description": "Create cinematic AI video from a prompt, a reference image, or an existing clip with the Seedance 2.0 workflows currently available on Seadance Video.",
+        "announcement": {
+          "title": "Seedance 2.0 is available to use online",
+          "url": "/seedance-2-0#generator"
+        },
+        "buttons": [
+          {
+            "title": "Try Seedance 2.0 Online",
+            "icon": "Video",
+            "url": "/seedance-2-0#generator",
+            "target": "_self"
+          },
+          {
+            "title": "View Pricing",
+            "icon": "CreditCard",
+            "url": "/pricing",
+            "target": "_self",
+            "variant": "outline"
+          }
+        ],
+        "tip": "Seadance Video is an independent third-party platform. Model availability and generation options depend on the connected provider.",
+        "show_avatars": false,
+        "show_award": false
+      },
+      "generator": {},
+      "capabilities": {
+        "block": "features",
+        "id": "features",
+        "title": "Create with Seedance 2.0 Online",
+        "description": "Choose the workflow and controls that match your source material. The generator shows the settings currently supported by the selected model.",
+        "items": [
+          {
+            "title": "Text to Video",
+            "description": "Describe the subject, action, camera movement, lighting, and visual style to create a clip from text.",
+            "icon": "TextCursorInput"
+          },
+          {
+            "title": "Image to Video",
+            "description": "Upload a reference frame and direct its motion and camera behavior with a supporting prompt.",
+            "icon": "ImagePlay"
+          },
+          {
+            "title": "Video to Video",
+            "description": "Use a reference video URL to guide the motion and structure of a transformed result.",
+            "icon": "RefreshCw"
+          },
+          {
+            "title": "Fast and Standard Models",
+            "description": "Choose the available Seedance 2.0 model that best matches your iteration speed, quality, and credit budget.",
+            "icon": "Gauge"
+          },
+          {
+            "title": "Flexible Output Controls",
+            "description": "Set an available duration, aspect ratio, and resolution for landscape, portrait, square, and other formats.",
+            "icon": "SlidersHorizontal"
+          },
+          {
+            "title": "Optional Generated Audio",
+            "description": "Enable generated audio when the selected model and provider expose that option.",
+            "icon": "AudioLines"
+          }
+        ]
+      },
+      "howTo": {
+        "block": "features",
+        "id": "how-to-use",
+        "title": "How to Use Seedance 2.0",
+        "description": "Go from an idea or reference to a downloadable video in three steps.",
+        "items": [
+          {
+            "title": "1. Add a prompt or reference",
+            "description": "Write the scene you want, upload an image, or provide a source video URL for the selected mode.",
+            "icon": "FileInput"
+          },
+          {
+            "title": "2. Choose model and settings",
+            "description": "Select an available Seedance 2.0 model, then configure duration, aspect ratio, resolution, and audio options.",
+            "icon": "Settings2"
+          },
+          {
+            "title": "3. Generate and download",
+            "description": "Review the credit estimate, sign in, generate the clip, and download the completed result from the preview.",
+            "icon": "Download"
+          }
+        ],
+        "className": "bg-muted/40"
+      },
+      "pricing": {
+        "block": "features-list",
+        "id": "pricing-explained",
+        "title": "Is Seedance 2.0 Free?",
+        "description": "You can open and configure the generator before signing in. Submitting a generation requires an account and sufficient credits; the exact estimate appears before you generate.",
+        "image": {
+          "src": "/imgs/seadance/feature_2.jpg",
+          "alt": "Seedance 2.0 AI video generator pricing and access"
+        },
+        "buttons": [
+          {
+            "title": "See Current Plans",
+            "url": "/pricing",
+            "icon": "CreditCard"
+          },
+          {
+            "title": "Open the Generator",
+            "url": "/seedance-2-0#generator",
+            "icon": "Video",
+            "variant": "outline"
+          }
+        ],
+        "items": [
+          {
+            "title": "Account required",
+            "description": "Sign in before submitting a task so credits and generated results can be associated with your account.",
+            "icon": "UserRoundCheck"
+          },
+          {
+            "title": "Cost shown first",
+            "description": "The estimate is calculated from the selected mode, model, duration, and resolution.",
+            "icon": "ReceiptText"
+          },
+          {
+            "title": "Flexible credit options",
+            "description": "The pricing page is the source of truth for currently available subscriptions and one-time credit packs.",
+            "icon": "BadgeDollarSign"
+          },
+          {
+            "title": "No unlimited claim",
+            "description": "Generation uses credits based on the selected settings; this page does not advertise unlimited free use.",
+            "icon": "ShieldCheck"
+          }
+        ]
+      },
+      "promptExamples": {
+        "block": "features-accordion",
+        "id": "prompt-examples",
+        "title": "Seedance 2.0 Prompt Examples",
+        "description": "Use these complete prompts as starting points, then adapt the subject, action, camera, lighting, pacing, and aspect ratio to your project.",
+        "items": [
+          {
+            "title": "Macro Product Motion",
+            "description": "Extreme macro shot of two translucent twenty-sided dice rolling across a dark walnut table, one smoky black and one emerald green. The camera tracks at table height in slow motion as warm practical lights create soft bokeh behind them. Crisp engraved numbers, shallow depth of field, realistic reflections, cinematic product photography, 16:9.",
+            "icon": "Box",
+            "image": {
+              "src": "/imgs/seadance/showcase_1.jpg",
+              "alt": "Seedance 2.0 prompt example with two translucent dice"
+            }
+          },
+          {
+            "title": "Atmospheric Landscape",
+            "description": "A calm river winds through a vast granite valley at blue hour. Begin with a low glide above the water, then slowly rise to reveal pine forest, distant cliffs, and soft peach light at the horizon. Natural mist, subtle ripples, restrained color grade, documentary realism, no people, 16:9.",
+            "icon": "Mountain",
+            "image": {
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "Seedance 2.0 landscape video prompt example"
+            }
+          },
+          {
+            "title": "Consistent Character Portrait",
+            "description": "Close portrait of the same woman throughout the shot, centered against a pale lavender studio background. Blue light brushes the left side of her face while warm light shapes the right. She takes one slow breath and turns her eyes toward camera; subtle hair movement, locked facial identity, 85mm lens, shallow depth of field, 1:1.",
+            "icon": "ScanFace",
+            "image": {
+              "src": "/imgs/seadance/showcase_3.jpg",
+              "alt": "Seedance 2.0 character consistency prompt example"
+            }
+          },
+          {
+            "title": "Abstract Vertical Loop",
+            "description": "Translucent pastel bubbles drift through layered fields of magenta, amber, cyan, and violet liquid. Tiny droplets rise upward as the camera makes a slow continuous push-in. Soft backlight, glossy refraction, seamless looping motion, premium motion-design aesthetic, clean composition, 9:16.",
+            "icon": "Sparkles",
+            "image": {
+              "src": "/imgs/seadance/showcase_4.jpg",
+              "alt": "Seedance 2.0 vertical abstract video prompt example"
+            }
+          }
+        ]
+      },
+      "faq": {
+        "id": "faq",
+        "title": "Seedance 2.0 Questions",
+        "description": "Answers about access, pricing, models, and this third-party generator.",
+        "items": [
+          {
+            "question": "Where can I access Seedance 2.0 online?",
+            "answer": "You can use the Seedance 2.0 workflows currently connected to the generator on this page. Sign in and make sure your account has enough credits before submitting."
+          },
+          {
+            "question": "Is Seedance 2.0 free to use?",
+            "answer": "You can open and configure the generator before signing in, but submitting a generation requires credits. The required amount appears before submission."
+          },
+          {
+            "question": "Is Seadance Video the official Seedance 2.0 website?",
+            "answer": "No. Seadance Video is an independent third-party AI creation platform. Seedance 2.0 is developed by ByteDance."
+          },
+          {
+            "question": "Which Seedance 2.0 models are available here?",
+            "answer": "The generator displays the Seedance 2.0 models currently available through the connected provider, along with their supported modes and settings."
+          },
+          {
+            "question": "What inputs does this generator support?",
+            "answer": "The current interface supports text-to-video, image-to-video, and video-to-video workflows. Available controls are shown for the selected mode and model."
+          },
+          {
+            "question": "How much does Seedance 2.0 generation cost?",
+            "answer": "Credit cost varies by mode, model, duration, and resolution. The generator shows the estimate before submission, and the pricing page lists current credit options."
+          },
+          {
+            "question": "Does this page provide a Seedance 2.0 API?",
+            "answer": "No. This page is a browser-based video generator, not an API product or developer documentation page."
+          }
+        ]
+      },
+      "cta": {
+        "id": "cta",
+        "title": "Try Seedance 2.0 Online",
+        "description": "Choose a workflow, add your prompt or reference, review the credit estimate, and generate your next video.",
+        "buttons": [
+          {
+            "title": "Create a Seedance 2.0 Video",
+            "url": "/seedance-2-0#generator",
+            "target": "_self",
+            "icon": "Video"
+          },
+          {
+            "title": "View Pricing",
+            "url": "/pricing",
+            "target": "_self",
+            "variant": "outline",
+            "icon": "CreditCard"
+          }
+        ],
+        "className": "bg-muted"
+      }
+    }
+  }
+}
