@@ -57,6 +57,18 @@ const blogsToSeed: BlogSeed[] = [
     authorAvatarUrl: "/seadance-logo.svg",
     locale: "en",
   },
+  {
+    slug: "seedance-2-5-1080p-guide",
+    title: "Seedance 2.5 1080p: What It Means, How to Get It, and Prompts That Work",
+    description: "A practical guide to Seedance 2.5 1080p: availability checks, 1080p vs 720p, prompt structure, export QA, and long-tail workflow tips.",
+    categoryName: "tutorials-guides",
+    categoryTitle: "Tutorials & Guides",
+    filePath: path.join(process.cwd(), "content", "posts", "seedance-2-5-1080p-guide.md"),
+    coverUrl: "/preview.png",
+    authorName: "Seadance AI Editorial",
+    authorAvatarUrl: "/seadance-logo.svg",
+    locale: "en",
+  },
 ];
 
 async function seed() {

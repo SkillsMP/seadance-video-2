@@ -64,3 +64,6 @@ src/config/db/migrations
 .source
 
 .chats
+
+# 设计文档
+/图片视频需求&设计
