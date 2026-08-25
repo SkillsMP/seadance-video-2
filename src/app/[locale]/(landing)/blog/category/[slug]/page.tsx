@@ -34,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const t = await getTranslations('blog.metadata');
+  const t = await getTranslations('pages.blog.metadata');
   const pagePath = `/blog/category/${slug}`;
   const canonicalUrl = await getCanonicalUrl(pagePath, locale);
   const languages = await buildLanguageAlternates(pagePath);

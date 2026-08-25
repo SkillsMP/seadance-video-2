@@ -67,7 +67,7 @@ export function Blog({
                 <div className="bg-muted h-full overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-lg">
                   <div className="aspect-video overflow-hidden">
                     <img
-                      src={item.image || '/imgs/blog/1.jpeg'}
+                      src={item.image || '/imgs/seadance/showcase_4.jpg'}
                       alt={item.title}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />

@@ -24,4 +24,58 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://seadance.video/blog</loc>
+    <lastmod>2026-08-17T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://seadance.video/blog/seedance-2-5-release-date-and-overview</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seadance.video/blog/seedance-2-5-prompt-engineering-guide</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seadance.video/blog/seedance-2-5-features-vs-sora-runway</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://seadance.video/blog/seedance-2-5-1080p-guide</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog Categories -->
+  <url>
+    <loc>https://seadance.video/blog/category/news-updates</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://seadance.video/blog/category/tutorials-guides</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://seadance.video/blog/category/technical-deep-dive</loc>
+    <lastmod>2026-08-11T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

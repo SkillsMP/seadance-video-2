@@ -1,3 +1,11 @@
+---
+title: 'ByteDance Seedance 2.5 Features Breakdown: How It Compares to Sora and Runway Gen-3'
+description: Compare Seedance 2.5 against OpenAI Sora, Runway Gen-3 Alpha, and MiniMax H3. Explore multimodal reference scalability, physical dynamics, resolution, and production workflows.
+created_at: 2026-08-11
+author_name: Seadance AI Editorial
+author_image: /seadance-logo.svg
+---
+
 # ByteDance Seedance 2.5 Features Breakdown: How It Compares to Sora and Runway Gen-3
 
 The AI video landscape is evolving rapidly, with ByteDance's announcement of **Seedance 2.5** directly challenging existing leaders like OpenAI's Sora, Runway Gen-3 Alpha, and MiniMax H3. As generative video transitions from novel short clips to production-grade filmmaking tools, understanding the technical differences between these frontier models is crucial for studios and creators.

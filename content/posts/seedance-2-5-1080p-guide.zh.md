@@ -5,7 +5,7 @@ created_at: 2026-08-17
 date: '2026-08-17'
 author_name: 'Seadance AI Editorial'
 author_image: /seadance-logo.svg
-image: /preview.png
+image: /imgs/seadance/showcase_4.jpg
 categories: ['tutorials-guides']
 tags:
   ['Seedance 2.5', '1080p', 'AI 视频生成', '文生视频', '图生视频', '导出 QA']

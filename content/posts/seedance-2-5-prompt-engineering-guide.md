@@ -1,3 +1,11 @@
+---
+title: 'Ultimate Seedance 2.5 Prompt Engineering Guide: Master Cinematic AI Video Generation'
+description: Learn how to write high-performing text-to-video and image-to-video prompts for Seedance 2.5. Includes camera movement syntax, lighting formulas, negative prompts, and template examples.
+created_at: 2026-08-11
+author_name: Seadance AI Editorial
+author_image: /seadance-logo.svg
+---
+
 # Ultimate Seedance 2.5 Prompt Engineering Guide: Master Cinematic AI Video Generation
 
 Unlocking photorealistic output with **Seedance 2.5** requires mastering its multimodal text-to-video and image-to-video prompt syntax. ByteDance's latest model family is trained on professional film screenplays, director logbooks, and cinematic metadata, making prompt structure essential for visual precision.

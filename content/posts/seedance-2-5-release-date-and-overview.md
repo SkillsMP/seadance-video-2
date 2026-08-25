@@ -1,3 +1,11 @@
+---
+title: 'Seedance 2.5 Announced: ByteDance Next-Gen AI Video Generator Release Date, Specs & Access'
+description: Discover the latest announcement on ByteDance Seedance 2.5. Explore expected release dates, early access details, 30-second 4K video capabilities, and how to test Seedance video generators today.
+created_at: 2026-08-11
+author_name: Seadance AI Editorial
+author_image: /seadance-logo.svg
+---
+
 # Seedance 2.5 Announced: ByteDance Next-Gen AI Video Generator Release Date, Specs & Access
 
 ByteDance has officially unveiled **Seedance 2.5** (Doubao Seedance 2.5), marking a massive leap forward in neural video rendering and multimodal creative control. As the successor to the breakthrough Seedance 2.0 architecture, Seedance 2.5 introduces native 30-second 4K video generation, high-density multimodal asset reference binding (up to 50 assets), and photorealistic physical dynamics.
@@ -10,7 +18,7 @@ In this comprehensive overview, we cover everything creators, filmmakers, and di
 
 **Seedance 2.5** is ByteDance's state-of-the-art multimodal latent video diffusion model developed to streamline professional film pre-visualization, commercial ad creation, and high-retention social content. Building upon the core strengths of Doubao / Jimeng AI visual foundations, Seedance 2.5 integrates spatial-temporal attention mechanism enhancements to eliminate video artifacts such as visual drift, morphing limbs, and flickering backgrounds.
 
-![Seedance 2.5 AI Video Generator Concept](/preview.png)
+![Seedance 2.5 AI Video Generator Concept](/imgs/seadance/showcase_4.jpg)
 
 ### Key Specs at a Glance
 
