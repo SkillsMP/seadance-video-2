@@ -1,0 +1,2 @@
+
+D:\project2\seadance-video-shipany2>  "D:\project2\seadance-video-shipany2\node_modules\.bin\\node.exe"  "D:\project2\seadance-video-shipany2\node_modules\.bin\\..\tsx\dist\cli.mjs" -e fetch('https://www.googleapis.com/webmasters/v3/sites').then(r=='+r.status)).catch(e=='+e.message))
