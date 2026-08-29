@@ -33,6 +33,7 @@ yarn-error.log*
 # Documentation
 *.md
 !README.md
+!content/**/*.md
 
 # Config files that aren't needed for build
 .vscode
