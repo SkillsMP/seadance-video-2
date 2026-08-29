@@ -206,14 +206,7 @@ export async function getLocalPost({
   locale: string;
   postPrefix?: string;
 }): Promise<BlogPostType | null> {
-  const localPost =
-    postsSource.getPage([slug], locale) ??
-    postsSource
-      .getPages(locale)
-      .find(
-        (post) =>
-          getPostSlug({ url: post.url, locale, prefix: postPrefix }) === slug
-      );
+  const localPost = await postsSource.getPage([slug], locale);
   if (!localPost) {
     return null;
   }
