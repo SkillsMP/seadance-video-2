@@ -1,8 +1,8 @@
 ---
 title: 'Seedance 2.5 1080p: What It Means, How to Get It, and Prompts That Work'
 description: 'A practical guide to Seedance 2.5 1080p: availability checks, 1080p vs 720p, prompt structure, export QA, and long-tail workflow tips.'
-created_at: 2026-08-17
-date: '2026-08-17'
+created_at: 2026-08-29
+date: '2026-08-29'
 author_name: 'Seadance AI Editorial'
 author_image: /seadance-logo.svg
 image: /imgs/seadance/showcase_4.jpg
@@ -10,7 +10,7 @@ categories: ['tutorials-guides']
 tags: ['Seedance 2.5', '1080p AI video', 'AI video generator', 'text to video', 'image to video']
 ---
 
-If you are searching for Seedance 2.5 1080p, you probably want a usable delivery file rather than another impressive demo: a 1920×1080 clip that can survive a social upload, product page, ad review, or client preview.
+As of August 29, 2026, Seedance 2.5 has been officially launched, but 1080p remains a provider-, mode-, plan-, and region-specific output question. If you are searching for Seedance 2.5 1080p, you probably want a usable delivery file rather than another impressive demo: a 1920×1080 clip that can survive a social upload, product page, ad review, or client preview.
 
 The important detail is that 1080p availability is not only a model question. It can depend on the provider, mode, plan, region, queue, and current rollout. A prompt that contains “1080p” does not force an interface or API to render at 1920×1080. The output setting and the returned file metadata are the source of truth.
 
@@ -18,7 +18,7 @@ This guide explains how to check access, plan a 1080p workflow, write prompts th
 
 ## Quick answer: can Seedance 2.5 generate 1080p video?
 
-Sometimes, depending on the access surface you are using. Treat these as separate questions:
+Seedance 2.5 is available through supported consumer and API surfaces, but 1080p is not a universal model-wide guarantee. Treat these as separate questions:
 
 1. Does the current model selector expose 1080p?
 2. Does the selected mode support 1080p for both text-to-video and image-to-video?

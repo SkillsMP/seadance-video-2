@@ -10,6 +10,7 @@ export * from './features-accordion';
 export * from './features-step';
 export * from './features-flow';
 export * from './features-media';
+export * from './comparison-table';
 
 export * from './showcases';
 export * from './showcases-flow';

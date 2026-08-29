@@ -2,34 +2,151 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "Banana Pro",
+      "title": "Seadance Video",
       "logo": {
-        "src": "/logo.png",
-        "alt": "Banana Pro"
+        "src": "/seadance-logo.svg",
+        "alt": "Seadance Video logo"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "Seedance 2.0",
-          "url": "/seedance-2-0",
-          "icon": "Video"
+          "title": "模型",
+          "icon": "Video",
+          "children": [
+            {
+              "title": "Seedance 2.0 (在线生成)",
+              "description": "极速与标准生成工作流，支持图生视频与文本生成",
+              "url": "/seedance-2-0",
+              "icon": "Sparkles"
+            },
+            {
+              "title": "Seedance 2.5 综述",
+              "description": "下一代 30 秒叙事大模型，多模态参考与时间戳编辑",
+              "url": "/seedance-2-5",
+              "icon": "Rocket"
+            },
+            {
+              "title": "Seedance 2.5 vs 2.0",
+              "description": "代际升级与技术差异详评",
+              "url": "/seedance-2-5/vs-seedance-2-0",
+              "icon": "GitBranch"
+            },
+            {
+              "title": "什么是 Seedance？",
+              "description": "字节跳动 AI 视频模型家族完整科普",
+              "url": "/what-is-seedance",
+              "icon": "BookOpenText"
+            }
+          ]
         },
         {
-          "title": "核心功能",
-          "url": "/#features",
-          "icon": "Sparkles"
+          "title": "对比",
+          "icon": "GitCompare",
+          "children": [
+            {
+              "title": "所有视频模型横评",
+              "description": "2026 技术基准横评矩阵与选型指南",
+              "url": "/compare",
+              "icon": "LayoutGrid"
+            },
+            {
+              "title": "Seedance vs 可灵 Kling",
+              "description": "30秒生成、白模预演 vs 数值化运镜控制",
+              "url": "/compare/seedance-vs-kling",
+              "icon": "GitCompare"
+            },
+            {
+              "title": "Seedance vs MiniMax 海螺",
+              "description": "提示词遵循、人脸微表情与流体动力学对比",
+              "url": "/compare/seedance-vs-minimax-h3",
+              "icon": "GitCompareArrows"
+            },
+            {
+              "title": "Seedance vs Google Veo",
+              "description": "电影视听语言、4K 60fps 与云端 API",
+              "url": "/compare/seedance-vs-veo",
+              "icon": "Film"
+            }
+          ]
+        },
+        {
+          "title": "资源",
+          "icon": "Layers",
+          "children": [
+            {
+              "title": "博客与资讯",
+              "description": "深度技术解析、Reddit 评测与最新动态",
+              "url": "/blog",
+              "icon": "Newspaper"
+            },
+            {
+              "title": "提示词库",
+              "description": "精选电影级提示词模版与创意灵感",
+              "url": "/prompts",
+              "icon": "Library"
+            },
+            {
+              "title": "Seedance 2.0 提示词指南",
+              "description": "运镜语法、镜头结构与公式指南",
+              "url": "/prompts/seedance-2-0",
+              "icon": "FileText"
+            },
+            {
+              "title": "使用教程",
+              "description": "新手与创作者分步操作手册",
+              "url": "/how-to-use-seedance",
+              "icon": "GraduationCap"
+            },
+            {
+              "title": "作品展示",
+              "description": "精选社区生成案例与动态演示",
+              "url": "/#showcases",
+              "icon": "Clapperboard"
+            }
+          ]
+        },
+        {
+          "title": "开发者",
+          "icon": "Code2",
+          "children": [
+            {
+              "title": "Seedance API",
+              "description": "REST 接口规范、鉴权与异步任务",
+              "url": "/seedance-api",
+              "icon": "Server"
+            },
+            {
+              "title": "Seedance 2.5 API 指南",
+              "description": "Model ID、输入参数与计费测算",
+              "url": "/seedance-2-5/api",
+              "icon": "Cpu"
+            },
+            {
+              "title": "Seedance MCP 与 Claude Skill",
+              "description": "AI Agent 工具集成与自动化工作流",
+              "url": "/blog/seedance-mcp-skill-guide",
+              "icon": "Bot"
+            },
+            {
+              "title": "开源状态说明",
+              "description": "GitHub、Hugging Face 权重开源真相",
+              "url": "/seedance/open-source",
+              "icon": "GitFork"
+            },
+            {
+              "title": "故障排查与报错解决",
+              "description": "真实人脸报错、Face ID 及风控处理",
+              "url": "/seedance/troubleshooting",
+              "icon": "LifeBuoy"
+            }
+          ]
         },
         {
           "title": "定价",
           "url": "/pricing",
           "icon": "CreditCard"
-        },
-        {
-          "title": "AI 视频生成",
-          "url": "/ai-video-generator",
-          "icon": "Video"
         },
         {
           "title": "AI 任务",
@@ -38,7 +155,13 @@
         }
       ]
     },
-    "buttons": [],
+    "buttons": [
+      {
+        "title": "立即生成视频",
+        "url": "/seedance-2-0#generator",
+        "icon": "Video"
+      }
+    ],
     "user_nav": {
       "show_name": true,
       "show_credits": true,
@@ -52,38 +175,158 @@
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "Banana Pro",
-      "description": "Banana Pro 是 Nano Banana 2 的专业界面，提供全球最先进的 AI 图像生成体验。",
+      "title": "Seadance Video",
+      "description": "下一代生成式视频工作流。探索字节跳动 Seedance 2.0 与 2.5 模型，详尽技术横评，提示词工程指南与云端 API 集成。",
       "logo": {
-        "src": "/logo.png",
-        "alt": "Banana Pro"
+        "src": "/seadance-logo.svg",
+        "alt": "Seadance Video logo"
       },
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "产品",
+          "title": "核心模型与产品",
           "children": [
             {
-              "title": "功能介绍",
-              "url": "/#features",
+              "title": "Seedance 2.0 生成器",
+              "url": "/seedance-2-0",
               "target": "_self"
             },
             {
-              "title": "常见问题",
-              "url": "/#faq",
+              "title": "Seedance 2.5 综述",
+              "url": "/seedance-2-5",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance 2.5 vs 2.0",
+              "url": "/seedance-2-5/vs-seedance-2-0",
+              "target": "_self"
+            },
+            {
+              "title": "什么是 Seedance",
+              "url": "/what-is-seedance",
+              "target": "_self"
+            },
+            {
+              "title": "作品展示",
+              "url": "/#showcases",
+              "target": "_self"
+            },
+            {
+              "title": "定价套餐",
+              "url": "/pricing",
               "target": "_self"
             }
           ]
         },
         {
-          "title": "资源",
+          "title": "模型对比矩阵",
           "children": [
             {
-              "title": "Gemini 概览",
-              "url": "https://gemini.google/overview/image-generation/",
-              "target": "_blank"
+              "title": "所有视频模型横评",
+              "url": "/compare",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance vs 可灵 Kling",
+              "url": "/compare/seedance-vs-kling",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance vs MiniMax 海螺",
+              "url": "/compare/seedance-vs-minimax-h3",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance vs Google Veo",
+              "url": "/compare/seedance-vs-veo",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance vs Sora & Runway",
+              "url": "/blog/seedance-2-5-features-vs-sora-runway",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance 2.0 Mini vs Fast",
+              "url": "/blog/seedance-2-0-mini-vs-fast",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "资源与博客",
+          "children": [
+            {
+              "title": "博客与资讯",
+              "url": "/blog",
+              "target": "_self"
+            },
+            {
+              "title": "提示词库",
+              "url": "/prompts",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance 2.0 提示词指南",
+              "url": "/prompts/seedance-2-0",
+              "target": "_self"
+            },
+            {
+              "title": "使用教程",
+              "url": "/how-to-use-seedance",
+              "target": "_self"
+            },
+            {
+              "title": "Reddit 社区评测",
+              "url": "/blog/seedance-review-reddit",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance 2.5 Reddit 评测",
+              "url": "/blog/seedance-2-5-review-reddit",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "开发者与高级工作流",
+          "children": [
+            {
+              "title": "Seedance API",
+              "url": "/seedance-api",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance 2.5 API 指南",
+              "url": "/seedance-2-5/api",
+              "target": "_self"
+            },
+            {
+              "title": "Seedance MCP 与 Claude Skill",
+              "url": "/blog/seedance-mcp-skill-guide",
+              "target": "_self"
+            },
+            {
+              "title": "3D 白模空间预演指南",
+              "url": "/blog/seedance-2-5-greybox-blockout-guide",
+              "target": "_self"
+            },
+            {
+              "title": "开源状态说明",
+              "url": "/seedance/open-source",
+              "target": "_self"
+            },
+            {
+              "title": "故障排查与报错解决",
+              "url": "/seedance/troubleshooting",
+              "target": "_self"
+            },
+            {
+              "title": "商用授权与去水印说明",
+              "url": "/seedance/watermark-copyright",
+              "target": "_self"
             }
           ]
         }
@@ -94,7 +337,7 @@
         {
           "title": "邮件",
           "icon": "Mail",
-          "url": "mailto:support@bananapro.org",
+          "url": "mailto:support@seadance.video",
           "target": "_self"
         }
       ]
