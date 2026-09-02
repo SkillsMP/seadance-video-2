@@ -15,6 +15,14 @@
 
 export type ControlValue = string | number | boolean;
 
+export const VIDEO_IMAGE_MODES = [
+  'first_frame',
+  'first_last_frames',
+  'reference_images',
+] as const;
+
+export type VideoImageMode = (typeof VIDEO_IMAGE_MODES)[number];
+
 export interface ControlOption<T extends ControlValue = ControlValue> {
   type: 'string' | 'number' | 'boolean';
   default: T;
@@ -45,6 +53,16 @@ export type SceneParameterMap = Partial<
 export type SceneControlsMap = Partial<Record<string, SceneControls>>;
 export type ScenePricingMap = Partial<Record<string, ScenePricing>>;
 
+export interface ModelInputConstraints {
+  imageModes?: readonly VideoImageMode[];
+  promptRequired?: boolean;
+  uploadMaxSizeMB?: number;
+}
+
+export type SceneInputConstraintsMap = Partial<
+  Record<string, ModelInputConstraints>
+>;
+
 export interface ModelEntry {
   /** 媒体类型：图像 ('image') | 视频 ('video') | 音乐 ('music') */
   mediaType: 'image' | 'video' | 'music';
@@ -70,6 +88,8 @@ export interface ModelEntry {
   controls?: SceneControlsMap;
   /** Pricing metadata used by image/video generation credit calculation. */
   pricing?: ScenePricingMap;
+  /** Public input contract used by both the generator UI and server validation. */
+  inputConstraints?: SceneInputConstraintsMap;
   /** 服务端强控参数字典。指定场景下，后端发起生成请求时强制覆盖/注入的 API 参数（例如分辨率、宽高比、时长限制等） */
   enforced?: SceneParameterMap;
 }
@@ -83,6 +103,17 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 ];
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
+const MINIMAX_H3_TEXT_TO_VIDEO_MODEL_VALUE = 'minimax-h3/text-to-video';
+const MINIMAX_H3_IMAGE_TO_VIDEO_MODEL_VALUE = 'minimax-h3/image-to-video';
+const MINIMAX_H3_DURATION_OPTIONS = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const MINIMAX_H3_ASPECT_RATIO_OPTIONS = [
+  '21:9',
+  '16:9',
+  '4:3',
+  '1:1',
+  '3:4',
+  '9:16',
+];
 const KIE_IMAGE_OUTPUT_FORMATS = ['png', 'jpg'] as const;
 const KIE_IMAGE_RESOLUTIONS = ['1K', '2K', '4K'] as const;
 const GPT_IMAGE_2_TEXT_TO_IMAGE_MODEL_VALUE = 'gpt-image-2-text-to-image';
@@ -358,6 +389,14 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
         byResolution: item.byResolution,
       },
     },
+    inputConstraints:
+      scene === 'image-to-video'
+        ? {
+            [scene]: {
+              imageModes: [...VIDEO_IMAGE_MODES],
+            },
+          }
+        : undefined,
   };
 }
 
@@ -622,6 +661,73 @@ export const MODELS: ModelEntry[] = [
       },
     },
   },
+  {
+    mediaType: 'video',
+    family: 'minimax-h3',
+    value: MINIMAX_H3_TEXT_TO_VIDEO_MODEL_VALUE,
+    label: 'MiniMax H3',
+    provider: 'kie',
+    scenes: ['text-to-video'],
+    enabled: false,
+    credits: {},
+    defaults: {
+      'text-to-video': {
+        duration: 6,
+        aspect_ratio: '16:9',
+      },
+    },
+    controls: {
+      'text-to-video': {
+        duration: {
+          type: 'number',
+          default: 6,
+          options: [...MINIMAX_H3_DURATION_OPTIONS],
+        },
+        aspect_ratio: {
+          type: 'string',
+          default: '16:9',
+          options: [...MINIMAX_H3_ASPECT_RATIO_OPTIONS],
+        },
+      },
+    },
+    inputConstraints: {
+      'text-to-video': {
+        promptRequired: true,
+      },
+    },
+  },
+  {
+    mediaType: 'video',
+    family: 'minimax-h3',
+    value: MINIMAX_H3_IMAGE_TO_VIDEO_MODEL_VALUE,
+    label: 'MiniMax H3',
+    provider: 'kie',
+    scenes: ['image-to-video'],
+    enabled: false,
+    credits: {},
+    defaults: {
+      'image-to-video': {
+        duration: 6,
+        image_mode: 'first_frame',
+      },
+    },
+    controls: {
+      'image-to-video': {
+        duration: {
+          type: 'number',
+          default: 6,
+          options: [...MINIMAX_H3_DURATION_OPTIONS],
+        },
+      },
+    },
+    inputConstraints: {
+      'image-to-video': {
+        imageModes: ['first_frame', 'first_last_frames'],
+        promptRequired: true,
+        uploadMaxSizeMB: 30,
+      },
+    },
+  },
   ...SEEDANCE_CATALOG.map(createSeedanceEntry),
 ];
 
@@ -648,6 +754,7 @@ const SCENE_CONFIG_FIELDS = [
   'defaults',
   'controls',
   'pricing',
+  'inputConstraints',
   'enforced',
 ] as const;
 
@@ -719,6 +826,56 @@ function validateParameterMaps(model: ModelEntry, errors: string[]): void {
           `${field} scene value must be an object: ${modelRef(model)}/${scene}`
         );
       }
+    }
+  }
+}
+
+function validateInputConstraints(model: ModelEntry, errors: string[]): void {
+  if (!model.inputConstraints) {
+    return;
+  }
+
+  for (const [scene, constraints] of Object.entries(model.inputConstraints)) {
+    if (!isPlainRecord(constraints)) {
+      errors.push(
+        `inputConstraints scene value must be an object: ${modelRef(model)}/${scene}`
+      );
+      continue;
+    }
+
+    const imageModes = constraints.imageModes;
+    if (imageModes !== undefined) {
+      if (
+        scene !== 'image-to-video' ||
+        !Array.isArray(imageModes) ||
+        imageModes.length === 0 ||
+        imageModes.some(
+          (mode) => !(VIDEO_IMAGE_MODES as readonly unknown[]).includes(mode)
+        ) ||
+        new Set(imageModes).size !== imageModes.length
+      ) {
+        errors.push(
+          `inputConstraints imageModes is invalid: ${modelRef(model)}/${scene}`
+        );
+      }
+    }
+
+    if (
+      constraints.promptRequired !== undefined &&
+      typeof constraints.promptRequired !== 'boolean'
+    ) {
+      errors.push(
+        `inputConstraints promptRequired is invalid: ${modelRef(model)}/${scene}`
+      );
+    }
+
+    if (
+      constraints.uploadMaxSizeMB !== undefined &&
+      !isPositiveNumber(constraints.uploadMaxSizeMB)
+    ) {
+      errors.push(
+        `inputConstraints uploadMaxSizeMB is invalid: ${modelRef(model)}/${scene}`
+      );
     }
   }
 }
@@ -1317,6 +1474,7 @@ function getFallbackConfigSignature(model: ModelEntry, scene: string): string {
     controls: model.controls?.[scene],
     defaults: model.defaults?.[scene],
     enforced: model.enforced?.[scene],
+    inputConstraints: model.inputConstraints?.[scene],
     pricing: model.pricing?.[scene],
     skuAttributes: model.skuAttributes?.[scene],
   });
@@ -1386,6 +1544,7 @@ export function validateModels(): string[] {
   for (const m of MODELS) {
     validateSceneConfigKeys(m, errors);
     validateParameterMaps(m, errors);
+    validateInputConstraints(m, errors);
     validateControls(m, errors);
     validateDefaultsAgainstControls(m, errors);
     validatePricing(m, errors);

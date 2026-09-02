@@ -54,6 +54,130 @@ const SEEDANCE_2_VIDEO_MODELS = new Set([
   'bytedance/seedance-2-fast',
   'bytedance/seedance-2',
 ]);
+const MINIMAX_H3_TEXT_TO_VIDEO_MODEL = 'minimax-h3/text-to-video';
+const MINIMAX_H3_IMAGE_TO_VIDEO_MODEL = 'minimax-h3/image-to-video';
+const MINIMAX_H3_DURATION_OPTIONS = new Set([
+  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+]);
+const MINIMAX_H3_ASPECT_RATIOS = new Set([
+  '21:9',
+  '16:9',
+  '4:3',
+  '1:1',
+  '3:4',
+  '9:16',
+]);
+const MINIMAX_H3_VIDEO_MODELS = new Set([
+  MINIMAX_H3_TEXT_TO_VIDEO_MODEL,
+  MINIMAX_H3_IMAGE_TO_VIDEO_MODEL,
+]);
+
+export interface KieCreateTaskPayload {
+  model: string;
+  callBackUrl?: string;
+  input: Record<string, unknown>;
+}
+
+interface BuildVideoPayloadParams {
+  model: string;
+  prompt: string;
+  options: Record<string, unknown>;
+}
+
+function getMinimaxH3Prompt(prompt: string): string {
+  const normalizedPrompt = prompt.trim();
+  if (!normalizedPrompt) {
+    throw new Error('MiniMax H3 prompt is required');
+  }
+
+  return normalizedPrompt;
+}
+
+function getMinimaxH3Duration(options: Record<string, unknown>): number {
+  const duration = options.duration;
+  if (
+    typeof duration !== 'number' ||
+    !Number.isInteger(duration) ||
+    !MINIMAX_H3_DURATION_OPTIONS.has(duration)
+  ) {
+    throw new Error('invalid MiniMax H3 duration');
+  }
+
+  return duration;
+}
+
+function getMinimaxH3AspectRatio(options: Record<string, unknown>): string {
+  const aspectRatio = options.aspect_ratio;
+  if (
+    typeof aspectRatio !== 'string' ||
+    !MINIMAX_H3_ASPECT_RATIOS.has(aspectRatio)
+  ) {
+    throw new Error('invalid MiniMax H3 aspect_ratio');
+  }
+
+  return aspectRatio;
+}
+
+export function buildMinimaxH3TextToVideoPayload(
+  prompt: string,
+  options: Record<string, unknown>
+): KieCreateTaskPayload {
+  return {
+    model: MINIMAX_H3_TEXT_TO_VIDEO_MODEL,
+    input: {
+      prompt: getMinimaxH3Prompt(prompt),
+      aspect_ratio: getMinimaxH3AspectRatio(options),
+      duration: getMinimaxH3Duration(options),
+    },
+  };
+}
+
+export function buildMinimaxH3ImageToVideoPayload(
+  prompt: string,
+  options: Record<string, unknown>
+): KieCreateTaskPayload {
+  const imageMode = options.image_mode;
+  if (imageMode !== 'first_frame' && imageMode !== 'first_last_frames') {
+    throw new Error('invalid MiniMax H3 image_mode');
+  }
+
+  const imageInput = options.image_input;
+  if (!Array.isArray(imageInput)) {
+    throw new Error('MiniMax H3 image_mode requires image_input');
+  }
+
+  assertVideoImageInput(imageMode, imageInput);
+
+  const input: Record<string, unknown> = {
+    prompt: getMinimaxH3Prompt(prompt),
+    first_frame_url: imageInput[0],
+    duration: getMinimaxH3Duration(options),
+  };
+
+  if (imageMode === 'first_last_frames') {
+    input.last_frame_url = imageInput[1];
+  }
+
+  return {
+    model: MINIMAX_H3_IMAGE_TO_VIDEO_MODEL,
+    input,
+  };
+}
+
+export function buildMinimaxH3CreateTaskPayload({
+  model,
+  prompt,
+  options,
+}: BuildVideoPayloadParams): KieCreateTaskPayload {
+  switch (model) {
+    case MINIMAX_H3_TEXT_TO_VIDEO_MODEL:
+      return buildMinimaxH3TextToVideoPayload(prompt, options);
+    case MINIMAX_H3_IMAGE_TO_VIDEO_MODEL:
+      return buildMinimaxH3ImageToVideoPayload(prompt, options);
+    default:
+      throw new Error(`unsupported MiniMax H3 route: ${model}`);
+  }
+}
 
 const KIE_ERROR_BODY_SNIPPET_LENGTH = 2048;
 
@@ -182,9 +306,7 @@ function isGptImage2Model(model: string): boolean {
   return GPT_IMAGE_2_MODELS.has(model);
 }
 
-function isGptImage2Resolution(
-  value: unknown
-): value is GptImage2Resolution {
+function isGptImage2Resolution(value: unknown): value is GptImage2Resolution {
   return (
     typeof value === 'string' &&
     GPT_IMAGE_2_RESOLUTIONS.has(value as GptImage2Resolution)
@@ -209,10 +331,7 @@ function validateGptImage2Options(model: string, options: unknown): void {
     );
   }
 
-  if (
-    resolution !== '1K' &&
-    (!aspectRatio || aspectRatio === 'auto')
-  ) {
+  if (resolution !== '1K' && (!aspectRatio || aspectRatio === 'auto')) {
     throw new Error(
       'KIE GPT Image 2 requires a non-auto aspect_ratio for 2K and 4K resolution.'
     );
@@ -511,19 +630,27 @@ export class KieProvider implements AIProvider {
       throw new Error('model is required');
     }
 
-    // build request params
-    let payload: any = {
-      model: params.model,
-      callBackUrl: params.callbackUrl,
-      input: {},
-    };
+    const options = isRecord(params.options) ? params.options : {};
+    let payload: KieCreateTaskPayload;
 
-    if (params.prompt) {
-      payload.input.prompt = params.prompt;
-    }
+    if (MINIMAX_H3_VIDEO_MODELS.has(params.model)) {
+      payload = buildMinimaxH3CreateTaskPayload({
+        model: params.model,
+        prompt: params.prompt,
+        options,
+      });
+    } else {
+      // Keep the existing generic Kie video mapping for non-H3 models.
+      payload = {
+        model: params.model,
+        callBackUrl: params.callbackUrl,
+        input: {},
+      };
 
-    if (params.options) {
-      const options = params.options as Record<string, unknown>;
+      if (params.prompt) {
+        payload.input.prompt = params.prompt;
+      }
+
       // text-to-video: use prompt
       // image-to-video: use image_input
       // video-to-video: use video_input

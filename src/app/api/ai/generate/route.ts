@@ -7,6 +7,7 @@ import {
   type GenerationPricingSnapshot,
 } from '@/config/ai/generation-pricing';
 import { findModel, type ModelEntry } from '@/config/ai/models';
+import { assertModelInputConstraints } from '@/config/ai/options';
 import { AIMediaType } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
@@ -240,6 +241,12 @@ export async function POST(request: Request) {
         options,
       });
       assertSafeAssetInputUrls(pricingSnapshot.finalOptions);
+      assertModelInputConstraints({
+        entry: firstEntry,
+        scene,
+        prompt: requestPrompt,
+        options: pricingSnapshot.finalOptions,
+      });
       costCredits = pricingSnapshot.costCredits;
     } else {
       // Legacy non image/video path; music keeps fixed pricing for now.
@@ -304,6 +311,12 @@ export async function POST(request: Request) {
           });
           const finalOptions = candidatePricingSnapshot.finalOptions;
           assertSafeAssetInputUrls(finalOptions);
+          assertModelInputConstraints({
+            entry,
+            scene,
+            prompt: requestPrompt,
+            options: finalOptions,
+          });
           assertGenerationPricingConsistency(
             pricingSnapshot,
             candidatePricingSnapshot

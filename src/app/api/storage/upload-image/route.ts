@@ -17,6 +17,19 @@ const extFromMime = (mimeType: string) => {
   return map[mimeType] || '';
 };
 
+const MAX_IMAGE_UPLOAD_BYTES = 50 * 1024 * 1024;
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/svg+xml',
+  'image/avif',
+  'image/heic',
+  'image/heif',
+]);
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -39,9 +52,14 @@ export async function POST(req: Request) {
     const uploadResults = [];
 
     for (const file of files) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        return respErr(`File ${file.name} is not an image`);
+      const mimeType = file.type.toLowerCase();
+
+      if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType)) {
+        return respErr(`File ${file.name} has an unsupported image type`);
+      }
+
+      if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
+        return respErr(`File ${file.name} exceeds the 50MB limit`);
       }
 
       // Convert file to buffer
@@ -49,7 +67,7 @@ export async function POST(req: Request) {
       const body = new Uint8Array(arrayBuffer);
 
       const digest = md5(body);
-      const ext = extFromMime(file.type) || file.name.split('.').pop() || 'bin';
+      const ext = extFromMime(mimeType);
       const key = `${digest}.${ext}`;
 
       // If the same image already exists, reuse its URL to save storage space.
@@ -72,7 +90,7 @@ export async function POST(req: Request) {
       const result = await storageService.uploadFile({
         body,
         key: key,
-        contentType: file.type,
+        contentType: mimeType,
         disposition: 'inline',
       });
 

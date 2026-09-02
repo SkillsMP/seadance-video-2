@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
-import { resolveFinalOptions } from '../src/config/ai/options';
+import {
+  assertModelInputConstraints,
+  resolveFinalOptions,
+} from '../src/config/ai/options';
 import { KieProvider } from '../src/extensions/ai/kie';
 import { AIMediaType, AITaskStatus } from '../src/extensions/ai/types';
 import {
@@ -18,6 +21,18 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
 
   if (!entry) {
     throw new Error(`missing enabled model fixture: ${family}/${scene}`);
+  }
+
+  return entry;
+}
+
+function findModelEntry(value: string, scene: string): ModelEntry {
+  const entry = MODELS.find(
+    (model) => model.value === value && model.scenes.includes(scene)
+  );
+
+  if (!entry) {
+    throw new Error(`missing model fixture: ${value}/${scene}`);
   }
 
   return entry;
@@ -44,10 +59,7 @@ const nanoBananaProTextEntry = findEnabledModel(
   'nano-banana-pro',
   'text-to-image'
 );
-const nanoBanana2TextEntry = findEnabledModel(
-  'nano-banana-2',
-  'text-to-image'
-);
+const nanoBanana2TextEntry = findEnabledModel('nano-banana-2', 'text-to-image');
 const legacyNanoBananaTextEntry = findEnabledModel(
   'nano-banana',
   'text-to-image'
@@ -60,6 +72,14 @@ const standardVideoInputEntry = findEnabledModel(
   'seedance-2-standard',
   'video-to-video'
 );
+const minimaxH3TextEntry = findModelEntry(
+  'minimax-h3/text-to-video',
+  'text-to-video'
+);
+const minimaxH3ImageEntry = findModelEntry(
+  'minimax-h3/image-to-video',
+  'image-to-video'
+);
 
 assert.equal(
   MODELS.some((model) =>
@@ -69,6 +89,8 @@ assert.equal(
   ),
   false
 );
+assert.equal(minimaxH3TextEntry.enabled, false);
+assert.equal(minimaxH3ImageEntry.enabled, false);
 
 assert.equal(textEntry.defaults?.[textScene]?.generate_audio, false);
 assert.deepEqual(textEntry.controls?.[textScene]?.generate_audio, {
@@ -169,6 +191,69 @@ assert.equal(imageOptions.duration, 6);
 assert.equal(imageOptions.resolution, '720p');
 assert.equal(imageOptions.inputBilling, 'no-video-input');
 assert.equal('image_mode' in imageOptions, false);
+
+const minimaxH3TextOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: minimaxH3TextEntry,
+  options: {
+    duration: 4,
+    aspect_ratio: '21:9',
+  },
+  allowControlOptions: true,
+});
+assert.equal(minimaxH3TextOptions.duration, 4);
+assert.equal(minimaxH3TextOptions.aspect_ratio, '21:9');
+assert.equal(minimaxH3TextOptions.resolution, undefined);
+assert.equal(minimaxH3TextOptions.generate_audio, undefined);
+
+const minimaxH3ImageOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: minimaxH3ImageEntry,
+  options: {
+    duration: 4,
+    image_input: ['https://example.com/start.png'],
+    image_mode: 'first_frame',
+  },
+  allowControlOptions: true,
+});
+assert.equal(minimaxH3ImageOptions.duration, 4);
+assert.equal(minimaxH3ImageOptions.image_mode, 'first_frame');
+assert.deepEqual(minimaxH3ImageOptions.image_input, [
+  'https://example.com/start.png',
+]);
+assert.equal(minimaxH3ImageOptions.aspect_ratio, undefined);
+assert.equal(minimaxH3ImageOptions.resolution, undefined);
+assert.equal(minimaxH3ImageOptions.generate_audio, undefined);
+
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: minimaxH3ImageEntry,
+      scene: 'image-to-video',
+      prompt: 'Animate the subject.',
+      options: {
+        duration: 4,
+        image_input: [
+          'https://example.com/reference-1.png',
+          'https://example.com/reference-2.png',
+        ],
+        image_mode: 'reference_images',
+      },
+    }),
+  /unsupported image_mode for model/
+);
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: minimaxH3TextEntry,
+      scene: 'text-to-video',
+      prompt: ' ',
+      options: minimaxH3TextOptions,
+    }),
+  /prompt is required for model/
+);
 
 const firstFrameImageOptions = resolveFinalOptions({
   mediaType: 'video',

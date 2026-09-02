@@ -336,7 +336,7 @@ export function ImageUploader({
       // when full: replace from the end backwards
       if (items.length) {
         const normalized = selectedFiles.filter((file) =>
-          file.type?.startsWith('image/')
+          file.type?.startsWith('image/') && file.size <= maxBytes
         );
         if (!normalized.length) return;
 

@@ -19,6 +19,8 @@
     "start": "next start",
     "lint": "eslint .",
     "ai:validate-models": "tsx scripts/validate-ai-models.ts",
+    "test:seed-audio": "tsx scripts/test-seed-audio-contract.ts",
+    "test:video-contract": "tsx scripts/validate-ai-models.ts && tsx scripts/test-resolve-final-options.ts && tsx scripts/test-video-image-inputs-smoke.ts",
     "test:ai-moderation": "tsx scripts/test-generate-candidate-moderation.ts && tsx scripts/test-output-moderation.ts && tsx scripts/test-ai-moderation-contract.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

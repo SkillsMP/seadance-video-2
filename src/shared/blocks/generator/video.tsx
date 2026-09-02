@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 import { Link } from '@/core/i18n/navigation';
 import { calculateModelCredits } from '@/config/ai/credit-costs';
-import { MODELS } from '@/config/ai/models';
+import { MODELS, VIDEO_IMAGE_MODES } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
 import { Badge } from '@/shared/components/ui/badge';
@@ -320,6 +320,15 @@ export function VideoGenerator({
     [availableModelOptions, selectedFamily]
   );
   const selectedEntry = selectedCandidates[0];
+  const selectedInputConstraints = selectedEntry?.inputConstraints?.[activeTab];
+  const selectedImageModes =
+    selectedInputConstraints?.imageModes ?? VIDEO_IMAGE_MODES;
+  const selectedUploadMaxSizeMB =
+    selectedInputConstraints?.uploadMaxSizeMB ?? maxSizeMB;
+  const isPromptRequired =
+    Boolean(selectedInputConstraints?.promptRequired) ||
+    isTextToVideoMode ||
+    isReferenceImagesMode;
   const selectedControlEntries = useMemo(
     () =>
       getGenerationControlEntries({
@@ -638,7 +647,7 @@ export function VideoGenerator({
 
     const trimmedPrompt = prompt.trim();
     const trimmedReferenceVideoUrl = referenceVideoUrl.trim();
-    if (!trimmedPrompt && (isTextToVideoMode || isReferenceImagesMode)) {
+    if (!trimmedPrompt && isPromptRequired) {
       toast.error('Please enter a prompt before generating.');
       return;
     }
@@ -845,9 +854,8 @@ export function VideoGenerator({
 
                 {isImageToVideoMode && (
                   <VideoImageInputs
-                    maxSizeMB={maxSizeMB}
-                    supportsEndFrame={true}
-                    supportsReferenceImages={true}
+                    maxSizeMB={selectedUploadMaxSizeMB}
+                    imageModes={selectedImageModes}
                     referenceMinImages={2}
                     referenceMaxImages={3}
                     onChange={setVideoImageInputs}
@@ -937,7 +945,7 @@ export function VideoGenerator({
                 <div className="space-y-2">
                   <Label htmlFor="video-prompt">
                     {t('form.prompt')}
-                    {isReferenceImagesMode && ' *'}
+                    {isPromptRequired && ' *'}
                   </Label>
                   <Textarea
                     id="video-prompt"
@@ -976,8 +984,7 @@ export function VideoGenerator({
                     disabled={
                       isGenerating ||
                       !canGenerateForModelSelection ||
-                      ((isTextToVideoMode || isReferenceImagesMode) &&
-                        !prompt.trim()) ||
+                      (isPromptRequired && !prompt.trim()) ||
                       isPromptTooLong ||
                       videoImageInputs.isUploading ||
                       videoImageInputs.hasError ||

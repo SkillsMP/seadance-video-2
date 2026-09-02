@@ -1,14 +1,14 @@
-import { type ControlOption, type ModelEntry } from './models';
+import {
+  VIDEO_IMAGE_MODES,
+  type ControlOption,
+  type ModelEntry,
+  type VideoImageMode,
+} from './models';
+
+export { VIDEO_IMAGE_MODES };
+export type { VideoImageMode };
 
 export type GenerationOptions = Record<string, unknown>;
-
-export const VIDEO_IMAGE_MODES = [
-  'first_frame',
-  'first_last_frames',
-  'reference_images',
-] as const;
-
-export type VideoImageMode = (typeof VIDEO_IMAGE_MODES)[number];
 
 interface ResolveOptionsInput {
   mediaType: string;
@@ -16,6 +16,13 @@ interface ResolveOptionsInput {
   entry: ModelEntry;
   options?: unknown;
   allowControlOptions?: boolean;
+}
+
+interface AssertModelInputConstraintsInput {
+  entry: ModelEntry;
+  scene: string;
+  prompt: unknown;
+  options: GenerationOptions;
 }
 
 interface ResolveAutoOptionsInput {
@@ -59,6 +66,45 @@ export function assertVideoImageInput(
   if (!isValidCount) {
     throw new Error(`invalid image_input for image_mode: ${mode}`);
   }
+}
+
+export function assertModelInputConstraints({
+  entry,
+  scene,
+  prompt,
+  options,
+}: AssertModelInputConstraintsInput): void {
+  const constraints = entry.inputConstraints?.[scene];
+  if (!constraints) {
+    return;
+  }
+
+  if (
+    constraints.promptRequired &&
+    (typeof prompt !== 'string' || !prompt.trim())
+  ) {
+    throw new Error(`prompt is required for model: ${entry.family}/${scene}`);
+  }
+
+  const allowedImageModes = constraints.imageModes;
+  const imageMode = options.image_mode;
+  if (!allowedImageModes || imageMode === undefined) {
+    return;
+  }
+
+  if (!isVideoImageMode(imageMode) || !allowedImageModes.includes(imageMode)) {
+    throw new Error(
+      `unsupported image_mode for model: ${entry.family}/${scene}`
+    );
+  }
+
+  if (!Array.isArray(options.image_input)) {
+    throw new Error(
+      `image_mode requires image_input: ${entry.family}/${scene}`
+    );
+  }
+
+  assertVideoImageInput(imageMode, options.image_input);
 }
 
 function isPlainRecord(value: unknown): value is GenerationOptions {
