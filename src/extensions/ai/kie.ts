@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 
+import { assertVideoImageInput, isVideoImageMode } from '@/config/ai/options';
 import { getUuid } from '@/shared/lib/hash';
 
 import { saveFiles } from '.';
@@ -49,8 +50,53 @@ const KIE_IMAGE_FIELD: Record<string, KieImageInputField> = {
 const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
   'bytedance/seedance-2-fast': 'duration',
 };
+const SEEDANCE_2_VIDEO_MODELS = new Set([
+  'bytedance/seedance-2-fast',
+  'bytedance/seedance-2',
+]);
 
 const KIE_ERROR_BODY_SNIPPET_LENGTH = 2048;
+
+function applyKieVideoImageInput({
+  model,
+  options,
+  input,
+}: {
+  model: string;
+  options: Record<string, unknown>;
+  input: Record<string, unknown>;
+}): void {
+  const imageMode = options.image_mode;
+
+  if (SEEDANCE_2_VIDEO_MODELS.has(model) && imageMode !== undefined) {
+    if (!isVideoImageMode(imageMode)) {
+      throw new Error('invalid Seedance 2 image_mode');
+    }
+
+    if (!Array.isArray(options.image_input)) {
+      throw new Error('image_mode requires image_input');
+    }
+
+    assertVideoImageInput(imageMode, options.image_input);
+
+    switch (imageMode) {
+      case 'first_frame':
+        input.first_frame_url = options.image_input[0] as string;
+        return;
+      case 'first_last_frames':
+        input.first_frame_url = options.image_input[0] as string;
+        input.last_frame_url = options.image_input[1] as string;
+        return;
+      case 'reference_images':
+        input.reference_image_urls = options.image_input;
+        return;
+    }
+  }
+
+  if (options.image_input && Array.isArray(options.image_input)) {
+    input.image_urls = options.image_input;
+  }
+}
 
 async function fetchKie(
   apiUrl: string,
@@ -477,13 +523,15 @@ export class KieProvider implements AIProvider {
     }
 
     if (params.options) {
-      const options = params.options;
+      const options = params.options as Record<string, unknown>;
       // text-to-video: use prompt
       // image-to-video: use image_input
       // video-to-video: use video_input
-      if (options.image_input && Array.isArray(options.image_input)) {
-        payload.input.image_urls = options.image_input;
-      }
+      applyKieVideoImageInput({
+        model: params.model,
+        options,
+        input: payload.input,
+      });
       if (options.video_input && Array.isArray(options.video_input)) {
         payload.input.reference_video_urls = options.video_input;
       }

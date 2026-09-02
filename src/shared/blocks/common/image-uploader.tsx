@@ -20,9 +20,12 @@ export interface ImageUploaderValue {
 
 interface ImageUploaderProps {
   allowMultiple?: boolean;
+  disabled?: boolean;
   maxImages?: number;
   maxSizeMB?: number;
   title?: string;
+  uploadLabel?: string;
+  sizeHint?: string;
   emptyHint?: string;
   className?: string;
   defaultPreviews?: string[];
@@ -106,9 +109,12 @@ const uploadImageFile = async (file: File) => {
 
 export function ImageUploader({
   allowMultiple = false,
+  disabled = false,
   maxImages = 1,
   maxSizeMB = 10,
   title,
+  uploadLabel = 'Upload',
+  sizeHint,
   emptyHint,
   className,
   defaultPreviews,
@@ -142,6 +148,13 @@ export function ImageUploader({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useEffect(() => {
+    if (disabled) {
+      dragCounterRef.current = 0;
+      setIsDragActive(false);
+    }
+  }, [disabled]);
 
   // 同步 defaultPreviews 的变化（只在外部变化时同步，避免循环）
   useEffect(() => {
@@ -277,6 +290,12 @@ export function ImageUploader({
   };
 
   const handleFiles = (selectedFiles: File[]) => {
+    if (disabled) {
+      replaceTargetIdRef.current = null;
+      if (inputRef.current) inputRef.current.value = '';
+      return;
+    }
+
     const replaceTargetId = replaceTargetIdRef.current;
     if (replaceTargetId) {
       // reset immediately to avoid sticky replace mode
@@ -415,6 +434,8 @@ export function ImageUploader({
   };
 
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    if (disabled) return;
+
     const clipboardItems = Array.from(event.clipboardData?.items || []);
     const files = clipboardItems
       .filter((item) => item.kind === 'file' && item.type.startsWith('image/'))
@@ -429,6 +450,8 @@ export function ImageUploader({
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (disabled) return;
+
     dragCounterRef.current += 1;
     setIsDragActive(true);
   };
@@ -436,6 +459,11 @@ export function ImageUploader({
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (disabled) {
+      event.dataTransfer.dropEffect = 'none';
+      return;
+    }
+
     event.dataTransfer.dropEffect = 'copy';
     if (!isDragActive) setIsDragActive(true);
   };
@@ -443,6 +471,8 @@ export function ImageUploader({
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (disabled) return;
+
     dragCounterRef.current -= 1;
     if (dragCounterRef.current <= 0) {
       dragCounterRef.current = 0;
@@ -453,6 +483,8 @@ export function ImageUploader({
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (disabled) return;
+
     dragCounterRef.current = 0;
     setIsDragActive(false);
 
@@ -464,6 +496,8 @@ export function ImageUploader({
   };
 
   const handleRemove = (id: string) => {
+    if (disabled) return;
+
     setItems((prev) => {
       const next = prev.filter((item) => item.id !== id);
       const removed = prev.find((item) => item.id === id);
@@ -475,10 +509,14 @@ export function ImageUploader({
   };
 
   const openFilePicker = () => {
+    if (disabled) return;
+
     inputRef.current?.click();
   };
 
   const openReplacePicker = (id: string) => {
+    if (disabled) return;
+
     replaceTargetIdRef.current = id;
     openFilePicker();
   };
@@ -494,9 +532,11 @@ export function ImageUploader({
         'relative focus:outline-none',
         isDragActive &&
           'ring-primary/70 ring-offset-background ring-2 ring-offset-2',
+        disabled && 'cursor-not-allowed',
         className
       )}
-      tabIndex={0}
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
       onPaste={handlePaste}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
@@ -515,6 +555,7 @@ export function ImageUploader({
         type="file"
         accept="image/*"
         multiple={allowMultiple}
+        disabled={disabled}
         onChange={handleSelect}
         className="hidden"
       />
@@ -551,7 +592,7 @@ export function ImageUploader({
                   {formatBytes(item.size)}
                 </span>
               )}
-              {item.status !== 'uploading' && (
+              {item.status !== 'uploading' && !disabled && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <Button
                     type="button"
@@ -575,15 +616,17 @@ export function ImageUploader({
                   Failed
                 </div>
               )}
-              <Button
-                size="icon"
-                variant="destructive"
-                className="absolute top-2 right-2 z-20 h-7 w-7"
-                onClick={() => handleRemove(item.id)}
-                aria-label="Remove image"
-              >
-                <IconX className="h-4 w-4" />
-              </Button>
+              {!disabled && (
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="absolute top-2 right-2 z-20 h-7 w-7"
+                  onClick={() => handleRemove(item.id)}
+                  aria-label="Remove image"
+                >
+                  <IconX className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
         ))}
@@ -594,13 +637,16 @@ export function ImageUploader({
               <button
                 type="button"
                 className="flex h-32 w-32 flex-col items-center justify-center gap-2"
+                disabled={disabled}
                 onClick={openFilePicker}
               >
                 <div className="border-border flex h-10 w-10 items-center justify-center rounded-full border border-dashed">
                   <IconUpload className="h-5 w-5" />
                 </div>
-                <span className="text-xs font-medium">Upload</span>
-                <span className="text-primary text-xs">Max {maxSizeMB}MB</span>
+                <span className="text-xs font-medium">{uploadLabel}</span>
+                <span className="text-muted-foreground text-xs">
+                  {sizeHint ?? `Up to ${maxSizeMB} MB`}
+                </span>
               </button>
             </div>
           </div>

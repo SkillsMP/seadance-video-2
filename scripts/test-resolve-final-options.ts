@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
 import { resolveFinalOptions } from '../src/config/ai/options';
+import { KieProvider } from '../src/extensions/ai/kie';
+import { AIMediaType, AITaskStatus } from '../src/extensions/ai/types';
 import {
   buildGenerationOptions,
   getGenerationControlEntries,
@@ -19,6 +21,20 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
   }
 
   return entry;
+}
+
+async function withMockedFetch<T>(
+  handler: (input: string | URL | Request, init?: RequestInit) => Response,
+  callback: () => Promise<T>
+): Promise<T> {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input, init) => handler(input, init);
+
+  try {
+    return await callback();
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 }
 
 const textEntry = findEnabledModel('seedance-2-fast', 'text-to-video');
@@ -152,6 +168,104 @@ assert.deepEqual(imageOptions.image_input, [
 assert.equal(imageOptions.duration, 6);
 assert.equal(imageOptions.resolution, '720p');
 assert.equal(imageOptions.inputBilling, 'no-video-input');
+assert.equal('image_mode' in imageOptions, false);
+
+const firstFrameImageOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: imageEntry,
+  options: {
+    image_input: [' https://example.com/start.png '],
+    image_mode: 'first_frame',
+  },
+});
+assert.equal(firstFrameImageOptions.image_mode, 'first_frame');
+assert.deepEqual(firstFrameImageOptions.image_input, [
+  'https://example.com/start.png',
+]);
+
+const firstLastFrameImageOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: imageEntry,
+  options: {
+    image_input: [
+      'https://example.com/start.png',
+      'https://example.com/end.png',
+    ],
+    image_mode: 'first_last_frames',
+  },
+});
+assert.equal(firstLastFrameImageOptions.image_mode, 'first_last_frames');
+assert.deepEqual(firstLastFrameImageOptions.image_input, [
+  'https://example.com/start.png',
+  'https://example.com/end.png',
+]);
+
+const referenceImagesOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: imageEntry,
+  options: {
+    image_input: [
+      'https://example.com/reference-1.png',
+      'https://example.com/reference-2.png',
+      'https://example.com/reference-3.png',
+    ],
+    image_mode: 'reference_images',
+  },
+});
+assert.equal(referenceImagesOptions.image_mode, 'reference_images');
+assert.deepEqual(referenceImagesOptions.image_input, [
+  'https://example.com/reference-1.png',
+  'https://example.com/reference-2.png',
+  'https://example.com/reference-3.png',
+]);
+
+assert.throws(
+  () =>
+    resolveFinalOptions({
+      mediaType: 'video',
+      scene: 'image-to-video',
+      entry: imageEntry,
+      options: {
+        image_input: [
+          'https://example.com/start.png',
+          'https://example.com/end.png',
+        ],
+        image_mode: 'first_frame',
+      },
+    }),
+  /invalid image_input for image_mode: first_frame/
+);
+
+assert.throws(
+  () =>
+    resolveFinalOptions({
+      mediaType: 'video',
+      scene: 'image-to-video',
+      entry: imageEntry,
+      options: {
+        image_input: ['https://example.com/reference-1.png'],
+        image_mode: 'reference_images',
+      },
+    }),
+  /invalid image_input for image_mode: reference_images/
+);
+
+assert.throws(
+  () =>
+    resolveFinalOptions({
+      mediaType: 'video',
+      scene: 'image-to-video',
+      entry: imageEntry,
+      options: {
+        image_input: ['https://example.com/start.png'],
+        image_mode: 'unknown_mode',
+      },
+    }),
+  /invalid generation option: image_mode/
+);
 
 const fallbackOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -366,4 +480,131 @@ assert.equal(legacyNanoBananaOptions.aspect_ratio, '16:9');
 assert.equal('resolution' in legacyNanoBananaOptions, false);
 assert.equal('output_format' in legacyNanoBananaOptions, false);
 
-console.log('resolveFinalOptions checks passed.');
+async function assertKieVideoImageInputMappings() {
+  const requests = [
+    {
+      model: 'bytedance/seedance-2-fast',
+      options: {
+        image_input: ['https://example.com/start.png'],
+        image_mode: 'first_frame',
+      },
+      input: {
+        first_frame_url: 'https://example.com/start.png',
+      },
+    },
+    {
+      model: 'bytedance/seedance-2',
+      options: {
+        image_input: [
+          'https://example.com/start.png',
+          'https://example.com/end.png',
+        ],
+        image_mode: 'first_last_frames',
+      },
+      input: {
+        first_frame_url: 'https://example.com/start.png',
+        last_frame_url: 'https://example.com/end.png',
+      },
+    },
+    {
+      model: 'bytedance/seedance-2-fast',
+      options: {
+        image_input: [
+          'https://example.com/reference-1.png',
+          'https://example.com/reference-2.png',
+        ],
+        image_mode: 'reference_images',
+      },
+      input: {
+        reference_image_urls: [
+          'https://example.com/reference-1.png',
+          'https://example.com/reference-2.png',
+        ],
+      },
+    },
+    {
+      model: 'bytedance/seedance-2-fast',
+      options: {
+        image_input: ['https://example.com/legacy.png'],
+      },
+      input: {
+        image_urls: ['https://example.com/legacy.png'],
+      },
+    },
+  ];
+  let requestIndex = 0;
+
+  await withMockedFetch(
+    (input, init) => {
+      assert.equal(String(input), 'https://api.kie.ai/api/v1/jobs/createTask');
+      assert.equal(init?.method, 'POST');
+
+      const expected = requests[requestIndex];
+      assert.ok(expected, 'unexpected KIE video request');
+
+      const body = JSON.parse(String(init?.body));
+      assert.deepEqual(body, {
+        model: expected.model,
+        callBackUrl: 'https://example.com/api/ai/notify/kie',
+        input: {
+          prompt: 'Animate the image naturally.',
+          ...expected.input,
+        },
+      });
+      requestIndex += 1;
+
+      return new Response(
+        JSON.stringify({
+          code: 200,
+          msg: 'success',
+          data: { taskId: `kie-video-${requestIndex}` },
+        })
+      );
+    },
+    async () => {
+      for (const request of requests) {
+        const result = await new KieProvider({
+          apiKey: 'test-api-key',
+          customStorage: false,
+        }).generate({
+          params: {
+            mediaType: AIMediaType.VIDEO,
+            model: request.model,
+            prompt: 'Animate the image naturally.',
+            callbackUrl: 'https://example.com/api/ai/notify/kie',
+            options: request.options,
+          },
+        });
+
+        assert.equal(result.taskStatus, AITaskStatus.PENDING);
+      }
+    }
+  );
+
+  assert.equal(requestIndex, requests.length);
+
+  await assert.rejects(
+    () =>
+      new KieProvider({ apiKey: 'test-api-key' }).generate({
+        params: {
+          mediaType: AIMediaType.VIDEO,
+          model: 'bytedance/seedance-2-fast',
+          prompt: 'Animate the image naturally.',
+          options: {
+            image_input: ['https://example.com/start.png'],
+            image_mode: 'unknown_mode',
+          },
+        },
+      }),
+    /invalid Seedance 2 image_mode/
+  );
+}
+
+void assertKieVideoImageInputMappings()
+  .then(() => {
+    console.log('resolveFinalOptions checks passed.');
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });

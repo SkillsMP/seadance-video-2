@@ -17,7 +17,7 @@ import { calculateModelCredits } from '@/config/ai/credit-costs';
 import { MODELS } from '@/config/ai/models';
 import { resolveFinalOptions } from '@/config/ai/options';
 import { AIMediaType, AITaskStatus } from '@/extensions/ai/types';
-import { ImageUploader, ImageUploaderValue } from '@/shared/blocks/common';
+import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -48,6 +48,10 @@ import {
   getGenerationControlEntries,
   normalizeGenerationControlValues,
 } from './generation-controls';
+import {
+  VideoImageInputs,
+  type VideoImageInputsState,
+} from './video-image-inputs';
 
 interface VideoGeneratorProps {
   className?: string;
@@ -187,10 +191,13 @@ export function VideoGenerator({
     Record<string, string>
   >({});
   const [prompt, setPrompt] = useState('');
-  const [referenceImageItems, setReferenceImageItems] = useState<
-    ImageUploaderValue[]
-  >([]);
-  const [referenceImageUrls, setReferenceImageUrls] = useState<string[]>([]);
+  const [videoImageInputs, setVideoImageInputs] =
+    useState<VideoImageInputsState>({
+      activeKind: 'frames',
+      value: null,
+      isUploading: false,
+      hasError: false,
+    });
   const [referenceVideoUrl, setReferenceVideoUrl] = useState<string>('');
   const [generatedVideos, setGeneratedVideos] = useState<GeneratedVideo[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -236,6 +243,8 @@ export function VideoGenerator({
   const isTextToVideoMode = activeTab === 'text-to-video';
   const isImageToVideoMode = activeTab === 'image-to-video';
   const isVideoToVideoMode = activeTab === 'video-to-video';
+  const isReferenceImagesMode =
+    isImageToVideoMode && videoImageInputs.activeKind === 'reference_images';
   const availableModelOptions = useMemo(
     () =>
       MODEL_OPTIONS.filter(
@@ -372,27 +381,6 @@ export function VideoGenerator({
         return '';
     }
   }, [taskStatus]);
-
-  const handleReferenceImagesChange = useCallback(
-    (items: ImageUploaderValue[]) => {
-      setReferenceImageItems(items);
-      const uploadedUrls = items
-        .filter((item) => item.status === 'uploaded' && item.url)
-        .map((item) => item.url as string);
-      setReferenceImageUrls(uploadedUrls);
-    },
-    []
-  );
-
-  const isReferenceUploading = useMemo(
-    () => referenceImageItems.some((item) => item.status === 'uploading'),
-    [referenceImageItems]
-  );
-
-  const hasReferenceUploadError = useMemo(
-    () => referenceImageItems.some((item) => item.status === 'error'),
-    [referenceImageItems]
-  );
 
   const resetTaskState = useCallback(() => {
     setIsGenerating(false);
@@ -596,13 +584,13 @@ export function VideoGenerator({
 
     const trimmedPrompt = prompt.trim();
     const trimmedReferenceVideoUrl = referenceVideoUrl.trim();
-    if (!trimmedPrompt && isTextToVideoMode) {
+    if (!trimmedPrompt && (isTextToVideoMode || isReferenceImagesMode)) {
       toast.error('Please enter a prompt before generating.');
       return;
     }
 
-    if (isImageToVideoMode && referenceImageUrls.length === 0) {
-      toast.error('Please upload a reference image before generating.');
+    if (isImageToVideoMode && !videoImageInputs.value) {
+      toast.error('Please complete the image inputs before generating.');
       return;
     }
 
@@ -620,8 +608,9 @@ export function VideoGenerator({
     try {
       const options: any = { ...selectedGenerationOptions };
 
-      if (isImageToVideoMode) {
-        options.image_input = referenceImageUrls;
+      if (isImageToVideoMode && videoImageInputs.value) {
+        options.image_input = videoImageInputs.value.imageUrls;
+        options.image_mode = videoImageInputs.value.mode;
       }
 
       if (isVideoToVideoMode) {
@@ -801,22 +790,14 @@ export function VideoGenerator({
                 </div>
 
                 {isImageToVideoMode && (
-                  <div className="space-y-4">
-                    <ImageUploader
-                      title={t('form.reference_image')}
-                      allowMultiple={true}
-                      maxImages={3}
-                      maxSizeMB={maxSizeMB}
-                      onChange={handleReferenceImagesChange}
-                      emptyHint={t('form.reference_image_placeholder')}
-                    />
-
-                    {hasReferenceUploadError && (
-                      <p className="text-destructive text-xs">
-                        {t('form.some_images_failed_to_upload')}
-                      </p>
-                    )}
-                  </div>
+                  <VideoImageInputs
+                    maxSizeMB={maxSizeMB}
+                    supportsEndFrame={true}
+                    supportsReferenceImages={true}
+                    referenceMinImages={2}
+                    referenceMaxImages={3}
+                    onChange={setVideoImageInputs}
+                  />
                 )}
 
                 {isVideoToVideoMode && (
@@ -900,7 +881,10 @@ export function VideoGenerator({
                   )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="video-prompt">{t('form.prompt')}</Label>
+                  <Label htmlFor="video-prompt">
+                    {t('form.prompt')}
+                    {isReferenceImagesMode && ' *'}
+                  </Label>
                   <Textarea
                     id="video-prompt"
                     value={prompt}
@@ -938,11 +922,12 @@ export function VideoGenerator({
                     disabled={
                       isGenerating ||
                       !canGenerateForModelSelection ||
-                      (isTextToVideoMode && !prompt.trim()) ||
+                      ((isTextToVideoMode || isReferenceImagesMode) &&
+                        !prompt.trim()) ||
                       isPromptTooLong ||
-                      isReferenceUploading ||
-                      hasReferenceUploadError ||
-                      (isImageToVideoMode && referenceImageUrls.length === 0) ||
+                      videoImageInputs.isUploading ||
+                      videoImageInputs.hasError ||
+                      (isImageToVideoMode && !videoImageInputs.value) ||
                       (isVideoToVideoMode && !referenceVideoUrl.trim())
                     }
                   >

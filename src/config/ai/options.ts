@@ -2,6 +2,14 @@ import { type ControlOption, type ModelEntry } from './models';
 
 export type GenerationOptions = Record<string, unknown>;
 
+export const VIDEO_IMAGE_MODES = [
+  'first_frame',
+  'first_last_frames',
+  'reference_images',
+] as const;
+
+export type VideoImageMode = (typeof VIDEO_IMAGE_MODES)[number];
+
 interface ResolveOptionsInput {
   mediaType: string;
   scene: string;
@@ -21,6 +29,37 @@ const SCENE_INPUT_OPTIONS: Record<string, Set<string>> = {
   'image-to-video': new Set(['image_input']),
   'video-to-video': new Set(['video_input']),
 };
+
+export function isVideoImageMode(value: unknown): value is VideoImageMode {
+  return (
+    typeof value === 'string' &&
+    (VIDEO_IMAGE_MODES as readonly string[]).includes(value)
+  );
+}
+
+export function assertVideoImageInput(
+  mode: VideoImageMode,
+  imageUrls: readonly unknown[]
+): void {
+  const hasOnlyNonEmptyUrls = imageUrls.every(
+    (url) => typeof url === 'string' && Boolean(url.trim())
+  );
+
+  if (!hasOnlyNonEmptyUrls) {
+    throw new Error(`invalid image_input for image_mode: ${mode}`);
+  }
+
+  const isValidCount =
+    (mode === 'first_frame' && imageUrls.length === 1) ||
+    (mode === 'first_last_frames' && imageUrls.length === 2) ||
+    (mode === 'reference_images' &&
+      imageUrls.length >= 2 &&
+      imageUrls.length <= 3);
+
+  if (!isValidCount) {
+    throw new Error(`invalid image_input for image_mode: ${mode}`);
+  }
+}
 
 function isPlainRecord(value: unknown): value is GenerationOptions {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -66,6 +105,14 @@ function sanitizeAssetInput(name: string, value: unknown): string[] {
   });
 }
 
+function sanitizeVideoImageMode(value: unknown): VideoImageMode {
+  if (!isVideoImageMode(value)) {
+    throw new Error('invalid generation option: image_mode');
+  }
+
+  return value;
+}
+
 export function sanitizeGenerationOptions({
   scene,
   entry,
@@ -95,6 +142,11 @@ export function sanitizeGenerationOptions({
       continue;
     }
 
+    if (scene === 'image-to-video' && name === 'image_mode') {
+      sanitizedOptions[name] = sanitizeVideoImageMode(value);
+      continue;
+    }
+
     const control = controls[name];
     if (!control) {
       continue;
@@ -109,6 +161,19 @@ export function sanitizeGenerationOptions({
     }
 
     sanitizedOptions[name] = value;
+  }
+
+  if (scene === 'image-to-video' && sanitizedOptions.image_mode !== undefined) {
+    const imageInput = sanitizedOptions.image_input;
+
+    if (!Array.isArray(imageInput)) {
+      throw new Error('image_mode requires image_input');
+    }
+
+    assertVideoImageInput(
+      sanitizedOptions.image_mode as VideoImageMode,
+      imageInput
+    );
   }
 
   return sanitizedOptions;

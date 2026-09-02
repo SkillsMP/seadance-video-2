@@ -70,11 +70,6 @@ src/config/db/migrations
 # 设计文档
 /图片视频需求&设计
 
-# 保留目录和本地映射，只忽略映射目录里的所有内容
-!.agents/
-!.agents/skills/
-.agents/skills/**
-
-# 采集与构建输出
-/outputs/
-**/node_modules/
+.claude/
+.codex/
+.agents/
