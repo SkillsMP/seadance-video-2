@@ -668,6 +668,7 @@ export const MODELS: ModelEntry[] = [
       },
     },
   },
+  ...SEEDANCE_CATALOG.map(createSeedanceEntry),
   {
     mediaType: 'video',
     family: 'minimax-h3',
@@ -767,7 +768,6 @@ export const MODELS: ModelEntry[] = [
       },
     },
   },
-  ...SEEDANCE_CATALOG.map(createSeedanceEntry),
 ];
 
 export function findModel(
