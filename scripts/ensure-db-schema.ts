@@ -1,8 +1,3 @@
-/**
- * 该脚本用于确保指定的 PostgreSQL 数据库 Schema 存在。
- * 在 PostgreSQL 数据库中，如果配置了自定义的 DB_SCHEMA（例如非 public 的 schema），
- * 该脚本会在数据库迁移（migration）前置调用，自动创建不存在的 Schema，防止因 Schema 缺失导致迁移失败。
- */
 import postgres from 'postgres';
 
 import { envConfigs } from '@/config';
