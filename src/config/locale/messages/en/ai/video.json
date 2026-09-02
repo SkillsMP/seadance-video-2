@@ -101,6 +101,11 @@
     "buy_credits": "Buy Credits",
     "progress": "Progress",
     "generated_videos": "Video Preview",
+    "default_preview": {
+      "badge": "Example",
+      "prompt_label": "Prompt",
+      "result_hint": "Your generated video will replace this example."
+    },
     "ready_to_generate": "Ready to Generate",
     "ready_for_generating": "Ready for Generation",
     "no_videos_generated": "No Videos Generated"

@@ -82,6 +82,14 @@ type VideoGeneratorTab = 'text-to-video' | 'image-to-video' | 'video-to-video';
 const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
+const DEFAULT_VIDEO_EXAMPLE = {
+  // Temporary public sample; replace with a first-party Seedance demo asset.
+  url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+  model: 'Seedance 2.0',
+  aspectRatio: '16:9',
+  prompt:
+    'A cinematic macro shot of delicate white flowers swaying gently in the breeze, soft natural light, shallow depth of field, smooth motion.',
+} as const;
 const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
 const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
@@ -90,6 +98,51 @@ const GENERATED_CONTENT_MODERATION_FAILED_MESSAGE =
 const MODEL_OPTIONS = MODELS.filter(
   (model) => model.mediaType === AIMediaType.VIDEO && model.enabled
 );
+
+interface DefaultVideoPreviewProps {
+  badgeLabel: string;
+  promptLabel: string;
+  resultHint: string;
+}
+
+function DefaultVideoPreview({
+  badgeLabel,
+  promptLabel,
+  resultHint,
+}: DefaultVideoPreviewProps) {
+  return (
+    <div className="space-y-4">
+      <div className="bg-muted aspect-video overflow-hidden rounded-lg border">
+        <video
+          src={DEFAULT_VIDEO_EXAMPLE.url}
+          controls
+          controlsList="nodownload"
+          playsInline
+          preload="metadata"
+          aria-label={`${badgeLabel}: ${DEFAULT_VIDEO_EXAMPLE.model}`}
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="secondary">{badgeLabel}</Badge>
+          <Badge variant="outline">{DEFAULT_VIDEO_EXAMPLE.model}</Badge>
+          <Badge variant="outline">{DEFAULT_VIDEO_EXAMPLE.aspectRatio}</Badge>
+        </div>
+
+        <div className="space-y-1.5">
+          <p className="text-sm font-medium">{promptLabel}</p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {DEFAULT_VIDEO_EXAMPLE.prompt}
+          </p>
+        </div>
+
+        <p className="text-muted-foreground text-xs">{resultHint}</p>
+      </div>
+    </div>
+  );
+}
 
 function dedupeModelFamilies(options: typeof MODEL_OPTIONS) {
   const seenFamilies = new Set<string>();
@@ -1055,17 +1108,21 @@ export function VideoGenerator({
                       </div>
                     ))}
                   </div>
-                ) : (
+                ) : isGenerating ? (
                   <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
                       <Video className="text-muted-foreground h-10 w-10" />
                     </div>
                     <p className="text-muted-foreground">
-                      {isGenerating
-                        ? t('ready_to_generate')
-                        : t('no_videos_generated')}
+                      {t('ready_to_generate')}
                     </p>
                   </div>
+                ) : (
+                  <DefaultVideoPreview
+                    badgeLabel={t('default_preview.badge')}
+                    promptLabel={t('default_preview.prompt_label')}
+                    resultHint={t('default_preview.result_hint')}
+                  />
                 )}
               </CardContent>
             </Card>
