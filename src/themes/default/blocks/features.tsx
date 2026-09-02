@@ -37,7 +37,9 @@ export function Features({
                   <SmartIcon name={item.icon as string} size={24} />
                   <h3 className="text-sm font-medium">{item.title}</h3>
                 </div>
-                <p className="text-sm">{item.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
