@@ -106,8 +106,8 @@ const minimaxH3ImageEntry = MODELS.find(
 );
 assert.ok(minimaxH3TextEntry, 'missing MiniMax H3 text-to-video entry');
 assert.ok(minimaxH3ImageEntry, 'missing MiniMax H3 image-to-video entry');
-assert.equal(minimaxH3TextEntry.enabled, false);
-assert.equal(minimaxH3ImageEntry.enabled, false);
+assert.equal(minimaxH3TextEntry.enabled, true);
+assert.equal(minimaxH3ImageEntry.enabled, true);
 assert.deepEqual(
   minimaxH3TextEntry.controls?.['text-to-video']?.duration?.options,
   [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -115,6 +115,14 @@ assert.deepEqual(
 assert.deepEqual(
   minimaxH3TextEntry.controls?.['text-to-video']?.aspect_ratio?.options,
   ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16']
+);
+assert.deepEqual(
+  minimaxH3TextEntry.controls?.['text-to-video']?.resolution?.options,
+  ['768P', '2K']
+);
+assert.deepEqual(
+  minimaxH3ImageEntry.controls?.['image-to-video']?.resolution?.options,
+  ['768P', '2K']
 );
 assert.deepEqual(minimaxH3ImageEntry.inputConstraints?.['image-to-video'], {
   imageModes: ['first_frame', 'first_last_frames'],
@@ -338,7 +346,7 @@ async function assertMinimaxH3Mappings() {
       options: {
         duration: 4,
         aspect_ratio: '16:9',
-        resolution: '1080p',
+        resolution: '2K',
         generate_audio: true,
         n_frames: 24,
         image_urls: ['https://example.com/ignored.png'],
@@ -347,6 +355,7 @@ async function assertMinimaxH3Mappings() {
         prompt: 'A paper boat crosses a rain puddle.',
         aspect_ratio: '16:9',
         duration: 4,
+        resolution: '2K',
       },
     },
     {
@@ -355,7 +364,7 @@ async function assertMinimaxH3Mappings() {
         duration: 4,
         image_mode: 'first_frame',
         image_input: ['https://example.com/start.png'],
-        resolution: '1080p',
+        resolution: '768P',
         generate_audio: true,
         n_frames: 24,
         image_urls: ['https://example.com/ignored.png'],
@@ -364,6 +373,7 @@ async function assertMinimaxH3Mappings() {
         prompt: 'Animate the first frame naturally.',
         first_frame_url: 'https://example.com/start.png',
         duration: 4,
+        resolution: '768P',
       },
     },
     {
@@ -375,7 +385,7 @@ async function assertMinimaxH3Mappings() {
           'https://example.com/start.png',
           'https://example.com/end.png',
         ],
-        resolution: '1080p',
+        resolution: '2K',
         generate_audio: true,
         n_frames: 24,
         image_urls: ['https://example.com/ignored.png'],
@@ -385,6 +395,7 @@ async function assertMinimaxH3Mappings() {
         first_frame_url: 'https://example.com/start.png',
         last_frame_url: 'https://example.com/end.png',
         duration: 4,
+        resolution: '2K',
       },
     },
   ] as const;

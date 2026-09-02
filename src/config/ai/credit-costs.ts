@@ -63,7 +63,9 @@ function resolveResolution(
   if (
     resolution !== '480p' &&
     resolution !== '720p' &&
-    resolution !== '1080p'
+    resolution !== '1080p' &&
+    resolution !== '768P' &&
+    resolution !== '2K'
   ) {
     throw new Error('invalid pricing resolution');
   }

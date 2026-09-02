@@ -67,6 +67,7 @@ const MINIMAX_H3_ASPECT_RATIOS = new Set([
   '3:4',
   '9:16',
 ]);
+const MINIMAX_H3_RESOLUTIONS = new Set(['768P', '2K']);
 const MINIMAX_H3_VIDEO_MODELS = new Set([
   MINIMAX_H3_TEXT_TO_VIDEO_MODEL,
   MINIMAX_H3_IMAGE_TO_VIDEO_MODEL,
@@ -118,6 +119,18 @@ function getMinimaxH3AspectRatio(options: Record<string, unknown>): string {
   return aspectRatio;
 }
 
+function getMinimaxH3Resolution(options: Record<string, unknown>): string {
+  const resolution = options.resolution;
+  if (
+    typeof resolution !== 'string' ||
+    !MINIMAX_H3_RESOLUTIONS.has(resolution)
+  ) {
+    throw new Error('invalid MiniMax H3 resolution');
+  }
+
+  return resolution;
+}
+
 export function buildMinimaxH3TextToVideoPayload(
   prompt: string,
   options: Record<string, unknown>
@@ -128,6 +141,7 @@ export function buildMinimaxH3TextToVideoPayload(
       prompt: getMinimaxH3Prompt(prompt),
       aspect_ratio: getMinimaxH3AspectRatio(options),
       duration: getMinimaxH3Duration(options),
+      resolution: getMinimaxH3Resolution(options),
     },
   };
 }
@@ -152,6 +166,7 @@ export function buildMinimaxH3ImageToVideoPayload(
     prompt: getMinimaxH3Prompt(prompt),
     first_frame_url: imageInput[0],
     duration: getMinimaxH3Duration(options),
+    resolution: getMinimaxH3Resolution(options),
   };
 
   if (imageMode === 'first_last_frames') {

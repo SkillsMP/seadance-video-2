@@ -106,6 +106,8 @@ const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
 const MINIMAX_H3_TEXT_TO_VIDEO_MODEL_VALUE = 'minimax-h3/text-to-video';
 const MINIMAX_H3_IMAGE_TO_VIDEO_MODEL_VALUE = 'minimax-h3/image-to-video';
 const MINIMAX_H3_DURATION_OPTIONS = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const MINIMAX_H3_DEFAULT_RESOLUTION = '768P';
+const MINIMAX_H3_RESOLUTION_OPTIONS = ['768P', '2K'] as const;
 const MINIMAX_H3_ASPECT_RATIO_OPTIONS = [
   '21:9',
   '16:9',
@@ -169,7 +171,12 @@ const NANO_BANANA_LEGACY_ASPECT_RATIOS = [
 
 type SeedanceScene = 'text-to-video' | 'image-to-video' | 'video-to-video';
 export type ImageResolution = '1K' | '2K' | '4K';
-export type VideoResolution = '480p' | '720p' | '1080p';
+export type VideoResolution =
+  | '480p'
+  | '720p'
+  | '1080p'
+  | '768P'
+  | '2K';
 /**
  * 定价可用性状态：
  * - enabled: 普通用户可选，生成器 controls 会展示
@@ -195,7 +202,7 @@ export interface VideoResolutionPricing {
   availability: PricingAvailability;
 }
 
-type SeedanceResolution = VideoResolution;
+type SeedanceResolution = '480p' | '720p' | '1080p';
 
 interface SeedanceCatalogItem {
   family: string;
@@ -307,16 +314,16 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
 ];
 
 function getResolutionPricingEntries(
-  byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>
-): Array<[SeedanceResolution, VideoResolutionPricing | undefined]> {
+  byResolution: Partial<Record<VideoResolution, VideoResolutionPricing>>
+): Array<[VideoResolution, VideoResolutionPricing | undefined]> {
   return Object.entries(byResolution) as Array<
-    [SeedanceResolution, VideoResolutionPricing | undefined]
+    [VideoResolution, VideoResolutionPricing | undefined]
   >;
 }
 
 function getEnabledResolutionOptions(
-  byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>
-): SeedanceResolution[] {
+  byResolution: Partial<Record<VideoResolution, VideoResolutionPricing>>
+): VideoResolution[] {
   return getResolutionPricingEntries(byResolution).flatMap(
     ([resolution, pricing]) =>
       pricing?.availability === 'enabled' ? [resolution] : []
@@ -668,12 +675,13 @@ export const MODELS: ModelEntry[] = [
     label: 'MiniMax H3',
     provider: 'kie',
     scenes: ['text-to-video'],
-    enabled: false,
-    credits: {},
+    enabled: true,
+    credits: { 'text-to-video': 72 },
     defaults: {
       'text-to-video': {
         duration: 6,
         aspect_ratio: '16:9',
+        resolution: MINIMAX_H3_DEFAULT_RESOLUTION,
       },
     },
     controls: {
@@ -687,6 +695,21 @@ export const MODELS: ModelEntry[] = [
           type: 'string',
           default: '16:9',
           options: [...MINIMAX_H3_ASPECT_RATIO_OPTIONS],
+        },
+        resolution: {
+          type: 'string',
+          default: MINIMAX_H3_DEFAULT_RESOLUTION,
+          options: [...MINIMAX_H3_RESOLUTION_OPTIONS],
+        },
+      },
+    },
+    pricing: {
+      'text-to-video': {
+        mode: 'perSecond',
+        defaultDuration: 6,
+        byResolution: {
+          '768P': { creditsPerSecond: 12, availability: 'enabled' },
+          '2K': { creditsPerSecond: 20, availability: 'enabled' },
         },
       },
     },
@@ -703,12 +726,13 @@ export const MODELS: ModelEntry[] = [
     label: 'MiniMax H3',
     provider: 'kie',
     scenes: ['image-to-video'],
-    enabled: false,
-    credits: {},
+    enabled: true,
+    credits: { 'image-to-video': 72 },
     defaults: {
       'image-to-video': {
         duration: 6,
         image_mode: 'first_frame',
+        resolution: MINIMAX_H3_DEFAULT_RESOLUTION,
       },
     },
     controls: {
@@ -717,6 +741,21 @@ export const MODELS: ModelEntry[] = [
           type: 'number',
           default: 6,
           options: [...MINIMAX_H3_DURATION_OPTIONS],
+        },
+        resolution: {
+          type: 'string',
+          default: MINIMAX_H3_DEFAULT_RESOLUTION,
+          options: [...MINIMAX_H3_RESOLUTION_OPTIONS],
+        },
+      },
+    },
+    pricing: {
+      'image-to-video': {
+        mode: 'perSecond',
+        defaultDuration: 6,
+        byResolution: {
+          '768P': { creditsPerSecond: 12, availability: 'enabled' },
+          '2K': { creditsPerSecond: 20, availability: 'enabled' },
         },
       },
     },
@@ -1149,7 +1188,7 @@ function validatePricing(model: ModelEntry, errors: string[]): void {
         for (const [resolution, resolutionPricing] of Object.entries(
           byResolution
         )) {
-          if (!['480p', '720p', '1080p'].includes(resolution)) {
+          if (!['480p', '720p', '1080p', '768P', '2K'].includes(resolution)) {
             errors.push(
               `pricing resolution is invalid: ${modelRef(model)}/${scene}/${resolution}`
             );

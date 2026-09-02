@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';
+import { resolveGenerationPricingSnapshot } from '../src/config/ai/generation-pricing';
 import {
   assertModelInputConstraints,
   resolveFinalOptions,
@@ -89,8 +90,16 @@ assert.equal(
   ),
   false
 );
-assert.equal(minimaxH3TextEntry.enabled, false);
-assert.equal(minimaxH3ImageEntry.enabled, false);
+assert.equal(minimaxH3TextEntry.enabled, true);
+assert.equal(minimaxH3ImageEntry.enabled, true);
+assert.deepEqual(
+  minimaxH3TextEntry.controls?.['text-to-video']?.resolution?.options,
+  ['768P', '2K']
+);
+assert.deepEqual(
+  minimaxH3ImageEntry.controls?.['image-to-video']?.resolution?.options,
+  ['768P', '2K']
+);
 
 assert.equal(textEntry.defaults?.[textScene]?.generate_audio, false);
 assert.deepEqual(textEntry.controls?.[textScene]?.generate_audio, {
@@ -199,13 +208,23 @@ const minimaxH3TextOptions = resolveFinalOptions({
   options: {
     duration: 4,
     aspect_ratio: '21:9',
+    resolution: '2K',
   },
   allowControlOptions: true,
 });
 assert.equal(minimaxH3TextOptions.duration, 4);
 assert.equal(minimaxH3TextOptions.aspect_ratio, '21:9');
-assert.equal(minimaxH3TextOptions.resolution, undefined);
+assert.equal(minimaxH3TextOptions.resolution, '2K');
 assert.equal(minimaxH3TextOptions.generate_audio, undefined);
+assert.equal(
+  resolveGenerationPricingSnapshot({
+    mediaType: 'video',
+    scene: 'text-to-video',
+    entry: minimaxH3TextEntry,
+    options: minimaxH3TextOptions,
+  }).costCredits,
+  80
+);
 
 const minimaxH3ImageOptions = resolveFinalOptions({
   mediaType: 'video',
@@ -215,6 +234,7 @@ const minimaxH3ImageOptions = resolveFinalOptions({
     duration: 4,
     image_input: ['https://example.com/start.png'],
     image_mode: 'first_frame',
+    resolution: '768P',
   },
   allowControlOptions: true,
 });
@@ -224,8 +244,17 @@ assert.deepEqual(minimaxH3ImageOptions.image_input, [
   'https://example.com/start.png',
 ]);
 assert.equal(minimaxH3ImageOptions.aspect_ratio, undefined);
-assert.equal(minimaxH3ImageOptions.resolution, undefined);
+assert.equal(minimaxH3ImageOptions.resolution, '768P');
 assert.equal(minimaxH3ImageOptions.generate_audio, undefined);
+assert.equal(
+  resolveGenerationPricingSnapshot({
+    mediaType: 'video',
+    scene: 'image-to-video',
+    entry: minimaxH3ImageEntry,
+    options: minimaxH3ImageOptions,
+  }).costCredits,
+  48
+);
 
 assert.throws(
   () =>
