@@ -1,11 +1,11 @@
 {
   "generator": {
-    "title": "Seedance 2.0 AI Video Generator"
+    "title": "Seedance AI Video Generator"
   },
   "metadata": {
-    "title": "Seedance 2.5 Announced | Seedance 2.0 AI Video Generator",
-    "description": "Follow ByteDance Seedance 2.5 release and early access updates, then create cinematic videos with the currently available Seedance 2.0 text-to-video and image-to-video workflow.",
-    "keywords": "Seedance 2.5, ByteDance Seedance 2.5, Doubao Seedance 2.5, Seedance 2.5 release date, Seedance 2.5 early access, 30 second AI video, 50 multimodal references, Seedance 2.0, Jimeng AI, Dreamina, AI video generator, text to video, image to video"
+    "title": "Seedance AI Video Generator | Cinematic Text to Video & Image to Video",
+    "description": "Create cinematic AI videos from text and images with Seedance. Fast, high-quality Seedance 2.0 & 2.5 video generator online, built for multimodal creative workflows.",
+    "keywords": "Seedance AI Video Generator, Seedance, Seedance 2.0, Seedance 2.5, AI video generator, text to video, image to video, cinematic AI video, Doubao Seedance, Jimeng AI, ByteDance AI"
   },
   "page": {
     "show_sections": [
@@ -21,26 +21,25 @@
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Explore the Next Generation of AI Video with Seedance 2.5",
-        "highlight_text": "Seedance 2.5",
-        "description": "Seedance 2.5 was announced by ByteDance on June 23, 2026, and remains in enterprise preview. BytePlus currently lists broader availability as \"Coming soon.\" Follow the release while creating videos today with our currently supported Seedance 2.0 workflow.",
+        "title": "Seedance AI Video Generator",
+        "highlight_text": "AI Video Generator",
+        "description": "Turn text and images into cinematic AI videos with Seedance. Create with the available high-speed Seedance 2.0 workflow today.",
         "announcement": {
-          "title": "Seedance 2.5 announced — view release status",
-          "url": "/#faq"
+          "title": "Seedance 2.5 announced · Track release updates →",
+          "url": "/seedance-2-5"
         },
-        "tip": "Seedance 2.5 is not yet available in this generator. Current generation uses Seedance 2.0.",
         "buttons": [
           {
-            "title": "Create with Seedance 2.0",
+            "title": "Generate Video",
             "icon": "Video",
             "url": "/#generator",
             "target": "_self",
             "variant": "default"
           },
           {
-            "title": "Read Seedance 2.5 FAQ",
-            "icon": "BookOpenText",
-            "url": "/#faq",
+            "title": "Watch Examples",
+            "icon": "Sparkles",
+            "url": "/#showcases",
             "target": "_self",
             "variant": "outline"
           }
