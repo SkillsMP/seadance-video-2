@@ -1172,11 +1172,7 @@ export function ImageGenerator({
 
                                 return (
                                   <SelectItem key={value} value={value}>
-                                    {formatControlOption(
-                                      name,
-                                      option,
-                                      control
-                                    )}
+                                    {formatControlOption(name, option, control)}
                                   </SelectItem>
                                 );
                               })}
@@ -1273,27 +1269,19 @@ export function ImageGenerator({
                 )}
 
                 {/* 积分显示和充值 */}
-                {!isMounted || isLoadingCredits || isLoadingProviders ? (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-primary">
-                      {t('credits_cost', { credits: costCredits })}
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      {t('credits_remaining', { credits: 0 })}
-                    </span>
-                  </div>
-                ) : user && remainingCredits > 0 ? (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-primary">
-                      {t('credits_cost', { credits: costCredits })}
-                    </span>
-                    <span>
-                      {t('credits_remaining', { credits: remainingCredits })}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
+                {isMounted &&
+                  user &&
+                  (isLoadingCredits || isLoadingProviders ? (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-primary">
+                        {t('credits_cost', { credits: costCredits })}
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        {t('credits_remaining', { credits: 0 })}
+                      </span>
+                    </div>
+                  ) : remainingCredits > 0 ? (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-primary">
                         {t('credits_cost', { credits: costCredits })}
@@ -1302,14 +1290,26 @@ export function ImageGenerator({
                         {t('credits_remaining', { credits: remainingCredits })}
                       </span>
                     </div>
-                    <Link href="/pricing">
-                      <Button variant="outline" className="w-full" size="lg">
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        {t('buy_credits')}
-                      </Button>
-                    </Link>
-                  </div>
-                )}
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-primary">
+                          {t('credits_cost', { credits: costCredits })}
+                        </span>
+                        <span>
+                          {t('credits_remaining', {
+                            credits: remainingCredits,
+                          })}
+                        </span>
+                      </div>
+                      <Link href="/pricing">
+                        <Button variant="outline" className="w-full" size="lg">
+                          <CreditCard className="mr-2 h-4 w-4" />
+                          {t('buy_credits')}
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
 
                 {/* 生成进度条（仅在生成中时显示） */}
                 {isGenerating && (

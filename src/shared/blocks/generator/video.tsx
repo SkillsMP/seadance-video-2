@@ -885,63 +885,63 @@ export function VideoGenerator({
                         selectedControlValues[name] ??
                         getControlDefaultValue(control);
 
-                        return (
-                          <div key={name} className="space-y-2">
-                            <Label htmlFor={`video-control-${name}`}>
-                              {getControlLabel(name, control)}
-                            </Label>
-                            {control.ui === 'switch' ||
-                            control.type === 'boolean' ? (
-                              <div className="flex h-10 items-center">
-                                <Switch
-                                  id={`video-control-${name}`}
-                                  checked={selectedValue === 'true'}
-                                  onCheckedChange={(checked) =>
-                                    handleControlChange(name, String(checked))
-                                  }
-                                  disabled={
-                                    isLoadingProviders || !hasAvailableFamilies
-                                  }
-                                />
-                              </div>
-                            ) : (
-                              <Select
-                                value={selectedValue}
-                                onValueChange={(value) =>
-                                  handleControlChange(name, value)
+                      return (
+                        <div key={name} className="space-y-2">
+                          <Label htmlFor={`video-control-${name}`}>
+                            {getControlLabel(name, control)}
+                          </Label>
+                          {control.ui === 'switch' ||
+                          control.type === 'boolean' ? (
+                            <div className="flex h-10 items-center">
+                              <Switch
+                                id={`video-control-${name}`}
+                                checked={selectedValue === 'true'}
+                                onCheckedChange={(checked) =>
+                                  handleControlChange(name, String(checked))
                                 }
                                 disabled={
                                   isLoadingProviders || !hasAvailableFamilies
                                 }
+                              />
+                            </div>
+                          ) : (
+                            <Select
+                              value={selectedValue}
+                              onValueChange={(value) =>
+                                handleControlChange(name, value)
+                              }
+                              disabled={
+                                isLoadingProviders || !hasAvailableFamilies
+                              }
+                            >
+                              <SelectTrigger
+                                id={`video-control-${name}`}
+                                className="w-full"
                               >
-                                <SelectTrigger
-                                  id={`video-control-${name}`}
-                                  className="w-full"
-                                >
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {control.options.map((option) => {
-                                    const value = String(option);
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {control.options.map((option) => {
+                                  const value = String(option);
 
-                                    return (
-                                      <SelectItem key={value} value={value}>
-                                        {formatControlOption(
-                                          name,
-                                          option,
-                                          control
-                                        )}
-                                      </SelectItem>
-                                    );
-                                  })}
-                                </SelectContent>
-                              </Select>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                                  return (
+                                    <SelectItem key={value} value={value}>
+                                      {formatControlOption(
+                                        name,
+                                        option,
+                                        control
+                                      )}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="video-prompt">
@@ -1022,24 +1022,9 @@ export function VideoGenerator({
                   </Button>
                 )}
 
-                {!isMounted ? (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-primary">
-                      {t('credits_cost', { credits: costCredits })}
-                    </span>
-                    <span>{t('credits_remaining', { credits: 0 })}</span>
-                  </div>
-                ) : user && remainingCredits > 0 ? (
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-primary">
-                      {t('credits_cost', { credits: costCredits })}
-                    </span>
-                    <span>
-                      {t('credits_remaining', { credits: remainingCredits })}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
+                {isMounted &&
+                  user &&
+                  (remainingCredits > 0 ? (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-primary">
                         {t('credits_cost', { credits: costCredits })}
@@ -1048,14 +1033,26 @@ export function VideoGenerator({
                         {t('credits_remaining', { credits: remainingCredits })}
                       </span>
                     </div>
-                    <Link href="/pricing">
-                      <Button variant="outline" className="w-full" size="lg">
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        {t('buy_credits')}
-                      </Button>
-                    </Link>
-                  </div>
-                )}
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-primary">
+                          {t('credits_cost', { credits: costCredits })}
+                        </span>
+                        <span>
+                          {t('credits_remaining', {
+                            credits: remainingCredits,
+                          })}
+                        </span>
+                      </div>
+                      <Link href="/pricing">
+                        <Button variant="outline" className="w-full" size="lg">
+                          <CreditCard className="mr-2 h-4 w-4" />
+                          {t('buy_credits')}
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
 
                 {isGenerating && (
                   <div className="space-y-2 rounded-lg border p-4">
