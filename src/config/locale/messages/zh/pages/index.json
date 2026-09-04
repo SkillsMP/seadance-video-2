@@ -1,11 +1,11 @@
 {
   "generator": {
-    "title": "Nano Banana Pro AI 图像生成器"
+    "title": "Seedance AI 视频生成器"
   },
   "metadata": {
-    "title": "Nano Banana Pro - AI图像生成平台，中文免费使用入口",
-    "description": "Nano banana pro 是一款强大的 4K AI 图像生成引擎。了解 Nano banana pro 下载与免费使用方法，提供中文提示词、banana pro 去水印功能与 API 接入指南。立即访问 Banana pro 在线平台体验。",
-    "keywords": "Nano banana pro, Nano banana pro 下载, Nano banana pro 免费 使用, Nano banana pro 中文, banana pro ai, banana pro, banana pro 2, banana pro 免费, banana pro 去水印, banana pro 使用, banana pro 提示词, banana pro api, banana pro 价格, Nano banana 入口, Banana pro api, nano banana pro ai, nano banana prompt, nano banana pro free, nano banana pro 如何使用, nano banana pro 入口, Nano banana 入口, Nano banana pro 使用"
+    "title": "Seedance AI 视频生成器 | 电影级文生视频与图生视频",
+    "description": "使用 Seedance 将文本和图像转化为电影级 AI 视频。在线体验快速、高画质的 Seedance 2.0 & 2.5 视频生成器，专为多模态创意工作流打造。",
+    "keywords": "Seedance AI 视频生成器, Seedance, Seedance 2.0, Seedance 2.5, AI视频生成器, 文生视频, 图生视频, 电影级AI视频, 豆包Seedance, 即梦AI, 字节跳动AI"
   },
   "page": {
     "show_sections": [
@@ -21,87 +21,63 @@
     "sections": {
       "hero": {
         "id": "hero",
-        "title": "Nano banana pro 在线平台",
-        "highlight_text": "在线平台",
-        "description": "欢迎访问 Nano banana pro 在线平台。无论你是在寻找 Nano banana pro 下载 渠道，还是想了解 Nano banana pro 免费 使用 方法，这里都是你的最佳访问入口。探索最先进的 banana pro ai 图像技术。",
+        "title": "Seedance AI 视频生成器",
+        "highlight_text": "AI 视频生成器",
+        "description": "将文本和图像转化为电影级 AI 视频。即刻体验现已支持的 Seedance 2.0 高速创作工作流。",
         "announcement": {
-          "badge": "最新发布",
-          "title": "🎉 欢迎来到 Nano banana 入口",
-          "url": "/#features"
+          "title": "Seedance 2.5 正式公布 · 追踪最新发布动态 →",
+          "url": "/seedance-2-5"
         },
-        "tip": "🎁 立即体验 Nano banana pro 中文版的强大渲染能力",
         "buttons": [
           {
-            "title": "免费使用",
-            "icon": "Zap",
+            "title": "立即生成视频",
+            "icon": "Video",
             "url": "/#generator",
             "target": "_self",
             "variant": "default"
           },
           {
-            "title": "浏览提示词库",
-            "icon": "BookOpenText",
-            "url": "/prompts",
+            "title": "查看精选案例",
+            "icon": "Sparkles",
+            "url": "/#showcases",
             "target": "_self",
             "variant": "outline"
           }
         ],
-        "show_avatars": true,
-        "avatars_tip": "超过 100 万名用户正在使用 banana pro ai 进行创作",
-        "show_award": false,
-
-        "image_invert": {
-          "src": "",
-          "alt": ""
-        },
-        "background_image": {
-          "src": "",
-          "alt": ""
-        }
+        "show_avatars": false,
+        "show_award": false
       },
       "generator": {},
       "introduce": {
         "block": "features-list",
         "id": "introduce",
-        "title": "Nano banana pro 是什么",
-        "label": "产品简介",
-        "description": "Banana pro ai 是一款顶尖的智能图像模型。许多数字创作者关心 Nano banana pro 是 哪个 平台 以及如何获取 banana pro 2 的最新核心功能。在这里我们为你提供稳定可靠的在线图像生成服务。",
+        "title": "了解 Seedance 2.5",
+        "label": "新一代视频模型",
+        "description": "Seedance 2.5 是字节跳动全新公布的 AI 视频模型，专注于更丰富的多模态控制、更长时长生成以及专业级的视觉叙事。该模型目前处于内测阶段，尚未接入本站；当前生成器持续使用成熟稳定的 Seedance 2.0 模型。",
+        "image": {
+          "src": "/imgs/seadance/showcase_1.jpg",
+          "alt": "灵感源自 Seedance 2.5 的电影级 AI 视频工作流"
+        },
         "items": [
           {
-            "title": "原生 4K 高分辨率",
-            "description": "带你了解 nano banana pro 如何使用 原生高宽比适应功能。通过 Nano banana 入口 即可轻松生成适用于任何社交平台的高清图表与海报。",
-            "icon": "RiAspectLine",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-intro-1/960/640.webp",
-              "alt": "原生高分辨率支持"
-            }
+            "title": "更长视频生成",
+            "description": "公布的模型支持更长片段，包括长达 30 秒的视频生成工作流。",
+            "icon": "Timer"
           },
           {
-            "title": "精准细节与语义微调",
-            "description": "结合高阶的 nano banana prompt 自然语言指令，无需蒙版即可修改局部焦点。带你了解各项 nano banana pro 免费 权限，全面掌握多场景下的编辑能力。",
-            "icon": "RiFocus2Line",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-intro-2/960/640.webp",
-              "alt": "极致细节局部编辑"
-            }
+            "title": "多模态参考输入",
+            "description": "支持文本、图像、音频与视频多模态参考，精准控制风格、角色、运镜语言与场景连续性。",
+            "icon": "Layers"
           },
           {
-            "title": "多语言文字渲染能力",
-            "description": "能够轻松驾驭多语言文本排版并融入画面设计环境。如果您正在搜索高可用性的 banana pro 提示词 组合或者更高效的 banana pro 去水印 方法，我们的智能引擎将一一解决这些挑战。",
-            "icon": "RiText",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-intro-3/960/640.webp",
-              "alt": "多语言文字高质量渲染"
-            }
+            "title": "电影级提示词理解",
+            "description": "运用专业电影摄影语言，精准指导摄像机运动、光影质感、节奏与视觉叙事。",
+            "icon": "Clapperboard"
           },
           {
-            "title": "角色极写实画面还原",
-            "description": "强大的多参考图处理机制帮助确保多维度条件下的角色一致性。立即通过 nano banana pro 入口 进行操作，为你的设计项目增添如同专业摄影级的光影质感。",
-            "icon": "RiUserSmileLine",
-            "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-intro-4/960/640.webp",
-              "alt": "角色光影细节还原处理"
-            }
+            "title": "一致性视觉主体",
+            "description": "在复杂镜头与转场中保持人物、物体、环境与视觉风格的高度一致。",
+            "icon": "ScanLine"
           }
         ],
         "className": "bg-muted"
@@ -109,73 +85,72 @@
       "benefits": {
         "block": "features-accordion",
         "id": "benefits",
-        "title": "为何选择 Banana pro ai",
-        "label": "产品优势",
-        "description": "相比同类产品，对于寻找 banana pro 免费 额度的用户来说，我们的渲染效率与极致语义理解力无疑是一个巨大的加分项。",
+        "title": "Seedance 2.5 为创作者带来什么",
+        "description": "立即使用成熟的 Seedance 2.0 搭建可复用的视频工作流，并在 Seedance 2.5 正式上线后无缝升级。",
         "items": [
           {
-            "title": "卓越的逻辑推理能力",
-            "description": "产品本身更懂你的商业意图与画面构思。获取最新的 nano banana pro 下载 资讯，并借助其出色的多轮对话体系来完成每一次严密的数字艺术构思。",
-            "icon": "RiBrainLine",
+            "title": "社交视频与商业广告",
+            "description": "将创意概念、产品特性和营销脚本转化为适用于 TikTok、Reels、YouTube Shorts 和信息流广告的短视频。",
+            "icon": "Megaphone",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-benefits-1/960/640.webp",
-              "alt": "高阶逻辑推理系统"
+              "src": "/imgs/seadance/feature_1.jpg",
+              "alt": "社交媒体 AI 视频工作流"
             }
           },
           {
-            "title": "极速响应的生成机制",
-            "description": "体验 nano banana pro free 极速图像生成过程。短短数秒内就能实现从文字创意到成品的无缝转化，绝不打断你连续的工作激情。",
-            "icon": "RiTimerFlashLine",
+            "title": "分镜脚本与前期视觉预览",
+            "description": "在正式投入拍摄或制作前，快速验证剧本构思、运镜轨迹、场景构图与视觉基调。",
+            "icon": "PanelsTopLeft",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-benefits-2/960/640.webp",
-              "alt": "高效图像生成机制"
+              "src": "/imgs/seadance/feature_2.jpg",
+              "alt": "AI 视频故事板与前期视觉预览"
             }
           },
           {
-            "title": "专业商用的 API 支持",
-            "description": "面向企业级开发人员，我们提供详细透明的 banana pro api 对接说明以及对应的 banana pro 价格，随时赋能并加速中大型团队的日常创作工作流。",
-            "icon": "RiPencilRulerLine",
+            "title": "角色与场景连续性",
+            "description": "围绕可复用的主体特征、环境与视觉风格构建提示词与参考图，实现多镜头连续叙事。",
+            "icon": "ScanFace",
             "image": {
-              "src": "https://picsum.photos/seed/bananapro-zh-benefits-3/960/640.webp",
-              "alt": "商业级接口支持对接"
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "一致的角色与场景生成"
             }
           }
         ]
       },
       "features": {
         "id": "features",
-        "title": "Nano banana pro 使用进阶指南",
-        "description": "致力于深化你的 banana pro 使用 技巧，我们不仅涵盖了基础的生图指南，更包含了从零开始的高效指令结构优化，协助你蜕变为高级制图玩家。",
+        "title": "Seedance AI 视频生成核心能力",
+        "description": "探索下一代多模态视频能力，同时借助现已支持的 Seedance 2.0 模型即刻进行实际创作。",
         "items": [
           {
-            "title": "多风格画面合成处理",
-            "description": "利用图像引擎强大的同步环境融合机制，有效兼顾各种风格样式输出。",
-            "icon": "RiCrop2Line"
+            "title": "文生视频 (Text to Video)",
+            "description": "通过描述场景、动作、运镜与视觉风格，直接从文字提示词生成高质量视频。",
+            "icon": "TextCursorInput"
           },
           {
-            "title": "环境物理级高精渲染",
-            "description": "准确定位并还原环境中的光照路径及反馈，达到写实级模型精度。",
-            "icon": "RiSunCloudyLine"
+            "title": "图生视频 (Image to Video)",
+            "description": "基于首帧参考图生成生动动画，精准保留主体特征、构图与视觉风格。",
+            "icon": "ImagePlay"
           },
           {
-            "title": "商业标志与多重排版",
-            "description": "能够处理长短文本并将它们准确无误地置入复杂场景海报中。",
-            "icon": "RiTextDirectionLtr"
+            "title": "视频生视频 (Video to Video)",
+            "description": "将现有视频片段作为动作与结构参考，生成全新视觉风格的视频成果。",
+            "icon": "RefreshCw"
           },
           {
-            "title": "超越摄影的光影捕捉",
-            "description": "从发丝到极为复杂的肌理表层，面对独特的镜头角度同样可以输出稳定的人像特征。",
-            "icon": "RiUserStarLine"
+            "title": "丰富画幅比例",
+            "description": "支持横屏、竖屏、正方形等多种视频画幅，完美适配电影、社交媒体及广告投放需求。",
+            "icon": "Ratio"
           },
           {
-            "title": "无损局部的多面编辑",
-            "description": "不需要借助外部工具来实施抠图覆盖，通过常规提示来告诉模型你真正想要的最终效果。",
-            "icon": "RiOverlapLine"
+            "title": "分辨率灵活选择",
+            "description": "根据所选 Seedance 模型和生成模式，灵活选用支持的输出分辨率（最高可达 1080p）。",
+            "icon": "MonitorUp"
           },
           {
-            "title": "深层常识与概念扩展",
-            "description": "借助在线极速扩展响应功能，模型在展现新鲜事物以及热门科技实体时的表现惊艳全场。",
-            "icon": "RiFlashlightLine"
+            "title": "任务历史与资产管理",
+            "description": "实时追踪生成进度，随时在个人账户中回看、下载已完成的 AI 视频创作成果。",
+            "icon": "ListChecks"
           }
         ]
       },
@@ -262,48 +237,52 @@
       },
       "faq": {
         "id": "faq",
-        "title": "平台常见问题解惑",
-        "description": "全方位为你梳理关于 Nano banana pro 免费 使用 以及 Nano banana pro 中文版本的最新服务内容及解答。",
+        "title": "常见问题解答",
+        "description": "关于 Seedance 2.5 发布动态、生成能力及当前生成器的常见疑问。",
         "items": [
           {
-            "question": "Nano banana pro 是哪个平台，要怎么才能安全访问？",
-            "answer": "您目前所在的就是 Nano banana pro 的在线服务平台。我们主要提供在浏览器端直接访问的基础生成服务，这意味着大部分情况下你不需要额外进行 Nano banana pro 下载 的操作。"
+            "question": "本站现在可以使用 Seedance 2.5 吗？",
+            "answer": "暂未支持。字节跳动于 2026 年 6 月公布了 Seedance 2.5，目前处于企业预览阶段。本站生成器目前持续采用成熟可用的 Seedance 2.0 模型，待 2.5 官方开放公共接入后将第一时间上线。"
           },
           {
-            "question": "Nano banana pro 免费 使用 的具体范围是什么？",
-            "answer": "我们希望所有初学者都有机会尝试各项核心功能，因此会为大量用户释放免费的生成信用额度。想要亲自体验可以直接点击页面上的 nano banana pro 入口进行验证。"
+            "question": "我今天可以在本站生成什么？",
+            "answer": "当前生成器支持文生视频、图生视频和视频生视频工作流。支持常用画幅比例、时长选择，在可用配置下最高支持 1080p 高清画质。"
           },
           {
-            "question": "banana pro 2 相比此前版本有哪些主要提升？",
-            "answer": "最新一代的 nano banana pro ai 模型在图文契合度、原生大图生成速度以及中英文复杂指令的理解上均取得了非常显著的提升，尤其在商业级输出精度方面表现突出。"
+            "question": "Seedance 2.5 有哪些新特性？",
+            "answer": "2.5 主要聚焦于更长时长的视频生成（最长可达 30 秒）、更丰富的多模态参考输入、更强大的主体一致性以及更具电影感的叙事运镜控制。"
           },
           {
-            "question": "新手能否快速找到有效的 nano banana pro 如何使用 教程？",
-            "answer": "在我们的开发者平台和社区博客内积累了丰富的创作灵感与系统化的 banana pro 提示词 书写建议，无论你想刻画怎样的场景都能迅速获取相应的操作细节。"
+            "question": "Seedance 2.5 支持生成 30 秒视频吗？",
+            "answer": "是的，支持长达 30 秒的视频生成是 Seedance 2.5 公布的核心亮点之一。目前站点使用的 2.0 模型暂不支持该超长模式。"
           },
           {
-            "question": "商业用户关心 Banana pro api 与接口计费方案，平台有对应内容吗？",
-            "answer": "我们的平台向来乐意接纳企业级诉求。欢迎参阅公开展示的 banana pro 价格 和计费策略，并查看对接 Banana pro api 的标准步骤，以便随时将其规模化引入工作环节。"
+            "question": "生成积分（Credits）是如何计算的？",
+            "answer": "积分消耗取决于所选模型、生成模式、视频时长以及输出分辨率。在点击生成前，生成器会明确展示本次任务预计消耗的积分。"
+          },
+          {
+            "question": "生成的视频可以用于商业用途吗？",
+            "answer": "商用权限取决于您所购买的订阅套餐、底层模型服务商的使用条款以及相关适用法律。在将作品用于付费商业广告或客户交付前，请查阅服务条款与模型规范。"
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "现在就开始属于你的高效艺术航程",
-        "description": "准备好体验流畅精准的 nano banana prompt 互动了吗？不要犹豫，立刻通过 Nano banana 在线平台进行操作，发散你无尽的数字灵感。",
+        "title": "开启你的 Seedance 创作之旅",
+        "description": "关注新版本动态，即刻使用当前支持的 Seedance 2.0 生成器打造属于你的电影级 AI 视频。",
         "buttons": [
           {
-            "title": "限时免费启动",
+            "title": "立即生成视频",
             "url": "/#generator",
             "target": "_self",
-            "icon": "Zap"
+            "icon": "Video"
           },
           {
-            "title": "查看技术文档",
-            "url": "https://gemini.google/overview/image-generation/",
-            "target": "_blank",
+            "title": "查看订阅价格",
+            "url": "/pricing",
+            "target": "_self",
             "variant": "outline",
-            "icon": "BookOpenText"
+            "icon": "CreditCard"
           }
         ],
         "className": "bg-muted"
