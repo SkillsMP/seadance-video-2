@@ -84,12 +84,11 @@ const POLL_INTERVAL = 15000;
 const GENERATION_TIMEOUT = 600000; // 10 minutes for video
 const MAX_PROMPT_LENGTH = 2000;
 const DEFAULT_VIDEO_EXAMPLE = {
-  // Temporary public sample; replace with a first-party Seedance demo asset.
-  url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+  url: '/videos/seadance/hero-preview.webm',
   model: 'Seedance 2.0',
   aspectRatio: '16:9',
   prompt:
-    'A cinematic macro shot of delicate white flowers swaying gently in the breeze, soft natural light, shallow depth of field, smooth motion.',
+    'A cinematic shot of graceful swans gliding peacefully across a calm lake at sunset, delicate golden ripples catching the twilight sky, smooth water reflections, photorealistic.',
 } as const;
 const GENERATED_CONTENT_SAFETY_MESSAGE =
   'This generated result violates our content safety policy and cannot be displayed. Please revise your prompt and try again.';
@@ -119,6 +118,9 @@ function DefaultVideoPreview({
           controls
           controlsList="nodownload"
           playsInline
+          autoPlay
+          muted
+          loop
           preload="metadata"
           aria-label={`${badgeLabel}: ${DEFAULT_VIDEO_EXAMPLE.model}`}
           className="h-full w-full object-cover"
@@ -128,7 +130,6 @@ function DefaultVideoPreview({
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2">
           <Badge variant="secondary">{badgeLabel}</Badge>
-          <Badge variant="outline">{DEFAULT_VIDEO_EXAMPLE.model}</Badge>
           <Badge variant="outline">{DEFAULT_VIDEO_EXAMPLE.aspectRatio}</Badge>
         </div>
 
