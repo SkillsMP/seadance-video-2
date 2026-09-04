@@ -11,6 +11,7 @@
     "show_sections": [
       "hero",
       "generator",
+      "showcases",
       "introduce",
       "benefits",
       "features",
@@ -175,6 +176,87 @@
             "title": "深层常识与概念扩展",
             "description": "借助在线极速扩展响应功能，模型在展现新鲜事物以及热门科技实体时的表现惊艳全场。",
             "icon": "RiFlashlightLine"
+          }
+        ]
+      },
+      "showcases": {
+        "block": "showcases",
+        "id": "showcases",
+        "columns": 2,
+        "title": "Made with Seedance 精选作品",
+        "description": "基于文字与图像提示词生成的真实电影级 AI 视频。探索今天你可以创作的一切。",
+        "items": [
+          {
+            "title": "日落海岸写生",
+            "description": "“一位神情平静的艺术家坐在水边，全神贯注地在画布上创作油画，海风拂动他的衣衫，金色的夕阳倒映在宁静的海面上，写实细腻。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-1.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_1.jpg",
+              "alt": "使用 Seedance 生成的海边写生油画 AI 视频"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "哥特视觉系特写",
+            "description": "“一位留着绿色头发、穿着哥特视觉系服装的年轻人坐在温暖的小酒馆里品尝柠檬水，电影级景深，35mm胶片质感。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-2.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "使用 Seedance 生成的电影级视觉系人物特写"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "浩瀚星空延时摄影",
+            "description": "“深邃山脉剪影上空的电影级星空延时，璀璨群星与银河缓缓流转，沉浸式深空光影，超高分辨率。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-3.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_3.jpg",
+              "alt": "使用 Seedance 生成的浩瀚星空延时摄影"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "午后咖啡馆静谧时刻",
+            "description": "“一位年轻人在温馨惬意的咖啡馆里品尝热咖啡，午后的阳光透过明亮大窗洒在脸庞上，光影温柔，氛围恬静悠然。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-4.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_4.jpg",
+              "alt": "使用 Seedance 生成的午后咖啡馆人物视频"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
           }
         ]
       },

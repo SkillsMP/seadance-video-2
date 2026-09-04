@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { Link } from '@/core/i18n/navigation';
 import { SmartIcon } from '@/shared/blocks/common/smart-icon';
@@ -18,6 +18,7 @@ export function Showcases({
   section: Section;
   className?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const groups = (section as any).groups || [];
   const [selectedGroup, setSelectedGroup] = useState<string>(
     groups.length > 0 ? groups[0].name : ''
@@ -111,10 +112,17 @@ export function Showcases({
         </motion.div>
       )}
 
-      <div className="container grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        className={cn(
+          'container grid grid-cols-1 gap-6 md:grid-cols-2',
+          section.columns === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
+        )}
+      >
         {filteredItems.length > 0 ? (
           filteredItems.map((item, index) => {
             const hasButton = !!(item as any).button;
+            const videoSrc =
+              typeof item.video?.src === 'string' ? item.video.src : undefined;
             const cardContent = (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -133,13 +141,27 @@ export function Showcases({
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Image
-                        src={item.image?.src ?? ''}
-                        alt={item.image?.alt ?? ''}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        fill
-                        className="rounded-t-lg object-cover transition-transform duration-300"
-                      />
+                      {videoSrc ? (
+                        <video
+                          src={videoSrc}
+                          poster={item.image?.src}
+                          autoPlay={!shouldReduceMotion}
+                          muted
+                          loop={!shouldReduceMotion}
+                          playsInline
+                          preload="metadata"
+                          aria-hidden="true"
+                          className="h-full w-full rounded-t-lg object-cover"
+                        />
+                      ) : (
+                        <Image
+                          src={item.image?.src ?? ''}
+                          alt={item.image?.alt ?? ''}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          fill
+                          className="rounded-t-lg object-cover transition-transform duration-300"
+                        />
+                      )}
                     </motion.div>
                     <div className="p-6">
                       <h3 className="mb-2 line-clamp-1 text-xl font-semibold text-balance">

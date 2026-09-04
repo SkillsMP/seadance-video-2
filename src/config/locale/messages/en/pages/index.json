@@ -11,10 +11,10 @@
     "show_sections": [
       "hero",
       "generator",
+      "showcases",
       "introduce",
       "benefits",
       "features",
-      "showcases",
       "faq",
       "cta"
     ],
@@ -157,43 +157,80 @@
       "showcases": {
         "block": "showcases",
         "id": "showcases",
-        "title": "Seedance Creative Workflows",
-        "description": "Examples of the video concepts and production workflows that creators can explore with the Seedance model family.",
+        "columns": 2,
+        "title": "Made with Seedance",
+        "description": "Real cinematic AI video examples generated with text and image prompts. Discover what you can create today.",
         "items": [
           {
-            "title": "Sci-Fi Short Films",
-            "description": "Develop cinematic environments, visual effects concepts, and narrative shots from detailed prompts.",
+            "title": "En Plein Air at Sunset",
+            "description": "\"A serene artist sits at the water's edge, engrossed in painting an oil masterpiece on canvas, sea breeze billowing his shirt, golden sunset reflecting off tranquil water, photorealistic.\"",
             "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-1.webm"
+            },
             "image": {
               "src": "/imgs/seadance/showcase_1.jpg",
-              "alt": "Sci-fi AI video concept"
+              "alt": "Artist painting by the sea generated with Seedance"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           },
           {
-            "title": "Music Visuals",
-            "description": "Create surreal motion, atmospheric sequences, and visual concepts for music content.",
+            "title": "Gothic Visual Kei Portrait",
+            "description": "\"A stylish young man with vibrant green hair in gothic visual kei attire, seated in a warm bistro sipping lemonade, cinematic depth of field, 35mm film aesthetic.\"",
             "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-2.webm"
+            },
             "image": {
               "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "AI-generated music video concept"
+              "alt": "Cinematic visual kei portrait generated with Seedance"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           },
           {
-            "title": "Documentary B-Roll",
-            "description": "Visualize historical, scientific, and abstract subjects when suitable footage is unavailable.",
+            "title": "Cosmic Night Sky Timelapse",
+            "description": "\"Cinematic night sky timelapse over dark mountain silhouettes, glowing stars and milky way galaxy rotating slowly, deep atmospheric lighting, ultra-high resolution.\"",
             "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-3.webm"
+            },
             "image": {
               "src": "/imgs/seadance/showcase_3.jpg",
-              "alt": "Documentary AI video B-roll"
+              "alt": "Cosmic night sky timelapse generated with Seedance"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           },
           {
-            "title": "Fashion and Product Films",
-            "description": "Prototype campaign shots, product motion, and stylized environments without a full physical production.",
+            "title": "Golden Hour Cafe Reflection",
+            "description": "\"A young adult in a cozy cafe enjoying a steaming coffee, late afternoon sunlight filtering through large glass windows casting a warm golden glow, tranquil mood.\"",
             "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-4.webm"
+            },
             "image": {
               "src": "/imgs/seadance/showcase_4.jpg",
-              "alt": "Fashion and product AI video concept"
+              "alt": "Golden hour cafe portrait generated with Seedance"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           }
         ]
