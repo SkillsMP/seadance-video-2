@@ -12,9 +12,8 @@
       "hero",
       "generator",
       "showcases",
-      "introduce",
-      "benefits",
       "features",
+      "update",
       "faq",
       "cta"
     ],
@@ -48,71 +47,83 @@
         "show_award": false
       },
       "generator": {},
-      "introduce": {
-        "block": "features-list",
-        "id": "introduce",
-        "title": "了解 Seedance 2.5",
-        "label": "新一代视频模型",
-        "description": "Seedance 2.5 是字节跳动全新公布的 AI 视频模型，专注于更丰富的多模态控制、更长时长生成以及专业级的视觉叙事。该模型目前处于内测阶段，尚未接入本站；当前生成器持续使用成熟稳定的 Seedance 2.0 模型。",
-        "image": {
-          "src": "/imgs/seadance/showcase_1.jpg",
-          "alt": "灵感源自 Seedance 2.5 的电影级 AI 视频工作流"
-        },
+      "showcases": {
+        "block": "showcases",
+        "id": "showcases",
+        "columns": 2,
+        "title": "Made with Seedance 精选作品",
+        "description": "基于文字与图像提示词生成的真实电影级 AI 视频。探索今天你可以创作的一切。",
         "items": [
           {
-            "title": "更长视频生成",
-            "description": "公布的模型支持更长片段，包括长达 30 秒的视频生成工作流。",
-            "icon": "Timer"
-          },
-          {
-            "title": "多模态参考输入",
-            "description": "支持文本、图像、音频与视频多模态参考，精准控制风格、角色、运镜语言与场景连续性。",
-            "icon": "Layers"
-          },
-          {
-            "title": "电影级提示词理解",
-            "description": "运用专业电影摄影语言，精准指导摄像机运动、光影质感、节奏与视觉叙事。",
-            "icon": "Clapperboard"
-          },
-          {
-            "title": "一致性视觉主体",
-            "description": "在复杂镜头与转场中保持人物、物体、环境与视觉风格的高度一致。",
-            "icon": "ScanLine"
-          }
-        ],
-        "className": "bg-muted"
-      },
-      "benefits": {
-        "block": "features-accordion",
-        "id": "benefits",
-        "title": "Seedance 2.5 为创作者带来什么",
-        "description": "立即使用成熟的 Seedance 2.0 搭建可复用的视频工作流，并在 Seedance 2.5 正式上线后无缝升级。",
-        "items": [
-          {
-            "title": "社交视频与商业广告",
-            "description": "将创意概念、产品特性和营销脚本转化为适用于 TikTok、Reels、YouTube Shorts 和信息流广告的短视频。",
-            "icon": "Megaphone",
+            "title": "夕阳海边写生油画",
+            "description": "“一位神情平静的艺术家坐在水边，全神贯注地在画布上创作油画，海风拂动他的衣衫，金色的夕阳倒映在宁静的海面上，写实细腻。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-1.webm"
+            },
             "image": {
-              "src": "/imgs/seadance/feature_1.jpg",
-              "alt": "社交媒体 AI 视频工作流"
+              "src": "/imgs/seadance/showcase_1.jpg",
+              "alt": "使用 Seedance 生成的海边写生油画 AI 视频"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           },
           {
-            "title": "分镜脚本与前期视觉预览",
-            "description": "在正式投入拍摄或制作前，快速验证剧本构思、运镜轨迹、场景构图与视觉基调。",
-            "icon": "PanelsTopLeft",
-            "image": {
-              "src": "/imgs/seadance/feature_2.jpg",
-              "alt": "AI 视频故事板与前期视觉预览"
-            }
-          },
-          {
-            "title": "角色与场景连续性",
-            "description": "围绕可复用的主体特征、环境与视觉风格构建提示词与参考图，实现多镜头连续叙事。",
-            "icon": "ScanFace",
+            "title": "哥特视觉系人物特写",
+            "description": "“一位留着绿色头发、穿着哥特视觉系服装的年轻人坐在温暖的小酒馆里品尝柠檬水，电影级景深，35mm胶片质感。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-2.webm"
+            },
             "image": {
               "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "一致的角色与场景生成"
+              "alt": "使用 Seedance 生成的电影级视觉系人物特写"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "浩瀚夜空星河延时",
+            "description": "“深邃山脉剪影上空的电影级星空延时，璀璨群星与银河缓缓流转，沉浸式深空光影，超高分辨率。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-3.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_3.jpg",
+              "alt": "使用 Seedance 生成的浩瀚星空延时摄影"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "午后暖阳咖啡馆留影",
+            "description": "“一位年轻人在温馨惬意的咖啡馆里品尝热咖啡，午后的阳光透过明亮大窗洒在脸庞上，光影温柔，氛围恬静悠然。”",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-4.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_4.jpg",
+              "alt": "使用 Seedance 生成的午后咖啡馆人物视频"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
             }
           }
         ]
@@ -154,122 +165,53 @@
           }
         ]
       },
-      "showcases": {
-        "block": "showcases",
-        "id": "showcases",
-        "columns": 2,
-        "title": "Made with Seedance 精选作品",
-        "description": "基于文字与图像提示词生成的真实电影级 AI 视频。探索今天你可以创作的一切。",
-        "items": [
+      "update": {
+        "block": "cta",
+        "id": "update",
+        "title": "Seedance 2.5 即将到来",
+        "description": "新一代多模态 AI 视频创作：更长生成时长、多模态参考输入与更强视觉一致性。",
+        "buttons": [
           {
-            "title": "日落海岸写生",
-            "description": "“一位神情平静的艺术家坐在水边，全神贯注地在画布上创作油画，海风拂动他的衣衫，金色的夕阳倒映在宁静的海面上，写实细腻。”",
-            "url": "/#generator",
-            "video": {
-              "src": "/videos/seadance/showcase-1.webm"
-            },
-            "image": {
-              "src": "/imgs/seadance/showcase_1.jpg",
-              "alt": "使用 Seedance 生成的海边写生油画 AI 视频"
-            },
-            "button": {
-              "title": "创建视频",
-              "url": "/#generator",
-              "icon": "Sparkles",
-              "variant": "default"
-            }
-          },
-          {
-            "title": "哥特视觉系特写",
-            "description": "“一位留着绿色头发、穿着哥特视觉系服装的年轻人坐在温暖的小酒馆里品尝柠檬水，电影级景深，35mm胶片质感。”",
-            "url": "/#generator",
-            "video": {
-              "src": "/videos/seadance/showcase-2.webm"
-            },
-            "image": {
-              "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "使用 Seedance 生成的电影级视觉系人物特写"
-            },
-            "button": {
-              "title": "创建视频",
-              "url": "/#generator",
-              "icon": "Sparkles",
-              "variant": "default"
-            }
-          },
-          {
-            "title": "浩瀚星空延时摄影",
-            "description": "“深邃山脉剪影上空的电影级星空延时，璀璨群星与银河缓缓流转，沉浸式深空光影，超高分辨率。”",
-            "url": "/#generator",
-            "video": {
-              "src": "/videos/seadance/showcase-3.webm"
-            },
-            "image": {
-              "src": "/imgs/seadance/showcase_3.jpg",
-              "alt": "使用 Seedance 生成的浩瀚星空延时摄影"
-            },
-            "button": {
-              "title": "创建视频",
-              "url": "/#generator",
-              "icon": "Sparkles",
-              "variant": "default"
-            }
-          },
-          {
-            "title": "午后咖啡馆静谧时刻",
-            "description": "“一位年轻人在温馨惬意的咖啡馆里品尝热咖啡，午后的阳光透过明亮大窗洒在脸庞上，光影温柔，氛围恬静悠然。”",
-            "url": "/#generator",
-            "video": {
-              "src": "/videos/seadance/showcase-4.webm"
-            },
-            "image": {
-              "src": "/imgs/seadance/showcase_4.jpg",
-              "alt": "使用 Seedance 生成的午后咖啡馆人物视频"
-            },
-            "button": {
-              "title": "创建视频",
-              "url": "/#generator",
-              "icon": "Sparkles",
-              "variant": "default"
-            }
+            "title": "探索 Seedance 2.5 最新动态",
+            "url": "/seedance-2-5",
+            "target": "_self",
+            "icon": "Sparkles",
+            "variant": "default"
           }
-        ]
+        ],
+        "className": "bg-muted/40 border-y"
       },
       "faq": {
         "id": "faq",
         "title": "常见问题解答",
-        "description": "关于 Seedance 2.5 发布动态、生成能力及当前生成器的常见疑问。",
+        "description": "关于 Seedance AI 视频生成、支持的工作流、积分计费及模型演进的解答。",
         "items": [
           {
-            "question": "本站现在可以使用 Seedance 2.5 吗？",
-            "answer": "暂未支持。字节跳动于 2026 年 6 月公布了 Seedance 2.5，目前处于企业预览阶段。本站生成器目前持续采用成熟可用的 Seedance 2.0 模型，待 2.5 官方开放公共接入后将第一时间上线。"
-          },
-          {
-            "question": "我今天可以在本站生成什么？",
-            "answer": "当前生成器支持文生视频、图生视频和视频生视频工作流。支持常用画幅比例、时长选择，在可用配置下最高支持 1080p 高清画质。"
-          },
-          {
-            "question": "Seedance 2.5 有哪些新特性？",
-            "answer": "2.5 主要聚焦于更长时长的视频生成（最长可达 30 秒）、更丰富的多模态参考输入、更强大的主体一致性以及更具电影感的叙事运镜控制。"
-          },
-          {
-            "question": "Seedance 2.5 支持生成 30 秒视频吗？",
-            "answer": "是的，支持长达 30 秒的视频生成是 Seedance 2.5 公布的核心亮点之一。目前站点使用的 2.0 模型暂不支持该超长模式。"
+            "question": "现在可以使用 Seedance 生成哪些视频？",
+            "answer": "当前生成器支持文生视频（Text to Video）、图生视频（Image to Video）以及视频生视频（Video to Video）等多种工作流。支持常用横屏（16:9）、竖屏（9:16 适合短视频）和正方形（1:1）画幅，最高支持 1080p 高清分辨率。"
           },
           {
             "question": "生成积分（Credits）是如何计算的？",
-            "answer": "积分消耗取决于所选模型、生成模式、视频时长以及输出分辨率。在点击生成前，生成器会明确展示本次任务预计消耗的积分。"
+            "answer": "每次生成的积分消耗取决于所选的模型版本、生成模式、视频时长以及分辨率。提交任务前，生成器界面会清晰显示本次预计消耗的积分数值。"
           },
           {
             "question": "生成的视频可以用于商业用途吗？",
-            "answer": "商用权限取决于您所购买的订阅套餐、底层模型服务商的使用条款以及相关适用法律。在将作品用于付费商业广告或客户交付前，请查阅服务条款与模型规范。"
+            "answer": "商业用途取决于您的订阅套餐权限、底层模型提供商的授权许可协议以及当地法律规定。在用于商业广告或客户交付前，建议查阅服务条款与模型规范。"
+          },
+          {
+            "question": "Seedance 2.5 什么时候可以在本站使用？",
+            "answer": "本站当前使用 Seedance 2.0 模型提供视频生成服务，暂未接入 Seedance 2.5。有关 Seedance 2.5 的接入进展，请查看<a href=\"/seedance-2-5\">最新动态页面</a>。"
+          },
+          {
+            "question": "支持哪些视频输出分辨率和画幅？",
+            "answer": "生成器支持横屏（16:9，适合电影/电脑屏幕）、竖屏（9:16，适合 TikTok/Reels/Shorts）以及正方形（1:1），最高支持 1080p 高清输出。具体可选分辨率取决于所选模型和生成模式。"
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "开启你的 Seedance 创作之旅",
-        "description": "关注新版本动态，即刻使用当前支持的 Seedance 2.0 生成器打造属于你的电影级 AI 视频。",
+        "title": "立即开启电影级 AI 视频创作",
+        "description": "用文字或参考图开启电影级 AI 视频创作。高速度、高一致性、专业运镜控制。",
         "buttons": [
           {
             "title": "立即生成视频",
@@ -278,7 +220,7 @@
             "icon": "Video"
           },
           {
-            "title": "查看订阅价格",
+            "title": "查看定价套餐",
             "url": "/pricing",
             "target": "_self",
             "variant": "outline",

@@ -12,9 +12,8 @@
       "hero",
       "generator",
       "showcases",
-      "introduce",
-      "benefits",
       "features",
+      "update",
       "faq",
       "cta"
     ],
@@ -48,112 +47,6 @@
         "show_award": false
       },
       "generator": {},
-      "introduce": {
-        "block": "features-list",
-        "id": "introduce",
-        "title": "Meet Seedance 2.5",
-        "label": "Next-Generation Model",
-        "description": "Seedance 2.5 is ByteDance's newly announced AI video model, focused on richer multimodal control, longer-form generation, and more production-ready visual storytelling. The model is not yet connected to this site; Seedance 2.0 remains the active generation option.",
-        "image": {
-          "src": "/imgs/seadance/showcase_1.jpg",
-          "alt": "Cinematic AI video workflow inspired by Seedance 2.5"
-        },
-        "items": [
-          {
-            "title": "Longer Video Generation",
-            "description": "The announced model targets longer clips, including up to 30-second generation workflows.",
-            "icon": "Timer"
-          },
-          {
-            "title": "Multimodal References",
-            "description": "Use text, images, audio, and video references to guide style, characters, camera language, and scene continuity.",
-            "icon": "Layers"
-          },
-          {
-            "title": "Cinematic Prompt Understanding",
-            "description": "Direct camera movement, lighting, pacing, and visual narrative using filmmaking language.",
-            "icon": "Clapperboard"
-          },
-          {
-            "title": "Consistent Visual Identity",
-            "description": "Maintain characters, objects, environments, and style across complex shots and transitions.",
-            "icon": "ScanLine"
-          }
-        ],
-        "className": "bg-muted"
-      },
-      "benefits": {
-        "block": "features-accordion",
-        "id": "benefits",
-        "title": "What Seedance 2.5 Means for Creators",
-        "description": "Prepare reusable video workflows now with Seedance 2.0 and adapt them when Seedance 2.5 becomes publicly available.",
-        "items": [
-          {
-            "title": "Social Video and Advertising",
-            "description": "Turn concepts, products, and campaign scripts into short-form video for TikTok, Reels, YouTube Shorts, and paid advertising.",
-            "icon": "Megaphone",
-            "image": {
-              "src": "/imgs/seadance/feature_1.jpg",
-              "alt": "Social media AI video workflow"
-            }
-          },
-          {
-            "title": "Storyboarding and Previsualization",
-            "description": "Validate scripts, camera moves, scene composition, and visual direction before committing to production.",
-            "icon": "PanelsTopLeft",
-            "image": {
-              "src": "/imgs/seadance/feature_2.jpg",
-              "alt": "AI video storyboarding and previsualization"
-            }
-          },
-          {
-            "title": "Character and Scene Continuity",
-            "description": "Build prompts and references around repeatable identities, environments, and visual styles for multi-shot storytelling.",
-            "icon": "ScanFace",
-            "image": {
-              "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "Consistent character and scene generation"
-            }
-          }
-        ]
-      },
-      "features": {
-        "id": "features",
-        "title": "Seedance AI Video Capabilities",
-        "description": "Explore the next generation of multimodal video while using the available Seedance 2.0 models for practical generation today.",
-        "items": [
-          {
-            "title": "Text to Video",
-            "description": "Describe a scene, action, camera movement, and visual style to generate a video from text.",
-            "icon": "TextCursorInput"
-          },
-          {
-            "title": "Image to Video",
-            "description": "Animate a reference frame while preserving its subject, composition, and visual identity.",
-            "icon": "ImagePlay"
-          },
-          {
-            "title": "Video to Video",
-            "description": "Use an existing clip as a motion and structure reference for a new generated result.",
-            "icon": "RefreshCw"
-          },
-          {
-            "title": "Multiple Aspect Ratios",
-            "description": "Create landscape, portrait, square, and additional layouts for film, social, and advertising workflows.",
-            "icon": "Ratio"
-          },
-          {
-            "title": "Resolution Controls",
-            "description": "Choose supported output resolutions based on the selected Seedance 2.0 model and generation mode.",
-            "icon": "MonitorUp"
-          },
-          {
-            "title": "Task History",
-            "description": "Track generation progress and revisit completed AI video tasks from your account.",
-            "icon": "ListChecks"
-          }
-        ]
-      },
       "showcases": {
         "block": "showcases",
         "id": "showcases",
@@ -235,44 +128,93 @@
           }
         ]
       },
-      "faq": {
-        "id": "faq",
-        "title": "Seedance 2.5 Questions",
-        "description": "Release, early access, capability, and current generator information.",
+      "features": {
+        "id": "features",
+        "title": "Seedance AI Video Capabilities",
+        "description": "Explore the next generation of multimodal video while using the available Seedance 2.0 models for practical generation today.",
         "items": [
           {
-            "question": "Is Seedance 2.5 available on this site now?",
-            "answer": "No. ByteDance announced Seedance 2.5 on June 23, 2026, and it remains in enterprise preview. BytePlus currently lists broader availability as \"Coming soon.\" This site's generator continues to use the available Seedance 2.0 models until official Seedance 2.5 access is supported."
+            "title": "Text to Video",
+            "description": "Describe a scene, action, camera movement, and visual style to generate a video from text.",
+            "icon": "TextCursorInput"
           },
           {
-            "question": "What can I generate today?",
-            "answer": "The current generator supports text-to-video, image-to-video, and video-to-video workflows through the models configured by the site administrator. Seedance 2.0 options support common aspect ratios, durations, and resolutions up to 1080p where available."
+            "title": "Image to Video",
+            "description": "Animate a reference frame while preserving its subject, composition, and visual identity.",
+            "icon": "ImagePlay"
           },
           {
-            "question": "What is new in Seedance 2.5?",
-            "answer": "The announcement focuses on longer video generation, richer multimodal reference inputs, stronger visual consistency, and more controllable cinematic storytelling. Final limits and API details should be confirmed from official documentation after public release."
+            "title": "Video to Video",
+            "description": "Use an existing clip as a motion and structure reference for a new generated result.",
+            "icon": "RefreshCw"
           },
           {
-            "question": "Does Seedance 2.5 support 30-second video?",
-            "answer": "Up to 30-second generation is part of the announced Seedance 2.5 capability set. It is not currently available through this site's Seedance 2.0 generator."
+            "title": "Multiple Aspect Ratios",
+            "description": "Create landscape, portrait, square, and additional layouts for film, social, and advertising workflows.",
+            "icon": "Ratio"
+          },
+          {
+            "title": "Resolution Controls",
+            "description": "Choose supported output resolutions based on the selected Seedance 2.0 model and generation mode.",
+            "icon": "MonitorUp"
+          },
+          {
+            "title": "Task History",
+            "description": "Track generation progress and revisit completed AI video tasks from your account.",
+            "icon": "ListChecks"
+          }
+        ]
+      },
+      "update": {
+        "block": "cta",
+        "id": "update",
+        "title": "Seedance 2.5 is Coming",
+        "description": "Next-generation video creation with longer generation workflows, richer multimodal references, and enhanced visual consistency.",
+        "buttons": [
+          {
+            "title": "Explore Seedance 2.5 Updates",
+            "url": "/seedance-2-5",
+            "target": "_self",
+            "icon": "Sparkles",
+            "variant": "default"
+          }
+        ],
+        "className": "bg-muted/40 border-y"
+      },
+      "faq": {
+        "id": "faq",
+        "title": "Frequently Asked Questions",
+        "description": "Find answers to common questions about Seedance AI video generation, supported workflows, credits, and model updates.",
+        "items": [
+          {
+            "question": "What can I generate with Seedance today?",
+            "answer": "You can generate cinematic short videos from text prompts (Text to Video), animate static images with realistic motion (Image to Video), or use existing clips as motion and structural references (Video to Video). Seedance supports common aspect ratios (16:9, 9:16, 1:1) and resolutions up to 1080p."
           },
           {
             "question": "How are generation credits calculated?",
-            "answer": "Credit cost depends on the selected model, generation mode, duration, and resolution. The generator shows the estimated cost before you submit a task."
+            "answer": "Credit cost depends on the selected model, generation mode, duration, and resolution. The generator displays the estimated credit cost before you submit a generation task."
           },
           {
             "question": "Can generated videos be used commercially?",
-            "answer": "Commercial use depends on your plan, the selected provider's model terms, and applicable law. Review the Terms of Service and the provider policy before publishing paid or client work."
+            "answer": "Commercial use depends on your active subscription plan, the underlying provider's model license terms, and applicable copyright law. Please review our Terms of Service before using generated videos for paid client work or commercial campaigns."
+          },
+          {
+            "question": "When will Seedance 2.5 be available on this site?",
+            "answer": "This site currently provides video generation with Seedance 2.0 models. Seedance 2.5 is not yet integrated. For progress on Seedance 2.5 integration, visit the <a href=\"/seedance-2-5\">updates page</a>."
+          },
+          {
+            "question": "What video resolutions and aspect ratios are supported?",
+            "answer": "The generator supports popular landscape (16:9), portrait (9:16 for TikTok/Reels/Shorts), and square (1:1) aspect ratios, with resolutions ranging from standard preview up to 1080p HD depending on model configurations."
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "Prepare for Seedance 2.5",
-        "description": "Follow release updates and start building your cinematic AI video workflow today with the currently supported Seedance 2.0 generator.",
+        "title": "Start Creating Cinematic Videos Today",
+        "description": "Bring your creative ideas to life with Seedance AI video generation. High-speed workflows, rich camera motion, and photorealistic quality.",
         "buttons": [
           {
-            "title": "Generate a Video",
+            "title": "Generate Video",
             "url": "/#generator",
             "target": "_self",
             "icon": "Video"
