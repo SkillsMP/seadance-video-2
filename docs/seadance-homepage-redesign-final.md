@@ -592,17 +592,17 @@ blocks/showcases.tsx
 
 ## P0
 
-- [ ] H1 不再主打 Seedance 2.5
-- [ ] 删除 Hero 的“2.5 unavailable”劝退提示
-- [ ] Hero 放真正 Seedance 视频
-- [ ] MDN flower.mp4 替换
-- [ ] Showcase 改成真实循环视频
-- [ ] 精简首页 2.5 内容
+- [x] H1 不再主打 Seedance 2.5
+- [x] 删除 Hero 的“2.5 unavailable”劝退提示
+- [x] Hero 放真正 Seedance 视频
+- [x] MDN flower.mp4 替换
+- [x] Showcase 改成真实循环视频
+- [x] 精简首页 2.5 内容
 
 ## P1
 
-- [ ] Generator anonymous 状态优化
-- [ ] 导航精简
+- [x] Generator anonymous 状态优化
+- [x] 导航精简
 - [ ] Dark cinematic theme
 - [ ] Try this prompt
 - [ ] 移动端首屏优化
