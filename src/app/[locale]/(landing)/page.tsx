@@ -28,10 +28,12 @@ export default async function LandingPage({
       ...rawPage.sections,
       generator: {
         component: (
-          <VideoGenerator
-            className="py-8 md:py-10"
-            srOnlyTitle={t.raw('generator.title')}
-          />
+          <div id="generator" className="scroll-mt-20">
+            <VideoGenerator
+              className="py-8 md:py-10"
+              srOnlyTitle={t.raw('generator.title')}
+            />
+          </div>
         ),
       },
     },
