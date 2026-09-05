@@ -18,19 +18,19 @@ export function Footer({ footer }: { footer: FooterType }) {
       // overflow-x-hidden防止-footer-撑出水平滚动条
     >
       <div className="container space-y-8 overflow-x-hidden">
-        <div className="grid min-w-0 gap-12 md:grid-cols-5">
-          <div className="min-w-0 space-y-4 break-words md:col-span-2 md:space-y-6">
+        <div className="grid min-w-0 gap-10 lg:grid-cols-12 xl:gap-12">
+          <div className="min-w-0 space-y-4 break-words md:space-y-6 lg:col-span-4">
             {footer.brand ? <BrandLogo brand={footer.brand} /> : null}
 
             {footer.brand?.description ? (
               <p
-                className="text-muted-foreground text-sm text-balance break-words"
+                className="text-muted-foreground text-sm leading-relaxed text-balance break-words"
                 dangerouslySetInnerHTML={{ __html: footer.brand.description }}
               />
             ) : null}
           </div>
 
-          <div className="col-span-3 grid min-w-0 gap-6 sm:grid-cols-3">
+          <div className="grid min-w-0 gap-6 sm:grid-cols-2 lg:col-span-8 xl:grid-cols-4">
             {footer.nav?.items.map((item, idx) => (
               <div key={idx} className="min-w-0 space-y-4 text-sm break-words">
                 <span className="block font-medium break-words">

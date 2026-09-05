@@ -28,12 +28,6 @@
               "icon": "Rocket"
             },
             {
-              "title": "Seedance 2.5 vs 2.0",
-              "description": "Generational upgrade & technical differences",
-              "url": "/seedance-2-5/vs-seedance-2-0",
-              "icon": "GitBranch"
-            },
-            {
               "title": "What is Seedance?",
               "description": "ByteDance AI video model family explained",
               "url": "/what-is-seedance",
@@ -42,123 +36,26 @@
           ]
         },
         {
-          "title": "Compare",
-          "icon": "GitCompare",
-          "children": [
-            {
-              "title": "All Video Comparisons",
-              "description": "2026 AI video benchmark matrix & model shootout",
-              "url": "/compare",
-              "icon": "LayoutGrid"
-            },
-            {
-              "title": "Seedance vs Kling AI",
-              "description": "Duration, 3D blockout vs camera dial controls",
-              "url": "/compare/seedance-vs-kling",
-              "icon": "GitCompare"
-            },
-            {
-              "title": "Seedance vs MiniMax H3",
-              "description": "Prompt fidelity, facial micro-expressions & physics",
-              "url": "/compare/seedance-vs-minimax-h3",
-              "icon": "GitCompareArrows"
-            },
-            {
-              "title": "Seedance vs Google Veo",
-              "description": "Cinematic director grammar, 4K 60fps & enterprise API",
-              "url": "/compare/seedance-vs-veo",
-              "icon": "Film"
-            }
-          ]
+          "title": "Examples",
+          "url": "/#showcases",
+          "icon": "Clapperboard"
         },
         {
-          "title": "Resources",
-          "icon": "Layers",
-          "children": [
-            {
-              "title": "Blog & Insights",
-              "description": "Latest news, deep dives & Reddit community reviews",
-              "url": "/blog",
-              "icon": "Newspaper"
-            },
-            {
-              "title": "Prompt Library",
-              "description": "Explore high-performing video prompts & templates",
-              "url": "/prompts",
-              "icon": "Library"
-            },
-            {
-              "title": "Seedance 2.0 Prompt Guide",
-              "description": "Formulas, shot structure & camera keywords",
-              "url": "/prompts/seedance-2-0",
-              "icon": "FileText"
-            },
-            {
-              "title": "How to Use Seedance",
-              "description": "Step-by-step tutorial for beginners & creators",
-              "url": "/how-to-use-seedance",
-              "icon": "GraduationCap"
-            },
-            {
-              "title": "Creative Showcase",
-              "description": "Curated video creations & community demos",
-              "url": "/#showcases",
-              "icon": "Clapperboard"
-            }
-          ]
-        },
-        {
-          "title": "Developers",
-          "icon": "Code2",
-          "children": [
-            {
-              "title": "Seedance API",
-              "description": "Endpoints, authentication & asynchronous tasks",
-              "url": "/seedance-api",
-              "icon": "Server"
-            },
-            {
-              "title": "Seedance 2.5 API Guide",
-              "description": "Model IDs, input schemas & pricing checks",
-              "url": "/seedance-2-5/api",
-              "icon": "Cpu"
-            },
-            {
-              "title": "Seedance MCP & Skills",
-              "description": "Claude Code, Codex & agent tool workflows",
-              "url": "/blog/seedance-mcp-skill-guide",
-              "icon": "Bot"
-            },
-            {
-              "title": "Open Source Status",
-              "description": "GitHub, Hugging Face & local weight release facts",
-              "url": "/seedance/open-source",
-              "icon": "GitFork"
-            },
-            {
-              "title": "Troubleshooting & Errors",
-              "description": "Prominent person, Face ID & moderation fixes",
-              "url": "/seedance/troubleshooting",
-              "icon": "LifeBuoy"
-            }
-          ]
+          "title": "Prompts",
+          "url": "/prompts",
+          "icon": "Sparkles"
         },
         {
           "title": "Pricing",
           "url": "/pricing",
           "icon": "CreditCard"
-        },
-        {
-          "title": "AI Tasks",
-          "url": "/activity/ai-tasks",
-          "icon": "ListChecks"
         }
       ]
     },
     "buttons": [
       {
         "title": "Generate Video",
-        "url": "/seedance-2-0#generator",
+        "url": "/#generator",
         "icon": "Video"
       }
     ],
@@ -216,6 +113,11 @@
             {
               "title": "Pricing & Credits",
               "url": "/pricing",
+              "target": "_self"
+            },
+            {
+              "title": "AI Task History",
+              "url": "/activity/ai-tasks",
               "target": "_self"
             }
           ]

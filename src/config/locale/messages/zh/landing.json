@@ -28,12 +28,6 @@
               "icon": "Rocket"
             },
             {
-              "title": "Seedance 2.5 vs 2.0",
-              "description": "代际升级与技术差异详评",
-              "url": "/seedance-2-5/vs-seedance-2-0",
-              "icon": "GitBranch"
-            },
-            {
               "title": "什么是 Seedance？",
               "description": "字节跳动 AI 视频模型家族完整科普",
               "url": "/what-is-seedance",
@@ -42,123 +36,26 @@
           ]
         },
         {
-          "title": "对比",
-          "icon": "GitCompare",
-          "children": [
-            {
-              "title": "所有视频模型横评",
-              "description": "2026 技术基准横评矩阵与选型指南",
-              "url": "/compare",
-              "icon": "LayoutGrid"
-            },
-            {
-              "title": "Seedance vs 可灵 Kling",
-              "description": "30秒生成、白模预演 vs 数值化运镜控制",
-              "url": "/compare/seedance-vs-kling",
-              "icon": "GitCompare"
-            },
-            {
-              "title": "Seedance vs MiniMax 海螺",
-              "description": "提示词遵循、人脸微表情与流体动力学对比",
-              "url": "/compare/seedance-vs-minimax-h3",
-              "icon": "GitCompareArrows"
-            },
-            {
-              "title": "Seedance vs Google Veo",
-              "description": "电影视听语言、4K 60fps 与云端 API",
-              "url": "/compare/seedance-vs-veo",
-              "icon": "Film"
-            }
-          ]
+          "title": "案例展示",
+          "url": "/#showcases",
+          "icon": "Clapperboard"
         },
         {
-          "title": "资源",
-          "icon": "Layers",
-          "children": [
-            {
-              "title": "博客与资讯",
-              "description": "深度技术解析、Reddit 评测与最新动态",
-              "url": "/blog",
-              "icon": "Newspaper"
-            },
-            {
-              "title": "提示词库",
-              "description": "精选电影级提示词模版与创意灵感",
-              "url": "/prompts",
-              "icon": "Library"
-            },
-            {
-              "title": "Seedance 2.0 提示词指南",
-              "description": "运镜语法、镜头结构与公式指南",
-              "url": "/prompts/seedance-2-0",
-              "icon": "FileText"
-            },
-            {
-              "title": "使用教程",
-              "description": "新手与创作者分步操作手册",
-              "url": "/how-to-use-seedance",
-              "icon": "GraduationCap"
-            },
-            {
-              "title": "作品展示",
-              "description": "精选社区生成案例与动态演示",
-              "url": "/#showcases",
-              "icon": "Clapperboard"
-            }
-          ]
-        },
-        {
-          "title": "开发者",
-          "icon": "Code2",
-          "children": [
-            {
-              "title": "Seedance API",
-              "description": "REST 接口规范、鉴权与异步任务",
-              "url": "/seedance-api",
-              "icon": "Server"
-            },
-            {
-              "title": "Seedance 2.5 API 指南",
-              "description": "Model ID、输入参数与计费测算",
-              "url": "/seedance-2-5/api",
-              "icon": "Cpu"
-            },
-            {
-              "title": "Seedance MCP 与 Claude Skill",
-              "description": "AI Agent 工具集成与自动化工作流",
-              "url": "/blog/seedance-mcp-skill-guide",
-              "icon": "Bot"
-            },
-            {
-              "title": "开源状态说明",
-              "description": "GitHub、Hugging Face 权重开源真相",
-              "url": "/seedance/open-source",
-              "icon": "GitFork"
-            },
-            {
-              "title": "故障排查与报错解决",
-              "description": "真实人脸报错、Face ID 及风控处理",
-              "url": "/seedance/troubleshooting",
-              "icon": "LifeBuoy"
-            }
-          ]
+          "title": "提示词库",
+          "url": "/prompts",
+          "icon": "Sparkles"
         },
         {
           "title": "定价",
           "url": "/pricing",
           "icon": "CreditCard"
-        },
-        {
-          "title": "AI 任务",
-          "url": "/activity/ai-tasks",
-          "icon": "ListChecks"
         }
       ]
     },
     "buttons": [
       {
         "title": "立即生成视频",
-        "url": "/seedance-2-0#generator",
+        "url": "/#generator",
         "icon": "Video"
       }
     ],
@@ -216,6 +113,11 @@
             {
               "title": "定价套餐",
               "url": "/pricing",
+              "target": "_self"
+            },
+            {
+              "title": "AI 任务记录",
+              "url": "/activity/ai-tasks",
               "target": "_self"
             }
           ]
