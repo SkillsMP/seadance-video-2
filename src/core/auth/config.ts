@@ -15,6 +15,7 @@ import { getUuid } from '@/shared/lib/hash';
 import { getClientIp } from '@/shared/lib/ip';
 import { grantCreditsForNewUser } from '@/shared/models/credit';
 import { getEmailService } from '@/shared/services/email';
+import { recordEvent } from '@/shared/services/analytics-events';
 import { grantRoleForNewUser } from '@/shared/services/rbac';
 
 // Best-effort dedupe to prevent sending verification emails too frequently.
@@ -143,6 +144,18 @@ export async function getAuthOptions(configs: Record<string, string>) {
             } catch (e) {
               console.log('grant credits or role for new user failed', e);
             }
+
+            await recordEvent({
+              dedupeKey: `sign_up:${user.id}`,
+              eventName: 'sign_up',
+              userId: user.id,
+              occurredAt:
+                user.createdAt instanceof Date ? user.createdAt : undefined,
+              properties: {
+                source: 'auth',
+                locale: user.locale,
+              },
+            });
           },
         },
       },

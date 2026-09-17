@@ -507,6 +507,40 @@ export const aiTask = table(
   ]
 );
 
+export const analyticsEvent = table(
+  'events',
+  {
+    id: text('id').primaryKey(),
+    dedupeKey: text('dedupe_key').unique(),
+    eventName: text('event_name').notNull(),
+    schemaVersion: integer('schema_version').notNull().default(1),
+    buildId: text('build_id'),
+    occurredAt: timestamp('occurred_at').notNull(),
+    receivedAt: timestamp('received_at').defaultNow().notNull(),
+    source: text('source').notNull(),
+    anonymousId: text('anonymous_id'),
+    userId: text('user_id'),
+    sessionId: text('session_id'),
+    pagePath: text('page_path'),
+    referrerHost: text('referrer_host'),
+    taskId: text('task_id'),
+    orderId: text('order_id'),
+    tool: text('tool'),
+    model: text('model'),
+    locale: text('locale'),
+    surface: text('surface'),
+    properties: text('properties').notNull().default('{}'),
+  },
+  (table) => [
+    index('idx_events_name_occurred').on(table.eventName, table.occurredAt),
+    index('idx_events_user_occurred').on(table.userId, table.occurredAt),
+    index('idx_events_anonymous_occurred').on(
+      table.anonymousId,
+      table.occurredAt
+    ),
+  ]
+);
+
 export const chat = table(
   'chat',
   {

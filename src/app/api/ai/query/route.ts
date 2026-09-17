@@ -7,6 +7,7 @@ import {
 } from '@/shared/models/ai_task';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
+import { recordGenerationTerminalEvent } from '@/shared/services/analytics-events';
 import { applyGenerationOutputModeration } from '@/shared/services/moderation';
 
 const TERMINAL_TASK_STATUSES = new Set<string>([
@@ -85,6 +86,18 @@ export async function POST(req: Request) {
       updateAITask.taskResult !== task.taskResult
     ) {
       await updateAITaskById(task.id, updateAITask);
+
+      if (TERMINAL_TASK_STATUSES.has(updateAITask.status || '')) {
+        await recordGenerationTerminalEvent({
+          taskId: task.id,
+          userId: task.userId,
+          mediaType: task.mediaType,
+          model: task.model,
+          scene: task.scene,
+          status: updateAITask.status || '',
+          createdAt: task.createdAt,
+        });
+      }
     }
 
     task.status = updateAITask.status || '';

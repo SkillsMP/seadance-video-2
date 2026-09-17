@@ -25,6 +25,7 @@ import {
 } from '@/shared/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { useAppContext } from '@/shared/contexts/app';
+import { track } from '@/shared/lib/analytics/track';
 import { getCookie } from '@/shared/lib/cookie';
 import { cn } from '@/shared/lib/utils';
 import { Subscription } from '@/shared/models/subscription';
@@ -314,6 +315,13 @@ export function Pricing({
       setProductId(null);
     }
   };
+
+  useEffect(() => {
+    track('pricing_view', {
+      locale,
+      surface: 'pricing',
+    });
+  }, [locale]);
 
   useEffect(() => {
     if (pricing.items) {

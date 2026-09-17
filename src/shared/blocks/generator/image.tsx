@@ -47,6 +47,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+import { track } from '@/shared/lib/analytics/track';
 import { cn } from '@/shared/lib/utils';
 
 import {
@@ -74,6 +75,7 @@ interface ImageGeneratorProps {
 /** 生成的图像数据 */
 interface GeneratedImage {
   id: string;
+  taskId?: string;
   url: string;
   provider?: string;
   model?: string;
@@ -299,6 +301,8 @@ export function ImageGenerator({
   // 加载状态
   const [isMounted, setIsMounted] = useState(false);
   const savedTaskIdsRef = useRef<Set<string>>(new Set()); // 防止重复保存
+  const trackedResultTaskIdsRef = useRef<Set<string>>(new Set());
+  const trackedUploadKeyRef = useRef('');
   const queryingTaskRef = useRef<string | null>(null);
   const queryFailCountRef = useRef(0);
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
@@ -551,8 +555,27 @@ export function ImageGenerator({
         .filter((item) => item.status === 'uploaded' && item.url)
         .map((item) => item.url as string);
       setReferenceImageUrls(uploadedUrls);
+
+      const uploadKey = `${activeTab}:${uploadedUrls.join('|')}`;
+      if (
+        uploadedUrls.length > 0 &&
+        trackedUploadKeyRef.current !== uploadKey
+      ) {
+        trackedUploadKeyRef.current = uploadKey;
+        track('upload_completed', {
+          tool: 'image',
+          scene: activeTab,
+          model: selectedEntry?.value,
+          input_kind: 'reference_images',
+          file_count: uploadedUrls.length,
+        });
+      }
+
+      if (uploadedUrls.length === 0) {
+        trackedUploadKeyRef.current = '';
+      }
     },
-    []
+    [activeTab, selectedEntry?.value]
   );
 
   /** 参考图像是否正在上传 */
@@ -579,6 +602,25 @@ export function ImageGenerator({
     queryFailCountRef.current = 0;
     // Don't clear savedTaskIds here - keep it to prevent duplicates across generations
   }, []);
+
+  const trackResultView = useCallback(
+    (id: string, model?: string) => {
+      if (trackedResultTaskIdsRef.current.has(id)) return;
+
+      trackedResultTaskIdsRef.current.add(id);
+      track(
+        'result_view',
+        {
+          tool: 'image',
+          scene: activeTab,
+          model,
+          surface: 'generator',
+        },
+        { taskId: id }
+      );
+    },
+    [activeTab]
+  );
 
   /**
    * 保存生成的图像到展示库
@@ -726,12 +768,14 @@ export function ImageGenerator({
             setGeneratedImages(
               imageUrls.map((url, index) => ({
                 id: `${task.id}-${index}`,
+                taskId: task.id,
                 url,
                 provider: task.provider,
                 model: task.model,
                 prompt: task.prompt ?? undefined,
               }))
             );
+            trackResultView(task.id, task.model);
             setProgress((prev) => Math.max(prev, 85));
           } else {
             setProgress((prev) => Math.min(prev + 10, 80));
@@ -745,12 +789,14 @@ export function ImageGenerator({
           } else {
             const images = imageUrls.map((url, index) => ({
               id: `${task.id}-${index}`,
+              taskId: task.id,
               url,
               provider: task.provider,
               model: task.model,
               prompt: task.prompt ?? undefined,
             }));
             setGeneratedImages(images);
+            trackResultView(task.id, task.model);
 
             // Save showcase only once - check before saving
             if (
@@ -820,7 +866,13 @@ export function ImageGenerator({
         }
       }
     },
-    [generationStartTime, resetTaskState, fetchUserCredits, saveShowcase]
+    [
+      generationStartTime,
+      resetTaskState,
+      fetchUserCredits,
+      saveShowcase,
+      trackResultView,
+    ]
   );
 
   /**
@@ -884,41 +936,86 @@ export function ImageGenerator({
     console.log('costCredits:', costCredits);
 
     if (availableProviders.length === 0) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        error_type: 'no_provider',
+      });
       toast.error('Please contact the administrator to configure AI models.');
       return;
     }
 
     if (!hasAvailableFamilies) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        error_type: 'no_model',
+      });
       toast.error('No models are available for the current generation mode.');
       return;
     }
 
     if (selectedCandidates.length === 0) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        error_type: 'no_model',
+      });
       toast.error('Please select a model before generating.');
       return;
     }
 
     if (!user) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'auth_required',
+      });
       setIsShowSignModal(true);
       return;
     }
 
     if (remainingCredits < costCredits) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'insufficient_credits',
+      });
       toast.error('Insufficient credits. Please top up to keep creating.');
       return;
     }
 
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'missing_prompt',
+      });
       toast.error('Please enter a prompt before generating.');
       return;
     }
 
     if (!isTextToImageMode && referenceImageUrls.length === 0) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'missing_image_input',
+      });
       toast.error('Please upload reference images before generating.');
       return;
     }
 
+    track('tool_start', {
+      tool: 'image',
+      scene: activeTab,
+      model: selectedEntry?.value,
+      surface: 'generator',
+    });
     setIsGenerating(true);
     setProgress(15);
     setTaskStatus(AITaskStatus.PENDING);
@@ -987,12 +1084,14 @@ export function ImageGenerator({
         if (imageUrls.length > 0) {
           const images = imageUrls.map((url, index) => ({
             id: `${newTaskId}-${index}`,
+            taskId: newTaskId,
             url,
             provider: data.provider,
             model: data.model,
             prompt: trimmedPrompt,
           }));
           setGeneratedImages(images);
+          trackResultView(newTaskId, data.model);
           setProgress(100);
           resetTaskState();
           await fetchUserCredits();
@@ -1015,6 +1114,12 @@ export function ImageGenerator({
 
       await fetchUserCredits();
     } catch (error: any) {
+      track('generation_submit_failed', {
+        tool: 'image',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'request_failed',
+      });
       console.error('Failed to generate image:', error);
       toast.error(`Failed to generate image: ${error.message}`);
       resetTaskState();
@@ -1028,6 +1133,18 @@ export function ImageGenerator({
     if (!image.url) {
       return;
     }
+
+    track(
+      'download_result',
+      {
+        tool: 'image',
+        scene: activeTab,
+        model: image.model,
+        surface: 'generator',
+        download_type: 'image',
+      },
+      { taskId: image.taskId }
+    );
 
     try {
       setDownloadingImageId(image.id);

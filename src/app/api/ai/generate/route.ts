@@ -8,13 +8,17 @@ import {
 } from '@/config/ai/generation-pricing';
 import { findModel, type ModelEntry } from '@/config/ai/models';
 import { assertModelInputConstraints } from '@/config/ai/options';
-import { AIMediaType } from '@/extensions/ai';
+import { AIMediaType, AITaskStatus } from '@/extensions/ai';
 import { getUuid } from '@/shared/lib/hash';
 import { respData, respErr } from '@/shared/lib/resp';
 import { createAITask, NewAITask } from '@/shared/models/ai_task';
 import { getRemainingCredits } from '@/shared/models/credit';
 import { getUserInfo } from '@/shared/models/user';
 import { getAIService } from '@/shared/services/ai';
+import {
+  recordGenerationStartedEvent,
+  recordGenerationTerminalEvent,
+} from '@/shared/services/analytics-events';
 import {
   applyGenerationOutputModeration,
   moderateGenerationInput,
@@ -442,6 +446,29 @@ export async function POST(request: Request) {
       taskResult: result.taskResult ? JSON.stringify(result.taskResult) : null,
     };
     await createAITask(newAITask);
+    await recordGenerationStartedEvent({
+      taskId: aiTaskId,
+      userId: user.id,
+      mediaType,
+      model: finalModel,
+      scene,
+    });
+    if (
+      newAITask.status === AITaskStatus.SUCCESS ||
+      newAITask.status === AITaskStatus.FAILED ||
+      newAITask.status === AITaskStatus.CANCELED ||
+      newAITask.status === AITaskStatus.MODERATION_BLOCKED ||
+      newAITask.status === AITaskStatus.MODERATION_FAILED
+    ) {
+      await recordGenerationTerminalEvent({
+        taskId: aiTaskId,
+        userId: user.id,
+        mediaType,
+        model: finalModel,
+        scene,
+        status: newAITask.status,
+      });
+    }
 
     return respData(newAITask);
   } catch (e: any) {

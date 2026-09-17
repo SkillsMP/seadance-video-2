@@ -17,6 +17,7 @@ import {
 } from '@/shared/models/order';
 import { getUserInfo } from '@/shared/models/user';
 import { getPaymentService } from '@/shared/services/payment';
+import { recordEvent } from '@/shared/services/analytics-events';
 import { PricingCurrency } from '@/shared/types/blocks/pricing';
 
 export async function POST(req: Request) {
@@ -287,6 +288,20 @@ export async function POST(req: Request) {
         checkoutUrl: result.checkoutInfo.checkoutUrl,
         paymentSessionId: result.checkoutInfo.sessionId,
         paymentProvider: result.provider,
+      });
+
+      await recordEvent({
+        dedupeKey: `checkout_started:${order.id}`,
+        eventName: 'checkout_started',
+        userId: user.id,
+        orderId: order.id,
+        properties: {
+          provider: result.provider,
+          plan: pricingItem.plan_name || pricingItem.product_name,
+          billing_cycle: paymentInterval,
+          currency: checkoutCurrency,
+          locale: locale || configs.default_locale,
+        },
       });
 
       return respData(result.checkoutInfo);

@@ -30,6 +30,7 @@ import {
   useSidebar,
 } from '@/shared/components/ui/sidebar';
 import { useAppContext } from '@/shared/contexts/app';
+import { resetAnalyticsContext } from '@/shared/lib/analytics/track';
 import { User as UserType } from '@/shared/models/user';
 import { NavItem } from '@/shared/types/blocks/common';
 import { SidebarUser as SidebarUserType } from '@/shared/types/blocks/dashboard';
@@ -54,6 +55,7 @@ export function SidebarUser({ user }: { user: SidebarUserType }) {
 
   const handleSignOut = async () => {
     await signOut();
+    resetAnalyticsContext();
     router.push(user.signout_callback || '/sign-in');
   };
 

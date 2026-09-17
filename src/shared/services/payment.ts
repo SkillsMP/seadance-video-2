@@ -11,6 +11,7 @@ import {
 } from '@/extensions/payment/types';
 import { getSnowId, getUuid } from '@/shared/lib/hash';
 import { Configs, getAllConfigs } from '@/shared/models/config';
+import { recordPurchaseEvent } from '@/shared/services/analytics-events';
 
 import {
   calculateCreditExpirationTime,
@@ -252,6 +253,15 @@ export async function handleCheckoutSuccess({
       newSubscription,
       newCredit,
     });
+    await recordPurchaseEvent({
+      orderId: order.id,
+      userId: order.userId,
+      provider: order.paymentProvider,
+      plan: order.planName || order.productName,
+      billingCycle: order.paymentInterval,
+      currency: session.paymentInfo?.paymentCurrency || order.currency,
+      occurredAt: session.paymentInfo?.paidAt,
+    });
   } else if (
     session.paymentStatus === PaymentStatus.FAILED ||
     session.paymentStatus === PaymentStatus.CANCELED
@@ -389,6 +399,15 @@ export async function handlePaymentSuccess({
       newSubscription,
       newCredit,
     });
+    await recordPurchaseEvent({
+      orderId: order.id,
+      userId: order.userId,
+      provider: order.paymentProvider,
+      plan: order.planName || order.productName,
+      billingCycle: order.paymentInterval,
+      currency: session.paymentInfo?.paymentCurrency || order.currency,
+      occurredAt: session.paymentInfo?.paidAt,
+    });
   } else {
     throw new Error('unknown payment status');
   }
@@ -510,6 +529,15 @@ export async function handleSubscriptionRenewal({
       updateSubscription,
       newOrder: order,
       newCredit,
+    });
+    await recordPurchaseEvent({
+      orderId: order.id,
+      userId: order.userId,
+      provider: order.paymentProvider,
+      plan: order.planName || order.productName,
+      billingCycle: order.paymentInterval,
+      currency: order.paymentCurrency || order.currency,
+      occurredAt: order.paidAt,
     });
   } else {
     throw new Error('unknown payment status');

@@ -38,6 +38,7 @@ import { Switch } from '@/shared/components/ui/switch';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Textarea } from '@/shared/components/ui/textarea';
 import { useAppContext } from '@/shared/contexts/app';
+import { track } from '@/shared/lib/analytics/track';
 import { cn } from '@/shared/lib/utils';
 
 import {
@@ -62,6 +63,7 @@ interface VideoGeneratorProps {
 
 interface GeneratedVideo {
   id: string;
+  taskId?: string;
   url: string;
   provider?: string;
   model?: string;
@@ -266,6 +268,8 @@ export function VideoGenerator({
     null
   );
   const queryingTaskRef = useRef<string | null>(null);
+  const trackedResultTaskIdsRef = useRef<Set<string>>(new Set());
+  const trackedUploadKeyRef = useRef('');
   const [isMounted, setIsMounted] = useState(false);
   const [availableProviders, setAvailableProviders] = useState<string[]>([]);
   const [isLoadingProviders, setIsLoadingProviders] = useState(true);
@@ -423,6 +427,30 @@ export function VideoGenerator({
     setActiveTab(tab);
   };
 
+  const handleVideoImageInputsChange = useCallback(
+    (state: VideoImageInputsState) => {
+      setVideoImageInputs(state);
+
+      const imageUrls = state.value?.imageUrls || [];
+      const uploadKey = `${state.value?.mode || ''}:${imageUrls.join('|')}`;
+      if (imageUrls.length > 0 && trackedUploadKeyRef.current !== uploadKey) {
+        trackedUploadKeyRef.current = uploadKey;
+        track('upload_completed', {
+          tool: 'video',
+          scene: activeTab,
+          model: selectedEntry?.value,
+          input_kind: state.value?.mode,
+          file_count: imageUrls.length,
+        });
+      }
+
+      if (imageUrls.length === 0) {
+        trackedUploadKeyRef.current = '';
+      }
+    },
+    [activeTab, selectedEntry?.value]
+  );
+
   const taskStatusLabel = useMemo(() => {
     if (!taskStatus) {
       return '';
@@ -453,6 +481,25 @@ export function VideoGenerator({
     setGenerationStartTime(null);
     setTaskStatus(null);
   }, []);
+
+  const trackResultView = useCallback(
+    (id: string, model?: string) => {
+      if (trackedResultTaskIdsRef.current.has(id)) return;
+
+      trackedResultTaskIdsRef.current.add(id);
+      track(
+        'result_view',
+        {
+          tool: 'video',
+          scene: activeTab,
+          model,
+          surface: 'generator',
+        },
+        { taskId: id }
+      );
+    },
+    [activeTab]
+  );
 
   const pollTaskStatus = useCallback(
     async (id: string) => {
@@ -506,12 +553,14 @@ export function VideoGenerator({
             setGeneratedVideos(
               videoUrls.map((url, index) => ({
                 id: `${task.id}-${index}`,
+                taskId: task.id,
                 url,
                 provider: task.provider,
                 model: task.model,
                 prompt: task.prompt ?? undefined,
               }))
             );
+            trackResultView(task.id, task.model);
             setProgress((prev) => Math.max(prev, 85));
           } else {
             setProgress((prev) => Math.min(prev + 5, 80));
@@ -526,12 +575,14 @@ export function VideoGenerator({
             setGeneratedVideos(
               videoUrls.map((url, index) => ({
                 id: `${task.id}-${index}`,
+                taskId: task.id,
                 url,
                 provider: task.provider,
                 model: task.model,
                 prompt: task.prompt ?? undefined,
               }))
             );
+            trackResultView(task.id, task.model);
             toast.success('Video generated successfully');
           }
 
@@ -581,7 +632,7 @@ export function VideoGenerator({
         }
       }
     },
-    [generationStartTime, resetTaskState, fetchUserCredits]
+    [generationStartTime, resetTaskState, fetchUserCredits, trackResultView]
   );
 
   useEffect(() => {
@@ -622,26 +673,53 @@ export function VideoGenerator({
 
   const handleGenerate = async () => {
     if (availableProviders.length === 0) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        error_type: 'no_provider',
+      });
       toast.error('Please contact the administrator to configure AI models.');
       return;
     }
 
     if (!hasAvailableFamilies) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        error_type: 'no_model',
+      });
       toast.error('No models are available for the current generation mode.');
       return;
     }
 
     if (selectedCandidates.length === 0) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        error_type: 'no_model',
+      });
       toast.error('Please select a model before generating.');
       return;
     }
 
     if (!user) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'auth_required',
+      });
       setIsShowSignModal(true);
       return;
     }
 
     if (remainingCredits < costCredits) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'insufficient_credits',
+      });
       toast.error('Insufficient credits. Please top up to keep creating.');
       return;
     }
@@ -649,20 +727,44 @@ export function VideoGenerator({
     const trimmedPrompt = prompt.trim();
     const trimmedReferenceVideoUrl = referenceVideoUrl.trim();
     if (!trimmedPrompt && isPromptRequired) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'missing_prompt',
+      });
       toast.error('Please enter a prompt before generating.');
       return;
     }
 
     if (isImageToVideoMode && !videoImageInputs.value) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'missing_image_input',
+      });
       toast.error('Please complete the image inputs before generating.');
       return;
     }
 
     if (isVideoToVideoMode && !trimmedReferenceVideoUrl) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'missing_video_input',
+      });
       toast.error('Please provide a reference video URL before generating.');
       return;
     }
 
+    track('tool_start', {
+      tool: 'video',
+      scene: activeTab,
+      model: selectedEntry?.value,
+      surface: 'generator',
+    });
     setIsGenerating(true);
     setProgress(15);
     setTaskStatus(AITaskStatus.PENDING);
@@ -737,12 +839,14 @@ export function VideoGenerator({
           setGeneratedVideos(
             videoUrls.map((url, index) => ({
               id: `${newTaskId}-${index}`,
+              taskId: newTaskId,
               url,
               provider: data.provider,
               model: data.model,
               prompt: trimmedPrompt,
             }))
           );
+          trackResultView(newTaskId, data.model);
           toast.success('Video generated successfully');
           setProgress(100);
           resetTaskState();
@@ -756,6 +860,12 @@ export function VideoGenerator({
 
       await fetchUserCredits();
     } catch (error: any) {
+      track('generation_submit_failed', {
+        tool: 'video',
+        scene: activeTab,
+        model: selectedEntry?.value,
+        error_type: 'request_failed',
+      });
       console.error('Failed to generate video:', error);
       toast.error(`Failed to generate video: ${error.message}`);
       resetTaskState();
@@ -766,6 +876,18 @@ export function VideoGenerator({
     if (!video.url) {
       return;
     }
+
+    track(
+      'download_result',
+      {
+        tool: 'video',
+        scene: activeTab,
+        model: video.model,
+        surface: 'generator',
+        download_type: 'video',
+      },
+      { taskId: video.taskId }
+    );
 
     try {
       setDownloadingVideoId(video.id);
@@ -859,7 +981,7 @@ export function VideoGenerator({
                     imageModes={selectedImageModes}
                     referenceMinImages={2}
                     referenceMaxImages={3}
-                    onChange={setVideoImageInputs}
+                    onChange={handleVideoImageInputsChange}
                   />
                 )}
 

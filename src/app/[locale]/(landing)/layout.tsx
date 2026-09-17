@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { getTranslations } from 'next-intl/server';
 
 import { getThemeLayout } from '@/core/theme';
+import { LandingViewEvent } from '@/shared/blocks/analytics/landing-view-event';
 import { LocaleDetector, TopBanner } from '@/shared/blocks/common';
 import {
   Footer as FooterType,
@@ -26,6 +27,7 @@ export default async function LandingLayout({
   return (
     <Layout header={header} footer={footer}>
       <LocaleDetector />
+      <LandingViewEvent />
       {header.topbanner && header.topbanner.text && (
         <TopBanner
           id="topbanner"

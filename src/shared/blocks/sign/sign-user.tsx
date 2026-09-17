@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 import { useAppContext } from '@/shared/contexts/app';
+import { resetAnalyticsContext } from '@/shared/lib/analytics/track';
 import { cn } from '@/shared/lib/utils';
 import { User as UserType } from '@/shared/models/user';
 import { NavItem, UserNav } from '@/shared/types/blocks/common';
@@ -260,6 +261,7 @@ export function SignUser({
                   signOut({
                     fetchOptions: {
                       onSuccess: () => {
+                        resetAnalyticsContext();
                         router.push('/');
                       },
                     },

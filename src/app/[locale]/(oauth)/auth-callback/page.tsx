@@ -3,10 +3,17 @@
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 
+import { track } from '@/shared/lib/analytics/track';
+
 export default function AuthCallbackPage() {
   useEffect(() => {
     // Small delay to ensure the session cookie is fully written
     const timer = setTimeout(() => {
+      track('login_complete', {
+        method: 'oauth',
+        source: 'auth_callback',
+      });
+
       // Use localStorage event to notify the main page (works even when COOP blocks window.opener)
       localStorage.setItem('auth-callback-success', Date.now().toString());
       localStorage.removeItem('auth-callback-success');
