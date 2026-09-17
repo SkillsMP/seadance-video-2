@@ -59,6 +59,9 @@ src/shared/types/cloudflare.d.ts
 
 src/config/db/migrations
 
+# SEO & Search Console / Bing raw analytics reports
+/reports/
+
 .debug 
 .test
 
