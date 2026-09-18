@@ -59,7 +59,9 @@
             "description": "\"A serene artist sits at the water's edge, engrossed in painting an oil masterpiece on canvas, sea breeze billowing his shirt, golden sunset reflecting off tranquil water, photorealistic.\"",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-1.webm"
+              "src": "/videos/seadance/showcase-1.webm",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT6.125S"
             },
             "image": {
               "src": "/imgs/seadance/showcase_1.jpg",
@@ -77,7 +79,9 @@
             "description": "\"A stylish young man with vibrant green hair in gothic visual kei attire, seated in a warm bistro sipping lemonade, cinematic depth of field, 35mm film aesthetic.\"",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-2.webm"
+              "src": "/videos/seadance/showcase-2.webm",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT8.008S"
             },
             "image": {
               "src": "/imgs/seadance/showcase_2.jpg",
@@ -95,7 +99,9 @@
             "description": "\"Cinematic night sky timelapse over dark mountain silhouettes, glowing stars and milky way galaxy rotating slowly, deep atmospheric lighting, ultra-high resolution.\"",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-3.webm"
+              "src": "/videos/seadance/showcase-3.webm",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT9.677S"
             },
             "image": {
               "src": "/imgs/seadance/showcase_3.jpg",
@@ -113,7 +119,9 @@
             "description": "\"A young adult in a cozy cafe enjoying a steaming coffee, late afternoon sunlight filtering through large glass windows casting a warm golden glow, tranquil mood.\"",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-4.webm"
+              "src": "/videos/seadance/showcase-4.webm",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT8.008S"
             },
             "image": {
               "src": "/imgs/seadance/showcase_4.jpg",

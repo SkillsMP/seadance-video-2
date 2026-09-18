@@ -68,6 +68,29 @@ export function buildBreadcrumbSchema(
 }
 
 /**
+ * VideoObject: video metadata for Google video results.
+ */
+export function buildVideoSchema(video: {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  contentUrl: string;
+  duration?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: video.name,
+    description: video.description,
+    thumbnailUrl: video.thumbnailUrl,
+    uploadDate: video.uploadDate,
+    ...(video.duration ? { duration: video.duration } : {}),
+    contentUrl: video.contentUrl,
+  };
+}
+
+/**
  * Article / BlogPosting: blog post rich snippet candidate.
  * Dates are auto-parsed from display strings via toISODate().
  */
@@ -99,4 +122,3 @@ export function buildArticleSchema(post: {
     ...(post.description ? { description: post.description } : {}),
   };
 }
-

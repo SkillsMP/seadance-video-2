@@ -1,7 +1,10 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { getThemePage } from '@/core/theme';
+import { envConfigs } from '@/config';
 import { VideoGenerator } from '@/shared/blocks/generator';
+import { JsonLd } from '@/shared/components/seo/json-ld';
+import { buildVideoSchema } from '@/shared/lib/schema';
 import { getMetadata } from '@/shared/lib/seo';
 import { DynamicPage } from '@/shared/types/blocks/landing';
 
@@ -39,7 +42,42 @@ export default async function LandingPage({
     },
   };
 
+  const videoSchemas = (page.sections?.showcases?.items ?? []).flatMap(
+    (item) => {
+      const video = item.video;
+      const thumbnailPath = item.image?.src;
+
+      if (
+        !item.title ||
+        !item.description ||
+        !video?.src ||
+        !video.uploadDate ||
+        !thumbnailPath
+      ) {
+        return [];
+      }
+
+      return [
+        buildVideoSchema({
+          name: item.title,
+          description: item.description,
+          thumbnailUrl: new URL(thumbnailPath, envConfigs.app_url).toString(),
+          uploadDate: video.uploadDate,
+          contentUrl: new URL(video.src, envConfigs.app_url).toString(),
+          duration: video.duration,
+        }),
+      ];
+    }
+  );
+
   const Page = await getThemePage('dynamic-page');
 
-  return <Page locale={locale} page={page} />;
+  return (
+    <>
+      {videoSchemas.map((videoSchema) => (
+        <JsonLd key={videoSchema.contentUrl} data={videoSchema} />
+      ))}
+      <Page locale={locale} page={page} />
+    </>
+  );
 }
