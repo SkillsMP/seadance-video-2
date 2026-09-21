@@ -81,6 +81,14 @@ const minimaxH3ImageEntry = findModelEntry(
   'minimax-h3/image-to-video',
   'image-to-video'
 );
+const seedanceMiniTextEntry = findModelEntry(
+  'bytedance/seedance-2-mini',
+  'text-to-video'
+);
+const seedanceMiniImageEntry = findModelEntry(
+  'bytedance/seedance-2-mini',
+  'image-to-video'
+);
 
 assert.equal(
   MODELS.some((model) =>
@@ -92,6 +100,62 @@ assert.equal(
 );
 assert.equal(minimaxH3TextEntry.enabled, true);
 assert.equal(minimaxH3ImageEntry.enabled, true);
+assert.equal(seedanceMiniTextEntry.enabled, true);
+assert.equal(seedanceMiniImageEntry.enabled, true);
+assert.deepEqual(
+  seedanceMiniTextEntry.controls?.['text-to-video']?.duration?.options,
+  [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+);
+assert.deepEqual(
+  seedanceMiniTextEntry.controls?.['text-to-video']?.aspect_ratio?.options,
+  ['16:9', '4:3', '1:1', '3:4', '9:16', '21:9', 'adaptive']
+);
+assert.deepEqual(
+  seedanceMiniTextEntry.controls?.['text-to-video']?.generate_audio,
+  {
+    type: 'boolean',
+    default: false,
+    options: [false, true],
+    label: 'Generate Audio',
+    ui: 'switch',
+    order: 40,
+  }
+);
+assert.deepEqual(
+  seedanceMiniImageEntry.controls?.['image-to-video']?.generate_audio,
+  {
+    type: 'boolean',
+    default: false,
+    options: [false, true],
+    label: 'Generate Audio',
+    ui: 'switch',
+    order: 40,
+  }
+);
+assert.deepEqual(seedanceMiniImageEntry.inputConstraints?.['image-to-video'], {
+  imageModes: ['first_frame', 'first_last_frames', 'reference_images'],
+  imageInputRequired: true,
+  promptRequired: true,
+  uploadMaxSizeMB: 30,
+});
+assert.equal(seedanceMiniTextEntry.credits['text-to-video'], 15);
+assert.equal(seedanceMiniImageEntry.credits['image-to-video'], 15);
+assert.equal(seedanceMiniTextEntry.defaults?.['text-to-video']?.duration, 5);
+assert.equal(
+  seedanceMiniTextEntry.pricing?.['text-to-video']?.defaultDuration,
+  5
+);
+assert.deepEqual(
+  seedanceMiniTextEntry.controls?.['text-to-video']?.resolution?.options,
+  ['480p', '720p']
+);
+assert.deepEqual(
+  seedanceMiniTextEntry.pricing?.['text-to-video']?.byResolution,
+  {
+    '480p': { creditsPerSecond: 3, availability: 'enabled' },
+    '720p': { creditsPerSecond: 6, availability: 'enabled' },
+  }
+);
 assert.deepEqual(
   minimaxH3TextEntry.controls?.['text-to-video']?.resolution?.options,
   ['768P', '2K']
@@ -180,6 +244,78 @@ assert.equal(controlledOptions.aspect_ratio, '9:16');
 assert.equal(controlledOptions.resolution, '720p');
 assert.equal(controlledOptions.generate_audio, true);
 assert.equal(controlledOptions.inputBilling, 'no-video-input');
+
+const seedanceMiniTextOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'text-to-video',
+  entry: seedanceMiniTextEntry,
+  options: {
+    duration: 10,
+    aspect_ratio: '21:9',
+    resolution: '720p',
+    generate_audio: true,
+  },
+});
+assert.equal(seedanceMiniTextOptions.duration, 10);
+assert.equal(seedanceMiniTextOptions.aspect_ratio, '21:9');
+assert.equal(seedanceMiniTextOptions.resolution, '720p');
+assert.equal(seedanceMiniTextOptions.generate_audio, true);
+assert.equal(seedanceMiniTextOptions.inputBilling, 'no-video-input');
+assert.equal(
+  resolveGenerationPricingSnapshot({
+    mediaType: 'video',
+    scene: 'text-to-video',
+    entry: seedanceMiniTextEntry,
+    options: seedanceMiniTextOptions,
+  }).costCredits,
+  60
+);
+
+const seedanceMiniImageOptions = resolveFinalOptions({
+  mediaType: 'video',
+  scene: 'image-to-video',
+  entry: seedanceMiniImageEntry,
+  options: {
+    duration: 5,
+    image_input: ['https://example.com/start.png'],
+    image_mode: 'first_frame',
+    resolution: '480p',
+    generate_audio: true,
+  },
+});
+assert.equal(seedanceMiniImageOptions.generate_audio, true);
+assert.equal(seedanceMiniImageOptions.image_mode, 'first_frame');
+assert.deepEqual(seedanceMiniImageOptions.image_input, [
+  'https://example.com/start.png',
+]);
+assert.doesNotThrow(() =>
+  assertModelInputConstraints({
+    entry: seedanceMiniImageEntry,
+    scene: 'image-to-video',
+    prompt: 'Animate the first frame naturally.',
+    options: seedanceMiniImageOptions,
+  })
+);
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: seedanceMiniImageEntry,
+      scene: 'image-to-video',
+      prompt: 'Animate the first frame naturally.',
+      options: { ...seedanceMiniImageOptions, image_mode: undefined },
+    }),
+  /image_mode is required for model/
+);
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: seedanceMiniImageEntry,
+      scene: 'image-to-video',
+      prompt: 'Animate the first frame naturally.',
+      options: { ...seedanceMiniImageOptions, image_input: [] },
+    }),
+  /image_mode requires non-empty image_input/
+);
 
 const imageOptions = resolveFinalOptions({
   mediaType: 'video',

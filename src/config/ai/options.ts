@@ -88,6 +88,16 @@ export function assertModelInputConstraints({
 
   const allowedImageModes = constraints.imageModes;
   const imageMode = options.image_mode;
+  if (constraints.imageInputRequired && imageMode === undefined) {
+    throw new Error(`image_mode is required for model: ${entry.family}/${scene}`);
+  }
+
+  if (constraints.imageInputRequired && !allowedImageModes) {
+    throw new Error(
+      `image_mode configuration is invalid for model: ${entry.family}/${scene}`
+    );
+  }
+
   if (!allowedImageModes || imageMode === undefined) {
     return;
   }
@@ -95,6 +105,15 @@ export function assertModelInputConstraints({
   if (!isVideoImageMode(imageMode) || !allowedImageModes.includes(imageMode)) {
     throw new Error(
       `unsupported image_mode for model: ${entry.family}/${scene}`
+    );
+  }
+
+  if (
+    constraints.imageInputRequired &&
+    (!Array.isArray(options.image_input) || options.image_input.length === 0)
+  ) {
+    throw new Error(
+      `image_mode requires non-empty image_input: ${entry.family}/${scene}`
     );
   }
 

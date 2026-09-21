@@ -104,10 +104,24 @@ const minimaxH3TextEntry = MODELS.find(
 const minimaxH3ImageEntry = MODELS.find(
   (model) => model.value === 'minimax-h3/image-to-video'
 );
+const seedanceMiniTextEntry = MODELS.find(
+  (model) =>
+    model.value === 'bytedance/seedance-2-mini' &&
+    model.scenes.includes('text-to-video')
+);
+const seedanceMiniImageEntry = MODELS.find(
+  (model) =>
+    model.value === 'bytedance/seedance-2-mini' &&
+    model.scenes.includes('image-to-video')
+);
 assert.ok(minimaxH3TextEntry, 'missing MiniMax H3 text-to-video entry');
 assert.ok(minimaxH3ImageEntry, 'missing MiniMax H3 image-to-video entry');
+assert.ok(seedanceMiniTextEntry, 'missing Seedance Mini text-to-video entry');
+assert.ok(seedanceMiniImageEntry, 'missing Seedance Mini image-to-video entry');
 assert.equal(minimaxH3TextEntry.enabled, true);
 assert.equal(minimaxH3ImageEntry.enabled, true);
+assert.equal(seedanceMiniTextEntry.enabled, true);
+assert.equal(seedanceMiniImageEntry.enabled, true);
 assert.deepEqual(
   minimaxH3TextEntry.controls?.['text-to-video']?.duration?.options,
   [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -134,6 +148,53 @@ assert.deepEqual(imageEntry.inputConstraints?.['image-to-video']?.imageModes, [
   'first_last_frames',
   'reference_images',
 ]);
+assert.equal(
+  seedanceMiniImageEntry.inputConstraints?.['image-to-video']?.imageInputRequired,
+  true
+);
+assert.deepEqual(
+  seedanceMiniTextEntry.controls?.['text-to-video']?.generate_audio,
+  {
+    type: 'boolean',
+    default: false,
+    options: [false, true],
+    label: 'Generate Audio',
+    ui: 'switch',
+    order: 40,
+  }
+);
+assert.deepEqual(
+  seedanceMiniImageEntry.controls?.['image-to-video']?.generate_audio,
+  {
+    type: 'boolean',
+    default: false,
+    options: [false, true],
+    label: 'Generate Audio',
+    ui: 'switch',
+    order: 40,
+  }
+);
+
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: seedanceMiniImageEntry,
+      scene: 'image-to-video',
+      prompt: 'Animate the subject.',
+      options: {},
+    }),
+  /image_mode is required for model/
+);
+assert.throws(
+  () =>
+    assertModelInputConstraints({
+      entry: seedanceMiniImageEntry,
+      scene: 'image-to-video',
+      prompt: 'Animate the subject.',
+      options: { image_mode: 'first_frame', image_input: [] },
+    }),
+  /image_mode requires non-empty image_input/
+);
 
 const optionCases = [
   {
@@ -339,6 +400,150 @@ async function assertKieMappings() {
   assert.equal(requestIndex, kieCases.length);
 }
 
+async function assertSeedanceMiniMappings() {
+  const miniCases = [
+    {
+      model: 'bytedance/seedance-2-mini',
+      prompt: 'A paper boat crosses a rain puddle.',
+      options: {
+        duration: 5,
+        aspect_ratio: '16:9',
+        resolution: '480p',
+        generate_audio: true,
+      },
+      expectedInput: {
+        prompt: 'A paper boat crosses a rain puddle.',
+        duration: 5,
+        aspect_ratio: '16:9',
+        resolution: '480p',
+        generate_audio: true,
+      },
+    },
+    {
+      model: 'bytedance/seedance-2-mini',
+      prompt: 'Animate the first frame naturally.',
+      options: {
+        duration: 6,
+        aspect_ratio: '21:9',
+        resolution: '720p',
+        generate_audio: false,
+        image_mode: 'first_frame',
+        image_input: ['https://example.com/start.png'],
+      },
+      expectedInput: {
+        prompt: 'Animate the first frame naturally.',
+        first_frame_url: 'https://example.com/start.png',
+        duration: 6,
+        aspect_ratio: '21:9',
+        resolution: '720p',
+        generate_audio: false,
+      },
+    },
+    {
+      model: 'bytedance/seedance-2-mini',
+      prompt: 'Transition from the first frame to the last frame.',
+      options: {
+        duration: 7,
+        aspect_ratio: '4:3',
+        resolution: '480p',
+        generate_audio: false,
+        image_mode: 'first_last_frames',
+        image_input: [
+          'https://example.com/start.png',
+          'https://example.com/end.png',
+        ],
+      },
+      expectedInput: {
+        prompt: 'Transition from the first frame to the last frame.',
+        first_frame_url: 'https://example.com/start.png',
+        last_frame_url: 'https://example.com/end.png',
+        duration: 7,
+        aspect_ratio: '4:3',
+        resolution: '480p',
+        generate_audio: false,
+      },
+    },
+    {
+      model: 'bytedance/seedance-2-mini',
+      prompt: 'Keep the character consistent across the references.',
+      options: {
+        duration: 8,
+        aspect_ratio: 'adaptive',
+        resolution: '720p',
+        generate_audio: false,
+        image_mode: 'reference_images',
+        image_input: [
+          'https://example.com/reference-1.png',
+          'https://example.com/reference-2.png',
+        ],
+      },
+      expectedInput: {
+        prompt: 'Keep the character consistent across the references.',
+        reference_image_urls: [
+          'https://example.com/reference-1.png',
+          'https://example.com/reference-2.png',
+        ],
+        duration: 8,
+        aspect_ratio: 'adaptive',
+        resolution: '720p',
+        generate_audio: false,
+      },
+    },
+  ] as const;
+
+  const originalFetch = globalThis.fetch;
+  let requestIndex = 0;
+
+  globalThis.fetch = async (input, init) => {
+    assert.equal(String(input), 'https://api.kie.ai/api/v1/jobs/createTask');
+    assert.equal(init?.method, 'POST');
+
+    const expected = miniCases[requestIndex];
+    assert.ok(expected, 'unexpected extra Seedance Mini request');
+
+    const body = JSON.parse(String(init?.body));
+    assert.deepEqual(body, {
+      model: expected.model,
+      callBackUrl: 'https://example.com/api/ai/notify/kie',
+      input: expected.expectedInput,
+    });
+    assert.equal('n_frames' in body.input, false);
+
+    requestIndex += 1;
+
+    return new Response(
+      JSON.stringify({
+        code: 200,
+        msg: 'success',
+        data: { taskId: `seedance-mini-smoke-${requestIndex}` },
+      })
+    );
+  };
+
+  try {
+    for (const testCase of miniCases) {
+      const result = await new KieProvider({
+        apiKey: 'test-api-key',
+        customStorage: false,
+      }).generate({
+        params: {
+          mediaType: AIMediaType.VIDEO,
+          model: testCase.model,
+          prompt: testCase.prompt,
+          callbackUrl: 'https://example.com/api/ai/notify/kie',
+          options: testCase.options,
+        },
+      });
+
+      assert.equal(result.taskStatus, AITaskStatus.PENDING);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.equal(requestIndex, miniCases.length);
+}
+
 async function assertMinimaxH3Mappings() {
   const h3Cases = [
     {
@@ -453,6 +658,7 @@ async function assertMinimaxH3Mappings() {
 }
 
 void assertKieMappings()
+  .then(assertSeedanceMiniMappings)
   .then(assertMinimaxH3Mappings)
   .then(() => {
     console.log('video image input smoke checks passed.');

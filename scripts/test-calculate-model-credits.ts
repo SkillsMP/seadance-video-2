@@ -42,6 +42,18 @@ function findEnabledModel(family: string, scene: string): ModelEntry {
   return entry;
 }
 
+function findModelEntry(value: string, scene: string): ModelEntry {
+  const entry = MODELS.find(
+    (model) => model.value === value && model.scenes.includes(scene)
+  );
+
+  if (!entry) {
+    throw new Error(`missing model fixture: ${value}/${scene}`);
+  }
+
+  return entry;
+}
+
 const fixedEntry = createEntry({
   pricing: {
     'text-to-video': {
@@ -293,6 +305,38 @@ assert.equal(
     { duration: 5, resolution: '720p' }
   ),
   75
+);
+
+const seedanceMiniTextEntry = findModelEntry(
+  'bytedance/seedance-2-mini',
+  'text-to-video'
+);
+const seedanceMiniImageEntry = findModelEntry(
+  'bytedance/seedance-2-mini',
+  'image-to-video'
+);
+assert.equal(seedanceMiniTextEntry.enabled, true);
+assert.equal(seedanceMiniImageEntry.enabled, true);
+assert.equal(
+  calculateModelCredits(seedanceMiniTextEntry, 'text-to-video', {
+    duration: 5,
+    resolution: '480p',
+  }),
+  15
+);
+assert.equal(
+  calculateModelCredits(seedanceMiniTextEntry, 'text-to-video', {
+    duration: 10,
+    resolution: '720p',
+  }),
+  60
+);
+assert.equal(
+  calculateModelCredits(seedanceMiniImageEntry, 'image-to-video', {
+    duration: 5,
+    resolution: '480p',
+  }),
+  15
 );
 
 const seedancePricingMatrix = [

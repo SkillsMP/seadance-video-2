@@ -55,6 +55,7 @@ export type ScenePricingMap = Partial<Record<string, ScenePricing>>;
 
 export interface ModelInputConstraints {
   imageModes?: readonly VideoImageMode[];
+  imageInputRequired?: boolean;
   promptRequired?: boolean;
   uploadMaxSizeMB?: number;
 }
@@ -96,6 +97,7 @@ export interface ModelEntry {
 
 const SEEDANCE_FAST_MODEL_VALUE = 'bytedance/seedance-2-fast';
 const SEEDANCE_STANDARD_MODEL_VALUE = 'bytedance/seedance-2';
+const SEEDANCE_MINI_MODEL_VALUE = 'bytedance/seedance-2-mini';
 const SEEDANCE_DEFAULT_DURATION = 5;
 const SEEDANCE_DEFAULT_ASPECT_RATIO = '16:9';
 const SEEDANCE_TEXT_DURATION_OPTIONS = [
@@ -103,6 +105,18 @@ const SEEDANCE_TEXT_DURATION_OPTIONS = [
 ];
 const SEEDANCE_VIDEO_DURATION_OPTIONS = [5, 10];
 const SEEDANCE_ASPECT_RATIO_OPTIONS = ['16:9', '9:16', '1:1', '4:3', '3:4'];
+const SEEDANCE_MINI_DURATION_OPTIONS = [
+  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+];
+const SEEDANCE_MINI_ASPECT_RATIO_OPTIONS = [
+  '16:9',
+  '4:3',
+  '1:1',
+  '3:4',
+  '9:16',
+  '21:9',
+  'adaptive',
+];
 const MINIMAX_H3_TEXT_TO_VIDEO_MODEL_VALUE = 'minimax-h3/text-to-video';
 const MINIMAX_H3_IMAGE_TO_VIDEO_MODEL_VALUE = 'minimax-h3/image-to-video';
 const MINIMAX_H3_DURATION_OPTIONS = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
@@ -211,9 +225,15 @@ interface SeedanceCatalogItem {
   scene: SeedanceScene;
   enabled: boolean;
   defaultResolution: SeedanceResolution;
+  defaultDuration?: number;
   inputBilling: 'no-video-input' | 'video-input';
   credits: number;
   durationOptions: number[];
+  aspectRatioOptions?: readonly string[];
+  enableAudioControl?: boolean;
+  imageInputRequired?: boolean;
+  promptRequired?: boolean;
+  uploadMaxSizeMB?: number;
   byResolution: Partial<Record<SeedanceResolution, VideoResolutionPricing>>;
 }
 
@@ -311,6 +331,46 @@ const SEEDANCE_CATALOG: SeedanceCatalogItem[] = [
       '1080p': { creditsPerSecond: 45, availability: 'enabled' },
     },
   },
+  {
+    family: 'seedance-2-mini',
+    modelValue: SEEDANCE_MINI_MODEL_VALUE,
+    label: 'Seedance 2.0 Mini',
+    scene: 'text-to-video',
+    enabled: true,
+    defaultResolution: '480p',
+    defaultDuration: 5,
+    inputBilling: 'no-video-input',
+    credits: 15,
+    durationOptions: SEEDANCE_MINI_DURATION_OPTIONS,
+    aspectRatioOptions: SEEDANCE_MINI_ASPECT_RATIO_OPTIONS,
+    enableAudioControl: true,
+    promptRequired: true,
+    byResolution: {
+      '480p': { creditsPerSecond: 3, availability: 'enabled' },
+      '720p': { creditsPerSecond: 6, availability: 'enabled' },
+    },
+  },
+  {
+    family: 'seedance-2-mini',
+    modelValue: SEEDANCE_MINI_MODEL_VALUE,
+    label: 'Seedance 2.0 Mini',
+    scene: 'image-to-video',
+    enabled: true,
+    defaultResolution: '480p',
+    defaultDuration: 5,
+    inputBilling: 'no-video-input',
+    credits: 15,
+    durationOptions: SEEDANCE_MINI_DURATION_OPTIONS,
+    aspectRatioOptions: SEEDANCE_MINI_ASPECT_RATIO_OPTIONS,
+    enableAudioControl: true,
+    imageInputRequired: true,
+    promptRequired: true,
+    uploadMaxSizeMB: 30,
+    byResolution: {
+      '480p': { creditsPerSecond: 3, availability: 'enabled' },
+      '720p': { creditsPerSecond: 6, availability: 'enabled' },
+    },
+  },
 ];
 
 function getResolutionPricingEntries(
@@ -332,26 +392,31 @@ function getEnabledResolutionOptions(
 
 function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
   const scene = item.scene;
+  const defaultDuration = item.defaultDuration ?? SEEDANCE_DEFAULT_DURATION;
   const controls: SceneControls = {
     duration: {
       type: 'number',
-      default: SEEDANCE_DEFAULT_DURATION,
+      default: defaultDuration,
       options: item.durationOptions,
     },
     aspect_ratio: {
       type: 'string',
       default: SEEDANCE_DEFAULT_ASPECT_RATIO,
-      options: SEEDANCE_ASPECT_RATIO_OPTIONS,
+      options: [
+        ...(item.aspectRatioOptions ?? SEEDANCE_ASPECT_RATIO_OPTIONS),
+      ],
     },
-    generate_audio: {
+  };
+  if (item.enableAudioControl !== false) {
+    controls.generate_audio = {
       type: 'boolean',
       default: false,
       options: [false, true],
       label: 'Generate Audio',
       ui: 'switch',
       order: 40,
-    },
-  };
+    };
+  }
   const enabledResolutionOptions = getEnabledResolutionOptions(
     item.byResolution
   );
@@ -362,6 +427,20 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
       default: item.defaultResolution,
       options: enabledResolutionOptions,
     };
+  }
+
+  const inputConstraints: ModelInputConstraints = {};
+  if (scene === 'image-to-video') {
+    inputConstraints.imageModes = [...VIDEO_IMAGE_MODES];
+  }
+  if (item.imageInputRequired !== undefined) {
+    inputConstraints.imageInputRequired = item.imageInputRequired;
+  }
+  if (item.promptRequired !== undefined) {
+    inputConstraints.promptRequired = item.promptRequired;
+  }
+  if (item.uploadMaxSizeMB !== undefined) {
+    inputConstraints.uploadMaxSizeMB = item.uploadMaxSizeMB;
   }
 
   return {
@@ -380,7 +459,7 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
     },
     defaults: {
       [scene]: {
-        duration: SEEDANCE_DEFAULT_DURATION,
+        duration: defaultDuration,
         aspect_ratio: SEEDANCE_DEFAULT_ASPECT_RATIO,
         resolution: item.defaultResolution,
         generate_audio: false,
@@ -392,17 +471,13 @@ function createSeedanceEntry(item: SeedanceCatalogItem): ModelEntry {
     pricing: {
       [scene]: {
         mode: 'perSecond',
-        defaultDuration: SEEDANCE_DEFAULT_DURATION,
+        defaultDuration,
         byResolution: item.byResolution,
       },
     },
     inputConstraints:
-      scene === 'image-to-video'
-        ? {
-            [scene]: {
-              imageModes: [...VIDEO_IMAGE_MODES],
-            },
-          }
+      Object.keys(inputConstraints).length > 0
+        ? { [scene]: inputConstraints }
         : undefined,
   };
 }
@@ -897,6 +972,32 @@ function validateInputConstraints(model: ModelEntry, errors: string[]): void {
           `inputConstraints imageModes is invalid: ${modelRef(model)}/${scene}`
         );
       }
+    }
+
+    if (
+      constraints.imageInputRequired !== undefined &&
+      typeof constraints.imageInputRequired !== 'boolean'
+    ) {
+      errors.push(
+        `inputConstraints imageInputRequired is invalid: ${modelRef(model)}/${scene}`
+      );
+    }
+
+    if (
+      constraints.imageInputRequired === true &&
+      (scene !== 'image-to-video' ||
+        !Array.isArray(imageModes) ||
+        imageModes.length === 0 ||
+        imageModes.some(
+          (mode) => !(VIDEO_IMAGE_MODES as readonly unknown[]).includes(mode)
+        ) ||
+        new Set(imageModes).size !== imageModes.length)
+    ) {
+      errors.push(
+        `inputConstraints imageInputRequired requires valid imageModes: ${modelRef(
+          model
+        )}/${scene}`
+      );
     }
 
     if (
