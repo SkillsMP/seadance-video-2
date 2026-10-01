@@ -41,6 +41,11 @@
           "icon": "Clapperboard"
         },
         {
+          "title": "Hotel Lobby AI",
+          "url": "/hotel-lobby-ai",
+          "icon": "Mic"
+        },
+        {
           "title": "Prompts",
           "url": "/prompts",
           "icon": "Sparkles"
@@ -108,6 +113,11 @@
             {
               "title": "Video Showcase",
               "url": "/#showcases",
+              "target": "_self"
+            },
+            {
+              "title": "Hotel Lobby AI",
+              "url": "/hotel-lobby-ai",
               "target": "_self"
             },
             {

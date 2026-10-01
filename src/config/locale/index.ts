@@ -79,4 +79,5 @@ export const localeMessagesPaths = [
   'pages/compare/seedance-vs-minimax-h3',
   'pages/compare/seedance-vs-veo',
   'pages/use-cases/seedance-ugc-video',
+  'pages/hotel-lobby-ai',
 ];

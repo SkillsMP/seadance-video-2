@@ -59,6 +59,9 @@ interface VideoGeneratorProps {
   className?: string;
   maxSizeMB?: number;
   srOnlyTitle?: string;
+  initialTab?: VideoGeneratorTab;
+  initialPrompt?: string;
+  initialImageKind?: VideoImageInputsState['activeKind'];
 }
 
 interface GeneratedVideo {
@@ -237,20 +240,22 @@ export function VideoGenerator({
   className,
   maxSizeMB = 50,
   srOnlyTitle,
+  initialTab = 'text-to-video',
+  initialPrompt = '',
+  initialImageKind = 'frames',
 }: VideoGeneratorProps) {
   const t = useTranslations('ai.video.generator');
 
-  const [activeTab, setActiveTab] =
-    useState<VideoGeneratorTab>('text-to-video');
+  const [activeTab, setActiveTab] = useState<VideoGeneratorTab>(initialTab);
 
   const [selectedFamily, setSelectedFamily] = useState('');
   const [selectedControlValues, setSelectedControlValues] = useState<
     Record<string, string>
   >({});
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState(initialPrompt);
   const [videoImageInputs, setVideoImageInputs] =
     useState<VideoImageInputsState>({
-      activeKind: 'frames',
+      activeKind: initialImageKind,
       value: null,
       isUploading: false,
       hasError: false,
@@ -977,6 +982,7 @@ export function VideoGenerator({
 
                 {isImageToVideoMode && (
                   <VideoImageInputs
+                    initialKind={initialImageKind}
                     maxSizeMB={selectedUploadMaxSizeMB}
                     imageModes={selectedImageModes}
                     referenceMinImages={2}

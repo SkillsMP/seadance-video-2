@@ -27,6 +27,7 @@ export interface VideoImageInputsState {
 }
 
 interface VideoImageInputsProps {
+  initialKind?: VideoImageInputKind;
   maxSizeMB?: number;
   imageModes?: readonly VideoImageMode[];
   referenceMinImages?: number;
@@ -48,6 +49,7 @@ function hasUploadStatus(
 }
 
 export function VideoImageInputs({
+  initialKind = 'frames',
   maxSizeMB,
   imageModes = VIDEO_IMAGE_MODES,
   referenceMinImages = 2,
@@ -57,7 +59,7 @@ export function VideoImageInputs({
   const t = useTranslations('ai.video.generator');
   const sizeHint = t('form.image_size_hint', { size: maxSizeMB ?? 10 });
   const [selectedKind, setSelectedKind] =
-    useState<VideoImageInputKind>('frames');
+    useState<VideoImageInputKind>(initialKind);
   const [startFrameItems, setStartFrameItems] = useState<ImageUploaderValue[]>(
     []
   );
