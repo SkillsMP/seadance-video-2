@@ -7,6 +7,8 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
+      // AI 爬虫策略由 Cloudflare 管理，以下专用规则暂时停用。
+      /*
       {
         // 1. 白名单组：允许【主流搜索 + AI 搜索 + 社交媒体 + 用户即时交互】
         userAgent: [
@@ -16,6 +18,7 @@ export default function robots(): MetadataRoute.Robots {
           'Applebot',
           'OAI-SearchBot',
           'PerplexityBot',
+          'Perplexity-User',
           'ChatGPT-User',
           'Claude-Web',
           'facebookexternalhit',
@@ -39,6 +42,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
         disallow: ['/'],
       },
+      */
       {
         // 3. 默认组：针对所有未列出的普通爬虫
         userAgent: '*',
