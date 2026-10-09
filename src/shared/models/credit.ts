@@ -201,6 +201,10 @@ export async function consumeCredits({
     const consumedItems: any[] = [];
 
     while (remainingToConsume > 0) {
+      if (batchNo > maxBatchNo) {
+        throw new Error(`Too many batches: ${batchNo} > ${maxBatchNo}`);
+      }
+
       // get batch credits
       const batchCredits = await tx
         .select()
@@ -222,8 +226,7 @@ export async function consumeCredits({
           // NULL values (never expires) will be ordered last
           asc(credit.expiresAt)
         )
-        .limit(batchSize) // batch size
-        .offset((batchNo - 1) * batchSize) // offset
+        .limit(batchSize) // consumed rows are excluded on the next query
         .for('update'); // lock for update
 
       // no more credits
@@ -258,14 +261,13 @@ export async function consumeCredits({
           batchNo: batchNo,
         });
 
-        batchNo += 1;
         remainingToConsume -= toConsume;
-
-        // if too many batches, throw error
-        if (batchNo > maxBatchNo) {
-          throw new Error(`Too many batches: ${batchNo} > ${maxBatchNo}`);
-        }
       }
+      batchNo += 1;
+    }
+
+    if (remainingToConsume > 0) {
+      throw new Error(`Insufficient credits: ${remainingToConsume} remaining`);
     }
 
     // 3. create consumed credit
