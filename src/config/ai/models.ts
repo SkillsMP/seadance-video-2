@@ -1,5 +1,35 @@
 /**
- * Trusted Model Registry
+ *               models.ts ：  “模型注册表” （它统一登记模型及其供应商、支持场景、参数和扣费规则）
+ *  * 主要用法（按要做的事查）：
+ * 
+ * 【找模型配置】
+ * MODELS 是图片/视频模型的唯一注册表，生成器下拉、后端 findModel()、参数校验和扣费都读它。
+ * 每个 ModelEntry 配置一个供应商模型，以及它支持的生成场景。
+ *
+ * 【认清字段】
+ * family   → 用户选择的产品标识；同一产品的不同场景可以共用。
+ * value    → 发给供应商的模型 ID。
+ * provider → 调用哪家供应商。
+ * scenes   → 支持哪些场景，例如文生视频、图生视频。
+ * enabled  → 是否开放；false 时普通入口不展示，findModel() 也不接受。
+ *
+ * 【改参数 / 改价格】
+ * controls → 用户能选什么，以及允许选择的值。
+ * defaults → 用户未指定时使用的默认参数。
+ * enforced → 必须锁定的参数，服务端会强制覆盖。
+ * pricing  → 实际扣费规则；改价格看这里。
+ * credits  → 兼容字段和配置校验使用；不代表实际扣费。
+ *
+ * 【新增模型】
+ * Seedance：在 SEEDANCE_CATALOG 添加配置，createSeedanceEntry() 会生成 ModelEntry。
+ * 其他模型（例如 MiniMax H3）：直接在 MODELS 添加 ModelEntry。
+ * 文生与图生使用不同上游 ID 时，分成两个 ModelEntry，使用相同 family、不同 value / scenes。
+ *
+ * 【改供应商请求格式】
+ * 在对应适配器中修改，例如 src/extensions/ai/kie.ts。
+ * 本文件配置通用参数；供应商私有字段的转换（例如 duration → n_frames）放在适配器。
+ * 图片 / 视频模型统一注册表：在这里配置模型、生成参数和扣费规则。
+ * MODELS 是唯一注册入口，生成器和后端共用。
  *
  * 【架构设计核心概念：family】
  * family 是「产品计费策略」与「底层技术供应商（Providers）」之间的核心解耦层。
@@ -11,6 +41,8 @@
  * 核心约束（Invariant）：
  * 相同的 (mediaType, family, scene) 组合，其积分消耗（credits）在所有供应商（providers）之间必须完全一致。
  * 价格是属于 SKU（family）的固有属，family is a billing SKU，而不是底层具体服务供应商的属性。
+ *
+
  */
 
 export type ControlValue = string | number | boolean;
