@@ -400,7 +400,7 @@ async function assertKieMappings() {
   assert.equal(requestIndex, kieCases.length);
 }
 
-async function assertSeedanceMiniMappings() {
+async function assertSeedanceMappings() {
   const miniCases = [
     {
       model: 'bytedance/seedance-2-mini',
@@ -491,6 +491,12 @@ async function assertSeedanceMiniMappings() {
     },
   ] as const;
 
+  const seedanceCases = [
+    ...miniCases,
+    ...['bytedance/seedance-2-fast', 'bytedance/seedance-2'].flatMap((model) =>
+      miniCases.slice(0, 2).map((testCase) => ({ ...testCase, model }))
+    ),
+  ];
   const originalFetch = globalThis.fetch;
   let requestIndex = 0;
 
@@ -498,8 +504,8 @@ async function assertSeedanceMiniMappings() {
     assert.equal(String(input), 'https://api.kie.ai/api/v1/jobs/createTask');
     assert.equal(init?.method, 'POST');
 
-    const expected = miniCases[requestIndex];
-    assert.ok(expected, 'unexpected extra Seedance Mini request');
+    const expected = seedanceCases[requestIndex];
+    assert.ok(expected, 'unexpected extra Seedance request');
 
     const body = JSON.parse(String(init?.body));
     assert.deepEqual(body, {
@@ -521,7 +527,7 @@ async function assertSeedanceMiniMappings() {
   };
 
   try {
-    for (const testCase of miniCases) {
+    for (const testCase of seedanceCases) {
       const result = await new KieProvider({
         apiKey: 'test-api-key',
         customStorage: false,
@@ -541,7 +547,7 @@ async function assertSeedanceMiniMappings() {
     globalThis.fetch = originalFetch;
   }
 
-  assert.equal(requestIndex, miniCases.length);
+  assert.equal(requestIndex, seedanceCases.length);
 }
 
 async function assertMinimaxH3Mappings() {
@@ -658,7 +664,7 @@ async function assertMinimaxH3Mappings() {
 }
 
 void assertKieMappings()
-  .then(assertSeedanceMiniMappings)
+  .then(assertSeedanceMappings)
   .then(assertMinimaxH3Mappings)
   .then(() => {
     console.log('video image input smoke checks passed.');

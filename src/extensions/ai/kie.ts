@@ -49,6 +49,7 @@ const KIE_IMAGE_FIELD: Record<string, KieImageInputField> = {
 
 const KIE_VIDEO_DURATION_FIELD: Record<string, 'duration' | 'n_frames'> = {
   'bytedance/seedance-2-fast': 'duration',
+  'bytedance/seedance-2': 'duration',
   'bytedance/seedance-2-mini': 'duration',
 };
 const SEEDANCE_2_VIDEO_MODELS = new Set([
