@@ -2,7 +2,8 @@
 #
 # 本脚本用于创建：
 # 1. .agents\skills -> D:\project3\skills\agents-skills (Junction 软链接)
-# 2. .env.domain.local -> .env.domain.a.local 或 .env.domain.b.local (HardLink 硬链接)
+# 2. .agents\docs -> D:\project3\skills\docs (Junction 软链接)
+# 3. .env.domain.local -> .env.domain.a.local 或 .env.domain.b.local (HardLink 硬链接)
 #
 # 使用方式：
 # 1. 新 clone 或复制项目后，在仓库根目录运行：
@@ -17,13 +18,17 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string]$SharedSkillsPath
+    [string]$SharedSkillsPath,
+
+    [Parameter()]
+    [string]$SharedDocsPath
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $linkPath = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '.agents\skills'))
+$docsLinkPath = [System.IO.Path]::GetFullPath((Join-Path $repoRoot '.agents\docs'))
 
 if ([string]::IsNullOrWhiteSpace($SharedSkillsPath)) {
     $candidate = Join-Path $repoRoot '..\..\skills\agents-skills'
@@ -44,6 +49,28 @@ $sharedSkillsPath = [System.IO.Path]::GetFullPath($SharedSkillsPath)
 
 if (-not (Test-Path -LiteralPath $sharedSkillsPath -PathType Container)) {
     throw "Shared skills directory not found: $sharedSkillsPath`nUse -SharedSkillsPath to specify the actual directory."
+}
+
+# 解析共享 docs 目录
+if ([string]::IsNullOrWhiteSpace($SharedDocsPath)) {
+    $candidateDocs = Join-Path (Split-Path -Parent $sharedSkillsPath) 'docs'
+    if (Test-Path -LiteralPath $candidateDocs -PathType Container) {
+        $SharedDocsPath = $candidateDocs
+    } elseif (Test-Path -LiteralPath 'D:\project3\skills\docs' -PathType Container) {
+        $SharedDocsPath = 'D:\project3\skills\docs'
+    } else {
+        $SharedDocsPath = $candidateDocs
+    }
+}
+
+if (-not [System.IO.Path]::IsPathRooted($SharedDocsPath)) {
+    $SharedDocsPath = Join-Path $repoRoot $SharedDocsPath
+}
+
+$sharedDocsPath = [System.IO.Path]::GetFullPath($SharedDocsPath)
+
+if (-not (Test-Path -LiteralPath $sharedDocsPath -PathType Container)) {
+    throw "Shared docs directory not found: $sharedDocsPath`nUse -SharedDocsPath to specify the actual directory."
 }
 
 # 1. 建立或验证 .agents\skills Junction 映射
@@ -68,7 +95,29 @@ if ($null -ne $existingLink) {
     Write-Host "$linkPath -> $sharedSkillsPath"
 }
 
-# 2. 建立或更新当前项目根目录 .env.domain.local 硬链接 (依据路径自动分流 A/B 套系)
+# 2. 建立或验证 .agents\docs Junction 映射
+$existingDocsLink = Get-Item -LiteralPath $docsLinkPath -Force -ErrorAction SilentlyContinue
+
+if ($null -ne $existingDocsLink) {
+    if (($existingDocsLink.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -eq 0) {
+        throw "Target exists but is not a link: $docsLinkPath`nNo existing files were changed."
+    }
+
+    $existingDocsTarget = [System.IO.Path]::GetFullPath([string]$existingDocsLink.Target)
+    if ($existingDocsTarget.TrimEnd('\') -ieq $sharedDocsPath.TrimEnd('\')) {
+        Write-Host "Shared docs link already exists:"
+        Write-Host "$docsLinkPath -> $sharedDocsPath"
+    } else {
+        throw "A link already exists with a different target: $docsLinkPath -> $existingDocsTarget`nNo existing links were changed."
+    }
+} else {
+    New-Item -ItemType Directory -Path (Split-Path -Parent $docsLinkPath) -Force | Out-Null
+    New-Item -ItemType Junction -Path $docsLinkPath -Target $sharedDocsPath | Out-Null
+    Write-Host "Shared docs link created:"
+    Write-Host "$docsLinkPath -> $sharedDocsPath"
+}
+
+# 3. 建立或更新当前项目根目录 .env.domain.local 硬链接 (依据路径自动分流 A/B 套系)
 $normalizedPath = $repoRoot.Replace('/', '\')
 $isProject2 = $normalizedPath -like '*\project2\*'
 $isProject3 = $normalizedPath -like '*\project3\*'
