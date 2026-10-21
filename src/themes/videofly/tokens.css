@@ -1,0 +1,67 @@
+/* VideoFly Theme Scoped Tokens - Fully Supporting Light and Dark Modes */
+
+/* Light Mode (浅色模式 - 清爽高对比) */
+.videofly-shell {
+  --background: oklch(98.5% 0.003 260);
+  --foreground: oklch(14.5% 0.015 260);
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(14.5% 0.015 260);
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(14.5% 0.015 260);
+  --primary: oklch(56% 0.22 260);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(94% 0.01 260);
+  --secondary-foreground: oklch(25% 0.02 260);
+  --muted: oklch(94% 0.008 260);
+  --muted-foreground: oklch(48% 0.015 260);
+  --accent: oklch(93% 0.015 260);
+  --accent-foreground: oklch(14.5% 0.015 260);
+  --destructive: oklch(63% 0.22 25);
+  --destructive-foreground: oklch(100% 0 0);
+  --border: oklch(88% 0.01 260 / 60%);
+  --input: oklch(88% 0.01 260 / 60%);
+  --ring: oklch(56% 0.22 260);
+  --radius: 1rem;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/* Dark Mode (深色模式 - 纯黑影视级质感) */
+.dark .videofly-shell,
+html.dark .videofly-shell {
+  --background: oklch(10% 0.006 260);
+  --foreground: oklch(98% 0.005 260);
+  --card: oklch(14% 0.012 260);
+  --card-foreground: oklch(98% 0.005 260);
+  --popover: oklch(14% 0.012 260);
+  --popover-foreground: oklch(98% 0.005 260);
+  --primary: oklch(62% 0.21 260);
+  --primary-foreground: oklch(100% 0 0);
+  --secondary: oklch(18% 0.016 260);
+  --secondary-foreground: oklch(98% 0.005 260);
+  --muted: oklch(17% 0.012 260);
+  --muted-foreground: oklch(72% 0.015 260);
+  --accent: oklch(22% 0.025 260);
+  --accent-foreground: oklch(98% 0.005 260);
+  --destructive: oklch(63% 0.22 25);
+  --destructive-foreground: oklch(100% 0 0);
+  --border: oklch(85% 0.02 260 / 12%);
+  --input: oklch(85% 0.02 260 / 16%);
+  --ring: oklch(62% 0.21 260);
+}

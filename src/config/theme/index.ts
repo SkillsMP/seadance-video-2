@@ -1,3 +1,3 @@
-export const themeNames = ['default'];
+export const themeNames = ['default', 'video', 'videofly'];
 
 export const defaultTheme = 'default';

@@ -1,0 +1,37 @@
+/* Scoped to the video landing shell. Does not change admin / auth tokens. */
+.dark .video-shell {
+  --background: oklch(8.5% 0.014 70);
+  --foreground: oklch(98% 0.01 90);
+  --card: oklch(14% 0.02 70);
+  --card-foreground: oklch(98% 0.01 90);
+  --popover: oklch(16% 0.02 70);
+  --popover-foreground: oklch(98% 0.01 90);
+  --primary: oklch(82% 0.12 82);
+  --primary-foreground: oklch(22% 0.04 80);
+  --secondary: oklch(18% 0.02 70);
+  --secondary-foreground: oklch(98% 0.01 90);
+  --muted: oklch(18% 0.018 70);
+  --muted-foreground: oklch(74% 0.03 80);
+  --accent: oklch(20% 0.03 185);
+  --accent-foreground: oklch(98% 0.01 90);
+  --border: oklch(85% 0.04 80 / 14%);
+  --input: oklch(85% 0.04 80 / 18%);
+  --ring: oklch(82% 0.12 82);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
