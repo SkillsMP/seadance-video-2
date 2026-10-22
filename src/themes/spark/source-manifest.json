@@ -1,0 +1,87 @@
+[
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\styles.module.css",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\styles.module.css",
+    "sha256": "2FC007F6E81C8D10A73DB5ED7DEB228CBA141571F737AA8D118F91B25B2D39BB"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\cta.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\cta.tsx",
+    "sha256": "ED2B28486D9E1653F997C4F7DCF281CF1E5A15A2EE8D5F59460EB16D0F4C5B4E"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\faq.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\faq.tsx",
+    "sha256": "44A507D407CFC625F3A4744D621A28A564A53CF72F989B6B7B0D50514E1549A8"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\features-step.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\features-step.tsx",
+    "sha256": "CF39E896D1174C237C62E825BAEA108DA1A0A6CF00C48AFD09861535F59D6397"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\features.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\features.tsx",
+    "sha256": "8FDD0EF8568A73428EB9281DC1E4D3417DAF05525892DF4E13569BC3C35945DD"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\footer.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\footer.tsx",
+    "sha256": "D9D704471500761C2C107A07CC5D90DEED69BD225E3BCB4FC398A19032255C3F"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\header.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\header.tsx",
+    "sha256": "37D5D88C11874220DBD15A934338E3DC612CB72DACC8EF9368FB0FA04DC3D345"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\hero.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\hero.tsx",
+    "sha256": "713E9B8EEA90BBCF6C4C3C2BA5BA2BDC6AAC986017B28B8C118FCEE34382FDCE"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\blocks\\showcases.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\blocks\\showcases.tsx",
+    "sha256": "BD42666639DE13DC2AABA1E302733BE21DFCEF47C8A833B438DBBA6F1F5A772F"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\components\\actions.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\components\\actions.tsx",
+    "sha256": "0211B5B2E726BD5B0FE0C0390F0EC0AB80A9D39178E0848399A5CC9895ACBBEC"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\components\\brand.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\components\\brand.tsx",
+    "sha256": "69989C49189EEC3977B7135DF501802066AA5A1012943A9AD21433943AE5A505"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\components\\section-heading.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\components\\section-heading.tsx",
+    "sha256": "FFB6BA499DE1D2A3B4EB47AB6D0838F3E3E7DB41F620AD1020F325E7AC50CEFC"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\themes\\spark\\layouts\\landing.tsx",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\layouts\\landing.tsx",
+    "sha256": "3E2637500CC9B40FC897FAABDE81D08B7F7674466007F17CDBEEA2B1168D7E44"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\config\\style\\theme.css",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\reference\\theme.css",
+    "sha256": "9E8EB842F9182EA1750FE3453C76490787D51A766F48BCCD964687C4E360E762"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\src\\config\\style\\global.css",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\reference\\global.css",
+    "sha256": "7B3C6FECFAB38AAB95299DB49CD408D813BE690EF2BAC9C3AC182EBE094408DA"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\public\\spark\\logo.svg",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\assets\\logo.svg",
+    "sha256": "D069C3BEE095318E231CE26C93FBAE777083C6EA3726CB8891CAD4E33D4502DB"
+  },
+  {
+    "source": "D:\\project2\\80sphotoai-com\\public\\spark\\preview.png",
+    "destination": "D:\\project2\\seadance-video-shipany2\\src\\themes\\spark\\assets\\preview.png",
+    "sha256": "ECC5C858C483D2C8B49BE9610FCC11853D4D59A737B0EAE28A16DD5DA0FA7CB6"
+  }
+]

@@ -1,0 +1,154 @@
+/* Shared brand colors live in config/style/theme.css. Only Spark composition lives here. */
+.shell {
+  min-height: 100dvh;
+}
+.container {
+  width: min(100% - 3rem, 76rem);
+  margin-inline: auto;
+}
+.section {
+  padding-block: clamp(3.5rem, 7vw, 7rem);
+  scroll-margin-top: 6rem;
+}
+.display {
+  font-family: var(--font-display, Georgia, serif);
+  font-weight: 400;
+  letter-spacing: -.035em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.hero {
+  padding-block: clamp(4rem, 8vw, 7.5rem) 3.5rem;
+  text-align: center;
+}
+.heroTitle {
+  max-width: 62rem;
+  margin-inline: auto;
+  font-size: clamp(2.9rem, 6.2vw, 5.8rem);
+}
+.heroTitle em {
+  color: var(--brand);
+  font-weight: inherit;
+}
+.description {
+  max-width: 43rem;
+  margin-inline: auto;
+  color: var(--muted-foreground);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+.eyebrow {
+  font-size: .72rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.ctaButton {
+  background: var(--brand);
+  color: var(--brand-foreground);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 color-mix(in oklab, var(--brand) 65%, black);
+}
+.ctaButton:hover {
+  background: color-mix(in oklab, var(--brand) 92%, black);
+  color: var(--brand-foreground);
+}
+.ctaButton:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--brand) 65%, black);
+}
+.showcaseSection {
+  padding-block-start: 1.5rem;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--secondary);
+}
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+.media:hover img {
+  transform: scale(1.025);
+}
+.featureCard {
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--card);
+}
+.featureArtwork {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--secondary);
+}
+.featureArtwork img {
+  width: 74%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transform: rotate(-5deg);
+  border-radius: .6rem;
+  box-shadow: var(--shadow-lg);
+  transition: transform .35s ease;
+}
+.featureCard:hover .featureArtwork img {
+  transform: rotate(0deg);
+}
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 6px;
+  border-radius: .25rem;
+}
+.faq details[open] .faqIcon {
+  transform: rotate(45deg);
+}
+.faqIcon {
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+.richText a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+@media (max-width: 640px) {
+  .container {
+    width: min(100% - 2rem, 76rem);
+  }
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    padding-top: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .media img, .media:hover img, .featureArtwork img, .featureCard:hover .featureArtwork img, .ctaButton, .ctaButton:active, .faqIcon {
+    transition: none;
+    transform: none;
+  }
+}
