@@ -1,0 +1,18 @@
+ M .env.example
+ M src/app/[locale]/(landing)/(models)/seedance-2-0/page.tsx
+ M src/config/locale/messages/en/pages/index.json
+ M src/config/locale/messages/en/pages/seedance-2-0.json
+ M src/config/locale/messages/zh/pages/index.json
+ M src/config/locale/messages/zh/pages/seedance-2-0.json
+ M src/themes/default/blocks/features-step.tsx
+ M src/themes/default/blocks/features.tsx
+ M src/themes/default/blocks/hero.tsx
+?? "docs/\344\277\256\346\224\271\346\226\271\346\241\210/\346\250\241\345\236\213\350\220\275\345\234\260\351\241\265\346\250\241\345\235\227\345\244\215\347\224\250\350\257\264\346\230\216.md"
+?? scripts/test-model-landing.ts
+?? src/shared/lib/model-landing.ts
+?? src/shared/lib/model-specs.ts
+?? src/themes/default/blocks/model-faq.tsx
+?? src/themes/default/blocks/model-specs.tsx
+?? src/themes/default/blocks/related-resources.tsx
+?? src/themes/default/blocks/use-case-cards.tsx
+?? src/themes/flow/

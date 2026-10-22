@@ -1,0 +1,25 @@
+{
+  "mode": "SSR JavaScript disabled; default process, not a permanent theme switch",
+  "checks": [
+    {
+      "name": "default no Flow shell",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "default original primary",
+      "status": "PASS",
+      "detail": "oklch(64% 0.21 268)"
+    },
+    {
+      "name": "default original FAQ",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "admin keeps sign-in redirect",
+      "status": "PASS",
+      "detail": 307
+    }
+  ]
+}

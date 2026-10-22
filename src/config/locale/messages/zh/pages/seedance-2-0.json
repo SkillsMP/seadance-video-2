@@ -13,222 +13,346 @@
       "hero": {
         "id": "hero",
         "title": "Seedance 2.0 AI 视频生成器",
-        "highlight_text": "Seedance 2.0",
-        "description": "通过提示词、参考图片或已有视频创作电影感 AI 视频，直接使用 Seadance Video 当前提供的 Seedance 2.0 工作流。",
-        "announcement": {
-          "title": "Seedance 2.0 现已可在线使用",
-          "url": "/seedance-2-0#generator"
-        },
+        "description": "通过文字、图片或参考视频创作视频。对照 Seedance 2.0 Fast、Standard、Mini 的规格，选择参数并在生成前查看积分预估。",
         "buttons": [
           {
-            "title": "在线体验 Seedance 2.0",
-            "icon": "Video",
-            "url": "/seedance-2-0#generator",
-            "target": "_self"
+            "title": "开始生成",
+            "url": "#generator",
+            "icon": "Video"
           },
           {
-            "title": "查看价格",
-            "icon": "CreditCard",
-            "url": "/pricing",
-            "target": "_self",
+            "title": "观看案例",
+            "url": "#examples",
+            "icon": "Play",
+            "variant": "outline"
+          },
+          {
+            "title": "查看规格与积分",
+            "url": "#specifications",
             "variant": "outline"
           }
         ],
-        "tip": "Seadance Video 是独立的第三方平台；模型与生成选项以当前连接的服务商为准。",
+        "tip": "本站为独立第三方平台。共用生成器也提供其他模型，请选择 Seedance 2.0 型号体验下方介绍的工作流。",
         "show_avatars": false,
-        "show_award": false
+        "show_award": false,
+        "compact": true,
+        "show_bg": false
       },
       "generator": {},
+      "examples": {
+        "id": "examples",
+        "block": "showcases",
+        "title": "Seedance 2.0 视频案例",
+        "description": "真实成片，点卡片可从同类镜头开始生成。",
+        "columns": 3,
+        "items": [
+          {
+            "title": "夕阳海边写生油画",
+            "description": "水边写生，金色夕阳倒映在平静的海面上。",
+            "url": "#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-1.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_1.jpg",
+              "alt": "使用 Seedance 生成的海边写生油画 AI 视频"
+            }
+          },
+          {
+            "title": "哥特视觉系人物特写",
+            "description": "35mm 胶片感，暖色小酒馆光线，克制的人物动作。",
+            "url": "#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-2.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_2.jpg",
+              "alt": "使用 Seedance 生成的电影级视觉系人物特写"
+            }
+          },
+          {
+            "title": "浩瀚夜空星河延时",
+            "description": "群星与银河在山脉剪影上空缓缓转动。",
+            "url": "#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-3.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_3.jpg",
+              "alt": "使用 Seedance 生成的浩瀚星空延时摄影"
+            }
+          },
+          {
+            "title": "午后暖阳咖啡馆留影",
+            "description": "阳光透过玻璃窗，一个安静的动作。",
+            "url": "#generator",
+            "video": {
+              "src": "/videos/seadance/showcase-4.webm"
+            },
+            "image": {
+              "src": "/imgs/seadance/showcase_4.jpg",
+              "alt": "使用 Seedance 生成的午后咖啡馆人物视频"
+            }
+          }
+        ],
+        "compact": true
+      },
       "capabilities": {
-        "block": "features",
         "id": "features",
-        "title": "在线使用 Seedance 2.0 创作",
-        "description": "根据素材选择对应工作流与参数，生成器会展示所选模型当前支持的真实选项。",
+        "block": "features",
+        "title": "Seedance 2.0 功能与工作流",
+        "description": "从已有素材出发，使用对应工作流与可用参数控制结果。",
         "items": [
           {
             "title": "文生视频",
-            "description": "描述主体、动作、运镜、光线与视觉风格，从文字直接生成视频。",
+            "description": "描述主体、动作、镜头和环境，用一个清晰的镜头描述把想法转化为短片。",
             "icon": "TextCursorInput"
           },
           {
             "title": "图生视频",
-            "description": "上传参考画面，再通过提示词控制主体运动和镜头行为。",
+            "description": "使用首帧、首尾帧或参考图片，再描述希望增加的动作与镜头运动。",
             "icon": "ImagePlay"
           },
           {
             "title": "视频转视频",
-            "description": "使用参考视频链接，引导新结果的动作与结构。",
+            "description": "提供参考视频 URL 并描述目标变化。可选型号与输出参数见下方规格表。",
             "icon": "RefreshCw"
           },
           {
-            "title": "Fast 与 Standard",
-            "description": "根据迭代速度、质量与积分预算，选择当前可用的 Seedance 2.0 模型。",
-            "icon": "Gauge"
-          },
-          {
-            "title": "灵活输出控制",
-            "description": "选择可用的时长、画幅和分辨率，适配横屏、竖屏、方形等格式。",
+            "title": "输出与音频控制",
+            "description": "选择支持的时长、画幅、分辨率和生成音频选项。生成音频不等于支持上传音频参考。",
             "icon": "SlidersHorizontal"
+          }
+        ],
+        "columns": 4
+      },
+      "specifications": {
+        "id": "specifications",
+        "block": "model-specs",
+        "title": "Seedance 2.0 规格与积分",
+        "description": "对照各型号的输入、限制，以及 10 秒 720p 的积分示例。数字与生成器使用同一份配置。",
+        "mediaType": "video",
+        "modelFamilies": [
+          "seedance-2-fast",
+          "seedance-2-standard",
+          "seedance-2-mini"
+        ],
+        "labels": {
+          "input": "输入支持",
+          "limits": "限制",
+          "pricing": "型号与积分",
+          "model": "型号",
+          "workflows": "工作流",
+          "resolution": "分辨率",
+          "duration": "时长",
+          "seconds": "秒",
+          "exampleCredits": "积分（10秒 · 720p）",
+          "scenes": {
+            "text-to-video": "文生视频",
+            "image-to-video": "图生视频",
+            "video-to-video": "视频转视频"
+          }
+        },
+        "inputItems": [
+          {
+            "title": "文字提示词",
+            "description": "描述主体、运动、镜头、环境和视觉风格。"
           },
           {
-            "title": "可选生成音频",
-            "description": "所选模型与服务商提供该选项时，可开启生成音频。",
-            "icon": "AudioLines"
+            "title": "图片输入",
+            "description": "在图生视频中选择首帧、首尾帧或参考图片。上传限制由所选型号在上传控件中显示。"
+          },
+          {
+            "title": "参考视频 URL",
+            "description": "视频转视频使用视频 URL。生成音频开关不提供音频上传工作流。"
+          }
+        ],
+        "limitsItems": [
+          {
+            "title": "Mini",
+            "description": "不提供视频转视频工作流。"
+          },
+          {
+            "title": "Fast 与 Mini",
+            "description": "分辨率最高 720p。1080p 仅 Standard 提供。"
+          },
+          {
+            "title": "视频转视频",
+            "description": "时长选项为 5 秒和 10 秒。"
+          }
+        ],
+        "limitsNote": "配置启用不代表服务商始终实时可用。",
+        "tip": "无需先登录即可浏览和配置；提交生成需要账户和足够积分。提交前请确认生成器预估，套餐与积分包见价格页。",
+        "buttons": [
+          {
+            "title": "查看套餐",
+            "url": "/pricing",
+            "variant": "default"
+          },
+          {
+            "title": "打开生成器",
+            "url": "#generator",
+            "variant": "outline"
+          }
+        ]
+      },
+      "useCases": {
+        "id": "use-cases",
+        "block": "use-case-cards",
+        "title": "Seedance 2.0 应用场景",
+        "description": "先选场景，再点选与素材和工作流匹配的关键词。",
+        "items": [
+          {
+            "title": "广告与营销",
+            "description": "把产品图与品牌素材快速变成广告、落地页与投放测试用的短片，无需完整拍摄。",
+            "icon": "Megaphone",
+            "tags": [
+              "产品视频",
+              "品牌内容",
+              "商业广告",
+              "模板复刻"
+            ]
+          },
+          {
+            "title": "社媒与短视频",
+            "description": "一个清晰动作、竖屏友好构图，快速迭代适合信息流传播的动态内容。",
+            "icon": "Smartphone",
+            "tags": [
+              "TikTok 视频",
+              "Instagram Reels",
+              "YouTube Shorts",
+              "竖屏短片"
+            ]
+          },
+          {
+            "title": "角色与动画",
+            "description": "以参考图驱动可控动作，发布前检查面部、手部与镜头连续性。",
+            "icon": "UserRound",
+            "tags": [
+              "角色动画",
+              "手势控制",
+              "面部连续",
+              "参考动作"
+            ]
+          },
+          {
+            "title": "影视与前期",
+            "description": "在正式开拍前，用短循环探索运镜、光线与走位。",
+            "icon": "Clapperboard",
+            "tags": [
+              "镜头预演",
+              "运镜规划",
+              "光线测试",
+              "镜头迭代"
+            ]
           }
         ]
       },
       "howTo": {
-        "block": "features",
         "id": "how-to-use",
+        "block": "features-step",
         "title": "如何使用 Seedance 2.0",
-        "description": "只需三步，即可从创意或参考素材生成可下载的视频。",
+        "description": "提示词公式：主体 + 动作 + 镜头 + 环境 + 风格。例如：陶瓷杯冒着热气，镜头缓慢推进，阳光照射的桌面，自然产品摄影风格。",
+        "columns": 3,
         "items": [
           {
-            "title": "1. 添加提示词或参考素材",
-            "description": "根据所选模式描述场景、上传图片，或提供参考视频链接。",
+            "title": "添加提示词或参考素材",
+            "description": "选择文生、图生或视频转视频，添加该工作流需要的素材。",
             "icon": "FileInput"
           },
           {
-            "title": "2. 选择模型与设置",
-            "description": "选择可用的 Seedance 2.0 模型，并设置时长、画幅、分辨率及音频选项。",
+            "title": "选择型号与参数",
+            "description": "选择 Seedance 2.0 型号，设置可用时长、画幅、分辨率与生成音频选项。",
             "icon": "Settings2"
           },
           {
-            "title": "3. 生成并下载",
-            "description": "确认积分预估，登录后提交生成，并从预览区下载完成的视频。",
+            "title": "确认积分并生成",
+            "description": "确认积分预估并登录提交。检查结果后下载，或调整提示词继续迭代。",
             "icon": "Download"
           }
         ],
-        "className": "bg-muted/40"
-      },
-      "pricing": {
-        "block": "features-list",
-        "id": "pricing-explained",
-        "title": "Seedance 2.0 免费吗？",
-        "description": "登录前可以打开并配置生成器；提交生成任务需要账户与足够积分，具体积分预估会在生成前显示。",
-        "image": {
-          "src": "/imgs/seadance/feature_2.jpg",
-          "alt": "Seedance 2.0 AI 视频生成器价格与访问说明"
-        },
-        "buttons": [
-          {
-            "title": "查看当前套餐",
-            "url": "/pricing",
-            "icon": "CreditCard"
-          },
-          {
-            "title": "打开生成器",
-            "url": "/seedance-2-0#generator",
-            "icon": "Video",
-            "variant": "outline"
-          }
-        ],
-        "items": [
-          {
-            "title": "需要账户",
-            "description": "提交任务前需要登录，以便将积分和生成结果关联到你的账户。",
-            "icon": "UserRoundCheck"
-          },
-          {
-            "title": "先显示消耗",
-            "description": "系统会根据模式、模型、时长和分辨率计算积分预估。",
-            "icon": "ReceiptText"
-          },
-          {
-            "title": "灵活积分方案",
-            "description": "定价页面是当前订阅与一次性积分包信息的唯一准确信息源。",
-            "icon": "BadgeDollarSign"
-          },
-          {
-            "title": "不宣传无限免费",
-            "description": "生成会按所选设置消耗积分，本页面不提供无限免费承诺。",
-            "icon": "ShieldCheck"
-          }
-        ]
-      },
-      "promptExamples": {
-        "block": "features-accordion",
-        "id": "prompt-examples",
-        "title": "Seedance 2.0 提示词示例",
-        "description": "把这些完整示例作为起点，再根据项目调整主体、动作、镜头、光线、节奏和画幅。",
-        "items": [
-          {
-            "title": "微距产品动态",
-            "description": "超近距离微距镜头：两颗半透明二十面骰子滚过深色胡桃木桌面，一颗烟黑色，一颗祖母绿色。镜头以桌面高度慢动作跟随，暖色环境灯在后方形成柔和散景。数字刻纹清晰、浅景深、真实反射、电影感产品摄影、16:9。",
-            "icon": "Box",
-            "image": {
-              "src": "/imgs/seadance/showcase_1.jpg",
-              "alt": "两颗半透明骰子的 Seedance 2.0 提示词示例"
-            }
-          },
-          {
-            "title": "氛围感风景",
-            "description": "蓝调时刻，一条平静河流穿过宏大的花岗岩山谷。镜头先贴近水面滑行，再缓慢升高，露出松林、远处峭壁和地平线上的浅桃色光。自然薄雾、细微水波、克制调色、纪录片写实感、无人、16:9。",
-            "icon": "Mountain",
-            "image": {
-              "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "Seedance 2.0 风景视频提示词示例"
-            }
-          },
-          {
-            "title": "一致性人物肖像",
-            "description": "近景人物肖像，整段镜头保持同一位女性，居中站在浅薰衣草色摄影棚背景前。蓝光扫过左脸，暖光勾勒右脸。她缓慢呼吸一次并将视线转向镜头；头发轻微摆动、锁定面部身份、85mm 镜头、浅景深、1:1。",
-            "icon": "ScanFace",
-            "image": {
-              "src": "/imgs/seadance/showcase_3.jpg",
-              "alt": "Seedance 2.0 人物一致性提示词示例"
-            }
-          },
-          {
-            "title": "抽象竖屏循环",
-            "description": "半透明粉彩气泡漂浮在洋红、琥珀、青色与紫罗兰液体的层叠空间中，细小水滴向上升起，镜头持续缓慢推进。柔和逆光、光泽折射、无缝循环运动、高级动态设计质感、干净构图、9:16。",
-            "icon": "Sparkles",
-            "image": {
-              "src": "/imgs/seadance/showcase_4.jpg",
-              "alt": "Seedance 2.0 抽象竖屏视频提示词示例"
-            }
-          }
-        ]
+        "className": "bg-muted/30"
       },
       "faq": {
         "id": "faq",
+        "block": "model-faq",
         "title": "Seedance 2.0 常见问题",
-        "description": "关于访问、价格、模型与第三方生成器的说明。",
+        "description": "关于型号、输出参数、访问方式与积分的具体回答。",
         "items": [
           {
-            "question": "在哪里可以在线使用 Seedance 2.0？",
-            "answer": "可以直接使用本页生成器当前接入的 Seedance 2.0 工作流。提交前需要登录，并确保账户积分足够。"
+            "question": "本站提供哪些 Seedance 2.0 型号？",
+            "answer": "Fast、Standard 和 Mini。Mini 不含视频转视频。生成器会按所选工作流显示可用型号。"
+          },
+          {
+            "question": "Fast、Standard、Mini 有什么区别？",
+            "answer": "区别在分辨率、工作流和积分成本。Standard 提供 1080p，Mini 费用更低且不含视频转视频。具体数字见上方表格；名称不代表质量排名。"
+          },
+          {
+            "question": "Seedance 2.0 能生成多长的视频？",
+            "answer": "时长取决于型号和工作流。文生和图生目前比视频转视频可选范围更宽。生成前请对照规格表和生成器选项。"
+          },
+          {
+            "question": "哪个型号支持 1080p？",
+            "answer": "Standard 支持 1080p。Fast 和 Mini 目前最高 720p。"
+          },
+          {
+            "question": "可以生成 9:16 竖屏视频吗？",
+            "answer": "可以。在画幅选项中选择 9:16，并按竖屏构图安排主体。"
+          },
+          {
+            "question": "可以把商品图片变成视频吗？",
+            "answer": "可以。选择图生视频，上传商品图片并描述动作与镜头；发布前检查商品细节是否准确。"
+          },
+          {
+            "question": "720p 示例视频需要多少积分？",
+            "answer": "积分取决于型号、工作流、时长和分辨率。上方表格给出各型号 10 秒 720p 的示例，提交前请确认生成器预估。"
+          },
+          {
+            "question": "Mini 支持视频转视频吗？",
+            "answer": "不支持。视频转视频请选择 Fast 或 Standard。"
           },
           {
             "question": "Seedance 2.0 可以免费使用吗？",
-            "answer": "登录前可以打开并配置生成器，但提交生成任务需要积分，所需积分会在提交前显示。"
+            "answer": "无需先登录即可浏览和配置生成器。提交生成需要账户和足够积分，提交前会展示积分预估。"
           },
           {
-            "question": "Seadance Video 是 Seedance 2.0 官方网站吗？",
-            "answer": "不是。Seadance Video 是独立的第三方 AI 创作平台；Seedance 2.0 由 ByteDance 开发。"
+            "question": "这是官方网站吗？本页提供 API 吗？",
+            "answer": "Seadance Video 是独立第三方平台。本页提供浏览器生成器，不是 API 接口。"
+          }
+        ]
+      },
+      "related": {
+        "id": "related-resources",
+        "block": "related-resources",
+        "title": "探索 Seedance 相关资源",
+        "description": "阅读详细指南，或查看当前积分套餐。",
+        "items": [
+          {
+            "title": "Seedance 使用教程",
+            "description": "了解从准备素材到检查结果的完整流程。",
+            "url": "/how-to-use-seedance"
           },
           {
-            "question": "这里提供哪些 Seedance 2.0 模型？",
-            "answer": "生成器会显示当前连接服务商可用的 Seedance 2.0 模型，以及对应的模式和参数。"
+            "title": "Seedance 2.0 提示词指南",
+            "description": "查看不同镜头的提示词公式与示例。",
+            "url": "/prompts/seedance-2-0"
           },
           {
-            "question": "这个生成器支持哪些输入？",
-            "answer": "当前界面支持文生视频、图生视频和视频转视频，所选模式和模型的可用参数会直接显示。"
+            "title": "视频转视频指南",
+            "description": "理解参考视频工作流及其限制。",
+            "url": "/seedance/video-to-video"
           },
           {
-            "question": "Seedance 2.0 生成需要多少积分？",
-            "answer": "积分消耗取决于模式、模型、时长和分辨率。生成器会在提交前显示预估，定价页提供当前积分方案。"
-          },
-          {
-            "question": "这个页面提供 Seedance 2.0 API 吗？",
-            "answer": "不提供。本页是浏览器视频生成工具，不是 API 产品或开发者文档页面。"
+            "title": "套餐与积分",
+            "description": "查看订阅套餐与一次性积分包。",
+            "url": "/pricing"
           }
         ]
       },
       "cta": {
         "id": "cta",
-        "title": "在线体验 Seedance 2.0",
-        "description": "选择工作流，添加提示词或参考素材，确认积分预估后开始生成。",
+        "title": "创作你的 Seedance 2.0 视频",
+        "description": "选择工作流，对照参数与积分成本，从一个清晰的镜头开始。",
         "buttons": [
           {
             "title": "创作 Seedance 2.0 视频",

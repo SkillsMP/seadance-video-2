@@ -1,0 +1,89 @@
+{
+  "mode": "SSR with JavaScript disabled; appearance classes set explicitly for same-mode visual comparison",
+  "checks": [
+    {
+      "name": "flow-ssr-dark actual Flow",
+      "status": "PASS",
+      "detail": [
+        "Seedance AI Video Generator"
+      ]
+    },
+    {
+      "name": "flow-ssr-dark dark tokens",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-ssr-dark no desktop overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "home source video grid columns",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "home original desktop video ratio",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "home actual posters load",
+      "status": "PASS",
+      "detail": [
+        200,
+        200,
+        200,
+        200
+      ]
+    },
+    {
+      "name": "flow-ssr-dark no mobile overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-ssr-dark light tokens",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-model-ssr-dark actual Flow",
+      "status": "PASS",
+      "detail": [
+        "Seedance 2.0 AI Video Generator"
+      ]
+    },
+    {
+      "name": "flow-model-ssr-dark dark tokens",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-model-ssr-dark no desktop overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "model FlowSteps",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "model default fallback sections",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-model-ssr-dark no mobile overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "flow-model-ssr-dark light tokens",
+      "status": "PASS",
+      "detail": null
+    }
+  ]
+}

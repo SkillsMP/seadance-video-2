@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/gateszhangc/flowaivideo-lol",
+  "local_source": "D:\\project3\\shipany-2\\flowaivideo-lol-main",
+  "commit_status": "本地副本，提交版本未确认",
+  "sha256_before_copy": {
+    "src/shared/blocks/flow/site.tsx": "cd196f0ad4c35d0fc8dc987b9dec4205672b9b6af44b286148ee44197a9faa8f",
+    "src/config/style/flow.css": "db7a1e39ddf657b105059cadfc6bd239dacec40aeb8c6012cd2efe62c2c17e66",
+    "src/config/style/theme.css": "a7767af5c306209548e79874534fa6667e046e5a761fa8469663049cdb3483df",
+    "src/app/[locale]/(landing)/page.tsx": "ac044eea2b914d301c8b8f20809c92f88d3ac9c5943a440562d24c0f497fd4ba",
+    "src/app/[locale]/(landing)/layout.tsx": "d370af96b16a33cd8f859acf2e89c5eea7f19895e5d0e49f80297a8793ab2f3b",
+    "src/themes/default/blocks/header.tsx": "2fcdae5f571d12feb12ba1ec7f264deaf7f1988fec6d83803a77b91f8dab891d",
+    "src/themes/default/blocks/footer.tsx": "b1002789403a660b9d35435593f414cf254d8b6d2a9aac227139033bbea2ab42",
+    "LICENSE": "2a8c32869c5949e63b86aa3e9c46fbb0ba1572e4764dcab510c3c4a20996894d"
+  }
+}

@@ -1,0 +1,17 @@
+
+> seadance-video-shipany2@1.8.2 build D:\project2\seadance-video-shipany2
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.7 (Turbopack)
+   - Environments: .env.production
+   - Experiments (use with caution):
+     ✓ mdxRs
+     ✓ turbopackFileSystemCacheForDev
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[MDX] updated map file in 94.35290000000168ms
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ELIFECYCLE  Command failed with exit code 3221225477.

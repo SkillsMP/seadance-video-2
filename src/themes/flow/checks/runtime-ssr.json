@@ -1,0 +1,47 @@
+{
+  "mode": "SSR / JavaScript disabled to avoid hydration resource exhaustion; native FAQ tested, hydrated UI NOT RUN",
+  "checks": [
+    {
+      "name": "en SSR Flow blocks",
+      "status": "PASS",
+      "detail": [
+        "Seedance AI Video Generator"
+      ]
+    },
+    {
+      "name": "en SSR FAQ HTML link",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "en desktop no overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "en native FAQ expands",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "en mobile no overflow",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "zh SSR Flow blocks",
+      "status": "FAIL",
+      "detail": []
+    },
+    {
+      "name": "zh SSR FAQ HTML link",
+      "status": "FAIL",
+      "detail": null
+    },
+    {
+      "name": "zh desktop no overflow",
+      "status": "PASS",
+      "detail": null
+    }
+  ]
+}

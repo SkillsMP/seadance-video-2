@@ -1,0 +1,169 @@
+--- /dev/null
++++ target/src/themes/flow/blocks/cta.tsx
+@@ -0,0 +1,16 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowCta } from '../components/site';
++
++export function Cta({ section }: { section: Section }) {
++  return (
++    <FlowCta
++      section={{
++        id: section.id,
++        title: section.title || '',
++        description: section.description || '',
++        buttons: section.buttons || [],
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/blocks/faq.tsx
+@@ -0,0 +1,19 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowFaq } from '../components/site';
++
++export function Faq({ section }: { section: Section }) {
++  return (
++    <FlowFaq
++      section={{
++        id: section.id || '',
++        title: section.title || '',
++        description: section.description || '',
++        items: (section.items || []).map((item) => ({
++          question: item.question || item.title || '',
++          answer: item.answer || item.description || '',
++        })),
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/blocks/features-step.tsx
+@@ -0,0 +1,21 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowSteps } from '../components/site';
++
++export function FeaturesStep({ section }: { section: Section }) {
++  return (
++    <FlowSteps
++      section={{
++        id: section.id || '',
++        label: section.label || '',
++        title: section.title || '',
++        description: section.description || '',
++        items: (section.items || []).map((item, index) => ({
++          title: item.title || '',
++          description: item.description || '',
++          order: index + 1,
++        })),
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/blocks/features.tsx
+@@ -0,0 +1,21 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowFeatures } from '../components/site';
++
++export function Features({ section }: { section: Section }) {
++  return (
++    <FlowFeatures
++      section={{
++        id: section.id || '',
++        label: section.label || '',
++        title: section.title || '',
++        description: section.description || '',
++        items: (section.items || []).map((item) => ({
++          title: item.title || '',
++          description: item.description || '',
++          icon: typeof item.icon === 'string' ? item.icon : 'Sparkles',
++        })),
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/blocks/hero.tsx
+@@ -0,0 +1,19 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowHero } from '../components/site';
++
++export function Hero({ section }: { section: Section }) {
++  return (
++    <FlowHero
++      hero={{
++        id: section.id,
++        title: section.title || '',
++        subtitle: section.description || '',
++        badge: section.announcement?.title,
++        announcement: section.announcement,
++        buttons: section.buttons,
++        tip: section.tip,
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/blocks/showcases.tsx
+@@ -0,0 +1,22 @@
++import type { Section } from '@/shared/types/blocks/landing';
++
++import { FlowShowcase } from '../components/site';
++
++export function Showcases({ section }: { section: Section }) {
++  return (
++    <FlowShowcase
++      section={{
++        id: section.id || '',
++        title: section.title || '',
++        description: section.description || '',
++        items: (section.items || []).map((item) => ({
++          title: item.title,
++          description: item.description,
++          url: item.url || item.button?.url,
++          video: typeof item.video === 'string' ? item.video : item.video?.src || '',
++          poster: item.image?.src || '',
++        })),
++      }}
++    />
++  );
++}
+--- /dev/null
++++ target/src/themes/flow/layouts/landing.tsx
+@@ -0,0 +1,30 @@
++import type { ReactNode } from 'react';
++
++import type {
++  Footer as FooterType,
++  Header as HeaderType,
++} from '@/shared/types/blocks/landing';
++
++import { Footer } from '../blocks/footer';
++import { Header } from '../blocks/header';
++
++import '../styles/tokens.css';
++import '../styles/flow.css';
++
++export default async function LandingLayout({
++  children,
++  header,
++  footer,
++}: {
++  children: ReactNode;
++  header: HeaderType;
++  footer: FooterType;
++}) {
++  return (
++    <div className="flow-shell">
++      <Header header={header} />
++      <div className="flow-main">{children}</div>
++      <Footer footer={footer} />
++    </div>
++  );
++}

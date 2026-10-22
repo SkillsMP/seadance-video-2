@@ -1,0 +1,4 @@
+scripts/test-model-landing.ts(198,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ locale: string; messages: {}; timeZone: "UTC"; }' is not assignable to parameter of type 'Attributes & Omit<IntlConfig & { children: ReactNode; }, "locale"> & { locale?: string | undefined; }'.
+      Property 'children' is missing in type '{ locale: string; messages: {}; timeZone: "UTC"; }' but required in type 'Omit<IntlConfig & { children: ReactNode; }, "locale">'.

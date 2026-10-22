@@ -1,0 +1,24 @@
+{
+  "scope": "Only src/themes/flow; no deployment, no permanent activation, no commit/push",
+  "static": {
+    "flow_eslint": "PASS",
+    "project_typecheck": "FAIL - unchanged pre-existing scripts/test-model-landing.ts:198 error",
+    "flow_new_type_errors": 0,
+    "css_declarations_unchanged": 390,
+    "source_header_byte_identical": true
+  },
+  "build": "BLOCKED - Turbopack exit 3221225477",
+  "runtime": {
+    "en_home_and_model_ssr_desktop_mobile": "PASS",
+    "dark_light_token_inheritance_ssr": "PASS",
+    "native_faq_and_html_link": "PASS",
+    "posters": "PASS - four HTTP 200 responses",
+    "default_ssr_style_isolation": "PASS",
+    "original_videofly_ssr_style_isolation": "PASS",
+    "admin_anonymous_redirect": "PASS - 307",
+    "zh_routes": "BLOCKED - global locales only en",
+    "hydrated_mobile_menu_and_theme_toggle": "NOT RUN - resource exhaustion during hydrated browser checks",
+    "portal_sign_in_and_authenticated_admin": "NOT RUN",
+    "real_generation_credit_payment_oauth": "NOT RUN - no paid or account-mutating operations submitted"
+  }
+}

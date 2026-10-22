@@ -1,0 +1,19 @@
+{
+  "flow_css": {
+    "declarations": 390,
+    "declaration_values_unchanged": true,
+    "selectors_scoped": true
+  },
+  "tokens": {
+    "light_source_declarations": 52,
+    "dark_source_declarations": 50,
+    "values_unchanged": true
+  },
+  "source_header_byte_identical": true,
+  "unchanged_functions": [
+    "FlowSectionHead",
+    "FlowSteps"
+  ],
+  "source_mock_business_absent": true,
+  "typecheck_errors_identical_to_before": true
+}

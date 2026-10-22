@@ -1,0 +1,18 @@
+   ▲ Next.js 16.0.7 (webpack)
+   - Local:         http://localhost:3010
+   - Network:       http://10.10.8.193:3010
+   - Environments: .env.development
+   - Experiments (use with caution):
+     ✓ mdxRs
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[MDX] updated map file in 26.29659999999967ms
+[MDX] started dev server
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+ ✓ Ready in 10.5s
+ ○ Compiling /[locale] ...
+ GET / 200 in 55s (compile: 50s, proxy.ts: 285ms, render: 5.3s)
+ ○ Compiling /[locale]/seedance-2-0 ...
+ GET /seedance-2-0 200 in 30.3s (compile: 25.1s, proxy.ts: 262ms, render: 4.9s)
+[?25h

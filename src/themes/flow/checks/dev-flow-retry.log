@@ -1,0 +1,32 @@
+   ▲ Next.js 16.0.7 (webpack)
+   - Local:         http://localhost:3010
+   - Network:       http://10.10.8.193:3010
+   - Environments: .env.development
+   - Experiments (use with caution):
+     ✓ mdxRs
+
+ ✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[MDX] updated map file in 33.20440000000053ms
+[MDX] started dev server
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+ ✓ Ready in 11.9s
+ ○ Compiling /[locale] ...
+ GET / 200 in 51s (compile: 45s, proxy.ts: 283ms, render: 4.9s)
+ ○ Compiling /[locale] ...
+ GET / 200 in 10.9s (compile: 6.2s, proxy.ts: 48ms, render: 4.6s)
+ ○ Compiling /[locale]/[...slug] ...
+D:\project2\seadance-video-shipany2\node_modules\.pnpm\next@16.0.7_@babel+core@7.2_e1ca7bb9bfe498a5b0869fcaf5c68328\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+Error: MISSING_MESSAGE: Could not resolve `pages.zh` in messages for locale `en`.
+    at async DynamicPage (src\app\[locale]\(landing)\[...slug]\page.tsx:136:15)
+  134 |
+  135 |   try {
+> 136 |     const t = await getTranslations({ locale, namespace: messageKey });
+      |               ^
+  137 |
+  138 |     // return dynamic page
+  139 |     if (t.has('page')) { {
+  code: 'MISSING_MESSAGE',
+  originalMessage: 'Could not resolve `pages.zh` in messages for locale `en`.'
+}
+ GET /zh 404 in 32.3s (compile: 27.7s, proxy.ts: 43ms, render: 4.6s)

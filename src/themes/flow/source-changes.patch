@@ -1,0 +1,1785 @@
+--- source/src/shared/blocks/flow/site.tsx
++++ target/src/themes/flow/components/site.tsx
+@@ -1,356 +1,75 @@
+ 'use client';
+ 
+-import { useEffect, useRef, useState } from 'react';
+-import {
+-  ArrowRight,
+-  Brain,
+-  Check,
+-  Clapperboard,
+-  Images,
+-  Loader2,
+-  MonitorPlay,
+-  Palette,
+-  Play,
+-  Sparkles,
+-  Zap,
+-} from 'lucide-react';
+-import { useRouter } from 'next/navigation';
+-import { toast } from 'sonner';
+-
+-import { useAppContext } from '@/shared/contexts/app';
+-import { trackEvent } from '@/shared/lib/analytics';
++import type { ReactNode } from 'react';
++
++import { Link } from '@/core/i18n/navigation';
++import { SmartIcon } from '@/shared/blocks/common/smart-icon';
++import type { Button } from '@/shared/types/blocks/common';
+ 
+ type HeroSection = {
+-  badge: string;
++  id?: string;
++  badge?: string;
++  announcement?: Button;
+   title: string;
+-  model_tag: string;
++  model_tag?: string;
+   subtitle: string;
+-  description: string;
+-  social_users: string;
++  social_users?: string;
++  buttons?: Button[];
++  tip?: string;
+ };
+ 
+-type StudioSection = {
+-  id: string;
+-  anchor_models: string;
+-  label: string;
+-  title: string;
+-  description: string;
+-  tabs: string[];
+-  model_label: string;
+-  models: { label: string; description: string }[];
+-  prompt_label: string;
+-  prompt_required: string;
+-  prompt_placeholder: string;
+-  aspect_ratio_label: string;
+-  aspect_ratios: string[];
+-  quality_label: string;
+-  qualities: string[];
+-  duration_label: string;
+-  durations: string[];
+-  generate_button: string;
+-  credits: string;
+-  sample_title: string;
+-  sample_desc: string;
+-  sample_tip: string;
+-  videos: string[];
+-};
+-
+-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+-  Brain,
+-  Images,
+-  Palette,
+-  MonitorPlay,
+-  Clapperboard,
+-  Zap,
+-  Sparkles,
+-};
+-
+-/**
+- * Every primary call to action funnels through this button.
+- *
+- * Signed out -> Google sign-in dialog. Signed in with an active plan -> the
+- * studio queue on the landing page. Signed in without a plan -> /pricing.
+- * Billing and credits are read-only here: the subscription backend is untouched.
+- */
++// The source button's subscription gate is replaced with the site's real links.
+ export function FlowAction({
+   children,
+-  className,
+-  ctaId = 'generate_video',
+-  onSubscribed,
+-  variant = 'generate',
+-}: {
+-  children: React.ReactNode;
++  className = 'flow-generate mx-auto mt-4 max-w-xs',
++  button,
++}: {
++  children: ReactNode;
+   className?: string;
+-  ctaId?: string;
+-  onSubscribed?: () => void;
+-  variant?: 'generate' | 'plain';
+-}) {
+-  const router = useRouter();
+-  const { user, isCheckSign, setIsShowSignModal } = useAppContext();
+-  const [loading, setLoading] = useState(false);
+-
+-  const act = async () => {
+-    if (loading || isCheckSign) return;
+-
+-    if (!user) {
+-      trackEvent('sign_in_started', { method: 'google', location: ctaId });
+-      setIsShowSignModal(true);
+-      return;
+-    }
+-
+-    trackEvent('generate_clicked', { cta_id: ctaId });
+-    setLoading(true);
+-    try {
+-      const response = await fetch('/api/user/get-subscription', {
+-        method: 'POST',
+-      });
+-      if (response.status === 401 || response.status === 403) {
+-        setIsShowSignModal(true);
+-        return;
+-      }
+-      const result = await response.json().catch(() => ({}));
+-      if (!response.ok || result?.code !== 0) {
+-        throw new Error(result?.message || 'Unable to check your plan');
+-      }
+-      const subscribed = Boolean(result?.data?.subscribed);
+-      if (subscribed) {
+-        trackEvent('queue_started', { cta_id: ctaId });
+-        onSubscribed?.();
+-        return;
+-      }
+-      trackEvent('subscribe_cta_click', { cta_id: ctaId, destination: '/pricing' });
+-      router.push('/pricing');
+-    } catch (error) {
+-      toast.error(error instanceof Error ? error.message : 'Please try again');
+-    } finally {
+-      setLoading(false);
+-    }
+-  };
+-
+-  return (
+-    <button
+-      type="button"
+-      className={className ?? (variant === 'generate' ? 'flow-generate' : undefined)}
+-      disabled={loading || isCheckSign}
+-      onClick={act}
++  button: Button;
++}) {
++  return (
++    <Link
++      href={button.url || ''}
++      target={button.target || '_self'}
++      onClick={button.onClick}
++      className={className}
+     >
+-      {loading ? <Loader2 className="size-4 animate-spin" /> : null}
+       {children}
+-    </button>
++    </Link>
+   );
+ }
+ 
+ export function FlowHero({
+   hero,
+-  studio,
+ }: {
+   hero: HeroSection;
+-  studio: StudioSection;
+-}) {
+-  return (
+-    <section className="flow-hero" id={hero.badge ? 'home' : undefined}>
++}) {
++  return (
++    <section className="flow-hero" id={hero.id}>
+       <div className="flow-container flow-hero-inner">
+-        <span className="flow-eyebrow">{hero.badge}</span>
++        {hero.badge ? (
++          <span className="flow-eyebrow">
++            {hero.announcement ? (
++              <Link href={hero.announcement.url || ''} target={hero.announcement.target || '_self'}>
++                {hero.badge}
++              </Link>
++            ) : hero.badge}
++          </span>
++        ) : null}
+         <h1>{hero.title}</h1>
+-        <p className="flow-model-tag">{hero.model_tag}</p>
+-        <p className="flow-subtitle">{hero.subtitle}</p>
+-        <p className="flow-social">{hero.social_users}</p>
+-      </div>
+-      <FlowStudio studio={studio} />
+-    </section>
+-  );
+-}
+-
+-export function FlowStudio({ studio }: { studio: StudioSection }) {
+-  const [tab, setTab] = useState(studio.tabs[0]);
+-  const [model, setModel] = useState(studio.models[0]?.label ?? '');
+-  const [prompt, setPrompt] = useState('');
+-  const [aspect, setAspect] = useState(studio.aspect_ratios[0]);
+-  const [quality, setQuality] = useState(studio.qualities[0]);
+-  const [duration, setDuration] = useState(studio.durations[0]);
+-  const [videoIndex, setVideoIndex] = useState(0);
+-  const [queue, setQueue] = useState<{ position: number; progress: number } | null>(
+-    null
+-  );
+-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
+-
+-  useEffect(() => {
+-    return () => {
+-      if (timer.current) clearInterval(timer.current);
+-    };
+-  }, []);
+-
+-  const startQueue = () => {
+-    if (timer.current) clearInterval(timer.current);
+-    setQueue({ position: 4, progress: 6 });
+-    timer.current = setInterval(() => {
+-      setQueue((current) => {
+-        if (!current) return current;
+-        if (current.progress >= 100) {
+-          if (timer.current) clearInterval(timer.current);
+-          return { position: 1, progress: 100 };
+-        }
+-        const progress = Math.min(100, current.progress + 4);
+-        const position = Math.max(1, 4 - Math.floor(progress / 25));
+-        return { position, progress };
+-      });
+-    }, 900);
+-  };
+-
+-  return (
+-    <div className="flow-container flow-studio" id={studio.id}>
+-      <div className="flow-card">
+-        <header className="mb-4">
+-          <span className="flow-eyebrow">{studio.label}</span>
+-          <h2 className="mt-3 text-xl font-bold md:text-2xl">{studio.title}</h2>
+-          <p className="mt-2 text-sm text-muted-foreground">{studio.description}</p>
+-        </header>
+-        <div className="flow-tabs">
+-          {studio.tabs.map((item) => (
+-            <button
+-              key={item}
+-              type="button"
+-              data-active={item === tab}
+-              onClick={() => setTab(item)}
+-            >
+-              {item}
+-            </button>
+-          ))}
+-        </div>
+-
+-        <div className="flow-field" id={studio.anchor_models}>
+-          <label htmlFor="flow-model">{studio.model_label}</label>
+-          <select
+-            id="flow-model"
+-            value={model}
+-            onChange={(event) => setModel(event.target.value)}
+-          >
+-            {studio.models.map((item) => (
+-              <option key={item.label} value={item.label}>
+-                {item.label} — {item.description}
+-              </option>
+-            ))}
+-          </select>
+-        </div>
+-
+-        <div className="flow-field">
+-          <div className="flow-field-label">
+-            <label htmlFor="flow-prompt" className="contents">
+-              {studio.prompt_label}({studio.prompt_required})
+-            </label>
+-            <span className="flow-counter">{prompt.length}/2000</span>
+-          </div>
+-          <textarea
+-            id="flow-prompt"
+-            maxLength={2000}
+-            placeholder={studio.prompt_placeholder}
+-            value={prompt}
+-            onChange={(event) => setPrompt(event.target.value)}
+-          />
+-        </div>
+-
+-        <div className="flow-field">
+-          <span className="flow-field-label">{studio.aspect_ratio_label}</span>
+-          <div className="flow-options">
+-            {studio.aspect_ratios.map((item) => (
+-              <button
+-                key={item}
+-                type="button"
+-                data-active={item === aspect}
+-                onClick={() => setAspect(item)}
+-              >
+-                {item}
+-              </button>
+-            ))}
+-          </div>
+-        </div>
+-
+-        <div className="flow-field">
+-          <span className="flow-field-label">{studio.quality_label}</span>
+-          <div className="flow-options">
+-            {studio.qualities.map((item) => (
+-              <button
+-                key={item}
+-                type="button"
+-                data-active={item === quality}
+-                onClick={() => setQuality(item)}
+-              >
+-                {item}
+-              </button>
+-            ))}
+-          </div>
+-        </div>
+-
+-        <div className="flow-field">
+-          <span className="flow-field-label">{studio.duration_label}</span>
+-          <div className="flow-options">
+-            {studio.durations.map((item) => (
+-              <button
+-                key={item}
+-                type="button"
+-                data-active={item === duration}
+-                onClick={() => setDuration(item)}
+-              >
+-                {item}
+-              </button>
+-            ))}
+-          </div>
+-        </div>
+-
+-        <FlowAction ctaId="studio_generate" onSubscribed={startQueue}>
+-          {studio.generate_button}
+-          <span className="flow-credits-badge">· ★{studio.credits}</span>
+-        </FlowAction>
+-
+-        {queue ? (
+-          <div className="flow-queue" role="status" aria-live="polite">
+-            <strong>
+-              {queue.progress >= 100
+-                ? 'Your Flow AI Video is next in the queue'
+-                : `Generating with ${model}`}
+-            </strong>
+-            <span>
+-              Queue position {queue.position} · {queue.progress}% complete
+-            </span>
+-            <div className="flow-queue-bar">
+-              <span style={{ width: `${queue.progress}%` }} />
+-            </div>
+-            <span className="flow-sample-tip">
+-              Keep this tab open while Flow AI Video prepares your clip.
+-            </span>
+-          </div>
+-        ) : null}
+-      </div>
+-
+-      <div className="flow-card flow-sample">
+-        <div className="flow-field-label">
+-          {studio.sample_title}
+-          <span className="flow-counter">{studio.label}</span>
+-        </div>
+-        <div className="flow-sample-frame">
+-          <video
+-            key={studio.videos[videoIndex]}
+-            src={studio.videos[videoIndex]}
+-            muted
+-            loop
+-            autoPlay
+-            playsInline
+-          />
+-          <button
+-            type="button"
+-            aria-label="Show the next sample video"
+-            className="absolute inset-0 cursor-pointer"
+-            onClick={() =>
+-              setVideoIndex((current) => (current + 1) % studio.videos.length)
+-            }
+-            hidden={queue !== null}
+-          />
+-        </div>
+-        <p className="flow-sample-tip">
+-          {studio.sample_desc} {studio.sample_tip}
+-        </p>
+-      </div>
+-    </div>
++        {hero.model_tag ? <p className="flow-model-tag">{hero.model_tag}</p> : null}
++        <p className="flow-subtitle" dangerouslySetInnerHTML={{ __html: hero.subtitle }} />
++        {hero.social_users ? <p className="flow-social">{hero.social_users}</p> : null}
++        {hero.buttons?.map((button, index) => (
++          <FlowAction key={button.url || index} button={button}>
++            {button.icon ? <SmartIcon name={button.icon as string} className="size-4" /> : null}
++            {button.title}
++          </FlowAction>
++        ))}
++        {hero.tip ? <p className="flow-social" dangerouslySetInnerHTML={{ __html: hero.tip }} /> : null}
++      </div>
++    </section>
+   );
+ }
+ 
+@@ -379,7 +98,7 @@
+     id: string;
+     title: string;
+     description: string;
+-    items: { poster: string; video: string }[];
++    items: { poster: string; video: string; title?: string; description?: string; url?: string }[];
+   };
+ }) {
+   return (
+@@ -388,9 +107,11 @@
+         <FlowSectionHead title={section.title} description={section.description} />
+         <div className="flow-video-grid">
+           {section.items.map((item, index) => (
+-            <div className="flow-video-card" key={`${item.poster}-${index}`}>
++            <Link className="flow-video-card" href={item.url || item.video || item.poster} aria-label={item.title || undefined} key={`${item.poster}-${index}`}>
+               <video
+-                src={item.video}
++                src={item.video || undefined}
++                title={item.title}
++                aria-label={item.description || item.title}
+                 poster={item.poster}
+                 muted
+                 loop
+@@ -399,59 +120,8 @@
+                 onMouseEnter={(event) => void event.currentTarget.play().catch(() => {})}
+                 onMouseLeave={(event) => event.currentTarget.pause()}
+               />
+-            </div>
+-          ))}
+-        </div>
+-      </div>
+-    </section>
+-  );
+-}
+-
+-export function FlowTransformations({
+-  section,
+-}: {
+-  section: {
+-    id: string;
+-    badge: string;
+-    title: string;
+-    description: string;
+-    highlights: string[];
+-    items: { title: string; label: string; description: string; video: string; poster: string }[];
+-    cta_title: string;
+-    cta_description: string;
+-  };
+-}) {
+-  return (
+-    <section className="flow-section" id={section.id}>
+-      <div className="flow-container">
+-        <FlowSectionHead label={section.badge} title={section.title} description={section.description} />
+-        <div className="flow-highlight-list justify-center">
+-          {section.highlights.map((item) => (
+-            <span key={item}>
+-              <Check className="mr-1 inline size-3.5" />
+-              {item}
+-            </span>
+-          ))}
+-        </div>
+-        {section.items.map((item, index) => (
+-          <div className="flow-media-row" data-flip={index % 2 === 1} key={item.title}>
+-            <div className="flow-media-visual">
+-              <video src={item.video} poster={item.poster} muted loop autoPlay playsInline />
+-            </div>
+-            <div className="flow-media-copy">
+-              <span className="flow-eyebrow">{item.label}</span>
+-              <h3>{item.title}</h3>
+-              <p>{item.description}</p>
+-            </div>
+-          </div>
+-        ))}
+-        <div className="flow-transformation-cta">
+-          <h3>{section.cta_title}</h3>
+-          <p>{section.cta_description}</p>
+-          <FlowAction className="flow-generate mx-auto mt-4 max-w-xs" ctaId="transformations">
+-            {section.cta_title}
+-            <ArrowRight className="size-4" />
+-          </FlowAction>
++            </Link>
++          ))}
+         </div>
+       </div>
+     </section>
+@@ -475,10 +145,9 @@
+         <FlowSectionHead label={section.label} title={section.title} description={section.description} />
+         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+           {section.items.map((item) => {
+-            const Icon = ICONS[item.icon] ?? Sparkles;
+             return (
+               <article className="flow-card" key={item.title}>
+-                <Icon className="mb-3 size-6 text-[var(--flow-amber)]" />
++                <SmartIcon name={item.icon || 'Sparkles'} className="mb-3 size-6 text-[var(--flow-amber)]" />
+                 <h3 className="text-lg font-semibold">{item.title}</h3>
+                 <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+               </article>
+@@ -519,166 +188,6 @@
+   );
+ }
+ 
+-export function FlowPricingSummary({
+-  section,
+-}: {
+-  section: {
+-    id: string;
+-    label: string;
+-    title: string;
+-    description: string;
+-    benefits: string[];
+-    notice: string;
+-    annual_badge: string;
+-    annual_badge_label: string;
+-    groups: string[];
+-    cost_per_100_label: string;
+-    cancel_support: string;
+-    yearly_only_label: string;
+-    limited_offer_label: string;
+-    cta_labels: { yearly: string; monthly: string; oneTime: string };
+-    plans: {
+-      title: string;
+-      description: string;
+-      price: string;
+-      unit: string;
+-      label: string;
+-      credits: string;
+-      features_title: string;
+-      features: string[];
+-    }[];
+-  };
+-}) {
+-  const [group, setGroup] = useState(section.groups[0]);
+-
+-  return (
+-    <section className="flow-section" id={section.id}>
+-      <div className="flow-container">
+-        <FlowSectionHead
+-          label={section.annual_badge}
+-          title={section.title}
+-          description={section.description}
+-        />
+-        <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
+-          {section.groups.map((item) => (
+-            <button
+-              key={item}
+-              type="button"
+-              className="flow-eyebrow"
+-              data-active={item === group}
+-              style={
+-                item === group
+-                  ? undefined
+-                  : { background: 'transparent', color: 'var(--muted-foreground)' }
+-              }
+-              onClick={() => setGroup(item)}
+-            >
+-              {item}
+-            </button>
+-          ))}
+-          <span className="flow-eyebrow">{section.annual_badge_label}</span>
+-        </div>
+-        <div className="flow-plan-grid">
+-          {section.plans.map((plan) => {
+-            const credits = Number(plan.credits.replace(/,/g, '')) || 0;
+-            const yearlyAmount = (parseFloat(plan.price.replace('$', '')) || 0) * 12;
+-            const costPer100 =
+-              credits > 0 ? (yearlyAmount / (credits / 100)).toFixed(2) : '';
+-            return (
+-            <article
+-              className="flow-plan"
+-              data-featured={plan.label === 'Most Popular' || plan.title === 'Professional'}
+-              key={plan.title}
+-            >
+-              <header className="space-y-1">
+-                <h3 className="text-lg font-semibold">{plan.title}</h3>
+-                {plan.label ? (
+-                  <span className="flow-eyebrow">{plan.label}</span>
+-                ) : null}
+-                <span className="flow-eyebrow">{section.yearly_only_label}</span>
+-                <p className="text-sm text-muted-foreground">{plan.description}</p>
+-              </header>
+-              <div className="flow-plan-price">
+-                <strong>{plan.price}</strong>
+-                <span>{plan.unit}</span>
+-              </div>
+-              {plan.credits ? (
+-                <p className="text-sm text-muted-foreground">
+-                  ★ {Number(plan.credits).toLocaleString('en-US')}
+-                  <span className="mt-1 block">Credits/year</span>
+-                </p>
+-              ) : null}
+-              {costPer100 ? (
+-                <p className="text-sm text-muted-foreground">
+-                  {section.cost_per_100_label}
+-                  <span className="ml-1 text-foreground">${costPer100}</span>
+-                </p>
+-              ) : null}
+-              <span className="flow-eyebrow">{section.limited_offer_label}</span>
+-              <p className="text-sm font-medium">{plan.features_title}</p>
+-              <ul>
+-                {plan.features.map((feature) => (
+-                  <li key={feature}>
+-                    <Check />
+-                    <span>{feature}</span>
+-                  </li>
+-                ))}
+-              </ul>
+-              <a className="flow-plan-cta" href="/pricing">
+-                {group === 'One Time'
+-                  ? section.cta_labels.oneTime
+-                  : group === 'Monthly'
+-                    ? section.cta_labels.monthly
+-                    : section.cta_labels.yearly}
+-              </a>
+-            </article>
+-            );
+-          })}
+-        </div>
+-        <div className="flow-benefits">
+-          {section.benefits.map((benefit) => (
+-            <span key={benefit}>
+-              <Check />
+-              {benefit}
+-            </span>
+-          ))}
+-        </div>
+-        <p className="flow-notice">{section.notice}</p>
+-        <p className="flow-notice">{section.cancel_support}</p>
+-      </div>
+-    </section>
+-  );
+-}
+-
+-export function FlowStats({
+-  section,
+-}: {
+-  section: {
+-    id: string;
+-    label: string;
+-    title: string;
+-    description: string;
+-    items: { label: string; title: string; description: string }[];
+-  };
+-}) {
+-  return (
+-    <section className="flow-section" id={section.id}>
+-      <div className="flow-container">
+-        <FlowSectionHead label={section.label} title={section.title} description={section.description} />
+-        <div className="flow-stat-grid">
+-          {section.items.map((item) => (
+-            <article className="flow-stat" key={item.title}>
+-              <small>{item.label}</small>
+-              <strong>{item.title}</strong>
+-              <p>{item.description}</p>
+-            </article>
+-          ))}
+-        </div>
+-      </div>
+-    </section>
+-  );
+-}
+-
+ export function FlowFaq({
+   section,
+ }: {
+@@ -687,10 +196,6 @@
+     title: string;
+     description: string;
+     items: { question: string; answer: string }[];
+-    cta_title: string;
+-    cta_description: string;
+-    cta_button: string;
+-    stats: string[];
+   };
+ }) {
+   return (
+@@ -707,150 +212,36 @@
+                 </span>
+                 <span className="text-[var(--flow-amber)] group-open:rotate-45">+</span>
+               </summary>
+-              <p className="mt-3 text-sm text-muted-foreground">{item.answer}</p>
++              <p className="rich-text mt-3 text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: item.answer }} />
+             </details>
+           ))}
+         </div>
+ 
+-        <div className="flow-faq-cta">
+-          <h3>{section.cta_title}</h3>
+-          <p>{section.cta_description}</p>
+-          <div className="flow-faq-stats">
+-            {['10K+', '50+', '30'].map((value, index) => (
+-              <div key={value}>
+-                <strong>{value}</strong>
+-                <span>{section.stats[index]}</span>
+-              </div>
+-            ))}
+-          </div>
+-          <FlowAction className="flow-generate mx-auto max-w-xs" ctaId="faq_cta">
+-            {section.cta_button}
+-            <Play className="size-4" />
+-          </FlowAction>
+-        </div>
+-      </div>
+-    </section>
+-  );
+-}
+-
+-/**
+- * Pricing page header: the reference's "Simple, Transparent Pricing" intro with
+- * its benefit row, checkout notice and the annual-plan call to action.
+- */
+-export function FlowPricingHero({
+-  section,
+-}: {
+-  section: {
+-    title: string;
+-    description: string;
+-    benefits?: string[];
+-    notice?: string;
+-    annual_badge_label?: string;
+-    groups?: ({ name: string; title: string } | string)[];
+-    offer?: {
+-      badge: string;
+-      badge_active: string;
+-      title: string;
+-      subtitle: string;
+-      social_proof: string;
+-      rating: string;
+-      live: string;
+-      upgraded_today: string;
+-      pills: string[];
+-      cta: string;
+-    };
+-    stats?: { value: string; label: string }[];
+-  };
+-}) {
+-  return (
+-    <section className="flow-section pb-0">
+-      <div className="flow-container">
+-        <FlowSectionHead
+-          label={section.annual_badge_label}
+-          title={section.title}
+-          description={section.description}
+-        />
+-        {section.groups?.length ? (
+-          <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
+-            {section.groups.map((item) => (
+-              <span className="flow-eyebrow" key={typeof item === 'string' ? item : item.name}>
+-                {typeof item === 'string' ? item : item.title}
+-              </span>
+-            ))}
+-          </div>
+-        ) : null}
+-        {section.benefits?.length ? (
+-          <div className="flow-benefits">
+-            {section.benefits.map((benefit) => (
+-              <span key={benefit}>
+-                <Check />
+-                {benefit}
+-              </span>
+-            ))}
+-          </div>
+-        ) : null}
+-        {section.notice ? <p className="flow-notice">{section.notice}</p> : null}
+-
+-        {section.offer ? (
+-          <div className="flow-transformation-cta mt-8 text-left md:text-center">
+-            <span className="flow-eyebrow">{section.offer.badge}</span>{' '}
+-            <span className="flow-eyebrow">{section.offer.badge_active}</span>
+-            <h3 className="mt-4 text-2xl">{section.offer.title}</h3>
+-            <p>{section.offer.subtitle}</p>
+-            <p className="mt-2 text-sm text-[var(--flow-amber)]">
+-              {section.offer.live} · {section.offer.social_proof} ·{' '}
+-              {section.offer.rating} · {section.offer.upgraded_today}
+-            </p>
+-            <div className="flow-benefits">
+-              {section.offer.pills.map((pill) => (
+-                <span key={pill}>
+-                  <Check />
+-                  {pill}
+-                </span>
+-              ))}
+-            </div>
+-            <a className="flow-generate mx-auto mt-4 max-w-xs" href="/pricing">
+-              {section.offer.cta}
+-            </a>
+-          </div>
+-        ) : null}
+-
+-        {section.stats?.length ? (
+-          <div className="flow-stat-grid mt-8">
+-            {section.stats.map((stat) => (
+-              <article className="flow-stat" key={stat.label}>
+-                <strong>{stat.value}</strong>
+-                <p>{stat.label}</p>
+-              </article>
+-            ))}
+-          </div>
+-        ) : null}
+-      </div>
+-    </section>
+-  );
+-}
+-
+-/**
+- * Support block shown under the pricing FAQ on the reference pricing page.
+- */
+-export function FlowSupportCta({
+-  title,
+-  description,
+-  email = 'support@flowaivideo.lol',
+-}: {
+-  title: string;
+-  description: string;
+-  email?: string;
+-}) {
+-  return (
+-    <div className="flow-faq-cta">
+-      <h3>{title}</h3>
+-      <p>{description}</p>
+-      <p className="mt-4">
+-        <a className="text-[var(--flow-amber)]" href={`mailto:${email}`}>
+-          {email}
+-        </a>
+-      </p>
+-    </div>
+-  );
+-}
++      </div>
++    </section>
++  );
++}
++
++// JSX copied from the source landing page's final CTA; only data/links are adapted.
++export function FlowCta({
++  section,
++}: {
++  section: { id?: string; title: string; description: string; buttons: Button[] };
++}) {
++  return (
++    <section className="flow-section" id={section.id}>
++      <div className="flow-container">
++        <div className="flow-transformation-cta">
++          <h3 className="text-2xl md:text-3xl">{section.title}</h3>
++          <p>{section.description}</p>
++          {section.buttons.map((button, index) => (
++            <FlowAction key={button.url || index} button={button}>
++              {button.icon ? <SmartIcon name={button.icon as string} className="size-4" /> : null}
++              {button.title}
++            </FlowAction>
++          ))}
++        </div>
++      </div>
++    </section>
++  );
++}
+--- source/src/config/style/flow.css
++++ target/src/themes/flow/styles/flow.css
+@@ -8,22 +8,22 @@
+  * video wall and the reference's media rows) need bespoke rules.
+  */
+ 
+-:root {
++.flow-shell {
+   --flow-gradient: linear-gradient(120deg, #6366f1 0%, #8b5cf6 48%, #ec4899 100%);
+   --flow-amber: hsl(38 92% 50%);
+   --flow-shell-max: 80rem;
+ }
+ 
+-.landing-shell {
++.flow-shell {
+   /* The template header is fixed; the announcement strip sits right below it. */
+   padding-top: 4.5rem;
+ }
+ 
+-.flow-main {
++.flow-shell .flow-main {
+   overflow-x: hidden;
+ }
+ 
+-.flow-announcement {
++.flow-shell .flow-announcement {
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+@@ -36,27 +36,27 @@
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-announcement strong {
++.flow-shell .flow-announcement strong {
+   color: var(--foreground);
+   font-weight: 600;
+ }
+ 
+-.flow-announcement a {
++.flow-shell .flow-announcement a {
+   color: var(--flow-amber);
+   font-weight: 600;
+ }
+ 
+-.flow-section {
++.flow-shell .flow-section {
+   padding: 3.5rem 0;
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-section {
++  .flow-shell .flow-section {
+     padding: 5rem 0;
+   }
+ }
+ 
+-.flow-container {
++.flow-shell .flow-container {
+   width: 100%;
+   max-width: var(--flow-shell-max);
+   margin: 0 auto;
+@@ -64,18 +64,18 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-container {
++  .flow-shell .flow-container {
+     padding: 0 2rem;
+   }
+ }
+ 
+-.flow-section-head {
++.flow-shell .flow-section-head {
+   margin: 0 auto 2rem;
+   max-width: 48rem;
+   text-align: center;
+ }
+ 
+-.flow-section-head h2 {
++.flow-shell .flow-section-head h2 {
+   font-size: 1.85rem;
+   line-height: 1.2;
+   font-weight: 700;
+@@ -83,18 +83,18 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-section-head h2 {
++  .flow-shell .flow-section-head h2 {
+     font-size: 2.4rem;
+   }
+ }
+ 
+-.flow-section-head p {
++.flow-shell .flow-section-head p {
+   margin-top: 0.85rem;
+   color: var(--muted-foreground);
+   font-size: 1rem;
+ }
+ 
+-.flow-eyebrow {
++.flow-shell .flow-eyebrow {
+   display: inline-flex;
+   align-items: center;
+   border-radius: 999px;
+@@ -109,7 +109,7 @@
+ 
+ /* ---------------------------------------------------------------- hero */
+ 
+-.flow-hero {
++.flow-shell .flow-hero {
+   position: relative;
+   padding: 3rem 0 1rem;
+   background:
+@@ -125,11 +125,11 @@
+     );
+ }
+ 
+-.flow-hero-inner {
+-  text-align: center;
+-}
+-
+-.flow-hero h1 {
++.flow-shell .flow-hero-inner {
++  text-align: center;
++}
++
++.flow-shell .flow-hero h1 {
+   margin-top: 1rem;
+   font-size: 2.1rem;
+   font-weight: 800;
+@@ -138,12 +138,12 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-hero h1 {
++  .flow-shell .flow-hero h1 {
+     font-size: 3.1rem;
+   }
+ }
+ 
+-.flow-hero .flow-model-tag {
++.flow-shell .flow-hero .flow-model-tag {
+   margin-top: 0.75rem;
+   font-size: 1.6rem;
+   font-weight: 700;
+@@ -152,17 +152,17 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-hero .flow-model-tag {
++  .flow-shell .flow-hero .flow-model-tag {
+     font-size: 2.4rem;
+   }
+ }
+ 
+-.flow-hero .flow-subtitle {
++.flow-shell .flow-hero .flow-subtitle {
+   margin-top: 0.85rem;
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-social {
++.flow-shell .flow-social {
+   margin-top: 0.75rem;
+   font-size: 0.85rem;
+   color: var(--muted-foreground);
+@@ -170,7 +170,7 @@
+ 
+ /* -------------------------------------------------------------- studio */
+ 
+-.flow-studio {
++.flow-shell .flow-studio {
+   display: grid;
+   gap: 1rem;
+   margin-top: 2rem;
+@@ -178,13 +178,13 @@
+ }
+ 
+ @media (min-width: 1024px) {
+-  .flow-studio {
++  .flow-shell .flow-studio {
+     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+     align-items: start;
+   }
+ }
+ 
+-.flow-card {
++.flow-shell .flow-card {
+   border: 1px solid var(--border);
+   border-radius: var(--radius);
+   background: color-mix(in oklab, var(--card) 92%, transparent);
+@@ -192,7 +192,7 @@
+   box-shadow: 0 24px 60px -40px rgba(0, 0, 0, 0.9);
+ }
+ 
+-.flow-tabs {
++.flow-shell .flow-tabs {
+   display: flex;
+   gap: 0.35rem;
+   overflow-x: auto;
+@@ -200,7 +200,7 @@
+   padding-bottom: 0.65rem;
+ }
+ 
+-.flow-tabs button {
++.flow-shell .flow-tabs button {
+   border-radius: 999px;
+   border: 1px solid transparent;
+   padding: 0.35rem 0.85rem;
+@@ -210,19 +210,19 @@
+   background: transparent;
+ }
+ 
+-.flow-tabs button[data-active='true'] {
++.flow-shell .flow-tabs button[data-active='true'] {
+   background: color-mix(in oklab, var(--flow-amber) 18%, transparent);
+   border-color: color-mix(in oklab, var(--flow-amber) 45%, transparent);
+   color: var(--foreground);
+   font-weight: 600;
+ }
+ 
+-.flow-field {
++.flow-shell .flow-field {
+   margin-top: 1rem;
+ }
+ 
+-.flow-field > label,
+-.flow-field-label {
++.flow-shell .flow-field > label,
++.flow-shell .flow-field-label {
+   display: flex;
+   align-items: center;
+   gap: 0.4rem;
+@@ -232,7 +232,7 @@
+   color: var(--foreground);
+ }
+ 
+-.flow-field-label .flow-required {
++.flow-shell .flow-field-label .flow-required {
+   border-radius: 999px;
+   background: color-mix(in oklab, var(--flow-amber) 18%, transparent);
+   color: var(--flow-amber);
+@@ -241,13 +241,13 @@
+   font-weight: 600;
+ }
+ 
+-.flow-counter {
++.flow-shell .flow-counter {
+   margin-left: auto;
+   font-weight: 400;
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-studio textarea {
++.flow-shell .flow-studio textarea {
+   width: 100%;
+   min-height: 7.5rem;
+   resize: vertical;
+@@ -259,7 +259,7 @@
+   font-size: 0.9rem;
+ }
+ 
+-.flow-studio select {
++.flow-shell .flow-studio select {
+   width: 100%;
+   border-radius: calc(var(--radius) - 4px);
+   border: 1px solid var(--border);
+@@ -269,13 +269,13 @@
+   font-size: 0.9rem;
+ }
+ 
+-.flow-options {
++.flow-shell .flow-options {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+ }
+ 
+-.flow-options button {
++.flow-shell .flow-options button {
+   border-radius: calc(var(--radius) - 6px);
+   border: 1px solid var(--border);
+   background: transparent;
+@@ -284,13 +284,13 @@
+   font-size: 0.85rem;
+ }
+ 
+-.flow-options button[data-active='true'] {
++.flow-shell .flow-options button[data-active='true'] {
+   border-color: var(--flow-amber);
+   color: var(--foreground);
+   background: color-mix(in oklab, var(--flow-amber) 12%, transparent);
+ }
+ 
+-.flow-generate {
++.flow-shell .flow-generate {
+   display: flex;
+   width: 100%;
+   align-items: center;
+@@ -307,23 +307,23 @@
+   transition: filter 0.15s ease;
+ }
+ 
+-.flow-generate:hover:not(:disabled) {
++.flow-shell .flow-generate:hover:not(:disabled) {
+   filter: brightness(1.08);
+ }
+ 
+-.flow-generate:disabled {
++.flow-shell .flow-generate:disabled {
+   opacity: 0.75;
+   cursor: progress;
+ }
+ 
+-.flow-credits-badge {
++.flow-shell .flow-credits-badge {
+   border-radius: 999px;
+   background: rgba(255, 255, 255, 0.2);
+   padding: 0.1rem 0.45rem;
+   font-size: 0.78rem;
+ }
+ 
+-.flow-queue {
++.flow-shell .flow-queue {
+   margin-top: 1rem;
+   border-radius: calc(var(--radius) - 4px);
+   border: 1px solid color-mix(in oklab, var(--flow-amber) 40%, transparent);
+@@ -332,13 +332,13 @@
+   font-size: 0.85rem;
+ }
+ 
+-.flow-queue strong {
++.flow-shell .flow-queue strong {
+   display: block;
+   margin-bottom: 0.35rem;
+   font-size: 0.9rem;
+ }
+ 
+-.flow-queue-bar {
++.flow-shell .flow-queue-bar {
+   position: relative;
+   height: 0.4rem;
+   margin: 0.6rem 0 0.4rem;
+@@ -347,7 +347,7 @@
+   background: color-mix(in oklab, var(--foreground) 12%, transparent);
+ }
+ 
+-.flow-queue-bar span {
++.flow-shell .flow-queue-bar span {
+   position: absolute;
+   inset: 0 auto 0 0;
+   border-radius: 999px;
+@@ -355,13 +355,13 @@
+   transition: width 0.6s ease;
+ }
+ 
+-.flow-sample {
++.flow-shell .flow-sample {
+   display: flex;
+   flex-direction: column;
+   gap: 0.65rem;
+ }
+ 
+-.flow-sample-frame {
++.flow-shell .flow-sample-frame {
+   position: relative;
+   width: 100%;
+   aspect-ratio: 16 / 9;
+@@ -371,13 +371,13 @@
+   background: #000;
+ }
+ 
+-.flow-sample-frame video {
++.flow-shell .flow-sample-frame video {
+   height: 100%;
+   width: 100%;
+   object-fit: cover;
+ }
+ 
+-.flow-sample-empty {
++.flow-shell .flow-sample-empty {
+   display: flex;
+   height: 100%;
+   flex-direction: column;
+@@ -390,7 +390,7 @@
+   font-size: 0.85rem;
+ }
+ 
+-.flow-sample-tip {
++.flow-shell .flow-sample-tip {
+   color: var(--muted-foreground);
+   font-size: 0.78rem;
+   text-align: center;
+@@ -398,18 +398,18 @@
+ 
+ /* ------------------------------------------------------------ showcase */
+ 
+-.flow-video-grid {
++.flow-shell .flow-video-grid {
+   display: grid;
+   gap: 1rem;
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-video-grid {
++  .flow-shell .flow-video-grid {
+     grid-template-columns: repeat(3, minmax(0, 1fr));
+   }
+ }
+ 
+-.flow-video-card {
++.flow-shell .flow-video-card {
+   position: relative;
+   overflow: hidden;
+   border-radius: var(--radius);
+@@ -419,25 +419,25 @@
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-video-card {
++  .flow-shell .flow-video-card {
+     aspect-ratio: 3 / 4;
+   }
+ }
+ 
+-.flow-video-card img,
+-.flow-video-card video {
++.flow-shell .flow-video-card img,
++.flow-shell .flow-video-card video {
+   height: 100%;
+   width: 100%;
+   object-fit: cover;
+   transition: transform 0.5s ease;
+ }
+ 
+-.flow-video-card:hover img,
+-.flow-video-card:hover video {
++.flow-shell .flow-video-card:hover img,
++.flow-shell .flow-video-card:hover video {
+   transform: scale(1.04);
+ }
+ 
+-.flow-media-row {
++.flow-shell .flow-media-row {
+   display: grid;
+   align-items: center;
+   gap: 1.5rem;
+@@ -445,17 +445,17 @@
+ }
+ 
+ @media (min-width: 900px) {
+-  .flow-media-row {
++  .flow-shell .flow-media-row {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+     gap: 3rem;
+   }
+ 
+-  .flow-media-row[data-flip='true'] .flow-media-visual {
++  .flow-shell .flow-media-row[data-flip='true'] .flow-media-visual {
+     order: 2;
+   }
+ }
+ 
+-.flow-media-visual {
++.flow-shell .flow-media-visual {
+   position: relative;
+   overflow: hidden;
+   border-radius: var(--radius);
+@@ -464,30 +464,30 @@
+   aspect-ratio: 16 / 10;
+ }
+ 
+-.flow-media-visual video {
++.flow-shell .flow-media-visual video {
+   height: 100%;
+   width: 100%;
+   object-fit: cover;
+ }
+ 
+-.flow-media-copy h3 {
++.flow-shell .flow-media-copy h3 {
+   margin: 0.5rem 0 0.75rem;
+   font-size: 1.4rem;
+   font-weight: 700;
+ }
+ 
+-.flow-media-copy p {
+-  color: var(--muted-foreground);
+-}
+-
+-.flow-highlight-list {
++.flow-shell .flow-media-copy p {
++  color: var(--muted-foreground);
++}
++
++.flow-shell .flow-highlight-list {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.5rem;
+   margin-top: 1rem;
+ }
+ 
+-.flow-highlight-list span {
++.flow-shell .flow-highlight-list span {
+   border-radius: 999px;
+   border: 1px solid var(--border);
+   background: color-mix(in oklab, var(--card) 80%, transparent);
+@@ -496,7 +496,7 @@
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-transformation-cta {
++.flow-shell .flow-transformation-cta {
+   margin-top: 2rem;
+   border-radius: var(--radius);
+   border: 1px solid var(--border);
+@@ -505,30 +505,30 @@
+   text-align: center;
+ }
+ 
+-.flow-transformation-cta h3 {
++.flow-shell .flow-transformation-cta h3 {
+   font-size: 1.25rem;
+   font-weight: 700;
+ }
+ 
+-.flow-transformation-cta p {
++.flow-shell .flow-transformation-cta p {
+   margin-top: 0.4rem;
+   color: var(--muted-foreground);
+ }
+ 
+ /* ----------------------------------------------------------- pricing row */
+ 
+-.flow-plan-grid {
++.flow-shell .flow-plan-grid {
+   display: grid;
+   gap: 1rem;
+ }
+ 
+ @media (min-width: 900px) {
+-  .flow-plan-grid {
++  .flow-shell .flow-plan-grid {
+     grid-template-columns: repeat(3, minmax(0, 1fr));
+   }
+ }
+ 
+-.flow-plan {
++.flow-shell .flow-plan {
+   display: flex;
+   flex-direction: column;
+   gap: 0.75rem;
+@@ -538,40 +538,40 @@
+   padding: 1.5rem;
+ }
+ 
+-.flow-plan[data-featured='true'] {
++.flow-shell .flow-plan[data-featured='true'] {
+   border-color: color-mix(in oklab, var(--flow-amber) 55%, transparent);
+   box-shadow: 0 30px 70px -50px color-mix(in oklab, var(--flow-amber) 80%, transparent);
+ }
+ 
+-.flow-plan-price {
++.flow-shell .flow-plan-price {
+   display: flex;
+   align-items: baseline;
+   gap: 0.35rem;
+ }
+ 
+-.flow-plan-price strong {
++.flow-shell .flow-plan-price strong {
+   font-size: 2.2rem;
+   font-weight: 700;
+ }
+ 
+-.flow-plan-price span {
++.flow-shell .flow-plan-price span {
+   color: var(--muted-foreground);
+   font-size: 0.9rem;
+ }
+ 
+-.flow-plan ul {
++.flow-shell .flow-plan ul {
+   display: grid;
+   gap: 0.4rem;
+   font-size: 0.85rem;
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-plan li {
++.flow-shell .flow-plan li {
+   display: flex;
+   gap: 0.5rem;
+ }
+ 
+-.flow-plan li svg {
++.flow-shell .flow-plan li svg {
+   margin-top: 0.15rem;
+   height: 1rem;
+   width: 1rem;
+@@ -579,7 +579,7 @@
+   color: var(--flow-amber);
+ }
+ 
+-.flow-plan-cta {
++.flow-shell .flow-plan-cta {
+   margin-top: auto;
+   border-radius: calc(var(--radius) - 4px);
+   border: 1px solid var(--border);
+@@ -589,13 +589,13 @@
+   text-align: center;
+ }
+ 
+-.flow-plan[data-featured='true'] .flow-plan-cta {
++.flow-shell .flow-plan[data-featured='true'] .flow-plan-cta {
+   border-color: transparent;
+   background: var(--flow-gradient);
+   color: #fff;
+ }
+ 
+-.flow-benefits {
++.flow-shell .flow-benefits {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+@@ -605,19 +605,19 @@
+   font-size: 0.85rem;
+ }
+ 
+-.flow-benefits span {
++.flow-shell .flow-benefits span {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.4rem;
+ }
+ 
+-.flow-benefits svg {
++.flow-shell .flow-benefits svg {
+   height: 1rem;
+   width: 1rem;
+   color: var(--flow-amber);
+ }
+ 
+-.flow-notice {
++.flow-shell .flow-notice {
+   margin-top: 1rem;
+   text-align: center;
+   color: var(--muted-foreground);
+@@ -626,18 +626,18 @@
+ 
+ /* --------------------------------------------------------------- stats */
+ 
+-.flow-stat-grid {
++.flow-shell .flow-stat-grid {
+   display: grid;
+   gap: 1.5rem;
+ }
+ 
+ @media (min-width: 768px) {
+-  .flow-stat-grid {
++  .flow-shell .flow-stat-grid {
+     grid-template-columns: repeat(3, minmax(0, 1fr));
+   }
+ }
+ 
+-.flow-stat {
++.flow-shell .flow-stat {
+   border-radius: var(--radius);
+   border: 1px solid var(--border);
+   background: color-mix(in oklab, var(--card) 88%, transparent);
+@@ -645,7 +645,7 @@
+   text-align: center;
+ }
+ 
+-.flow-stat small {
++.flow-shell .flow-stat small {
+   display: block;
+   color: var(--flow-amber);
+   font-size: 0.72rem;
+@@ -653,18 +653,18 @@
+   letter-spacing: 0.12em;
+ }
+ 
+-.flow-stat strong {
++.flow-shell .flow-stat strong {
+   display: block;
+   margin: 0.5rem 0;
+   font-size: 1.75rem;
+ }
+ 
+-.flow-stat p {
++.flow-shell .flow-stat p {
+   color: var(--muted-foreground);
+   font-size: 0.88rem;
+ }
+ 
+-.flow-faq-cta {
++.flow-shell .flow-faq-cta {
+   margin-top: 2rem;
+   border-radius: var(--radius);
+   border: 1px solid var(--border);
+@@ -673,17 +673,17 @@
+   text-align: center;
+ }
+ 
+-.flow-faq-cta h3 {
++.flow-shell .flow-faq-cta h3 {
+   font-size: 1.4rem;
+   font-weight: 700;
+ }
+ 
+-.flow-faq-cta p {
++.flow-shell .flow-faq-cta p {
+   margin-top: 0.5rem;
+   color: var(--muted-foreground);
+ }
+ 
+-.flow-faq-stats {
++.flow-shell .flow-faq-stats {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+@@ -691,16 +691,16 @@
+   margin: 1.5rem 0;
+ }
+ 
+-.flow-faq-stats div {
+-  text-align: center;
+-}
+-
+-.flow-faq-stats strong {
++.flow-shell .flow-faq-stats div {
++  text-align: center;
++}
++
++.flow-shell .flow-faq-stats strong {
+   display: block;
+   font-size: 1.35rem;
+ }
+ 
+-.flow-faq-stats span {
++.flow-shell .flow-faq-stats span {
+   color: var(--muted-foreground);
+   font-size: 0.8rem;
+ }
+@@ -709,23 +709,23 @@
+ 
+ /* The template header/footer keep their structure; these tweaks line their
+    chrome up with the reference (amber accent chips, soft dividers). */
+-.landing-shell header[data-scrolled] > div > div {
++.flow-shell header[data-scrolled] > div > div {
+   border-color: color-mix(in oklab, var(--border) 70%, transparent);
+ }
+ 
+-.landing-shell footer {
++.flow-shell footer {
+   border-top: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+   background: color-mix(in oklab, var(--card) 55%, transparent);
+ }
+ 
+-.flow-footer-badges {
++.flow-shell .flow-footer-badges {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.4rem;
+   margin-top: 1.5rem;
+ }
+ 
+-.flow-footer-badges a {
++.flow-shell .flow-footer-badges a {
+   border-radius: 999px;
+   border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+   padding: 0.2rem 0.6rem;
+@@ -734,54 +734,54 @@
+   transition: color 0.15s ease, border-color 0.15s ease;
+ }
+ 
+-.flow-footer-badges a:hover {
++.flow-shell .flow-footer-badges a:hover {
+   color: var(--foreground);
+   border-color: var(--flow-amber);
+ }
+ 
+-.flow-legal {
++.flow-shell .flow-legal {
+   padding: 3rem 0 4rem;
+ }
+ 
+-.flow-legal h1 {
++.flow-shell .flow-legal h1 {
+   font-size: 2.1rem;
+   font-weight: 700;
+ }
+ 
+-.flow-legal h2 {
++.flow-shell .flow-legal h2 {
+   margin: 2rem 0 0.75rem;
+   font-size: 1.35rem;
+   font-weight: 600;
+ }
+ 
+-.flow-legal h3 {
++.flow-shell .flow-legal h3 {
+   margin: 1.5rem 0 0.5rem;
+   font-size: 1.1rem;
+   font-weight: 600;
+ }
+ 
+-.flow-legal p,
+-.flow-legal li {
++.flow-shell .flow-legal p,
++.flow-shell .flow-legal li {
+   color: var(--muted-foreground);
+   font-size: 0.95rem;
+   line-height: 1.7;
+ }
+ 
+-.flow-legal ul,
+-.flow-legal ol {
++.flow-shell .flow-legal ul,
++.flow-shell .flow-legal ol {
+   margin: 0.75rem 0 0.75rem 1.25rem;
+   display: grid;
+   gap: 0.35rem;
+ }
+ 
+-.flow-legal ul {
++.flow-shell .flow-legal ul {
+   list-style: disc;
+ }
+ 
+-.flow-legal ol {
++.flow-shell .flow-legal ol {
+   list-style: decimal;
+ }
+ 
+-.flow-legal a {
++.flow-shell .flow-legal a {
+   color: var(--flow-amber);
+ }
+--- source/src/config/style/theme.css
++++ target/src/themes/flow/styles/tokens.css
+@@ -1,4 +1,4 @@
+-:root {
++.flow-shell {
+   --background: oklch(0.9842 0.0034 247.8575);
+   --foreground: oklch(0.2795 0.0368 260.031);
+   --card: oklch(1 0 0);
+@@ -59,7 +59,7 @@
+   --spacing: 0.25rem;
+ }
+ 
+-.dark {
++.dark .flow-shell {
+   /* Warm near-black + amber accent, lifted from the reference site tokens so
+      every page (pricing, settings, auth, 404) shares the landing look. */
+   --background: hsl(40 6% 7%);
+@@ -120,7 +120,8 @@
+   --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+ }
+ 
+-@theme inline {
++
++.flow-shell {
+   --color-background: var(--background);
+   --color-foreground: var(--foreground);
+   --color-card: var(--card);
+@@ -153,22 +154,7 @@
+   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+   --color-sidebar-border: var(--sidebar-border);
+   --color-sidebar-ring: var(--sidebar-ring);
+-
+-  --font-sans: var(--font-sans);
+-  --font-mono: var(--font-mono);
+-  --font-serif: var(--font-serif);
+-
+-  --radius-sm: calc(var(--radius) - 4px);
+-  --radius-md: calc(var(--radius) - 2px);
+-  --radius-lg: var(--radius);
+-  --radius-xl: calc(var(--radius) + 4px);
+-
+-  --shadow-2xs: var(--shadow-2xs);
+-  --shadow-xs: var(--shadow-xs);
+-  --shadow-sm: var(--shadow-sm);
+-  --shadow: var(--shadow);
+-  --shadow-md: var(--shadow-md);
+-  --shadow-lg: var(--shadow-lg);
+-  --shadow-xl: var(--shadow-xl);
+-  --shadow-2xl: var(--shadow-2xl);
++  background: var(--background);
++  color: var(--foreground);
++  font-family: var(--font-sans);
+ }
+--- source/src/themes/default/blocks/footer.tsx
++++ target/src/themes/flow/blocks/footer.tsx
+@@ -68,23 +68,6 @@
+           className="h-px min-w-0 [background-image:linear-gradient(90deg,var(--color-foreground)_1px,transparent_1px)] bg-[length:6px_1px] bg-repeat-x opacity-25"
+         />
+ 
+-        {/* Directory badges mirrored from the reference footer. */}
+-        {(footer as any).badges?.items?.length ? (
+-          <div className="flow-footer-badges" aria-label={(footer as any).badges.title}>
+-            {(footer as any).badges.items.map(
+-              (item: NavItem, index: number) => (
+-                <Link
+-                  key={`${item.title}-${index}`}
+-                  href={item.url || ''}
+-                  target="_blank"
+-                >
+-                  {item.title}
+-                </Link>
+-              )
+-            )}
+-          </div>
+-        ) : null}
+-
+         <div className="flex min-w-0 flex-wrap justify-between gap-8">
+           {footer.copyright ? (
+             <p

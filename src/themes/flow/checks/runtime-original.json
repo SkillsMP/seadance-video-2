@@ -1,0 +1,14 @@
+{
+  "mode": "SSR, JavaScript disabled; original .env.development theme unchanged",
+  "checks": [
+    {
+      "name": "original videofly shell, no Flow shell",
+      "status": "PASS"
+    },
+    {
+      "name": "original videofly primary",
+      "status": "PASS",
+      "detail": "oklch(62% 0.21 260)"
+    }
+  ]
+}
