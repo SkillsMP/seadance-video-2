@@ -20,9 +20,13 @@ export function UseCaseCards({
   return (
     <section
       id={section.id || section.name}
-      className={cn('py-16 md:py-24', section.className, className)}
+      className={cn('relative py-16 md:py-24', section.className, className)}
     >
-      <div className="container space-y-10 md:space-y-14">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+      </div>
+
+      <div className="container space-y-8 md:space-y-10">
         <div className="mx-auto max-w-3xl text-center text-balance">
           <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
             {section.title}
@@ -32,37 +36,35 @@ export function UseCaseCards({
           )}
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item, index) => (
             <article
               key={item.title || index}
-              className="bg-card flex h-full flex-col rounded-2xl border p-6 md:p-7"
+              className="bg-card flex h-full min-h-[180px] flex-col rounded-2xl border p-5 shadow-sm shadow-black/[0.04] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-black/[0.06] md:p-6 lg:min-h-[192px] dark:shadow-md dark:shadow-black/25 dark:hover:shadow-lg"
             >
-              <div className="flex items-start gap-3">
-                {typeof item.icon === 'string' && (
-                  <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
-                    <SmartIcon name={item.icon} size={20} />
-                  </span>
-                )}
-                <div className="min-w-0 space-y-2">
-                  <h3 className="text-lg font-semibold tracking-tight">
-                    {item.title}
-                  </h3>
-                  {item.description && (
-                    <p
-                      className="text-muted-foreground text-sm leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: item.description }}
-                    />
-                  )}
-                </div>
-              </div>
+              {typeof item.icon === 'string' && (
+                <span className="bg-primary/10 text-primary mb-3 flex size-10 shrink-0 items-center justify-center rounded-lg">
+                  <SmartIcon name={item.icon} size={20} />
+                </span>
+              )}
+
+              <h3 className="mb-2 text-base font-semibold tracking-tight md:text-lg">
+                {item.title}
+              </h3>
+
+              {item.description && (
+                <p
+                  className="text-muted-foreground flex-1 text-sm leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: item.description }}
+                />
+              )}
 
               {item.tags && item.tags.length > 0 && (
-                <ul className="mt-5 flex flex-wrap gap-2 border-t pt-5">
+                <ul className="mt-4 flex flex-wrap gap-1.5 border-t pt-4">
                   {item.tags.map((tag) => (
                     <li
                       key={tag}
-                      className="bg-muted text-muted-foreground rounded-full px-3 py-1 text-xs font-medium"
+                      className="border-primary/15 bg-primary/10 text-primary rounded-full border px-2.5 py-1 text-[11px] font-medium md:text-xs"
                     >
                       {tag}
                     </li>
