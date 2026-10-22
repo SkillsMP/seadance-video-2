@@ -4,3 +4,4 @@ export * from './features';
 export * from './features-step';
 export * from './cta';
 export * from './faq';
+export * from './use-case-cards';

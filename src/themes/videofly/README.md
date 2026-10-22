@@ -21,6 +21,8 @@ This theme pack is directly migrated and adapted from `videofly-template` (speci
    - Radiant `BorderBeam` container with checklist and simulated render status.
 6. **Dark Accordion FAQ (`faq.tsx`)**:
    - Numbered badges and glassmorphic card borders.
+7. **Use Case Cards (`use-case-cards.tsx`)**:
+   - Category cards with keyword chips (same JSON as `video` theme); MagicCard shell, vertical layout, no default-theme fallback.
 
 ## How to Enable
 

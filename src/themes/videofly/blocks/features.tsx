@@ -71,16 +71,17 @@ export function Features({
             return (
               <BlurFade key={index} delay={index * 0.08} inView>
                 <motion.div
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                   className="h-full"
                 >
                   <MagicCard
-                    className="h-full rounded-2xl border border-border bg-card/70 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-foreground/20 dark:border-white/10 dark:bg-zinc-950/70 dark:hover:border-white/20"
+                    className="h-full rounded-2xl border border-border bg-card/80 p-6 shadow-sm shadow-black/[0.04] backdrop-blur-xl transition-shadow duration-300 hover:border-primary/25 hover:shadow-md hover:shadow-black/[0.06] dark:border-white/10 dark:bg-zinc-950/70 dark:shadow-lg dark:shadow-black/30 dark:hover:border-white/20 dark:hover:shadow-xl"
                     gradientFrom={gradient.from}
                     gradientTo={gradient.to}
+                    gradientColor={gradient.from}
                     gradientSize={240}
-                    gradientOpacity={0.15}
+                    gradientOpacity={0.14}
                   >
                     <div className="flex h-full flex-col min-h-[220px]">
                       {/* Icon */}
