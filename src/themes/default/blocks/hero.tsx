@@ -49,7 +49,9 @@ export function Hero({
       <section
         id={section.id}
         className={cn(
-          `pt-24 pb-8 md:pt-36 md:pb-8`,
+          section.compact
+            ? 'pt-24 pb-2 md:pt-24 md:pb-2'
+            : 'pt-24 pb-8 md:pt-36 md:pb-8',
           section.className,
           className
         )}
@@ -83,7 +85,12 @@ export function Hero({
         <div className="relative mx-auto max-w-5xl px-4 text-center">
           <motion.div {...createFadeInVariant(0.15)}>
             {texts && texts.length > 0 ? (
-              <h1 className="text-foreground text-5xl font-semibold text-balance sm:mt-12 sm:text-6xl">
+              <h1
+                className={cn(
+                  'text-foreground text-5xl font-semibold text-balance sm:text-6xl',
+                  !section.compact && 'sm:mt-12'
+                )}
+              >
                 {texts[0]}
                 <Highlighter action="underline" color="#FF9800">
                   {highlightText}
@@ -91,7 +98,12 @@ export function Hero({
                 {texts[1]}
               </h1>
             ) : (
-              <h1 className="text-foreground text-5xl font-semibold text-balance sm:mt-12 sm:text-6xl">
+              <h1
+                className={cn(
+                  'text-foreground text-5xl font-semibold text-balance sm:text-6xl',
+                  !section.compact && 'sm:mt-12'
+                )}
+              >
                 {section.title}
               </h1>
             )}
@@ -99,7 +111,10 @@ export function Hero({
 
           <motion.p
             {...createFadeInVariant(0.3)}
-            className="text-muted-foreground mt-8 mb-8 text-lg text-balance"
+            className={cn(
+              'text-muted-foreground text-lg text-balance',
+              section.compact ? 'my-5' : 'mt-8 mb-8'
+            )}
             dangerouslySetInnerHTML={{ __html: section.description ?? '' }}
           />
 
