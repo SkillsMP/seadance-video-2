@@ -1,3 +1,20 @@
+/**
+ * Flow 主题设计变量（局部作用域版 Tokens）
+ * 
+ * 【设计定位与背景】：
+ * 本文件是 Flow 落地页主题专用的设计变量。为了避免污染整站全局样式（如 /admin 管理后台、
+ * 设置页、登录认证页等仍需保持原站默认的全局 theme.css 风格），这里将所有变量挂载在
+ * 局部容器选择器 `.flow-shell` 上，实现落地页视觉风格的独立隔离。
+ * 
+ * 对应全局原文件：`src/config/style/theme.css`
+ */
+
+/* ==========================================================================
+   1. 浅色模式（Light Mode）设计变量
+   --------------------------------------------------------------------------
+   【对应关系】：对应全局 `src/config/style/theme.css` 中的 `:root` 块。
+   【说明】：当处于浅色模式时，定义落地页容器内部的背景、文字、卡片、边框等基础色彩变量。
+   ========================================================================== */
 .flow-shell {
   --background: oklch(0.9842 0.0034 247.8575);
   --foreground: oklch(0.2795 0.0368 260.031);
@@ -5,7 +22,7 @@
   --card-foreground: oklch(0.2795 0.0368 260.031);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2795 0.0368 260.031);
-  /* Match dark: amber primary for shadcn/header/generator controls (not Hero gradient). */
+  /* 匹配深色：用于 shadcn/导航头/生成器控件的琥珀金主色（非 Hero 渐变） */
   --primary: hsl(38 92% 50%);
   --primary-foreground: hsl(0 0% 100%);
   --secondary: oklch(0.9276 0.0058 264.5313);
@@ -32,8 +49,8 @@
   --sidebar-accent-foreground: oklch(0.3729 0.0306 259.7328);
   --sidebar-border: oklch(0.8717 0.0093 258.3382);
   --sidebar-ring: hsl(38 92% 50%);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial,
-    sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --font-serif: Merriweather, serif;
   --font-mono: JetBrains Mono, monospace;
   --radius: 0.75rem;
@@ -60,9 +77,14 @@
   --spacing: 0.25rem;
 }
 
+/* ==========================================================================
+   2. 深色模式（Dark Mode）设计变量覆盖
+   --------------------------------------------------------------------------
+   【对应关系】：对应全局 `src/config/style/theme.css` 中的 `.dark` 块。
+   【说明】：当父级（如 html 根标签）添加了 `.dark` 类名时，将覆盖上方浅色变量，
+   启用温暖黑底（hsl(40 6% 7%)）配合琥珀金主色（hsl(38 92% 50%)）的高质感暗黑视觉风格。
+   ========================================================================== */
 .dark .flow-shell {
-  /* Warm near-black + amber accent, lifted from the reference site tokens so
-     every page (pricing, settings, auth, 404) shares the landing look. */
   --background: hsl(40 6% 7%);
   --foreground: hsl(40 25% 92%);
   --card: hsl(40 7% 9%);
@@ -95,8 +117,8 @@
   --sidebar-accent-foreground: hsl(40 12% 80%);
   --sidebar-border: hsl(40 7% 20%);
   --sidebar-ring: hsl(38 92% 50%);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial,
-    sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --font-serif: Merriweather, serif;
   --font-mono: JetBrains Mono, monospace;
   --radius: 0.75rem;
@@ -121,7 +143,18 @@
   --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
 }
 
-
+/* ==========================================================================
+   3. 通用别名映射与外壳容器基准样式
+   --------------------------------------------------------------------------
+   【对应关系】：对应全局 `src/config/style/theme.css` 中的 `@theme inline` 块。
+   【为什么这里又有一个 .flow-shell？】：
+   1. 别名兼容：原全局文件中使用 `@theme inline { --color-background: var(--background); ... }`
+      为 Tailwind / 组件注册 `--color-*` 别名。但在局部模块中不能声明全局 `@theme`，因此
+      直接在 `.flow-shell` 容器上映射这一组别名。
+   2. 自动取值：无论浅色还是深色模式，本块都会动态读取当前生效的 `--background`、`--primary` 等变量。
+   3. 容器基准：通过设置 `background: var(--background); color: var(--foreground); font-family: var(--font-sans);`
+      确保只要包裹在 `<div className="flow-shell">` 内，落地页整体底色、文字颜色和字体立即统一生效。
+   ========================================================================== */
 .flow-shell {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -155,6 +188,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);

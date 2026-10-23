@@ -1,0 +1,45 @@
+{
+  "block": "transformations",
+  "disabled": true,
+  "id": "what-is-flow-ai-video",
+  "badge": "Real Flow AI Video Transformations",
+  "title": "What is Flow AI Video",
+  "description": "Discover how Flow AI Video converts text inputs or images into remarkable Flow AI Video 4K with Flow Video Generator motion synthesis. Flow Video provides enterprise video creation with multi-shot storytelling, seamless transitions, and unparalleled realism.",
+  "highlights": [
+    "Professional Flow AI Video",
+    "Lightning-fast video generation with Flow Video Maker",
+    "4K high-resolution output from Flow AI Video"
+  ],
+  "items": [
+    {
+      "title": "Native Multi-Shot Storytelling with Flow AI Video",
+      "label": "Multi-Shot Consistency",
+      "description": "Flow AI Video delivers breakthrough multi-shot storytelling capabilities that maintain consistency in characters, visual style, and atmosphere across scene transitions. Experience industry-leading motion consistency with Flow Video Generator.",
+      "video": "/video/what/example29.mp4",
+      "poster": "/video/posters/1.png"
+    },
+    {
+      "title": "Flow AI Video 4K HD Quality Video Generation",
+      "label": "Professional Output",
+      "description": "Generate stunning high-definition videos with Flow AI Video in native 4K resolution. Flow AI Video delivers smooth motion, rich details, and cinematic aesthetics perfect for professional production.",
+      "video": "/video/what/example30.mp4",
+      "poster": "/video/posters/2.png"
+    },
+    {
+      "title": "Text & Image to Video with Flow AI Video",
+      "label": "Multi-Modal Creation",
+      "description": "Create videos from text prompts or transform static images into dynamic video content with Flow AI Video. Flow Video supports both text-to-video and image-to-video generation with intelligent motion synthesis.",
+      "video": "/video/what/example36.mp4",
+      "poster": "/video/posters/3.png"
+    }
+  ],
+  "cta_title": "Ready to create with Flow AI Video?",
+  "cta_description": "Enter your text prompt or upload an image above to get started with Flow AI Video video generation",
+  "buttons": [
+    {
+      "title": "Ready to create with Flow AI Video?",
+      "url": "/#generator",
+      "variant": "default"
+    }
+  ]
+}

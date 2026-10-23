@@ -43,7 +43,17 @@ pnpm dev
 - [来源和字段映射](./reference-notes.md)、[复制前源文件哈希](./source-manifest.json)。本地副本提交版本未确认，没有将远端最新 SHA 当作本地版本。
 - [验收结果汇总](./checks/acceptance.json)、[检查原始输出](./checks/)与[预览截图](./previews/)。测试结果和未完成项见 `reference-notes.md`。
 
-这是区块源码移植，保留当前页面顺序；不是整页克隆。Hero 不含模拟 Studio，保留真实生成器的原位置与外壳；多按钮绑定当前数据，使用参考 CTA 的原按钮样式。参考站的 Transformations、Pricing、Stats 及 FAQ 营销统计本轮未迁移。
+这是区块源码移植，保留当前页面顺序；不是整页克隆。Hero 不含模拟 Studio，保留真实生成器的原位置与外壳；多按钮绑定当前数据，使用参考 CTA 的原按钮样式。参考站的 Pricing、Stats 及 FAQ 营销统计未迁移；Transformations 后续单独收纳为未启用模板，见下文。
+
+## Transformations 模板与页面预览
+
+- [组件](./blocks/transformations.tsx)：来自本地源项目 `src/shared/blocks/flow/site.tsx` 的 `FlowTransformations`。保留视频与文案左右交错、亮点标签、底部 CTA 的结构，复用现有 `styles/flow.css`，未修改 `components/site.tsx`。组件本身没有客户端事件，不声明 `use client`。
+- [示例数据](./templates/transformations.example.json)：取自源项目 `src/config/locale/messages/en/pages/index.json` 的 `page.sections.transformations`，增加 `block: "transformations"`、`disabled: true` 和普通链接 `buttons`。源站订阅检查、登录门禁及埋点不随模板迁移。
+- 示例保留源站英文文案和媒体路径，仅供参考；其中品牌、4K、速度等描述不是本站能力声明。视频与封面文件没有复制，`/video/what/*`、`/video/posters/*` 不能直接作为本站可用素材。
+- 以后使用时，将数据复制到对应页面的 locale JSON，换成已核实文案与可用媒体，调整按钮目的地，再解除 `disabled` 并按页面需要加入 `show_sections`。中英文页面各自配置；示例 JSON 继续保持默认禁用。
+- 每行支持视频或图片，可在同一区块混用；同时配置时优先展示 `video`。图片使用 `image: { "src": "/imgs/example.jpg", "alt": "图片说明" }`，不需要 `video` 或 `poster`。未填写 `alt` 时使用该行标题，`poster` 只作为视频封面。图片沿用现有媒体容器比例和裁切方式。
+
+当前已将英文 `/seedance-2-5` 的 `benefits` 区块（原 “How to interpret Seedance 2.5 availability”）替换为 Transformations 视觉预览，保留原位置和 `benefits` 锚点。复用站内现有视频和封面，并明确说明它们不是经过核实的 Seedance 2.5 输出。未修改路由或环境配置，也未部署；恢复页面 JSON 原来的 `benefits` 区块即可撤回预览。正式使用时仍需检查媒体来源、自动播放和减少动态效果偏好。
 
 源布局的品牌公告没有迁移；现有业务布局的 LocaleDetector、TopBanner、统计组件仍由原路由处理。模型页未覆盖的规格、用例、模型 FAQ、相关资源保持 default，因此页面会同时出现原业务区块。`compact`、`columns`、旧主题 `className` 等布局提示没有用于改写参考源码中的固定比例和栅格。
 
