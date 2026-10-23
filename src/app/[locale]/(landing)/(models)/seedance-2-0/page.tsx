@@ -4,6 +4,7 @@ import { getThemePage } from '@/core/theme';
 import { envConfigs } from '@/config';
 import { VideoGenerator } from '@/shared/blocks/generator';
 import { JsonLd } from '@/shared/components/seo/json-ld';
+import { prepareModelLandingPage } from '@/shared/lib/model-landing';
 import { buildBreadcrumbSchema } from '@/shared/lib/schema';
 import { getMetadata } from '@/shared/lib/seo';
 import type { DynamicPage } from '@/shared/types/blocks/landing';
@@ -22,7 +23,8 @@ export default async function SeedanceTwoPage({
   setRequestLocale(locale);
 
   const t = await getTranslations('pages.seedance-2-0');
-  const rawPage = t.raw('page') as DynamicPage;
+  const rawPage = prepareModelLandingPage(t.raw('page') as DynamicPage);
+  const faqItems = rawPage.sections?.faq?.items ?? [];
   const page: DynamicPage = {
     ...rawPage,
     sections: {
@@ -42,7 +44,6 @@ export default async function SeedanceTwoPage({
 
   const Page = await getThemePage('dynamic-page');
   const pageUrl = `${envConfigs.app_url}/seedance-2-0`;
-  const faqItems = rawPage.sections?.faq?.items ?? [];
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

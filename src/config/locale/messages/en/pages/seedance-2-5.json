@@ -74,46 +74,51 @@
         "className": "bg-muted/40"
       },
       "benefits": {
-        "block": "features-accordion",
+        "block": "transformations",
         "id": "benefits",
-        "title": "How to interpret Seedance 2.5 availability",
-        "description": "Searches for Seedance 2.5, seedance2.5, and spelling variants often mix official announcements, consumer apps, providers, and third-party claims. Separate each access surface.",
+        "badge": "Creative workflows",
+        "title": "Seedance 2.5 Transformations",
+        "description": "Plan your story, guide the scene with references, and refine the result. These illustrative clips are existing site examples, not verified Seedance 2.5 outputs. Check your provider for supported workflows.",
+        "highlights": [
+          "Story planning",
+          "Reference-led direction",
+          "Controlled editing"
+        ],
         "items": [
           {
-            "title": "Official consumer rollout",
-            "description": "ByteDance Seed says the model is rolling out on Jimeng AI, Doubao Pro, and other platforms. The exact experience still depends on account, region, and product.",
-            "icon": "Globe2",
-            "image": {
-              "src": "https://picsum.photos/seed/seedance-2-5-benefit-1/1200/800",
-              "alt": "Official consumer rollout"
-            }
+            "title": "Plan the story before you generate",
+            "label": "Story & pacing",
+            "description": "Start with a clear subject, action, camera path, and ending. Map the sequence into story beats, then check the duration and extension options on your chosen provider.",
+            "video": "/videos/seadance/showcase-1.webm",
+            "poster": "/imgs/seadance/showcase_1.jpg"
           },
           {
-            "title": "BytePlus ModelArk API",
-            "description": "BytePlus publishes model documentation and API access for supported markets. Use the current model ID and endpoint shown in official docs.",
-            "icon": "ServerCog",
-            "image": {
-              "src": "https://picsum.photos/seed/seedance-2-5-benefit-2/1200/800",
-              "alt": "BytePlus ModelArk API"
-            }
+            "title": "Give your scene a visual direction",
+            "label": "References & atmosphere",
+            "description": "Use references to communicate composition, lighting, motion, and atmosphere. Specify what should stay consistent and what should change, using inputs supported by your provider.",
+            "video": "/videos/seadance/showcase-3.webm",
+            "poster": "/imgs/seadance/showcase_3.jpg"
           },
           {
-            "title": "Third-party platforms",
-            "description": "Higgsfield, CapCut, Artlist, fal, OpenRouter, and other names appear in searches, but support and limits must be checked on each provider’s current page.",
-            "icon": "Network",
-            "image": {
-              "src": "https://picsum.photos/seed/seedance-2-5-benefit-3/1200/800",
-              "alt": "Third-party platforms"
-            }
+            "title": "Refine one detail at a time",
+            "label": "Editing & control",
+            "description": "Describe the change you want while preserving the rest of the scene. Keep a record of the source, model, settings, and each revision so the result can be evaluated and reproduced.",
+            "video": "/videos/seadance/showcase-4.webm",
+            "poster": "/imgs/seadance/showcase_4.jpg"
+          }
+        ],
+        "cta_title": "Choose your next step",
+        "cta_description": "Read the Seedance 2.5 API guide, or create with the Seedance 2.0 models currently available on this site.",
+        "buttons": [
+          {
+            "title": "Use Seedance 2.0 Today",
+            "url": "/seedance-2-0#generator",
+            "variant": "default"
           },
           {
-            "title": "This site’s generator",
-            "description": "The browser generator on Seadance Video currently supports Seedance 2.0. It does not silently claim that Seedance 2.5 is selectable here.",
-            "icon": "ShieldCheck",
-            "image": {
-              "src": "https://picsum.photos/seed/seedance-2-5-benefit-4/1200/800",
-              "alt": "This site’s generator"
-            }
+            "title": "Explore Seedance 2.5 API",
+            "url": "/seedance-2-5/api",
+            "variant": "outline"
           }
         ]
       },

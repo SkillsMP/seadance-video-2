@@ -14,6 +14,7 @@
       "showcases",
       "features",
       "update",
+      "pricing",
       "faq",
       "cta"
     ],
@@ -50,7 +51,7 @@
       "showcases": {
         "block": "showcases",
         "id": "showcases",
-        "columns": 2,
+        "columns": 3,
         "title": "Made with Seedance 精选作品",
         "description": "基于文字与图像提示词生成的真实电影级 AI 视频。探索今天你可以创作的一切。",
         "items": [
@@ -134,7 +135,8 @@
               "variant": "default"
             }
           }
-        ]
+        ],
+        "compact": true
       },
       "features": {
         "id": "features",
@@ -188,6 +190,11 @@
           }
         ],
         "className": "bg-muted/40 border-y"
+      },
+      "pricing": {
+        "block": "pricing-plans",
+        "id": "pricing",
+        "className": "scroll-mt-20 py-14 md:py-20"
       },
       "faq": {
         "id": "faq",
