@@ -193,15 +193,12 @@ const specification = messages.page.sections
   .specifications as ModelSpecsSection;
 const renderSpecs = (section: ModelSpecsSection) =>
   renderToStaticMarkup(
-    createElement(
-      NextIntlClientProvider,
-      {
-        locale: 'en',
-        messages: {},
-        timeZone: 'UTC',
-      },
-      createElement(ModelSpecs, { section })
-    )
+    createElement(NextIntlClientProvider, {
+      locale: 'en',
+      messages: {},
+      timeZone: 'UTC',
+      children: createElement(ModelSpecs, { section }),
+    })
   );
 const videoHtml = renderSpecs(specification);
 assert.equal((videoHtml.match(/<table\b/g) ?? []).length, 1);
