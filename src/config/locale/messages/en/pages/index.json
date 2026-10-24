@@ -49,24 +49,36 @@
       },
       "generator": {},
       "showcases": {
-        "block": "showcases",
+        "block": "video-examples",
         "id": "showcases",
-        "columns": 3,
+        "columns": 2,
         "title": "Made with Seedance",
         "description": "Real cinematic AI video examples generated with text and image prompts. Discover what you can create today.",
+        "ui": {
+          "play": "Play video",
+          "reference_prompt": "Reference prompt",
+          "copy_prompt": "Copy prompt",
+          "copied": "Copied!",
+          "copy_failed": "Copy failed",
+          "prev": "Previous example",
+          "next": "Next example",
+          "go_generator": "Go to generator",
+          "browse_all": "Browse all"
+        },
         "items": [
           {
-            "title": "En Plein Air at Sunset",
-            "description": "\"A serene artist sits at the water's edge, engrossed in painting an oil masterpiece on canvas, sea breeze billowing his shirt, golden sunset reflecting off tranquil water, photorealistic.\"",
+            "title": "Monster Bakery",
+            "aspectRatio": "16 / 10",
+            "description": "Cinematic AI video example: a whimsical bakery scene with rich motion and detail.",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-1.webm",
+              "src": "/videos/showcase/generated/monster-bakery.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT6.125S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_1.jpg",
-              "alt": "Artist painting by the sea generated with Seedance"
+              "src": "/imgs/examples/video/monster-bakery.png",
+              "alt": "Monster bakery AI video example"
             },
             "button": {
               "title": "Create a video",
@@ -76,17 +88,18 @@
             }
           },
           {
-            "title": "Gothic Visual Kei Portrait",
-            "description": "\"A stylish young man with vibrant green hair in gothic visual kei attire, seated in a warm bistro sipping lemonade, cinematic depth of field, 35mm film aesthetic.\"",
+            "title": "Web Acrobat",
+            "aspectRatio": "4 / 5",
+            "description": "Cinematic AI video example: dynamic character motion with strong vertical framing.",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-2.webm",
+              "src": "/videos/showcase/generated/web-acrobat.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT8.008S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "Cinematic visual kei portrait generated with Seedance"
+              "src": "/imgs/examples/video/web-acrobat.jpg",
+              "alt": "Web acrobat AI video example poster"
             },
             "button": {
               "title": "Create a video",
@@ -96,17 +109,18 @@
             }
           },
           {
-            "title": "Cosmic Night Sky Timelapse",
-            "description": "\"Cinematic night sky timelapse over dark mountain silhouettes, glowing stars and milky way galaxy rotating slowly, deep atmospheric lighting, ultra-high resolution.\"",
+            "title": "Paper Dragon",
+            "aspectRatio": "3 / 4",
+            "description": "Cinematic AI video example: paper-craft dragon with fluid camera movement.",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-3.webm",
+              "src": "/videos/showcase/generated/paper-dragon.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT9.677S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_3.jpg",
-              "alt": "Cosmic night sky timelapse generated with Seedance"
+              "src": "/imgs/examples/video/paper-dragon.jpg",
+              "alt": "Paper dragon AI video example poster"
             },
             "button": {
               "title": "Create a video",
@@ -116,17 +130,90 @@
             }
           },
           {
-            "title": "Golden Hour Cafe Reflection",
-            "description": "\"A young adult in a cozy cafe enjoying a steaming coffee, late afternoon sunlight filtering through large glass windows casting a warm golden glow, tranquil mood.\"",
+            "title": "Glacier Titan",
+            "aspectRatio": "16 / 9",
+            "description": "Cinematic AI video example: epic scale landscape with dramatic atmosphere.",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-4.webm",
+              "src": "/videos/showcase/generated/glacier-titan.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT8.008S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_4.jpg",
-              "alt": "Golden hour cafe portrait generated with Seedance"
+              "src": "/imgs/examples/video/glacier-titan.jpg",
+              "alt": "Glacier titan AI video example poster"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "Airglide",
+            "aspectRatio": "1 / 1",
+            "description": "Cinematic AI video example: square-framed motion study with clean composition.",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/airglide-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "Desert Poppies",
+            "aspectRatio": "2 / 3",
+            "description": "Cinematic AI video example: desert florals with tall portrait framing.",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/desert-poppies-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "Monster Commuter",
+            "aspectRatio": "3 / 2",
+            "description": "Cinematic AI video example: surreal commute scene with strong horizontal framing.",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/monster-commuter.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
+            },
+            "image": {
+              "src": "/imgs/examples/video/monster-commuter.png",
+              "alt": "Monster commuter AI video example"
+            },
+            "button": {
+              "title": "Create a video",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "New York Dragon",
+            "aspectRatio": "9 / 16",
+            "description": "Cinematic AI video example: vertical city fantasy with bold motion.",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/new-york-dragon-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
             },
             "button": {
               "title": "Create a video",

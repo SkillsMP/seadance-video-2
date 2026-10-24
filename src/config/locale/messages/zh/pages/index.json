@@ -49,24 +49,36 @@
       },
       "generator": {},
       "showcases": {
-        "block": "showcases",
+        "block": "video-examples",
         "id": "showcases",
-        "columns": 3,
+        "columns": 2,
+        "ui": {
+          "play": "播放视频",
+          "reference_prompt": "参考提示词",
+          "copy_prompt": "复制提示词",
+          "copied": "已复制",
+          "copy_failed": "复制失败",
+          "prev": "上一条示例",
+          "next": "下一条示例",
+          "go_generator": "去生成器",
+          "browse_all": "浏览全部"
+        },
         "title": "Made with Seedance 精选作品",
         "description": "基于文字与图像提示词生成的真实电影级 AI 视频。探索今天你可以创作的一切。",
         "items": [
           {
-            "title": "夕阳海边写生油画",
-            "description": "“一位神情平静的艺术家坐在水边，全神贯注地在画布上创作油画，海风拂动他的衣衫，金色的夕阳倒映在宁静的海面上，写实细腻。”",
+            "title": "怪物面包店",
+            "aspectRatio": "16 / 10",
+            "description": "电影感 AI 视频示例：奇幻面包店场景，动感与细节丰富。",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-1.webm",
+              "src": "/videos/showcase/generated/monster-bakery.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT6.125S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_1.jpg",
-              "alt": "使用 Seedance 生成的海边写生油画 AI 视频"
+              "src": "/imgs/examples/video/monster-bakery.png",
+              "alt": "怪物面包店 AI 视频示例"
             },
             "button": {
               "title": "创建视频",
@@ -76,17 +88,18 @@
             }
           },
           {
-            "title": "哥特视觉系人物特写",
-            "description": "“一位留着绿色头发、穿着哥特视觉系服装的年轻人坐在温暖的小酒馆里品尝柠檬水，电影级景深，35mm胶片质感。”",
+            "title": "网页杂技演员",
+            "aspectRatio": "4 / 5",
+            "description": "电影感 AI 视频示例：竖构图下的动态人物表演。",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-2.webm",
+              "src": "/videos/showcase/generated/web-acrobat.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT8.008S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_2.jpg",
-              "alt": "使用 Seedance 生成的电影级视觉系人物特写"
+              "src": "/imgs/examples/video/web-acrobat.jpg",
+              "alt": "网页杂技演员 AI 视频示例封面"
             },
             "button": {
               "title": "创建视频",
@@ -96,17 +109,18 @@
             }
           },
           {
-            "title": "浩瀚夜空星河延时",
-            "description": "“深邃山脉剪影上空的电影级星空延时，璀璨群星与银河缓缓流转，沉浸式深空光影，超高分辨率。”",
+            "title": "纸艺巨龙",
+            "aspectRatio": "3 / 4",
+            "description": "电影感 AI 视频示例：纸艺风格巨龙与流畅镜头运动。",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-3.webm",
+              "src": "/videos/showcase/generated/paper-dragon.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT9.677S"
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_3.jpg",
-              "alt": "使用 Seedance 生成的浩瀚星空延时摄影"
+              "src": "/imgs/examples/video/paper-dragon.jpg",
+              "alt": "纸艺巨龙 AI 视频示例封面"
             },
             "button": {
               "title": "创建视频",
@@ -116,17 +130,86 @@
             }
           },
           {
-            "title": "午后暖阳咖啡馆留影",
-            "description": "“一位年轻人在温馨惬意的咖啡馆里品尝热咖啡，午后的阳光透过明亮大窗洒在脸庞上，光影温柔，氛围恬静悠然。”",
+            "title": "冰川泰坦",
+            "aspectRatio": "16 / 9",
+            "description": "电影感 AI 视频示例：史诗尺度景观与戏剧性氛围。",
             "url": "/#generator",
             "video": {
-              "src": "/videos/seadance/showcase-4.webm",
+              "src": "/videos/showcase/generated/glacier-titan.mp4",
               "uploadDate": "2026-09-04T09:54:16+08:00",
-              "duration": "PT8.008S"
+              "duration": "PT5S"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "空中滑翔",
+            "aspectRatio": "1 / 1",
+            "description": "电影感 AI 视频示例：方形画幅下的运动与构图。",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/airglide-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "沙漠罂粟",
+            "aspectRatio": "2 / 3",
+            "description": "电影感 AI 视频示例：沙漠花景与竖向画幅。",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/desert-poppies-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "怪物通勤",
+            "aspectRatio": "3 / 2",
+            "description": "电影感 AI 视频示例：超现实通勤场景，横构图张力强。",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/monster-commuter.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
             },
             "image": {
-              "src": "/imgs/seadance/showcase_4.jpg",
-              "alt": "使用 Seedance 生成的午后咖啡馆人物视频"
+              "src": "/imgs/examples/video/monster-commuter.png",
+              "alt": "怪物通勤 AI 视频示例"
+            },
+            "button": {
+              "title": "创建视频",
+              "url": "/#generator",
+              "icon": "Sparkles",
+              "variant": "default"
+            }
+          },
+          {
+            "title": "纽约之龙",
+            "aspectRatio": "9 / 16",
+            "description": "电影感 AI 视频示例：竖屏城市奇幻与强烈动感。",
+            "url": "/#generator",
+            "video": {
+              "src": "/videos/showcase/generated/new-york-dragon-remake.mp4",
+              "uploadDate": "2026-09-04T09:54:16+08:00",
+              "duration": "PT5S"
             },
             "button": {
               "title": "创建视频",
