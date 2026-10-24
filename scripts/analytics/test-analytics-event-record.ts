@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-import { buildAnalyticsEventRecord } from '../src/shared/models/event';
+import { buildAnalyticsEventRecord } from '../../src/shared/models/event';
 
 const occurredAt = new Date('2026-09-17T08:00:00.000Z');
 const receivedAt = new Date('2026-09-17T08:00:01.000Z');

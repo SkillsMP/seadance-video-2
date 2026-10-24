@@ -1,3 +1,12 @@
+/**
+ * 【外部资源 URL 安全防线单测 / 防 SSRF】
+ * 
+ * 作用：验证输入图片/视频 URL 的安全性，严格拦截内网保留 IP（127.0.0.1、localhost、169.254.x.x 等），
+ * 杜绝利用生图生视频功能探测或攻击云服务器内网的 SSRF 漏洞。
+ * 
+ * 运行方式：
+ * tsx scripts/test-asset-url-security.ts
+ */
 import assert from 'node:assert/strict';
 
 import {

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   buildClientAnalyticsEventInput,
   normalizeClientAnalyticsEvent,
-} from '../src/shared/services/analytics-events';
+} from '../../src/shared/services/analytics-events';
 
 const now = new Date('2026-09-17T08:00:00.000Z');
 

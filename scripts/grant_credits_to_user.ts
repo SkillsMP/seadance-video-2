@@ -1,4 +1,12 @@
-// npx tsx scripts/grant_credits_to_user.ts
+/**
+ * 【用户积分手动发放 / 临时运维脚本】
+ * 
+ * 作用：为指定邮箱用户手动增加积分额度。
+ * 注意：目前内部邮箱硬编码，修改脚本内的 email 和 credits 后执行。
+ * 
+ * 运行方式：
+ * npx tsx scripts/grant_credits_to_user.ts
+ */
 import { getUsers } from '@/shared/models/user';
 import { grantCreditsForUser } from '@/shared/models/credit';
 

@@ -1,3 +1,11 @@
+/**
+ * 【生成后输出内容审核单测 / 合规核心】
+ * 
+ * 作用：模拟测试 AI 生成完毕后的视频/图片安全审核（如 Sightengine 等第三方机审）拦截与放行逻辑。
+ * 
+ * 运行方式：
+ * pnpm test:ai-moderation
+ */
 import assert from 'node:assert/strict';
 
 process.env.DATABASE_URL = '';

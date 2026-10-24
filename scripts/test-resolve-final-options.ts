@@ -1,3 +1,13 @@
+/**
+ * 【AI 视频生成参数解析契约测试 / 核心回归】
+ * 
+ * 作用：测试不同模型在各种用户输入组合下的参数解析、时长、分辨率、比例、提示词合法性与 fallback 逻辑。
+ * 覆盖 Seedance 2.0/2.5、MiniMax H3 等多个视频生成工作流。
+ * 
+ * 运行方式：
+ * pnpm test:video-contract
+ * 或单独执行：pnpm exec tsx scripts/test-resolve-final-options.ts
+ */
 import assert from 'node:assert/strict';
 
 import { MODELS, type ModelEntry } from '../src/config/ai/models';

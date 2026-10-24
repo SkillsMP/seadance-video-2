@@ -6,7 +6,7 @@ import {
   getDurationBucket,
   isClientAnalyticsEvent,
   sanitizeAnalyticsProperties,
-} from '../src/shared/lib/analytics/events';
+} from '../../src/shared/lib/analytics/events';
 
 assert.equal(ANALYTICS_EVENT_NAMES.length, 14);
 assert.deepEqual(

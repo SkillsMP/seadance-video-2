@@ -1,3 +1,12 @@
+/**
+ * 【模型落地页样板渲染与规格计算单测 / 核心回归】
+ * 
+ * 作用：测试模型落地页（如 Seedance 2.0/2.5）规格参数表汇总提取、服务端原生折叠 FAQ、
+ * 无案例文案自动 fallback 以及 JSON-LD 结构化数据。
+ * 
+ * 运行方式：
+ * pnpm exec tsx scripts/test-model-landing.ts
+ */
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { NextIntlClientProvider } from 'next-intl';

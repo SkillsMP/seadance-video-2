@@ -1,3 +1,12 @@
+/**
+ * 【Stripe 支付排错脚本 / 检查密钥模式】
+ * 
+ * 作用：从数据库读取 Stripe 配置，检查公钥和私钥当前是 TEST 还是 LIVE 模式，
+ * 并提醒公私钥是否匹配、优惠码是否只在特定模式有效。
+ * 
+ * 运行方式：
+ * tsx scripts/check-stripe-mode.ts
+ */
 import { eq } from 'drizzle-orm';
 import { db } from '@/core/db';
 import { config } from '@/config/db/schema';

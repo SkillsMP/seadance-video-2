@@ -1,3 +1,12 @@
+/**
+ * 【图生视频与输入格式烟雾测试 / 核心回归】
+ * 
+ * 作用：验证图生视频（Image-to-Video）、首尾帧控制、参考图输入在不同模型下的 payload 构建与合法性约束。
+ * 
+ * 运行方式：
+ * pnpm test:video-contract
+ * 或单独执行：pnpm exec tsx scripts/test-video-image-inputs-smoke.ts
+ */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

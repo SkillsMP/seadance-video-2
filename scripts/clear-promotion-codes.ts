@@ -1,3 +1,11 @@
+/**
+ * 【Stripe 支付运维脚本 / 清空优惠码配置】
+ * 
+ * 作用：从数据库 `config` 表中删除 `stripe_promotion_codes` 配置项（重置优惠码）。
+ * 
+ * 运行方式：
+ * tsx scripts/clear-promotion-codes.ts
+ */
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/core/db';

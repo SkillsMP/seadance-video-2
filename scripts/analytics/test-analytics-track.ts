@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-import { track } from '../src/shared/lib/analytics/track';
+import { track } from '../../src/shared/lib/analytics/track';
 
 let cookieValue = '';
 const requests: Array<{ input: RequestInfo | URL; init?: RequestInit }> = [];

@@ -1,3 +1,11 @@
+/**
+ * 【视频结构化数据（VideoObject JSON-LD）校验单测 / SEO 核心】
+ * 
+ * 作用：校验全站输出给 Google 的 VideoObject 结构化 Schema 符合搜索引擎富媒体收录规范。
+ * 
+ * 运行方式：
+ * tsx scripts/test-schema.ts
+ */
 import assert from 'node:assert/strict';
 
 import { buildVideoSchema } from '../src/shared/lib/schema';

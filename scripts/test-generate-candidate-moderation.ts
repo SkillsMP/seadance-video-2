@@ -1,3 +1,11 @@
+/**
+ * 【生成前候选词审核时序单测 / 合规核心】
+ * 
+ * 作用：验证在生成 API（`/api/ai/generate`）触发真实 AI 模型前，提示词审核（Candidate Moderation）必须先执行完毕。
+ * 
+ * 运行方式：
+ * pnpm test:ai-moderation
+ */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

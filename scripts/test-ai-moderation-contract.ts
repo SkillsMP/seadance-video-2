@@ -1,3 +1,11 @@
+/**
+ * 【AI 安全审核契约测试 / 合规核心】
+ * 
+ * 作用：验证文本与内容审核服务在各 API 路由中的拦截时序、错误状态码及统一契约。
+ * 
+ * 运行方式：
+ * pnpm test:ai-moderation
+ */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

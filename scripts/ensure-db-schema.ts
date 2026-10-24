@@ -1,3 +1,9 @@
+/**
+ * 【核心数据库运维脚本 / Schema 守护】
+ * 
+ * 作用：在运行 Drizzle 数据表迁移前，检查 PostgreSQL 数据库中是否存在指定的 schema，不存在则自动创建。
+ * 调用场景：被 `pnpm db:migrate` 自动链式调用。
+ */
 import postgres from 'postgres';
 
 import { envConfigs } from '@/config';

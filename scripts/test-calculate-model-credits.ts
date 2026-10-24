@@ -1,3 +1,12 @@
+/**
+ * 【模型动态扣费积分计算单测 / 核心回归】
+ * 
+ * 作用：全面校验每种视频/图片模型在不同时长（如 5s/10s）、不同画质（720p/1080p）及工作流下的积分计算结果，
+ * 确保计费快照和前端展示、后端真实扣费严格一致。
+ * 
+ * 运行方式：
+ * pnpm exec tsx scripts/test-calculate-model-credits.ts
+ */
 import assert from 'node:assert/strict';
 
 import {

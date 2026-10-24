@@ -1,3 +1,11 @@
+/**
+ * 【Stripe 支付排错脚本 / 验证线上优惠码】
+ * 
+ * 作用：读取数据库 Stripe 配置并调用 Stripe 官方 API，逐个核对优惠码是否存在、激活状态及适用范围。
+ * 
+ * 运行方式：
+ * tsx scripts/verify-stripe-promo-codes.ts
+ */
 import Stripe from 'stripe';
 import { eq } from 'drizzle-orm';
 import { db } from '@/core/db';

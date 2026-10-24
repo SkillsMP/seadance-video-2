@@ -1,3 +1,12 @@
+/**
+ * 【博客文章内容初始化 / 数据灌入脚本】
+ * 
+ * 作用：读取项目本地 `content/posts/` 目录中的 Markdown 博客，批量写入数据库 `post` 与 `taxonomy` 表。
+ * 适用场景：新环境部署、数据库重置后初始化 SEO 博客文章。
+ * 
+ * 运行方式：
+ * tsx scripts/seed-blogs.ts
+ */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 import fs from "fs";

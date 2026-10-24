@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-import { buildAnalyticsReport } from '../src/shared/services/analytics-events';
+import { buildAnalyticsReport } from '../../src/shared/services/analytics-events';
 
 const events = [
   {

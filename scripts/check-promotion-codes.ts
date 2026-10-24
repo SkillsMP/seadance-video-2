@@ -1,3 +1,11 @@
+/**
+ * 【Stripe 支付排错脚本 / 检查优惠码配置】
+ * 
+ * 作用：从数据库 `config` 表中查询当前已保存的 `stripe_promotion_codes` JSON 结构并格式化输出。
+ * 
+ * 运行方式：
+ * tsx scripts/check-promotion-codes.ts
+ */
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/core/db';
