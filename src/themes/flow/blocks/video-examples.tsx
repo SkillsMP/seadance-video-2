@@ -61,7 +61,7 @@ function stripPromptQuotes(text: string) {
 
 function mapItems(items: SectionItem[] | undefined): ExampleItem[] {
   return (items || [])
-    .map((item) => {
+    .map((item): ExampleItem | null => {
       const video =
         typeof item.video === 'string' ? item.video : item.video?.src || '';
       const poster = item.image?.src || '';
